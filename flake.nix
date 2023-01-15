@@ -27,25 +27,24 @@
         rust = import ./rust.nix {
           inherit lib pkgs;
           workspace-binaries = {
-            replace-me = {
+            decompiler = {
               rpath = p: [ ];
               run_time_ld_library_path = p: [ ];
             };
           };
           extra-overrides = { mkNativeDep, mkEnvDep, p }:
-            [ (mkNativeDep "replace-me" [ ]) ];
+            [ (mkNativeDep "decompiler" [ ]) ];
         };
       in {
-        devShells.default = #rust.rustPkgs.workspaceShell {
-          pkgs.mkShell {
+        devShells.default = rust.rustPkgs.workspaceShell {
           packages = let p = pkgs;
           in [
             cargo2nix.outputs.packages.${system}.cargo2nix
             p.rust-bin.stable.latest.clippy
             p.rust-bin.stable.latest.default
-          ]; #++ builtins.attrValues rust.packages;
+          ] ++ builtins.attrValues rust.packages;
         };
 
-        packages = rust.packages // { default = rust.packages.replace-me; };
+        packages = rust.packages // { default = rust.packages.decompiler; };
       });
 }
