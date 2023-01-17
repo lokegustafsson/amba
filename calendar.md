@@ -1,2 +1,0 @@
-- 2022-01-17            Inledande gruppmöte
-- 2022-01-19    EG2515  handledarmöte/gruppmöte
