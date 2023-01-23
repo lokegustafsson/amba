@@ -14,3 +14,4 @@ format_strings = false
 
 use_field_init_shorthand = true
 hex_literal_case = "Upper"
+fn_call_width=50
