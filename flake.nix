@@ -42,7 +42,8 @@
             packages = let p = pkgs;
             in [
               cargo2nix.outputs.packages.${system}.cargo2nix
-              p.rust-bin.stable.latest.clippy
+              p.rust-bin.nightly.latest.clippy
+              p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.default
             ] ++ builtins.attrValues rust.packages;
           };
