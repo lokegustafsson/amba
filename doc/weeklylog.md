@@ -9,6 +9,10 @@ Decision to be made next monday. Decided on a reading list until monday.
 
 ## LP3LV2 2023-01-23 to 2023-01-29
 
+Monday: Meeting Supervisor (Iulia). Decided on going with S2E and not build an engine by ourself.
+
+Thursday: Setting up devenv and planning to start with project plan.
+
 ## LP3LV3 2023-01-30 to 2023-02-05
 
 ## LP3LV4 2023-02-06 to 2023-02-12
