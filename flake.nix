@@ -24,7 +24,7 @@
           config.allowUnfree = false;
         };
         lib = nixpkgs.lib;
-        rust = import ./rust.nix {
+        rust = import ./nix/rust.nix {
           inherit lib pkgs;
           workspace-binaries = {
             decompiler = {
@@ -35,6 +35,7 @@
           extra-overrides = { mkNativeDep, mkEnvDep, p }:
             [ (mkNativeDep "decompiler" [ ]) ];
         };
+        s2e = import ./nix/s2e.nix { inherit pkgs lib; };
       in {
         devShells.default = rust.rustPkgs.workspaceShell {
           packages = let p = pkgs;
@@ -43,6 +44,9 @@
             p.rust-bin.stable.latest.clippy
             p.rust-bin.stable.latest.default
           ] ++ builtins.attrValues rust.packages;
+
+          FIZZ = s2e.s2e-src;
+          BUZZ = s2e.s2e-lib;
         };
 
         packages = rust.packages // { default = rust.packages.decompiler; };

@@ -2,7 +2,7 @@
 let
   rustPkgs = pkgs.rustBuilder.makePackageSet {
     rustVersion = "latest";
-    packageFun = import ./Cargo.nix;
+    packageFun = import ../Cargo.nix;
     packageOverrides = p:
       let
         mkNativeDep = cratename: extra-deps:
