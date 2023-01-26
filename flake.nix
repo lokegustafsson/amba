@@ -37,18 +37,26 @@
         };
         s2e = import ./nix/s2e.nix { inherit pkgs lib; };
       in {
-        devShells.default = rust.rustPkgs.workspaceShell {
-          packages = let p = pkgs;
-          in [
-            cargo2nix.outputs.packages.${system}.cargo2nix
-            p.rust-bin.stable.latest.clippy
-            p.rust-bin.stable.latest.default
-          ] ++ builtins.attrValues rust.packages;
-
-          FIZZ = s2e.s2e-src;
-          BUZZ = s2e.s2e-lib;
+        devShells = {
+          default = rust.rustPkgs.workspaceShell {
+            packages = let p = pkgs;
+            in [
+              cargo2nix.outputs.packages.${system}.cargo2nix
+              p.rust-bin.stable.latest.clippy
+              p.rust-bin.stable.latest.default
+            ] ++ builtins.attrValues rust.packages;
+          };
+          doc = pkgs.mkShell {
+            nativeBuildInputs = with pkgs; [
+              tectonic
+              gnumake
+            ];
+          };
         };
 
-        packages = rust.packages // { default = rust.packages.decompiler; };
+        packages = rust.packages // {
+          default = rust.packages.decompiler;
+          inherit (s2e) s2e-src s2e-lib;
+        };
       });
 }
