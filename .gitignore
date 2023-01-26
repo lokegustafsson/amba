@@ -1,6 +1,10 @@
 # Rust target
 /target
 
+# direnv
+**shell.nix
+**.envrc
+
 # Nix target
 /result
 
