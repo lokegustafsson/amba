@@ -1,4 +1,10 @@
+# Rust target
 /target
+
+# Nix target
+/result
+
+# Emacs tempfiles
 **#
 **~
 
