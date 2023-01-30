@@ -1,0 +1,47 @@
+diff --git a/s2e/Makefile b/s2e/Makefile
+index a5abb25..8c839d4 100644
+--- a/s2e/Makefile
++++ b/s2e/Makefile
+@@ -247,14 +247,13 @@ $(Z3_BUILD_DIR):
+
+ # Download SOCI
+ $(SOCI_BUILD_DIR):
+-	git clone $(SOCI_GIT_URL) $(SOCI_SRC_DIR)
+-	cd $(SOCI_SRC_DIR) && git checkout $(SOCI_GIT_REV)
++	cp -r $(INJECTED_SOCI_SRC) $(SOCI_SRC_DIR)
+ 	mkdir -p $(S2E_BUILD)/$(SOCI_BUILD_DIR)
+
+ # Download GTest
+ $(GTEST_BUILD_DIR):
+ 	mkdir -p "$(GTEST_SRC_DIR)"
+-	cd $(S2E_BUILD) && wget -O $(GTEST_SRC_DIR).tar.gz $(GTEST_URL) || rm -f "$@"
++	cd $(S2E_BUILD) && cp $(INJECTED_GTEST_SRC) $(GTEST_SRC_DIR).tar.gz
+ 	cd $(S2E_BUILD) && tar xzvf $(GTEST_SRC_DIR).tar.gz -C $(GTEST_SRC_DIR) --strip-components=1
+ 	mkdir -p "$@"
+
+@@ -270,8 +269,7 @@ $(LIBDWARF_BUILD_DIR):
+ 	mkdir -p $(S2E_BUILD)/$(LIBDWARF_BUILD_DIR)
+
+ $(RAPIDJSON_BUILD_DIR):
+-	git clone $(RAPIDJSON_GIT_URL) $(RAPIDJSON_SRC_DIR)
+-	cd $(RAPIDJSON_SRC_DIR) && git checkout $(RAPIDJSON_GIT_REV)
++	cp -r $(INJECTED_RAPIDJSON_SRC) $(RAPIDJSON_SRC_DIR)
+ 	mkdir -p $(S2E_BUILD)/$(RAPIDJSON_BUILD_DIR)
+
+ $(PROTOBUF_BUILD_DIR):
+@@ -758,7 +756,6 @@ stamps/libs2e-release-install: stamps/libs2e-release-make
+ 	install $(S2E_BUILD)/libs2e-release/i386-s2e_sp-softmmu/libs2e.so $(S2E_PREFIX)/share/libs2e/libs2e-i386-s2e_sp.so
+
+ 	install $(S2E_SRC)/libs2eplugins/src/s2e/Plugins/Support/KeyValueStore.py $(S2E_PREFIX)/bin/
+-	cd $(S2E_SRC) && if [ -f ".git/config" ]; then git rev-parse HEAD > $(S2E_PREFIX)/share/libs2e/git-sha1; fi
+
+ 	touch $@
+
+@@ -782,7 +779,6 @@ stamps/libs2e-debug-install: stamps/libs2e-debug-make
+ 	install $(S2E_BUILD)/libs2e-debug/i386-s2e_sp-softmmu/libs2e.so $(S2E_PREFIX)/share/libs2e/libs2e-i386-s2e_sp.so
+
+ 	install $(S2E_SRC)/libs2eplugins/src/s2e/Plugins/Support/KeyValueStore.py $(S2E_PREFIX)/bin/
+-	cd $(S2E_SRC) && if [ -f ".git/config" ]; then git rev-parse HEAD > $(S2E_PREFIX)/share/libs2e/git-sha1; fi
+
+ 	touch $@
+

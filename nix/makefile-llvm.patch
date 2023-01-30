@@ -1,0 +1,69 @@
+diff --git a/s2e/Makefile b/s2e/Makefile
+index a5abb25..8c839d4 100644
+--- a/s2e/Makefile
++++ b/s2e/Makefile
+@@ -83,19 +83,8 @@ LLVM_SRC=llvm-$(LLVM_VERSION).src.tar.xz
+ LLVM_SRC_DIR=llvm-$(LLVM_VERSION).src
+ LLVM_SRC_URL=https://github.com/llvm/llvm-project/releases/download/llvmorg-$(LLVM_VERSION)/
+
+-# The Python script should only return a single word - the suffix of the Clang
+-# binary to download. If an error message is printed to stderr, the Makefile
+-# error will be triggered.
+-CLANG_BINARY_SUFFIX=$(shell $(BUILD_SCRIPTS_SRC)/determine_clang_binary_suffix.py 2>&1)
+-ifneq ($(words $(CLANG_BINARY_SUFFIX)), 1)
+-$(error "Failed to determine Clang binary to download: $(CLANG_BINARY_SUFFIX)")
+-endif
+-
+ KLEE_DIRS=$(foreach suffix,-debug -release -coverage,$(addsuffix $(suffix),klee))
+
+-CLANG_BINARY_DIR=clang+llvm-$(LLVM_VERSION)-$(CLANG_BINARY_SUFFIX)
+-CLANG_BINARY=$(CLANG_BINARY_DIR).tar.xz
+-
+ CLANG_SRC=clang-$(LLVM_VERSION).src.tar.xz
+ CLANG_SRC_DIR=clang-$(LLVM_VERSION).src
+ CLANG_DEST_DIR=$(LLVM_SRC_DIR)/tools/clang
+@@ -221,11 +210,11 @@ endef
+
+ ifeq ($(LLVM_BUILD),$(S2E_BUILD))
+ # Download LLVM
+-$(LLVM_SRC) $(CLANG_SRC) $(COMPILER_RT_SRC) $(CLANG_BINARY):
++$(LLVM_SRC) $(CLANG_SRC) $(COMPILER_RT_SRC):
+ 	$(call DOWNLOAD,$(LLVM_SRC_URL)/$@,$@)
+
+
+-.INTERMEDIATE: $(CLANG_SRC_DIR) $(COMPILER_RT_SRC_DIR) $(CLANG_BINARY_DIR)
++.INTERMEDIATE: $(CLANG_SRC_DIR) $(COMPILER_RT_SRC_DIR)
+
+ $(LLVM_SRC_DIR): $(LLVM_SRC) $(CLANG_SRC_DIR) $(COMPILER_RT_SRC_DIR)
+ 	tar -xmf $<
+@@ -290,6 +279,12 @@ $(PROTOBUF_BUILD_DIR):
+ 	tar -zxf $(S2E_BUILD)/$(PROTOBUF_SRC_DIR).tar.gz
+ 	mkdir -p $(S2E_BUILD)/$(PROTOBUF_BUILD_DIR)
+
++stamps/clang-binary:
++	touch $@
++
++CLANG_CC = $(INJECTED_CLANG_CC)
++CLANG_CXX = $(INJECTED_CLANG_CXX)
++
+ ifeq ($(LLVM_BUILD),$(S2E_BUILD))
+
+
+@@ -297,17 +292,6 @@ ifeq ($(LLVM_BUILD),$(S2E_BUILD))
+ # LLVM #
+ ########
+
+-stamps/clang-binary: $(CLANG_BINARY) | stamps
+-	tar -xmf $<
+-	mkdir -p $(S2E_PREFIX)
+-	cp -r $(CLANG_BINARY_DIR)/* $(S2E_PREFIX)
+-	rm -r $(CLANG_BINARY_DIR)/*
+-	touch $@
+-
+-CLANG_CC = $(S2E_PREFIX)/bin/clang
+-CLANG_CXX = $(S2E_PREFIX)/bin/clang++
+-CLANG_LIB = $(S2E_PREFIX)/lib
+-
+ LLVM_CONFIGURE_FLAGS = -DLLVM_TARGETS_TO_BUILD="X86"        \
+                        -DLLVM_TARGET_ARCH="X86_64"          \
+                        -DLLVM_INCLUDE_EXAMPLES=Off          \
