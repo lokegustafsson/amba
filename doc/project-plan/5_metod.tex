@@ -1,0 +1,14 @@
+\subsection{Strategi}
+För att uppnå och redogöra för möjligheterna i en potentiell applikation valde vi att reflektera över två möjliga 
+alternativ att fullfölja. Dels diskuterades alternativet att bygga en symbolic execution engine från grunden och fokusera på
+dess tekniska detaljer och dels att använda en existerande produkt där vi istället fokuserar på att bygga plugins vars
+syfte är att utöka den existerande motorn med fler funktioner. 
+
+Med syfte att göra framsteg valdes det att kolla vidare hur SymQEMU kan hjälpa oss i frågan om att utöka funktionalitet
+i en existerande motor. SymQEMU är utvecklat i största del C/C++ och med anledning av att vi valt att utveckla i ett annat
+programmeringsspråk, det vill säga Rust, behöver vi använda oss av C/C++-bindings. I ett första steg valde vi därför att 
+se över hur detta går till på lämpligast sätt och hur vi kan automatisera det hjälp av andra verktyg där vi bland annat hittade
+autocxx som ett lovande alternativ. 
+
+
+
