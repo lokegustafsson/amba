@@ -681,7 +681,7 @@ LIBS2E_CONFIGURE_FLAGS = --with-cc=$(CLANG_CC)                                  
                          --with-z3-incdir=$(S2E_PREFIX)/include                     \
                          --with-z3-libdir=$(S2E_PREFIX)/lib                         \
                          --with-capstone-incdir=$(S2E_PREFIX)/include               \
-                         --with-capstone-libdir=$(S2E_PREFIX)/lib                   \
+                         --with-capstone-libdir=$(S2E_PREFIX)/lib64                   \
                          --with-libtcg-src=$(S2E_SRC)/libtcg                        \
                          --with-libcpu-src=$(S2E_SRC)/libcpu                        \
                          --with-libs2ecore-src=$(S2E_SRC)/libs2ecore                \
