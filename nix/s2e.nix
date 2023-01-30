@@ -100,6 +100,10 @@ let
     else:
       raise Exception("fake curl given", argv)
   '';
+  clang_and_llvm = pkgs.symlinkJoin {
+    name = "clang-and-llvm";
+    paths = [ pkgs.clang_14 pkgs.llvmPackages_14.llvm ];
+  };
   s2e-llvm = pkgs.stdenv.mkDerivation {
     name = "s2e-llvm";
     src = s2e-src;
@@ -133,22 +137,24 @@ let
       mkdir -p $out
       S2E_PREFIX=$out make -f ./Makefile install
     '';
-    buildInputs = [
+    buildInputs = let p = pkgs;
+    in [
       fake-curl
-      pkgs.binutils-unwrapped
-      pkgs.boost
-      pkgs.cmake
-      pkgs.glib.dev
-      pkgs.libelf
-      pkgs.libxcrypt
-      pkgs.pkg-config
-      pkgs.python3Minimal
-      pkgs.unzip
-      pkgs.zlib
+      p.binutils-unwrapped
+      p.boost
+      p.cmake
+      p.glib.dev
+      p.libbsd
+      p.libelf
+      p.libxcrypt
+      p.pkg-config
+      p.python3Minimal
+      p.unzip
+      p.zlib
+      p.libmemcached
     ];
-    LD_PRELOAD_PATH = lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
-    INJECTED_CLANG_CC = "${pkgs.clang_14}/bin/clang";
-    INJECTED_CLANG_CXX = "${pkgs.clang_14}/bin/clang++";
+    INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
+    INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
     INJECTED_SOCI_SRC = pkgs.fetchFromGitHub {
       owner = "SOCI";
       repo = "soci";

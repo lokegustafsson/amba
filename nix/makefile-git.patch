@@ -29,6 +29,15 @@ index a5abb25..8c839d4 100644
  	mkdir -p $(S2E_BUILD)/$(RAPIDJSON_BUILD_DIR)
 
  $(PROTOBUF_BUILD_DIR):
+@@ -683,7 +681,7 @@ LIBS2E_CONFIGURE_FLAGS = --with-cc=$(CLANG_CC)
+                          --with-z3-incdir=$(S2E_PREFIX)/include                     \
+                          --with-z3-libdir=$(S2E_PREFIX)/lib                         \
+                          --with-capstone-incdir=$(S2E_PREFIX)/include               \
+-                         --with-capstone-libdir=$(S2E_PREFIX)/lib                   \
++                         --with-capstone-libdir=$(S2E_PREFIX)/lib64                   \
+                          --with-libtcg-src=$(S2E_SRC)/libtcg                        \
+                          --with-libcpu-src=$(S2E_SRC)/libcpu                        \
+                          --with-libs2ecore-src=$(S2E_SRC)/libs2ecore                \
 @@ -758,7 +756,6 @@ stamps/libs2e-release-install: stamps/libs2e-release-make
  	install $(S2E_BUILD)/libs2e-release/i386-s2e_sp-softmmu/libs2e.so $(S2E_PREFIX)/share/libs2e/libs2e-i386-s2e_sp.so
 
