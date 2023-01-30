@@ -1,22 +1,6 @@
 { pkgs, lib }:
 let
-  # REQUIRES A LOT OF IMPURE NETWORK ACCESS
-  s2e-env = pkgs.python3Packages.buildPythonPackage {
-    name = "s2e-env";
-    src = pkgs.fetchFromGitHub {
-      owner = "s2e";
-      repo = "s2e-env";
-      rev = "98d68b694b18ed24760e67caa07885b57bba9ca8";
-      sha256 = "sha256-zV0Uk5iu3H7EWXpmkGrJz2gs2nlSgLPibg8n2i0Ho4I=";
-    };
-    #doCheck = false;
-    #propagatedBuildInputs = let p = pkgs;
-    #in [ p.gmpxx p.boost pyyaml plastex six ];
-    #nativeBuildInputs = let p = pkgs; in [ p.git p.automake p.autoconf ];
-    nativeBuildInputs = let p = pkgs; in [ p.git ];
-  };
-
-  # From [https://github.com/S2E/manifest/blob/master/default.xml]
+  # From (https://github.com/S2E/manifest/blob/master/default.xml)
   repositories = builtins.listToAttrs (builtins.map (set: {
     name = set.repo;
     value = pkgs.fetchFromGitHub ({ owner = "S2E"; } // set);
@@ -83,18 +67,24 @@ let
   };
   fake-curl = let
     content =
-      builtins.mapAttrs (url: sha256: pkgs.fetchurl { inherit url sha256; }) {
+      (builtins.mapAttrs (url: sha256: pkgs.fetchurl { inherit url sha256; }) {
         "https://www.lua.org/ftp/lua-5.3.4.tar.gz" =
           "sha256-9oGqUYIzvEB+I6zw9Yh8iE8XQ28ADUU7JJGp8RpSQAw=";
-        "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0//clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz" =
-          "sha256-YVgiFdr6+3tXbqMMwTa+ksh3uh8cMd2703LW1lYi/vU=";
         "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0//llvm-14.0.0.src.tar.xz" =
           "sha256-TfftULi3AXuQ3CIgL2tZ6QBqKalWgjjGryjfnASce5s=";
         "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0//clang-14.0.0.src.tar.xz" =
           "sha256-9df/uG7Vf5fXxHHVQsTlaF20t1+4F8TD8Ce/pJ5WG5s=";
         "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0//compiler-rt-14.0.0.src.tar.xz" =
           "sha256-J6t/z7IdEICTwL52ap7V/hjATk90+TYGlxGjEsiuA3c=";
-      };
+        "https://www.prevanders.net/libdwarf-20190110.tar.gz" =
+          "sha256-S6m363DlQLGg4WmisG7BR28hl7pb+iqMyScCAFxtMRw=";
+        "https://github.com/Z3Prover/z3/releases/download/z3-4.7.1//z3-4.7.1-x64-ubuntu-16.04.zip" =
+          "sha256-y1OgudLggk7yc7IghIPLy9rx2W3508YNNtC187ob37U=";
+        "https://github.com/aquynh/capstone/archive/4.0.2.tar.gz" =
+          "sha256-fIHXmAIvgedQfxpg1oF/Y6p25ImqTnBVJV8hoi9eUmo=";
+        "https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protobuf-cpp-3.7.1.tar.gz" =
+          "sha256-l/bNqgck1ajNM3XV9c9L0lPVrVKRFU9TPtDZSp1QHvM=";
+      });
     dict = lib.strings.concatStringsSep ","
       (lib.attrsets.mapAttrsToList (url: drv: "'${url}': '${drv}'") content);
   in pkgs.writeScriptBin "curl" ''
@@ -110,14 +100,72 @@ let
     else:
       raise Exception("fake curl given", argv)
   '';
+  s2e-llvm = pkgs.stdenv.mkDerivation {
+    name = "s2e-llvm";
+    src = s2e-src;
+    dontConfigure = true;
+    dontInstall = true;
+    patches = [ ./makefile-llvm.patch ];
+    buildPhase = ''
+      mkdir -p $out
+      mv * $out/
+      cd $out
+      S2E_PREFIX=$out make -f ./Makefile stamps/llvm-release-make
+    '';
+    buildInputs = [
+      fake-curl
+      pkgs.binutils-unwrapped
+      pkgs.cmake
+      pkgs.libxcrypt
+      pkgs.python3Minimal
+    ];
+    LD_PRELOAD_PATH = lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
+    INJECTED_CLANG_CC = "${pkgs.clang_14}/bin/clang";
+    INJECTED_CLANG_CXX = "${pkgs.clang_14}/bin/clang++";
+  };
   s2e-lib = pkgs.stdenv.mkDerivation {
     name = "s2e-lib";
     src = s2e-src;
     dontConfigure = true;
+    dontInstall = true;
+    patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
-      S2E_PREFIX=$out make -f $src/Makefile install
+      S2E_PREFIX=$out make -f ./Makefile install
     '';
-    buildInputs = [ fake-curl pkgs.cmake ];
+    buildInputs = [
+      fake-curl
+      pkgs.binutils-unwrapped
+      pkgs.boost
+      pkgs.cmake
+      pkgs.glib.dev
+      pkgs.libelf
+      pkgs.libxcrypt
+      pkgs.pkg-config
+      pkgs.python3Minimal
+      pkgs.unzip
+      pkgs.zlib
+    ];
+    LD_PRELOAD_PATH = lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
+    INJECTED_CLANG_CC = "${pkgs.clang_14}/bin/clang";
+    INJECTED_CLANG_CXX = "${pkgs.clang_14}/bin/clang++";
+    INJECTED_SOCI_SRC = pkgs.fetchFromGitHub {
+      owner = "SOCI";
+      repo = "soci";
+      rev = "438e3549594eb59d84b434c814647648e7c2f10a";
+      sha256 = "sha256-HsQyHhW8EP7rK/Pdi1TSXee9yKJsujoDE9QkVdU9WIk=";
+    };
+    INJECTED_RAPIDJSON_SRC = pkgs.fetchFromGitHub {
+      owner = "Tencent";
+      repo = "rapidjson";
+      rev = "fd3dc29a5c2852df569e1ea81dbde2c412ac5051";
+      sha256 = "sha256-r86AJJiJz2mv/2/NgtSObIVgGR3IljL3cbhYzAtrCzQ=";
+    };
+    INJECTED_GTEST_SRC = pkgs.fetchurl {
+      url =
+        "https://github.com/google/googletest/archive/release-1.11.0.tar.gz";
+      sha256 = "sha256-tIcL8SH/d5W6INILzdhie44Ijy0dqymaAxwQNO3ck9U=";
+    };
+    LLVM_BUILD = "${s2e-llvm}";
   };
-in { inherit s2e-src s2e-lib; }
+in { inherit s2e-src s2e-llvm s2e-lib; }
