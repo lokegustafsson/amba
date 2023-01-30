@@ -1,14 +1,45 @@
 
-\begin{landscape}
+% \begin{landscape}
 \begin{figure}[htp]
 \begin{center}
 
-\begin{ganttchart}{1}{16}
-    \gantttitle{LP 3}{8} \gantttitle{LP 4}{8} \\
-    \gantttitlelist{1,...,8}{1} \gantttitlelist{1,...,8}{1} \\
+\begin{ganttchart}[
+y unit chart=0.6cm,
+vgrid={*{8}{gray, dotted}, *1{black, dashed}},
+% expand chart=\textwidth,
+    ]{1}{18}
+    \gantttitle{LP 3}{9} \gantttitle{LP 4}{9} \\
+    \gantttitlelist{1,...,9}{1} \gantttitlelist{1,...,9}{1} \\
 
-    \ganttbar{Task 1}{1}{10} \\
-    \ganttbar{Task 2}{9}{14}
+    \ganttbar{Projektplan}{1}{4} \\
+
+    % Eget
+    \ganttbar{*S2E bygge}{2}{3} \\
+    \ganttbar{*S2E bindings/infrastruktur}{3}{5} \\
+    \ganttbar{*Fler analyskomponenter?}{5}{10} \\
+    \ganttbar{*Brainstorming demos}{5}{10} \\
+    \ganttbar{*Implementing demos}{5}{12} \\
+    \ganttbar{*GUI-ramverk}{6}{9} \\ \\
+    \ganttbar{*Slutprodukt}{8}{13} \\
+
+    \ganttbar{Halvtidsredovisning}{6}{8} \\
+
+    % TODO more things here from Canvas
+    % TODO include deadlines for drafts of report for feedback meetings with fackspråk.
+    \ganttbar{Film}{16}{17} \\
+    \ganttbar{Skriftlig individuell opposition}{18}{18} \\
+    \ganttbar{Slutrapport, förgranskning}{14}{14} \\
+    \ganttbar{Slutrapport}{16}{16} \\
+    \ganttbar{Slutgiltig rapport}{19}{19} \\
+
+    \ganttbar{Slutredovisning}{18}{18} \\
+
+    \ganttlink{elem1}{elem2}
+    \ganttlink{elem2}{elem5}
+    \ganttlink{elem4}{elem5}
+    \ganttlink{elem5}{elem7}
+    \ganttlink{elem6}{elem7}
+
 \end{ganttchart}
 
 % \begin{ganttchart}[y unit title=0.4cm,
@@ -89,6 +120,6 @@
 % \end{ganttchart}
 
 \end{center}
-\caption{Gantt Chart}
+\caption{Tidsplan}
 \end{figure}
-\end{landscape}
+% \end{landscape}
