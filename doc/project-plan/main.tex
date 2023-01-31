@@ -1,9 +1,19 @@
 \documentclass[12pt]{article}
-\usepackage[swedish]{babel}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[swedish]{babel}
 \usepackage{hyperref}
 \usepackage{pgfgantt} % Gantt charts
 \usepackage{pdflscape} % Landscape mode
+
+% TODO remove these packages for final report
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% "Debug" packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Comments in the margin, use \todo{} to add comment to margin.
+% Docs: http://tug.ctan.org/macros/latex/contrib/todonotes/todonotes.pdf
+\usepackage[colorinlistoftodos]{todonotes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  TITLE PAGE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{Projektrapport - Dekompilering med ungefärlig symbolisk exekvering}
 \author{
@@ -15,9 +25,15 @@
     Samuel Kyletoft\footnotemark[3]
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT STRUCTURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{document}
 \maketitle
 
+\newpage
+
+% TODO remove this for final report
+\listoftodos
 \newpage
 
 Vad repporten ska innehålla:
