@@ -9,3 +9,4 @@ main.pdf: \
   7_tidsplan.tex \
   refs.bib
 	tectonic main.tex
+	mv main.pdf bsc_thesis.pdf
