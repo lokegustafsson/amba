@@ -1,4 +1,4 @@
-main.pdf: \
+project_plan.pdf: \
   main.tex \
   1_bakgrund.tex \
   2_syfte.tex \
@@ -9,4 +9,4 @@ main.pdf: \
   7_tidsplan.tex \
   refs.bib
 	tectonic main.tex
-	mv main.pdf bsc_thesis.pdf
+	mv main.pdf project_plan.pdf
