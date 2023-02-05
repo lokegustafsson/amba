@@ -1,0 +1,51 @@
+% BAKGRUNDENS UPPGIFT?: Motivera behovet att visualiseringsverktyg för fuzzing
+% (fuzzing används slarvigt, inkludera tex concolic testing)
+
+Vi läser ofta källkod för att förstå program, men ibland är det gynnsamt att istället betrakta
+maskinkoden direkt. Detta kan vara för att
+\begin{itemize}
+  \item utesluta påverkan av kompilatorbuggar som ger oväntad maskinkod
+  \item se hur undefined behavior (UB) har utnyttjats av kompilatorn
+  \item källkoden inte är tillgänglig
+\end{itemize}
+
+Det finns en uppsjö av metoder vi kan använda för att analysera en exekverbar binär. Vi kan
+\begin{itemize}
+  \item TODO UTVECKLA
+  \item läsa disasm
+  \item läsa upplyft asm, pseudo-C
+  \item Testfall, förväntat svar?
+  \item fuzzing, generera testfall som orsakar crash/dåligt beteende
+  \item concolic testing, fuzzing där SMT solver genererar nya inputs
+  \item debugger, kika inuti och se exakt vad koden gör med viss input
+\end{itemize}
+
+För att förstå programmet allmänt behöver vår förståelse vara både \textit{korrekt} och
+\textit{abstrakt}, där vi med \textit{korrekt} menar att vi aldrig drar felaktiga slutsatser och med
+\textit{abstrakt} menar att vi kan resonera om programmet utan att tvingas betrakta en specifik
+konkret indata i taget.
+
+Att läsa disasm/pseudo-C kan ge oss en uppfattning av vad programmet gör, alltså en
+\textit{abstrakt} förståelse, men för att verifiera att vi inte resonerat fel behöver vi kunna testa
+hypoteser, vilket kräver att vi köra programet. Vi kan inte bilda en \textit{korrekt} förståelse
+genom att enbart läsa kod.
+
+Testfall, fuzzing och concolic testing kan köras helautomatiskt och är \textit{korrekta}. Men ofta
+är en tillräckligt täckande sökning av indatarummet omöjlig, och då kan den automatiska analysen ha
+missat ett kvalitativt annorlunda beteende. Dessutom ger en omfattande uppsättning indata-utdata-par
+inte användaren samma information som källkoden ger. Därmed är helautomatiska analysmetoder inte
+\textit{abstrakta}. Notera att det inte nödvändigtvis tyder på en brist i den automatiska analysen
+att ett kvalitativt annorlunda beteende missas, för det gömda beteendet skulle kunna vara en
+konsekvens av komplicerad kod, som till exempel ett hoppvilkor beroende på en kryptografisk hash av
+indatan. Men en analysmetod borde kunna peka ut var dess förståelse tar slut, snarare än att
+utelämna detta fullständigt.
+
+I en debugger kan användaren följa exekveringen för en viss indata utan att riskera att missförstå
+hur datan transformeras. Om användaren har ett oändligt tålamod kan de göra detta om och om igen för
+olika indata genererade med till exempel fuzzing. Varje genomstegning ger information om koden som
+behandlar indatan men också viss information om övrig kod -- till exempel kan ett svårtaget hopp
+indikera en plats för användaren att rikta sin uppmärksamhet mot. Detta ger en både \textit{korrekt}
+och \textit{abstrakt} förståelse, men med en orimlig manuell arbetsbörda för användaren.
+
+% Strax härefter säga att vi vill visualisera en helautomatisk concolic fuzzer i en interaktiv miljö
+% (vilket kan anses ekvivalent med att lägga till fuzzing inuti debugger, men på annat håll rent tekniskt)
