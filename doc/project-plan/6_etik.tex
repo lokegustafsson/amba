@@ -5,8 +5,11 @@
 % Denna modell är tänkt att användas så att gruppen går igenom frågorna en gång och svara på dem preliminärt.
 % När gruppen gjort detta kan de gå igenom frågorna igen för att fördjupa analysen.
 
-När vi skriver \emph{försvarare} syftar vi på de personer som har till uppgift att upprätthålla  ett datorsystems konfidentialitet; tillgänglighet; och integritet.
-Med \emph{attackerare} syftar vi på de personerna som har som mål att negativt påverka ett datorsystems konfidentialitet; tillgänglighet; eller integritet.
+Vi har här använt 
+
+Att \emph{komprementera} ett datorsystem innebär att man på något sätt skadar ett datorsystems konfidentialitet; tillgänglighet; eller integritet.
+Med \emph{försvarare} syftar vi på de personer som har till uppgift att förhindra att ett datorsystem blir komprementerat.
+Med \emph{attackerare} syftar vi på de personerna som har som mål att komprementera datorsystem.
 
 \subsection{Q1: Vilka etiska aspekter (värden) är relevanta för projektet?}
 
@@ -24,16 +27,16 @@ Alltså använder försvarare och attackerna verktygen på liknande sätt, men v
 
 Ett möjligt problem är att verktygen som utvecklas för försvararna blir såpass bra att attackerarna helt börjar använda dem för att utföra attacker.
 
-\subsection{Q2: Hur kann vi genomföra vårt projekt för att undvika etiska problem med vår metod?}
+\subsection{Q2: Hur kan vi genomföra vårt projekt för att undvika etiska problem med vår metod?}
 
-% Givet att gruppen ska genomföra ett visst projekt kan det finnas en rad olika sätt som det
-% kan utföras på där vissa genomföranden är mer problematiska än andra.
+% Givet att gruppen ska genomföra ett visst projekt kan det finnas en rad olika sätt som det kan utföras på där vissa genomföranden är mer problematiska än andra.
 % Ett exempel är ett projekt där studenternas frågeställningar kan undersökas med djurförsök.
-% Här bör diskuteras om djurförsöken kan ersättas med andra typer av försök, alternativt använda färre djur, göra
-% försöken mindre plågsamma och så vidare.
+% Här bör diskuteras om djurförsöken kan ersättas med andra typer av försök, alternativt använda färre djur, göra försöken mindre plågsamma och så vidare.
 % Ett annat exempel är ett projekt har som mål att utveckla en teknisk lösning för att minska människors ångestproblematik.
 % Studenterna har tänkt testa denna lösning på sina vänner och bekanta.
 % I ett sådant projekt är det viktigt att vara medveten om och diskutera att metoden kan medföra problem för deltagarnas välbefinnande.
+
+Vi ser inte några skador som man upkomma under utvecklandet av projektet.
 
 \subsection{Q3: Vad kan det finnas för nytta eller etiska problem med det sannolika resultatet (utfallet) av projektet som man bör ta hänsyn till?}
 
@@ -41,11 +44,19 @@ Ett möjligt problem är att verktygen som utvecklas för försvararna blir såp
 % Det är viktigt att beskriva nyttan i konkreta termer och också beskriva om projektets färdigställande riskerar att leda till skador på olika sätt.
 % Ett exempel är ett projekt som genomförs i en stadsdel med målet att öka tryggheten och delaktigheten för de boende genom en boendedriven innovation, där man bör fundera över vad som troligt händer efter det att projektet avslutas.
 
-\subsection{Q4. Vilka berörs av projektets genomförande eller av det sannolika resultatet (utfallet) av projektet? Hur berörs de? Finns det etiska problem kopplat till detta som man bör ta hänsyn till?}
+Ett potentiellt etiskt problem med projektets eventuella resultat är om vi testar att använda våra verktyg på ett program som har användare.
+Det kan medföra att vi då besitter kunskaper som kan utnyttjas för skada användare av programvaran.
+Vi kommer då att hantera det problemet genom att genomföra ett ansvarsfullt avslöjande (engelska: responsible disclousre).
+Det exakta processen som vi kommer att använda kommer att beslutas om situationen uppkommer, men Googles process är välkänd. https://about.google/appsecurity/
 
+\subsection{Q4. Vilka berörs av projektets genomförande eller av det sannolika resultatet (utfallet) av projektet? Hur berörs de? Finns det etiska problem kopplat till detta som man bör ta hänsyn till?}
 % Vid en etisk analys av ett projekt är det av yttersta vikt att fråga sig vilka som berörs av projektet samt på vilket sätt de påverkas.
 % Till exempel, om ett projekt syftar till att genmodifiera grödor så att de blir mer resistenta mot bekämpningsmedel så kan en effekt av detta bli när dessa grödor kommer ut på marknaden att de bönder som arbetar med dessa grödor i fattigare delar av världen tar stor (ekonomisk och/eller fysisk) skada av detta.
 % Eftersom skador på redan utsatta grupper kan bli extra allvarliga från ett etiskt perspektiv, bör denna sorts överväganden få stor vikt.
+
+Attackerare som får ett nytt verktyg att använda för att attackera
+Försvarare som får ett nytt verktyg att använda för att försvara system
+Användarei kan drabbas om attackerarna lyckas använda verktyget för att till en mindre kostnad hitta en sårbarhet för att sedan kompromitera systemet.
 
 \subsection{Q5. Vad bör vi göra om vi inte hittat några relevanta etiska aspekter (värden) rörande projektet?}
 
