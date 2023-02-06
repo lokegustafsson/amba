@@ -23,6 +23,8 @@
 - Monday Loke: More work on S2E building
 - Monday Enaya: GANTT chart template
 - Monday all: Group meeting. Worked on GANTT chart.
+- Thurs all: Group meeting. Discussed report + ethics.
+- All: Struggled with writing.
 
 ## LP3LV4 2023-02-06 to 2023-02-12
 
