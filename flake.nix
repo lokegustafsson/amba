@@ -44,7 +44,13 @@
               p.rust-bin.nightly.latest.clippy
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.default
+              p.llvmPackages_14.libclang.dev
+              p.pkgconfig
+              p.stdenv
             ] ++ builtins.attrValues rust.packages;
+            LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
+            LIBCXX_PATH = "${pkgs.llvmPackages_14.libcxx.dev}";
+            GLIBC_PATH = "${pkgs.glibc.dev}";
           };
           doc = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [ tectonic gnumake ];
