@@ -12,6 +12,10 @@ fn main() -> miette::Result<()> {
 	let tcg = PathBuf::from("../../s2e/libtcg/include");
 	let vmi = PathBuf::from("../../s2e/libvmi/include");
 
+	// There are 5 files with the same name in s2e. 3 x86 and 2 x86_64
+	// versions. I'm using the first x86_64 version.
+	let config_host = PathBuf::from("../../s2e/tools/lib/X8664BitcodeLibrary");
+
 	let glibc = PathBuf::from(env!("GLIBC_PATH"));
 	let std_cxx = PathBuf::from(env!("LIBCXX_PATH"));
 	let clang_libs = PathBuf::from(env!("CLANGLIBS_PATH"));
@@ -31,6 +35,9 @@ fn main() -> miette::Result<()> {
 			&s2eplugins,
 			&tcg,
 			&vmi,
+
+			&config_host,
+
 			&std_cxx,
 			&glibc,
 			&clang_libs,
