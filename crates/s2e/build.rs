@@ -41,5 +41,6 @@ fn main() -> miette::Result<()> {
 	.build()?;
 	b.flag_if_supported("-std=c++17").compile("autocxx-demo");
 	println!("cargo:rerun-if-changed=src/lib.rs");
+
 	Ok(())
 }
