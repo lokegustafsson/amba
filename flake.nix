@@ -49,8 +49,11 @@
               p.stdenv
             ] ++ builtins.attrValues rust.packages;
             LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
-            LIBCXX_PATH = "${pkgs.llvmPackages_14.libcxx.dev}";
-            GLIBC_PATH = "${pkgs.glibc.dev}";
+            CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
+            LIBCXX_PATH = "${pkgs.llvmPackages_14.libcxx.dev}/include/c++/v1";
+            GLIBC_PATH = "${pkgs.glibc.dev}/include";
+            BOOST_PATH = "${pkgs.boost.dev}/include";
+            LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
           };
           doc = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [ tectonic gnumake ];
