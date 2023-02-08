@@ -27,6 +27,8 @@ fn main() -> miette::Result<()> {
 
 	autocxx_build::Builder::new(
 		"src/lib.rs",
+
+		// Breaks on reordering!!
 		&[
 			&klee,
 			&coroutine,
@@ -39,12 +41,12 @@ fn main() -> miette::Result<()> {
 			&tcg,
 			&vmi,
 			&config_host,
-			&glibc,
 			&gcc_libs,
 			&gcc_libs_l,
 			&clang_libs,
 			&boost_libs,
 			&llvm_libs,
+			&glibc,
 		],
 	)
 	.extra_clang_args(&[
@@ -52,7 +54,6 @@ fn main() -> miette::Result<()> {
 		"-DTARGET_PAGE_BITS=12",
 		"-DSE_RAM_OBJECT_BITS=12",
 		&format!("-DSE_RAM_OBJECT_MASK={}", !11),
-		&format!("-I {}/stdlib.h", glibc.display()),
 	])
 	.build()?;
 
