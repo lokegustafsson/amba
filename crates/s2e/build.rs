@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 fn main() -> miette::Result<()> {
+	// s2e subprojects
 	let klee = PathBuf::from("../../s2e/klee/include");
 	let coroutine = PathBuf::from("../../s2e/libcoroutine/include");
 	let cpu = PathBuf::from("../../s2e/libcpu/include");
@@ -16,13 +17,15 @@ fn main() -> miette::Result<()> {
 	// versions. I'm using the first x86_64 version.
 	let config_host = PathBuf::from("../../s2e/tools/lib/X8664BitcodeLibrary");
 
+	// Dependencies
 	let glibc = PathBuf::from(env!("GLIBC_PATH"));
-	let std_cxx = PathBuf::from(env!("LIBCXX_PATH"));
+	let gcc_libs = PathBuf::from(env!("GCCLIBS_PATH"));
+	let gcc_libs_l = PathBuf::from(env!("GCCLIBS_PATH_L"));
 	let clang_libs = PathBuf::from(env!("CLANGLIBS_PATH"));
 	let boost_libs = PathBuf::from(env!("BOOST_PATH"));
 	let llvm_libs = PathBuf::from(env!("LLVM_PATH"));
 
-	let mut b = autocxx_build::Builder::new(
+	autocxx_build::Builder::new(
 		"src/lib.rs",
 		&[
 			&klee,
@@ -35,21 +38,32 @@ fn main() -> miette::Result<()> {
 			&s2eplugins,
 			&tcg,
 			&vmi,
-
 			&config_host,
-
-			&std_cxx,
 			&glibc,
+			&gcc_libs,
+			&gcc_libs_l,
 			&clang_libs,
 			&boost_libs,
 			&llvm_libs,
 		],
 	)
+	.extra_clang_args(&[
+		"-DBOOST_BIND_GLOBAL_PLACEHOLDERS=1",
+		"-DTARGET_PAGE_BITS=12",
+		"-DSE_RAM_OBJECT_BITS=12",
+		&format!("-DSE_RAM_OBJECT_MASK={}", !11),
+		&format!("-I {}/stdlib.h", glibc.display()),
+	])
 	.build()?;
-	b
-		.flag_if_supported("-std=c++17")
-		.flag_if_supported("-DBOOST_BIND_GLOBAL_PLACEHOLDERS=1")
-		.compile("autocxx-demo");
+
+	// b
+	// .flag_if_supported("-std=c++17")
+	// .define("TARGET_PAGE_BITS", "12")
+	// .define("SE_RAM_OBJECT_BITS", "12")
+	// .define("BOOST_BIND_GLOBAL_PLACEHOLDERS", "1")
+	// .compiler("clang++")
+	// .compile("autocxx-demo");
+
 	println!("cargo:rerun-if-changed=src/lib.rs");
 
 	Ok(())

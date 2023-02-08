@@ -48,11 +48,15 @@
               p.pkgconfig
               p.stdenv
             ] ++ builtins.attrValues rust.packages;
+
+            # For autocxx to run
             LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
+
+            # Required to parse s2e headers
             CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
-            LIBCXX_PATH = "${pkgs.llvmPackages_14.libcxx.dev}/include/c++/v1";
+            GCCLIBS_PATH = "${pkgs.gcc-unwrapped}/include/c++/11.3.0";
+            GCCLIBS_PATH_L = "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
             GLIBC_PATH = "${pkgs.glibc.dev}/include";
-            BOOST_BIND_GLOBAL_PLACEHOLDERS = 1;
             BOOST_PATH = "${pkgs.boost.dev}/include";
             LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
           };
