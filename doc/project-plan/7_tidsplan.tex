@@ -1,3 +1,5 @@
+Figur \ref{fig:tidsplan} visar en preliminär tidsplan för projektet för varje
+läsvecka.
 
 % \begin{landscape}
 \begin{figure}[htp]
@@ -31,39 +33,49 @@
 % expand chart=\textwidth,
 
 \begin{ganttchart}[
-        y unit chart=0.7cm,
+        expand chart=\textwidth,
+        y unit chart=0.9cm,
+        foobar top shift=.3,
+        foobar height=.7,
         vgrid={*{8}{gray, dotted}, *1{black, dashed}},
         title/.style={fill=teal!60!gray, draw=none},
         title label font=\color{white}\bfseries,
         title height=1,
         progress=today,
         progress label text=\relax,
-        today=3,
+        today=4,
+        milestone inline label node/.append style={rotate=30},
+        milestone inline label node/.append style={left=2mm},
+        milestone top shift=.45,
+        milestone right shift=-.2,
+        milestone left shift=0.3,
+        foobar label font=\footnotesize,
     ]{1}{19}
     \gantttitle{LP 3}{9}        \gantttitle{LP 4}{9}        \gantttitle{}{1}\\
     \gantttitlelist{1,...,9}{1} \gantttitlelist{1,...,9}{1} \gantttitle{}{1} \\
 
-    \ganttfoobar{Projektplan}{1}{4} \\
+    \ganttfoobar[inline]{Projektplan}{1}{4} \\
 
     % Eget
-    \ganttfoobar{*S2E bygge}{2}{3} \\
-    \ganttfoobar{*S2E bindings/infrastruktur}{3}{5} \\
-    \ganttfoobar{*Fler analyskomponenter?}{5}{10} \\
-    \ganttfoobar{*Brainstorming demos}{5}{10} \\
-    \ganttfoobar{*Implementing demos}{5}{12} \\
-    \ganttfoobar{*GUI-ramverk}{6}{9} \\ \\
-    \ganttfoobar{*Slutprodukt}{8}{13} \\
+    \ganttfoobar[inline]{*S2E bygge}{2}{4} \\
+    \ganttfoobar[inline]{*S2E infrastruktur}{3}{5} \\
+    \ganttfoobar[inline]{*Analyskomponenter?}{5}{10} \\
+    \ganttfoobar[inline]{*Brainstorming demos}{5}{10} \\
+    \ganttfoobar[inline]{*Implementing demos}{5}{12} \\
+    \ganttfoobar[inline]{*GUI-ramverk}{6}{9} \\ \\
+    \ganttfoobar[inline]{*Slutprodukt}{8}{13} \\
 
-    \ganttfoobar{Halvtidsredovisning}{6}{8} \\
+    \ganttfoobar[inline]{Halvtidsredovisning}{6}{8} \\
 
     % TODO include deadlines for drafts of report for feedback meetings with fackspråk.
-    \ganttfoobar{Film}{16}{17} \\
-    \ganttfoobar{Skriftlig individuell opposition}{18}{18} \\
-    \ganttfoobar{Slutrapport, förgranskning}{14}{14} \\
-    \ganttfoobar{Slutrapport}{16}{16} \\
-    \ganttfoobar{Slutgiltig rapport}{19}{19} \\
+    \ganttfoobar[inline]{Film}{16}{17} \\
+    \ganttfoobar[inline]{Skriftlig opposition}{17}{18} \\
+    \ganttfoobar[inline]{Slutredovisning}{17}{18} \\
 
-    \ganttfoobar{Slutredovisning}{18}{18} \\
+    \ganttfoobar[inline, foobar inline label node/.append style={left=2mm}]{Projektrapport}{5}{19}
+    \ganttmilestone[inline]{Förgranskning}{14}{14}
+    \ganttmilestone[inline]{Slutrapport}{16}{16}
+    \ganttmilestone[inline]{Slutgiltig inlämning}{19}{19} \\
 
     \ganttlink{elem1}{elem2}
     \ganttlink{elem2}{elem5}
@@ -152,5 +164,6 @@
 
 \end{center}
 \caption{Tidsplan}
+\label{fig:tidsplan}
 \end{figure}
 % \end{landscape}
