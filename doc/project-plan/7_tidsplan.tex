@@ -5,32 +5,25 @@ läsvecka.
 \begin{figure}[htp]
 \begin{center}
 
-\definecolor{foobarblue}{RGB}{0,153,255}
-\definecolor{foobaryellow}{RGB}{234,187,100}
 \newganttchartelement{foobar}{
     foobar/.style={
         shape=rectangle,
         inner sep=0pt,
-        draw=foobarblue!50!black,
+        draw=gray!70!white,
+        % draw=black,
         very thick,
-        top color=foobarblue!10,
-        bottom color=foobarblue!70,
+        top color=gray!40,
+        bottom color=gray!50,
         rounded corners=2pt
     },
     foobar incomplete/.style={
         /pgfgantt/foobar,
-        draw=foobaryellow,
-        bottom color=foobaryellow!50
+        draw=gray!70!white,
+        top color=gray!30,
+        bottom color=gray!10
     },
     foobar label font=\slshape,
 }
-
-% \todo[inline]{Add more things to Tidsplan from Canvas}
-% progress=today,
-% progress label text=\relax,
-% today=3,
-% inline,
-% expand chart=\textwidth,
 
 \begin{ganttchart}[
         expand chart=\textwidth,
@@ -38,7 +31,7 @@ läsvecka.
         foobar top shift=.3,
         foobar height=.7,
         vgrid={*{8}{gray, dotted}, *1{black, dashed}},
-        title/.style={fill=teal!60!gray, draw=none},
+        title/.style={fill=gray, draw=none},
         title label font=\color{white}\bfseries,
         title height=1,
         progress=today,
@@ -84,84 +77,6 @@ läsvecka.
     \ganttlink{elem6}{elem7}
 
 \end{ganttchart}
-
-% \begin{ganttchart}[y unit title=0.4cm,
-% y unit chart=0.5cm,
-% vgrid,hgrid, 
-% title label anchor/.style={below=-1.6ex},
-% title left shift=.05,
-% title right shift=-.05,
-% title height=1,
-% bar/.style={fill=gray!50},
-% incomplete/.style={fill=white},
-% progress label text={},
-% bar height=0.7,
-% group right shift=0,
-% group top shift=.6,
-% group height=.3,
-% group peaks={}{}{.2}]{24}
-%
-% % labels
-% \gantttitle{Week}{24} \\
-% \gantttitle{Monday}{4} 
-% \gantttitle{Tuesday}{4} 
-% \gantttitle{Wednesday}{4} 
-% \gantttitle{Thursday}{4} 
-% \gantttitle{Friday}{4} 
-% \gantttitle{Saturday}{4} \\
-% %tasks
-% \ganttbar{first task}{1}{2} \\
-% \ganttbar{task 2}{3}{8} \\
-% \ganttbar{task 3}{9}{10} \\
-% \ganttbar{task 4}{11}{15} \\
-% \ganttbar[progress=33]{task 5}{20}{22} \\
-% \ganttbar{task 6}{18}{19} \\
-% \ganttbar{task 7}{16}{18} \\
-% \ganttbar[progress=0]{task 8}{21}{24}
-%
-% %relations 
-% \ganttlink{elem0}{elem1} 
-% \ganttlink{elem0}{elem3} 
-% \ganttlink{elem1}{elem2} 
-% \ganttlink{elem3}{elem4} 
-% \ganttlink{elem1}{elem5} 
-% \ganttlink{elem3}{elem5} 
-% \ganttlink{elem2}{elem6} 
-% \ganttlink{elem3}{elem6} 
-% \ganttlink{elem5}{elem7} 
-% \end{ganttchart}
-
-% \begin{ganttchart}[
-%     % expand chart=\textwidth,
-%     y unit chart=1cm,
-%     vgrid={*{11}{gray, dotted}, *1{black, dashed}},
-%     ]{1}{12}
-% \gantttitle{2011}{6} \gantttitle{2012}{6} \\
-% \gantttitlelist{1,...,6}{2} \\
-% \ganttgroup{Group 1}{1}{7} \\
-% \ganttbar{Task 1}{1}{2} \\
-% \ganttlinkedbar{Task 2}{3}{7} \ganttnewline
-% \ganttmilestone{Milestone}{7} \ganttnewline
-% \ganttbar{Final Task}{8}{12}
-% \ganttlink{elem2}{elem3}
-% \ganttlink{elem3}{elem4}
-% \end{ganttchart}
-
-% \begin{ganttchart}[
-%    vgrid={*{11}{gray, dotted}, *1{black, dashed}},
-%    bar label node/.append style={
-%      align=left,
-%      % text width=width("Aim 2. Software verificationx")
-%      text width=110
-%     }
-%    ]{1}{24}
-% \gantttitle{Year 1}{12} \gantttitle{Year 2}{12} \\
-% \ganttbar{Migration}{1}{8} \\
-% \ganttbar{Software verification}{6}{12} \\
-% \ganttbar{Hardware portability}{12}{18} \\
-% \ganttbar{Documentation}{8}{24}
-% \end{ganttchart}
-
 \end{center}
 \caption{Tidsplan}
 \label{fig:tidsplan}
