@@ -18,11 +18,19 @@ use crate::ffi::{s2e::{S2E, ExecutionSignal, S2EExecutionState, Plugin}, Transla
 #[is_subclass(superclass("s2e::Plugin"))]
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Example {
+	// static const char s_pluginDeps[][64];
+	// static const PluginInfo s_pluginInfo;
 	m_traceBlockTranslation: bool,
 	m_traceBlockExecution: bool,
 }
 
 impl Example {
+	// virtual const PluginInfo *getPluginInfo() const {
+		// return &s_pluginInfo;
+	// }
+	// static const PluginInfo *getPluginInfoStatic() {
+		// return &s_pluginInfo;
+	// }
 	unsafe fn new(s2e: *mut S2E) -> Self {
 		todo!()
 	}
