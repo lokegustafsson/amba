@@ -1,5 +1,3 @@
-diff --git a/s2e/Makefile b/s2e/Makefile
-index a5abb25..8c839d4 100644
 --- a/s2e/Makefile
 +++ b/s2e/Makefile
 @@ -83,19 +83,8 @@ LLVM_SRC=llvm-$(LLVM_VERSION).src.tar.xz
