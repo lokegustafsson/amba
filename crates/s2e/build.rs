@@ -27,7 +27,6 @@ fn main() -> miette::Result<()> {
 
 	autocxx_build::Builder::new(
 		"src/lib.rs",
-
 		// Breaks on reordering!!
 		&[
 			&klee,
@@ -56,14 +55,6 @@ fn main() -> miette::Result<()> {
 		&format!("-DSE_RAM_OBJECT_MASK={}", !11),
 	])
 	.build()?;
-
-	// b
-	// .flag_if_supported("-std=c++17")
-	// .define("TARGET_PAGE_BITS", "12")
-	// .define("SE_RAM_OBJECT_BITS", "12")
-	// .define("BOOST_BIND_GLOBAL_PLACEHOLDERS", "1")
-	// .compiler("clang++")
-	// .compile("autocxx-demo");
 
 	println!("cargo:rerun-if-changed=src/lib.rs");
 
