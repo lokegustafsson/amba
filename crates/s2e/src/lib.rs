@@ -13,7 +13,10 @@ autocxx::include_cpp! {
 	generate!("s2e::S2EExecutionState")
 }
 
-use crate::ffi::{s2e::{S2E, ExecutionSignal, S2EExecutionState, Plugin}, TranslationBlock};
+use crate::ffi::{
+	s2e::{ExecutionSignal, Plugin, S2EExecutionState, S2E},
+	TranslationBlock,
+};
 
 #[is_subclass(superclass("s2e::Plugin"))]
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -35,7 +38,9 @@ impl Example {
 		todo!()
 	}
 
-	unsafe fn initialize(&mut self) { todo!() }
+	unsafe fn initialize(&mut self) {
+		todo!()
+	}
 
 	unsafe fn slotTranslateBlockStart(
 		&mut self,
@@ -43,10 +48,13 @@ impl Example {
 		state: *mut S2EExecutionState,
 		tb: *mut TranslationBlock,
 		pc: u64,
-	)  { todo!()
+	) {
+		todo!()
 	}
 
-	unsafe fn slotExecuteBlockStart(&mut self, state: *mut S2EExecutionState, pc: u64) { todo!() }
+	unsafe fn slotExecuteBlockStart(&mut self, state: *mut S2EExecutionState, pc: u64) {
+		todo!()
+	}
 }
 
 /*
