@@ -21,7 +21,6 @@
         pkgs = import nixpkgs {
           inherit system;
           overlays = [ cargo2nix.overlays.default ];
-          config.allowUnfree = false;
         };
         lib = nixpkgs.lib;
         rust = import ./nix/rust.nix {
@@ -35,7 +34,7 @@
           extra-overrides = { mkNativeDep, mkEnvDep, p }:
             [ (mkNativeDep "decompiler" [ ]) ];
         };
-        s2e = import ./nix/s2e.nix { inherit pkgs lib; };
+        s2e = import ./nix/s2e.nix { inherit lib pkgs; };
       in {
         devShells = {
           default = rust.rustPkgs.workspaceShell {
@@ -48,10 +47,7 @@
             ] ++ builtins.attrValues rust.packages;
           };
           doc = pkgs.mkShell {
-            nativeBuildInputs = with pkgs; [
-              tectonic
-              gnumake
-            ];
+            nativeBuildInputs = with pkgs; [ tectonic gnumake ];
           };
         };
 

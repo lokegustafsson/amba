@@ -41,7 +41,7 @@ let
       sha256 = "sha256-803cDp4gw9Lw8gQmfUwm4NMpG5NZGhiPrxRm7RJZinw=";
     }
   ]);
-  s2e-src = pkgs.stdenv.mkDerivation {
+  s2e-src = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-src";
     inherit (repositories) scripts s2e;
 
@@ -127,7 +127,7 @@ let
     INJECTED_CLANG_CC = "${pkgs.clang_14}/bin/clang";
     INJECTED_CLANG_CXX = "${pkgs.clang_14}/bin/clang++";
   };
-  s2e-lib = pkgs.stdenv.mkDerivation {
+  s2e-lib = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-lib";
     src = s2e-src;
     dontConfigure = true;
@@ -140,7 +140,7 @@ let
     buildInputs = let p = pkgs;
     in [
       fake-curl
-      p.binutils-unwrapped
+      p.gcc
       p.boost
       p.cmake
       p.glib.dev
