@@ -1,17 +1,23 @@
-Projektet avgränsas i och med att existerande verktyg kommer användas. Att 
-inte bygga en symbolic execution engine från grunden, och istället använda 
-S2E innebär att arbetet avgränsas till att skapa plugins åt den existerande 
-motorn. 
 
-Avgränsningen medför att mycket arbete försvinner och att fokus flyttas 
-ifrån motorns tekniska detaljer till att utveckla en användbar produkt som 
-bygger ut dess redan existerande funktionalitet.
+\subsection{Introduktion} 
 
-Belsutet innebär även begränsningar när det kommer till applikationens 
-utformning, som blir bunden till verktygens tekniska begränsningar. 
-Exempelvis försvinner möjligheten att förbättra state-merging. 
+Projektet avgränsas i och med att existerande verktyg (S2E) kommer användas 
+istället för att bygga en symbolic execution engine från grunden. 
+Att använda S2E innebär att arbetet avgränsas till att skapa plugins som 
+bygger ut motorn. Varken emulator eller motor ska byggas och de uppgifter 
+som ingår i att skapa en dekompilator exkluderas. 
 
-I och med avgränsningen blir det möjligt att lägga tid på att skapa en 
-användbar slutprodukt.
+\subsection{Begränsningar} 
 
+Belsutet innebär att applikationens utformning blir bunden till 
+verktygens tekniska begränsningar. Exempelvis försvinner möjligheten att 
+förbättra state-merging. 
 
+\subsection{Inriktning} 
+
+Avgränsningen medför att fokus flyttas ifrån motorns tekniska detaljer 
+till att utveckla en användbar slutprodukt som bygger ut S2E's redan 
+existerande funktionalitet med ett grafiskt användargränsnitt 
+och möjlighet att analysera och interaktivt besluta om det dekompilerade 
+programmets kontrollflöde under exkevering.
+ 
