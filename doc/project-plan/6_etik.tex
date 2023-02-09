@@ -5,13 +5,11 @@
 % Denna modell är tänkt att användas så att gruppen går igenom frågorna en gång och svara på dem preliminärt.
 % När gruppen gjort detta kan de gå igenom frågorna igen för att fördjupa analysen.
 
-Vi har här använt 
+För att bedöma om vi behöver ta hänsyn till samhälliga eller etiska aspekter när vi formulerar vår problemställning har vi använt beslutsmodellen som är beskriven i \cite{föreskrifter}.
+% Förutsätta att läsaren har känner till beslutsmodellen? Vet inte om projektplaneringen ska kunna läsas av utomstående.
+Vi har besvarat de fyra första frågeställningarna som modellen specificerar, och valt att inte besvara den femte frågeställningen då vi har kunnat hitta etiska aspekter relevanta för vår problemställning.
 
-Att \emph{komprementera} ett datorsystem innebär att man på något sätt skadar ett datorsystems konfidentialitet; tillgänglighet; eller integritet.
-Med \emph{försvarare} syftar vi på de personer som har till uppgift att förhindra att ett datorsystem blir komprementerat.
-Med \emph{attackerare} syftar vi på de personerna som har som mål att komprementera datorsystem.
-
-\subsection{Q1: Vilka etiska aspekter (värden) är relevanta för projektet?}
+%\subsection{Q1: Vilka etiska aspekter (värden) är relevanta för projektet?}
 
 % Det finns några få centrala etiska aspekter vilka alltid är viktiga att undersöka om de är relevanta – och om så är fallet – uppfylla dessa.
 % Dessa är att vi inte ska göra skada, vi ska göra nytta, och vi ska inte inskränka på andras autonomi och integritet.
@@ -19,15 +17,14 @@ Med \emph{attackerare} syftar vi på de personerna som har som mål att kompreme
 % Till exempel kan det vara så att ett projekt inte har någon specifik nytta för samhället men att det ändå finns goda skäl att genomföra det eftersom det skulle tillföra något intressant och relevant till grundforskningen.
 % Beroende på projektet kan det finnas andra relevanta aspekter att ta hänsyn till.
 
-En stor del av teknikutveckling av verktyg som har som mål att hjälpa försvarare med att hitta säkerhetsbrister i deras programvarar kan även användas av attackerare.
+En viktig etisk aspekt att ha i beaktande när man utvecklar verktyg som har som mål att underlätta sökandet efter säkerhetsbrister i programvaror är hur stor nytta verktyget är för \emph{försvarare} kontra \emph{attackerare}.
+Med försvarare syftar vi på de personer som har till uppgift att förhindra att ett datorsystem blir \emph{komprementerat}, medan attackerare har som mål att komprementera datorsystem.
+Att komprementera ett datorsystem innebär att man på något sätt skadar ett datorsystems konfidentialitet; tillgänglighet; eller integritet.
+
+Den typen av verktyg som vi planerar att utveckla under projektet kommer att anändas av både försvarare och attackerare på samma sätt, det som skiljer dem åt är vad de gör med den informationen.
 Medan försvararna använder verktygen för att hitta brister för att de ska veta vilka åtgärder de ska vidta för att höja säkerheten, använder attackerarna verktygen för att hitta brister som de sedan kan uttnytja för att påverka datorsystem negativt.
-Alltså använder försvarare och attackerna verktygen på liknande sätt, men vad de sedan gör med den informationen skiljer dem åt.
 
-- Ökad förståelse för hur program exekverar. Det gör det möjligt att hitta buggar i program, eller optimera dem.
-
-Ett möjligt problem är att verktygen som utvecklas för försvararna blir såpass bra att attackerarna helt börjar använda dem för att utföra attacker.
-
-\subsection{Q2: Hur kan vi genomföra vårt projekt för att undvika etiska problem med vår metod?}
+%\subsection{Q2: Hur kan vi genomföra vårt projekt för att undvika etiska problem med vår metod?}
 
 % Givet att gruppen ska genomföra ett visst projekt kan det finnas en rad olika sätt som det kan utföras på där vissa genomföranden är mer problematiska än andra.
 % Ett exempel är ett projekt där studenternas frågeställningar kan undersökas med djurförsök.
@@ -38,7 +35,7 @@ Ett möjligt problem är att verktygen som utvecklas för försvararna blir såp
 
 Vi ser inte några skador som man upkomma under utvecklandet av projektet.
 
-\subsection{Q3: Vad kan det finnas för nytta eller etiska problem med det sannolika resultatet (utfallet) av projektet som man bör ta hänsyn till?}
+%\subsection{Q3: Vad kan det finnas för nytta eller etiska problem med det sannolika resultatet (utfallet) av projektet som man bör ta hänsyn till?}
 
 % När projektet är genomfört kan det bidra med nytta till både forskning och samhälle.
 % Det är viktigt att beskriva nyttan i konkreta termer och också beskriva om projektets färdigställande riskerar att leda till skador på olika sätt.
@@ -49,22 +46,11 @@ Det kan medföra att vi då besitter kunskaper som kan utnyttjas för skada anv�
 Vi kommer då att hantera det problemet genom att genomföra ett ansvarsfullt avslöjande (engelska: responsible disclousre).
 Det exakta processen som vi kommer att använda kommer att beslutas om situationen uppkommer, men Googles process är välkänd. https://about.google/appsecurity/
 
-\subsection{Q4. Vilka berörs av projektets genomförande eller av det sannolika resultatet (utfallet) av projektet? Hur berörs de? Finns det etiska problem kopplat till detta som man bör ta hänsyn till?}
+%\subsection{Q4. Vilka berörs av projektets genomförande eller av det sannolika resultatet (utfallet) av projektet? Hur berörs de? Finns det etiska problem kopplat till detta som man bör ta hänsyn till?}
 % Vid en etisk analys av ett projekt är det av yttersta vikt att fråga sig vilka som berörs av projektet samt på vilket sätt de påverkas.
 % Till exempel, om ett projekt syftar till att genmodifiera grödor så att de blir mer resistenta mot bekämpningsmedel så kan en effekt av detta bli när dessa grödor kommer ut på marknaden att de bönder som arbetar med dessa grödor i fattigare delar av världen tar stor (ekonomisk och/eller fysisk) skada av detta.
 % Eftersom skador på redan utsatta grupper kan bli extra allvarliga från ett etiskt perspektiv, bör denna sorts överväganden få stor vikt.
 
-Attackerare som får ett nytt verktyg att använda för att attackera
-Försvarare som får ett nytt verktyg att använda för att försvara system
-Användarei kan drabbas om attackerarna lyckas använda verktyget för att till en mindre kostnad hitta en sårbarhet för att sedan kompromitera systemet.
-
-\subsection{Q5. Vad bör vi göra om vi inte hittat några relevanta etiska aspekter (värden) rörande projektet?}
-
-% Om studentgruppen har gått igenom steg 1-4 ovan och analyserat sitt projekt och projektets möjliga effekter utan att hitta några relevanta etiska eller samhälleliga aspekter byter gruppen analysnivå (systemnivå).
-% Beroende på vilken nivå projektet analyseras på kan den utom- och inomvetenskapliga relevansen bedömas på olika sätt.
-% Till exempel, gruppens projekt är att i slutändan bidra med att tillsätta en extra skalärboson till standardmodellen.
-% Gruppens projekt i sig aktiverar antagligen inte några relevanta etiska aspekter i sitt genomförande eller i sitt utfall.
-% Ändå går det att tänka sig att resultaten i det större forskningssammanhanget, som studenternas projekt bidrar till, kan ha en rad olika positiva och negativa implikationer för både forskning och samhälle.
-% Ett annat exempel kan vara ett projekt med syfte att bidra till effektivare bränsleanvändning av lastbilar som kan leda till mindre utsläpp och billigare drift för det enskilda fordonet, där en högre systemnivå kan vara dieselfordons roll i ett transportsystem där negativa konsekvenser kan vara ökade alternativkostnader för utvecklandet av motorer som inte drivs av fossila bränslen.
-% När studenterna bytt analysnivå, går de igenom steg 1 till 4 igen.
-
+Personerna som berörs av projektet är främst attackerare och försvarare som får ännu ett verktyg för att genomföra dynamiska analyser av binärer.
+Vår bedömning är att verktyget inte kommer vara tillräkligt bra för att ha en praktiskt påverkan på försvararnas och attackerarnas arbetsprocesser.
+Användarna av programvaror som analyseras kan påverkas om verktyget blir användbart för försvarare och attackerare, dels att fel i programvaran kan åtgärdas; men även att de kan utnyttjas av attackerare för att komprimentera användarna.
