@@ -19,6 +19,25 @@
 % från litteraturen. En litteraturgenomgång bör därför genomföras tidigt
 % i processen.
 
-Symbolic execution engine
-S2E
-state-merging
+För att uppnå projektets syfte måste vi dela upp problemet i mindre
+delar. Första delen är elf-tolkning och dekompilering. Sedan symbolisk
+exekvering av det tolkade programmet.
+
+När vi väl har ett tolkat och körbart program kan vi sedan spåra
+exekveringen och skapa en kontrollflödesgraf som kan användas till att
+återskapa större strukturer som for- eller while-loopar, if-satser
+eller virtuella funktionsanrop.
+
+Grafen kan också visualiseras för att hjälpa användaren förstå
+programmet. Alternativt kan hela programmet återskapas som C-kod.
+
+För analys av programmet är det också hjälpsamt att kunna stega genom
+exekveringen steg för steg och ändra på värden för att ta de vägar man
+vill analysera. Detta borde också kunna göras baklänges, dvs att man
+väljer en slutdestination och låter programmet själv lista ut vilka
+värden som behövdes läsas för att exekveringen skulle ta sig till den
+punkten.
+
+% Symbolic execution engine
+% S2E
+% state-merging
