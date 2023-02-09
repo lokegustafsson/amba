@@ -6,6 +6,7 @@
 \usepackage{pgfgantt} % Gantt charts. docs: https://ftpmirror1.infania.net/mirror/CTAN/graphics/pgf/contrib/pgfgantt/pgfgantt.pdf
 \usepackage{pdflscape} % Landscape mode
 \usepackage{parskip} % Spacing for paragraphs and related.
+\usepackage{scrextend}
 
 % TODO remove these packages for final report
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% "Debug" packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,6 +56,9 @@ Vad repporten ska innehålla:
 
 \todo[inline]{nytt stycke ska börja med halv rad istället för en inskjutning.}
 
+\section{Begreppslista}
+\input{0_begreppslista.tex}
+
 \section{Bakgrund}
 \input{1_bakgrund.tex}
 
@@ -79,4 +83,5 @@ Vad repporten ska innehålla:
 
 \bibliographystyle{plain} % We choose the "plain" reference style
 \bibliography{refs} % Entries are in the refs.bib file
+
 \end{document}
