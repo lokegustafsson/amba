@@ -1,17 +1,17 @@
 \subsection{Val av strategi} 
 För att uppnå och redogöra för möjligheterna i en
 potentiell applikation reflekterades det över två möjliga alternativ att
-fullfölja. Dels diskuterades alternativet att bygga en symbolic execution engine
+fullfölja. Dels diskuterades alternativet att bygga en symbolic-execution engine
 från grunden och fokusera på dess tekniska detaljer och dels att använda en
 existerande produkt där fokuset istället ligger på att bygga plugins vars syfte
 är att utöka den existerande motorn med fler funktioner. 
 
-Med syfte att göra framsteg valdes det att kolla vidare hur SymQEMU kan hjälpa i
-frågan om att utöka funktionalitet i en existerande motor. SymQEMU är utvecklat
-i största del programspråket C/C++ och med anledning av valet att utveckla i ett
+Med syfte att göra framsteg valdes det att kolla vidare hur S2E kan hjälpa i
+frågan om att utöka funktionalitet i en existerande motor. S2E är utvecklat
+till större del i programspråket C/C++ och med anledning av valet att utveckla i ett
 annat programmeringsspråk, det vill säga Rust, krävs implementation av
-C/C++-bindings. I ett första steg valdes därför att  se över hur detta går till
-på lämpligast sätt och hur detta kan automatiseras med hjälp av andra verktyg
+C/C++-bindings. I ett första steg valdes det därför att se över hur detta går till
+på lämpligt sätt och hur detta kan automatiseras med hjälp av andra verktyg
 där bland annat autocxx ansågs som ett lovande alternativ. 
 
 \subsection{Tillvägagångssätt} 
@@ -30,6 +30,7 @@ I ett senare och/eller parallellt steg ska ett intuitivt grafiskt användargrän
 utvecklas som tillåter användaren att traversera genom applikationen och göra
 egna beslut gällande branches etc. där användaren själv bestämmer interaktivt
 nästa beslut som görs. 
+
 % Hur är detta kopplat till vårt syfte? Hur uppnår vi syftet med rapporten genom
 % vald metod?
 
