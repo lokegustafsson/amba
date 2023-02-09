@@ -28,6 +28,10 @@
 
 ## LP3LV4 2023-02-06 to 2023-02-12
 
+- Monday all: Writing on project plan
+- Monday all: giving feedback to eachother on the writing.
+- Thursday all: Written on project plan and taken feeback into account.
+
 ## LP3LV5 2023-02-13 to 2023-02-19
 
 ## LP3LV6 2023-02-20 to 2023-02-26
