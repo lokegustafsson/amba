@@ -1,7 +1,7 @@
 #include <cstdio>
 
 extern "C" {
-	void hello_world() {
+	void hello_cpp() {
 		std::puts("Hello from C++");
 	}
 }

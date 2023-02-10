@@ -47,5 +47,3 @@ private:
 
 } // namespace plugins
 } // namespace s2e
-
-void hello_world();
