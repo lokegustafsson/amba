@@ -25,28 +25,30 @@ fn main() -> miette::Result<()> {
 	let boost_libs = PathBuf::from(env!("BOOST_PATH"));
 	let llvm_libs = PathBuf::from(env!("LLVM_PATH"));
 
+	// Breaks on reordering!!
+	let libraries = [
+		&klee,
+		&coroutine,
+		&cpu,
+		&fsigcxx,
+		&q,
+		&s2e,
+		&s2ecore,
+		&s2eplugins,
+		&tcg,
+		&vmi,
+		&config_host,
+		&gcc_libs,
+		&gcc_libs_l,
+		&clang_libs,
+		&boost_libs,
+		&llvm_libs,
+		&glibc,
+	];
+
 	autocxx_build::Builder::new(
 		"src/lib.rs",
-		// Breaks on reordering!!
-		&[
-			&klee,
-			&coroutine,
-			&cpu,
-			&fsigcxx,
-			&q,
-			&s2e,
-			&s2ecore,
-			&s2eplugins,
-			&tcg,
-			&vmi,
-			&config_host,
-			&gcc_libs,
-			&gcc_libs_l,
-			&clang_libs,
-			&boost_libs,
-			&llvm_libs,
-			&glibc,
-		],
+		&libraries
 	)
 	.extra_clang_args(&[
 		"-DBOOST_BIND_GLOBAL_PLACEHOLDERS=1",
