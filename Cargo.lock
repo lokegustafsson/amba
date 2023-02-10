@@ -282,6 +282,9 @@ dependencies = [
 [[package]]
 name = "decompiler"
 version = "0.1.0"
+dependencies = [
+ "s2e",
+]
 
 [[package]]
 name = "either"
