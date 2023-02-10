@@ -1,5 +1,6 @@
 project_plan.pdf: \
   main.tex \
+  0_begreppslista.tex \
   1_bakgrund.tex \
   2_syfte.tex \
   3_problem.tex \
