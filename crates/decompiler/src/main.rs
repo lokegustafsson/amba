@@ -8,7 +8,7 @@ use s2e::{
 
 fn main() {
 	hello_cpp();
-	println!("Hello, world!");
+	println!("Hello from Rust!");
 }
 
 #[no_mangle]
