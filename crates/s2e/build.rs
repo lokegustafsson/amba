@@ -58,7 +58,24 @@ fn main() -> miette::Result<()> {
 	])
 	.build()?;
 
+	cc::Build::new()
+		.cpp(true)
+		.compiler("clang++")
+		.includes(&libraries)
+		.warnings(false)
+		.define("BOOST_BIND_GLOBAL_PLACEHOLDERS", "1")
+		.define("TARGET_PAGE_BITS", "12")
+		.define("SE_RAM_OBJECT_BITS", "12")
+		.define(
+			"SE_RAM_OBJECT_MASK",
+			Some((!11).to_string().as_str()),
+		)
+		.file("cpp_src/RustPlugin.cpp")
+		.file("cpp_src/Helpers.cpp")
+		.compile("RustPlugin");
+
 	println!("cargo:rerun-if-changed=src/lib.rs");
+	println!("cargo:rerun-if-changed=cpp_src/*");
 
 	Ok(())
 }
