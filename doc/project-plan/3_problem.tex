@@ -19,25 +19,116 @@
 % från litteraturen. En litteraturgenomgång bör därför genomföras tidigt
 % i processen.
 
-För att uppnå projektets syfte måste vi dela upp problemet i mindre
-delar. Första delen är elf-tolkning och dekompilering. Sedan symbolisk
-exekvering av det tolkade programmet.
+För att uppnå projektets syfte om att konstruera ett symboliskt-kapabelt
+binäranalysverktyg behöver denna uppgift delas upp i mindre delar.
 
-När vi väl har ett tolkat och körbart program kan vi sedan spåra
-exekveringen och skapa en kontrollflödesgraf som kan användas till att
-återskapa större strukturer som for- eller while-loopar, if-satser
-eller virtuella funktionsanrop.
+Kärnan i ett \textit{korrekt} binäranalysverktyg är en
+\textit{exekveringsmotor}, en komponent som på ett korrekt vis kan köra
+programmet. Att köra ett program innebär att ladda binären och dess bibliotek,
+hoppa till startadressen och sedan köra enskilda instruktioner. Om
+binäranalysverktyget ska kunna använda metoder som använder symbolisk exekvering
+behöver denna exekvering av enskilda instruktioner också stödja symboliska
+variabler. För att verktyget ska ha bra prestanda är det eftersträvansvärt att
+de instruktioner som inte använder symboliska variabler utan endast agerar på
+konkreta värden exekverar direkt på processorn som kör binäranalysverktyget.
 
-Grafen kan också visualiseras för att hjälpa användaren förstå
-programmet. Alternativt kan hela programmet återskapas som C-kod.
+Program i verkligheten kommunicerar på många sätt med sin omgivning. För
+inbyggda system är denna omgivning fysisk och för program som kör ovanpå
+operativsystem är denna omgivning en virtuell värld bestående av filer och inter
+process communication (IPC). För att en \textit{exekveringsmotor} ska vara så
+brett tillämpbar som möjligt behöver den också stödja flera sorters
+omgivningskommunikation.
 
-För analys av programmet är det också hjälpsamt att kunna stega genom
-exekveringen steg för steg och ändra på värden för att ta de vägar man
-vill analysera. Detta borde också kunna göras baklänges, dvs att man
-väljer en slutdestination och låter programmet själv lista ut vilka
-värden som behövdes läsas för att exekveringen skulle ta sig till den
-punkten.
+Sammantaget är kraven på en \textit{exekveringsmotor} med stöd för symbolisk
+analys att den
+\begin{enumerate}
+    \item kan ladda en binär i en konkret miljö
+    \item kan introducera symboliska variabler i denna miljö genom till exempel
+        omgivningskommunikation
+    \item kan exekvera konkreta delar av programmet med god prestanda genom att
+        köra dessa delar av programmet som maskinkod
+    \item kan exekvera symboliska delar av programmet på ett sätt som är
+        tillräckligt kraftfullt för de symboliska analyser som exekveringsmotorn
+        ska användas till
+\end{enumerate}
+Dessutom behöver exekveringsmotorn kunna kontrolleras och dess slutsatser kunna
+användas av och presenteras i resten av programmet. Figur~\ref{schematic} visar
+förhållandet mellan användaren, analysverktyget och dess exekveringsmotor.
 
-% Symbolic execution engine
-% S2E
-% state-merging
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\node [draw,
+			fill=lime,
+			minimum width=2cm,
+			minimum height=1cm,
+		]  (user) {Användare};
+
+		\node [draw,
+			fill=yellow,
+			minimum width=2cm,
+			minimum height=1cm,
+			right=2cm of user
+		] (tool) {Analysverktyg};
+
+		\node [draw,
+			fill=orange,
+			minimum width=2cm,
+			minimum height=1cm,
+			right=2cm of tool
+		] (engine) {Exekveringsmotor};
+
+		\draw[->, line width=.4mm] (user.-30) to[out=-30, in=-150]
+    node[midway,below]{Beslut} (tool.-150);
+
+		\draw[->, line width=.4mm] (tool.150) to[out=150, in=30]
+    node[midway,above]{Visualisering} (user.30);
+
+		\draw[->, line width=.4mm] (tool.-30) to[out=-30, in=-150]
+    node[midway,below]{Kontroll} (engine.-150);
+
+		\draw[->, line width=.4mm] (engine.150) to[out=150, in=30]
+    node[midway,above]{Instrumentering} (tool.30);
+
+	\end{tikzpicture}
+	\caption{
+  Schematisk bild av ett binäranalysverktyg byggt kring en exekveringsmotor
+  }\label{schematic}
+\end{figure}
+
+\subsection{Analyser}
+
+Det finns många möjliga analyser som kan användas av ett binäranalysverktyg, där
+\textit{analyser} här avser en visualisering av en aspekt av det analyserade
+programmets beteende eventuellt inklusive ett sätt för användaren att påverka
+det analyserade programmets körning.
+
+En konkret exekvering kan spåras och dess instruktionssekvens kan visas för
+användaren med loopar identifierade. Flera exekveringar kan visualiseras på
+samma sätt och deras instruktionssekvenser användas för att återskapa
+kontrollflödesstrukturer som for- och while-loopar och if-satser.
+
+Möjligheter för \textit{state merging} kan identifieras helautomatiskt eller av
+användaren, alltså platser där flera exekveringar kan ersättas av en enda mer
+generell exekvering som innehåller ursprungsexekveringarnas skillnader som
+symboliska uttryck.
+
+En uppsättning liknande exekveringar kan visas upp för användaren tillsammans
+med information om när och hur de divergerar, för att till exempel avgöra när
+olika delar av indatan används.
+
+För analys av programmet är det också hjälpsamt för användaren att kunna stega
+genom exekveringen steg för steg och ändra på värden för att ta de vägar de vill
+analysera. Detta borde också kunna göras baklänges, dvs att användaren väljer en
+slutdestination och låter programmet själv lista ut vilka värden som behövdes
+läsas för att exekveringen skulle ta sig till den punkten.
+
+En mindre automatisk men ändå viktig funktionalitet är konstruktion av
+kod-täckande indata. När testfall som besöker en uppsättning instruktioner är
+konstruerad kan kraven på indatan över denna uppsättning programhopp analyseras
+och programmet kan lista ut vilka aspekter av indatan som kan ändras utan att
+påverka kodtäckningsgraden, och kommunicera detta till användaren.
+
+Det finns många möjliga analyser. Användbarheten i ett verktyg mäts inte i
+kvantiteten analyser utan i förmågan för de utvalda implementerade analyserna
+att täcka användarens behov av förståelse av programmet.
