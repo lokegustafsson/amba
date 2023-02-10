@@ -5,7 +5,7 @@ Att läsa källkod är ett sätt att förstå program, men ibland är det gynnsa
 maskinkoden direkt. Detta kan vara för att
 \begin{itemize}
   \item utesluta påverkan av kompilatorbuggar som ger oväntad maskinkod
-  \item se hur undefined behavior (UB) har utnyttjats av kompilatorn
+  \item se hur UB (\emph{undefined behavior}) har utnyttjats av kompilatorn
   \item källkoden inte är tillgänglig
 \end{itemize}
 
@@ -13,7 +13,7 @@ Det finns en uppsjö av metoder som kan användas för att analysera en exekverb
 binär. Exempel på dessa är att:
 \begin{enumerate}
   \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
-  \item dekompilera assemblykoden med ett verktyg som ger högnivåpseudokod, och sedan läsa denna mer
+  \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
     läsbara koden.
   \item köra binären på speciella testfall och jämföra svaret med vad som förväntas. Om
     programmet implementerar en specifikation kan en existerande testsamling användas.
@@ -28,7 +28,7 @@ binär. Exempel på dessa är att:
 
 För att bilda en allmän förståelse om programmet krävs både \textit{korrekt} och
 \textit{abstrakt} förståelse. I detta avseende syftar \textit{korrekt} på
-avsaknanden av felaktiga slutsatser och \textit{abstrakt} på möjligheten att
+avsaknaden av felaktiga slutsatser och \textit{abstrakt} på möjligheten att
 resonera om programmet generellt i motsats till att resonera om en specifik
 konkret indata i taget.
 
@@ -65,4 +65,4 @@ En helautomatisk \textit{korrekt} metod kan ge en \textit{abstrakt} förståelse
 om processens förlopp visualiseras för användaren. Valet mellan manuell
 arbetsbörda som ger djup förståelse och en testfallsgenerationsdriven process
 som ger översiktlig förståelse kan genomföras av användaren om verktygen stödjer
-hela spektrat.
+hela spektrummet.
