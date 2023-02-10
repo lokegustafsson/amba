@@ -1,5 +1,5 @@
 @manual{föreskrifter,
-	author = {Eva Albers},
+	author = {Albers, Eva},
 	title = {Föreskrift för kandidatarbete på Chalmers - genomförande och examination},
 	year = {2022},
 	month = {08},
@@ -12,4 +12,32 @@
 	year = {2022},
 	howpublished = {\url{https://googleprojectzero.blogspot.com/p/vulnerability-disclosure-policy.html}},
 	note = {Tillgänglig: 2023-02-10},
+}
+
+@inproceedings{symqemu,
+	author = {Poeplau, Sebastian and Francillon, Aurélien},
+	title = {{SymQEMU: Compilation-based symbolic execution for binaries}},
+	booktitle = {Network and Distributed Systems Security (NDSS) Symposium 2021},
+	year = {2021},
+	month = {02},
+	url = {https://dx.doi.org/10.14722/ndss.2021.23118},
+	doi = {10.14722/ndss.2021.23118}
+}
+
+@inproceedings{s2e,
+	author = {Chipounov, Vitaly and Kuznetsov, Volodymyr and Candea, George},
+	title = {{S2E: A Platform for in-Vivo Multi-Path Analysis of Software Systems}},
+	year = {2011},
+	isbn = {9781450302661},
+	publisher = {Association for Computing Machinery},
+	address = {New York, NY, USA},
+	url = {https://doi.org/10.1145/1950365.1950396},
+	doi = {10.1145/1950365.1950396},
+	abstract = {This paper presents S2E, a platform for analyzing the properties and behavior of software systems. We demonstrate S2E's use in developing practical tools for comprehensive performance profiling, reverse engineering of proprietary software, and bug finding for both kernel-mode and user-mode binaries. Building these tools on top of S2E took less than 770 LOC and 40 person-hours each.S2E's novelty consists of its ability to scale to large real systems, such as a full Windows stack. S2E is based on two new ideas: selective symbolic execution, a way to automatically minimize the amount of code that has to be executed symbolically given a target analysis, and relaxed execution consistency models, a way to make principled performance/accuracy trade-offs in complex analyses. These techniques give S2E three key abilities: to simultaneously analyze entire families of execution paths, instead of just one execution at a time; to perform the analyses in-vivo within a real software stack--user programs, libraries, kernel, drivers, etc.--instead of using abstract models of these layers; and to operate directly on binaries, thus being able to analyze even proprietary software.Conceptually, S2E is an automated path explorer with modular path analyzers: the explorer drives the target system down all execution paths of interest, while analyzers check properties of each such path (e.g., to look for bugs) or simply collect information (e.g., count page faults). Desired paths can be specified in multiple ways, and S2E users can either combine existing analyzers to build a custom analysis tool, or write new analyzers using the S2E API.},
+	booktitle = {Proceedings of the Sixteenth International Conference on Architectural Support for Programming Languages and Operating Systems},
+	pages = {265–278},
+	numpages = {14},
+	keywords = {testing, analysis, virtualization, dbt, performance, symbolic execution, framework, binary, in-vivo, consistency models},
+	location = {Newport Beach, California, USA},
+	series = {ASPLOS XVI}
 }
