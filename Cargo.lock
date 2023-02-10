@@ -681,6 +681,7 @@ version = "0.1.0"
 dependencies = [
  "autocxx",
  "autocxx-build",
+ "cc",
  "cxx",
  "miette",
 ]
