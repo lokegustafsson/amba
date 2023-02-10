@@ -1,66 +1,42 @@
 
-%motivera s2e:
-% fördel, slipper göra
-% specifikt behöver inte tvivla
-% svårt att göra en emulator korrekt, vältestat, litar på korrekthet, gör ens jobb mycket enklare
-
-
-% vad gör s2e och symqemu
-% nackdelar med symQemu, docs saknas
-
-% detaljerat men inte långt
-
-% S²E comes as a modular library that gives virtual machines symbolic execution and program analysis
-% capabilities. S²E runs unmodified x86, x86-64, or ARM software stacks, including programs, libraries,
-% the kernel, and drivers. Symbolic execution then automatically explores hundreds of thousands of paths
-% through the system, while analyzers check that the desired properties hold on these paths and selectors
-% focus path exploration on components of interest.
-% SymQemu has not been actively maintained in recent years and it may not be compatible with the latest
-% versions of QEMU and KLEE. It is recommended to use more modern tools for dynamic analysis, such as S2E,
-% which provide similar capabilities with a more up-to-date infrastructure.
-
-
 Att skapa en emulator är tidskrävande, dessutom är den resulterande produktens
 korrekthet inte tillförlitlig utan nogrann testning. För att fastställa
-korrekthet premieras därför att använda ett existerande verktyg för att
+korrekthet ska applikationen därför utnyttja existerande verktyg för att
 exekvera programmet med stöd för symbolisk exekvering. Detta möjliggör också
-bredade plattformssupport jämfört med en hemmasnickrad emulator.
+bredare plattformssupport jämfört med en hemmasnickrad emulator.
 
 \subsection{S2E}
-
-\todo{skriva om S2E}
+S2E är en plattform för symbolisk exkevering som bygger på QEMU:s virtuella 
+maskin och använder KLEE:s motor för symbolisk exekvering under interpreting 
+för att möjliggöra symbolisk exkevering. S2E är i sin tur utbyggbart med möjlighet
+för användaren att skriva ett eget plugin för att utföra analyser och används
+bland annat inom flygindustrin, forskning och cybersäkerhet. S2E är open-source, 
+väldokumenterat och underhålls aktivt.\cite{}
 
 \subsection{SymQEMU}
 
-\todo{skriva om SymQEMU}
+Ett alternativt verktyg för att emulera symbolisk exekvering är symQEMU, som också 
+kombinerar QEMUs virtuella maskin med KLEE:s motor för symbolisk exekvering. Till 
+skillnad från S2E använder SymQEMU KLEE vid kompilering, och har jämförelsevis hög 
+prestanda, däremot har SymQEMU bristfällig dokumentation och är ej aktivt uppdaterat. 
+\cite{}
 
 \subsection{Beslut}
 
-\todo{motivera S2E}
-
-Applikationen ska utvecklas med hjälp av S2E, som bygger ut QEMU:s virtuella
-maskin med stöd för symbolisk exekvering. S2E är i sin tur utbyggbart med möjlighet
-för användaren att skriva egna plugins för att utföra analyser och används
-bland annat inom flygindustrin, forskning och cybersäkerhet. Detta i
-kombination med att S2E är open-source och aktivt underhållet gör S2E till
-ett passande verktyg för vår applikation.
-
-Ett alternativt verktyg för symbolisk exekvering är symQEMU, som kombinerar
-QEMUs virtuella maskin med KLEEs motor för symbolisk exekvering. Då SymQEMU
-ej uppdateras aktivt och har bristfällig dokumentation föredrogs S2E.
-
+Då SymQEMU ej uppdateras aktivt och har bristfällig dokumentation kommer S2E användas.
 Projektet avgränsas i och med att existerande verktyg (S2E) kommer användas
-istället för att bygga en motor för symbolisk exekvering från grunden. Att
-använda S2E innebär att arbetet avgränsas till att skapa ett plugin som bygger
-ut motorn. Varken emulator eller motor ska byggas och de uppgifter som ingår i
-att skapa en dekompilator exkluderas.
+istället för att bygga en motor för symbolisk exekvering från grunden. 
 
 \subsection{Konsekvenser}
 
-Beslutet innebär att applikationens utformning blir bunden till verktygens
-tekniska begränsningar.
+Att använda S2E innebär att arbetet avgränsas till att skapa ett plugin som bygger
+ut motorn. Varken emulator eller motor ska byggas och de uppgifter som ingår i
+att skapa en dekompilator exkluderas.
 
 Avgränsningen medför dessutom att fokus flyttas ifrån motorns tekniska detaljer
-till att utveckla en användbar slutprodukt som bygger ut S2E's redan
+till att utveckla en användbar slutprodukt som bygger ut S2E:s redan
 existerande funktionalitet med ett grafiskt användargränsnitt och möjlighet att
 stega igenom, analysera och interaktivt besluta om värden under exekvering.
+
+Beslutet innebär att applikationens utformning blir bunden till S2E:s
+tekniska begränsningar.
