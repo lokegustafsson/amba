@@ -1,5 +1,3 @@
-#![allow(unused_variables, dead_code, unused_imports)]
-
 use autocxx::{prelude::*, subclass::prelude::*};
 
 autocxx::include_cpp! {
@@ -20,33 +18,20 @@ use crate::ffi::{
 	TranslationBlock,
 };
 
-#[no_mangle]
-pub unsafe extern fn initialise() {
-	todo!()
-	// m_traceBlockTranslation = s2e()->getConfig()->getBool(getConfigKey() + ".traceBlockTranslation");
-	// m_traceBlockExecution = s2e()->getConfig()->getBool(getConfigKey() + ".traceBlockExecution");
-	// s2e()->getCorePlugin()->onTranslateBlockStart.connect(sigc::mem_fun(*this, &RustPlugin::slotTranslateBlockStart));
+pub mod types {
+	pub mod s2e {
+		pub use crate::ffi::s2e::*;
+	}
+
+	pub use crate::ffi::*;
 }
 
-#[no_mangle]
-pub unsafe extern fn slot_translate_block_start(
-	e: *mut ExecutionSignal,
-	state: *mut S2EExecutionState,
-	tb: *mut TranslationBlock,
-	pc: u64,
-) {
-	todo!()
-	// if (m_traceBlockTranslation) {
-	// getDebugStream(state) << "Translating block at " << hexval(pc) << "\n";
-	// }
-
-	// if (m_traceBlockExecution) {
-	// signal->connect(sigc::mem_fun(*this, &RustPlugin::slotExecuteBlockStart));
-	// }
+extern "C" {
+	fn hello_cpp();
 }
 
-#[no_mangle]
-pub unsafe extern fn slot_execute_block_start(state: *mut S2EExecutionState, pc: u64) {
-	todo!()
-	// getDebugStream(state) << "Executing block at " << hexval(pc) << "\n";
+pub mod wrappers {
+	pub fn hello_cpp() {
+		unsafe { crate::hello_cpp() }
+	}
 }
