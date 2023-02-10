@@ -11,8 +11,8 @@ autocxx::include_cpp! {
 	generate!("s2e::Plugin")
 	generate!("s2e::S2E")
 	generate!("s2e::ExecutionSignal")
-	generate!("TranslationBlock")
 	generate!("s2e::S2EExecutionState")
+	generate!("TranslationBlock")
 }
 
 use crate::ffi::{
