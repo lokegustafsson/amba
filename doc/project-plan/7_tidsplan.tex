@@ -75,8 +75,8 @@ Slutlig inlämning av sammanställd slutrapport        &  2023-06-02\\
     \ganttfoobar[inline]{Projektplan}{1}{4} \\
 
     % Eget
-    \ganttfoobar[inline]{*S2E-bygge}{2}{4} \\
-    \ganttfoobar[inline]{*S2E-infra}{3}{5} \\
+    \ganttfoobar[inline]{*\stoe-bygge}{2}{4} \\
+    \ganttfoobar[inline]{*\stoe-infra}{3}{5} \\
     \ganttfoobar[inline]{*Demo-förslag}{5}{10} \\
     \ganttfoobar[inline]{*Demo-implementation}{5}{12} \\
     \ganttfoobar[inline]{*GUI-ramverk}{6}{11} \\ \\
@@ -116,20 +116,20 @@ förklaring av de produktrelaterade aktiviteterna:
 
 \begin{labeling}{tidsplansbegrepp}
 
-  \item [\textbf{S2E-bygge}] Att etablera en miljö där S2E:s huvudkomponent
+  \item [\textbf{\stoe-bygge}] Att etablera en miljö där \stoe:s huvudkomponent
     \texttt{libs2e.so} kan byggas reproducibelt och köras tillsammans med QEMU
     på en godtycklig binär, fast utan någon implementerad analys.
 
-  \item [\textbf{S2E-infra}] Att generera Rust-bindings till \texttt{libs2e.so}.
-    Tooling för att kunna köra QEMU+S2E med ett Rust-plugin på en testbinär.
+  \item [\textbf{\stoe-infra}] Att generera Rust-bindings till \texttt{libs2e.so}.
+    Tooling för att kunna köra QEMU+\stoe med ett Rust-plugin på en testbinär.
     Viss abstraktion som gör det ergonomiskt att utveckla Rust-plugin:et.
 
   \item [\textbf{Demo-förslag}] Att skriftligt föreslå ett \textit{demo}, alltså
-    en analys som kan implementeras ovanpå S2E i form av ett program med
+    en analys som kan implementeras ovanpå \stoe i form av ett program med
     specifikt syfte att genomföra en specifik sorts analys på små testprogram
     implementerade som enskilda C-filer.
 
-  \item [\textbf{Demo-implementation}] Att implementera demon ovanpå S2E, utan
+  \item [\textbf{Demo-implementation}] Att implementera demon ovanpå \stoe, utan
     att integrera deras analyser till en sammanhängande enhet.
 
   \item [\textbf{GUI-ramverk}] Det kringarbete som krävs för att implementera
