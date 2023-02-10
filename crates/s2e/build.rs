@@ -78,7 +78,10 @@ fn main() -> miette::Result<()> {
 		.compile("rustplugin");
 
 	println!("cargo:rerun-if-changed=src/lib.rs");
-	println!("cargo:rerun-if-changed=cpp_src/*");
+	println!("cargo:rerun-if-changed=cpp_src/lib_rs.h");
+	println!("cargo:rerun-if-changed=cpp_src/RustPlugin.cpp");
+	println!("cargo:rerun-if-changed=cpp_src/RustPlugin.h");
+	println!("cargo:rerun-if-changed=cpp_src/Helpers.cpp");
 
 	Ok(())
 }
