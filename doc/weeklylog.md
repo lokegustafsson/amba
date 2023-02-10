@@ -31,6 +31,7 @@
 - Monday all: Writing on project plan
 - Monday all: giving feedback to eachother on the writing.
 - Thursday all: Written on project plan and taken feeback into account.
+- Friday all: Finalized project plan
 
 ## LP3LV5 2023-02-13 to 2023-02-19
 
