@@ -22,14 +22,6 @@
 
 \usetikzlibrary{positioning}
 
-% TODO remove these packages for final report
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% "Debug" packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Comments in the margin, use \todo{} to add comment to margin.
-% Docs: http://tug.ctan.org/macros/latex/contrib/todonotes/todonotes.pdf
-\setlength {\marginparwidth }{2cm}
-\usepackage[colorinlistoftodos]{todonotes}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  NICE PALETTE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % https://images.squarespace-cdn.com/content/v1/638773c92dfb4812d5f5ff28/1669823793535-UWL204TLLHME6SFDP2QZ/image-asset.png
@@ -65,7 +57,6 @@
 \newpage
 
 % TODO remove this for final report
-\listoftodos
 \newpage
 
 \tableofcontents
@@ -74,6 +65,8 @@
 \addcontentsline{toc}{section}{Begreppslista}
 \section*{Begreppslista}
 \input{0_begreppslista.tex}
+
+\newpage
 
 \section{Bakgrund}
 \input{1_bakgrund.tex}
