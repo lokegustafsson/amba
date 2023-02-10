@@ -1,7 +1,7 @@
 
 %motivera s2e:
 % fördel, slipper göra
-% specifikt behöver inte tvivla 
+% specifikt behöver inte tvivla
 % svårt att göra en emulator korrekt, vältestat, litar på korrekthet, gör ens jobb mycket enklare
 
 
@@ -10,51 +10,57 @@
 
 % detaljerat men inte långt
 
-% S²E comes as a modular library that gives virtual machines symbolic execution and program analysis 
-% capabilities. S²E runs unmodified x86, x86-64, or ARM software stacks, including programs, libraries, 
-% the kernel, and drivers. Symbolic execution then automatically explores hundreds of thousands of paths 
+% S²E comes as a modular library that gives virtual machines symbolic execution and program analysis
+% capabilities. S²E runs unmodified x86, x86-64, or ARM software stacks, including programs, libraries,
+% the kernel, and drivers. Symbolic execution then automatically explores hundreds of thousands of paths
 % through the system, while analyzers check that the desired properties hold on these paths and selectors
-% focus path exploration on components of interest. 
-% SymQemu has not been actively maintained in recent years and it may not be compatible with the latest 
-% versions of QEMU and KLEE. It is recommended to use more modern tools for dynamic analysis, such as S2E, 
+% focus path exploration on components of interest.
+% SymQemu has not been actively maintained in recent years and it may not be compatible with the latest
+% versions of QEMU and KLEE. It is recommended to use more modern tools for dynamic analysis, such as S2E,
 % which provide similar capabilities with a more up-to-date infrastructure.
 
 
-Att skapa en emulator är tidskrävande, dessutom är den resulterande 
-produktens korrekthet inte tillförlitlig utan nogrann testning. För att 
-fastställa korrekthet premieras därför att använda ett existerande verktyg 
-för att dekompilera och emulera symbolisk exkevering. 
+Att skapa en emulator är tidskrävande, dessutom är den resulterande produktens
+korrekthet inte tillförlitlig utan nogrann testning. För att fastställa
+korrekthet premieras därför att använda ett existerande verktyg för att
+exekvera programmet med stöd för symbolisk exekvering. Detta möjliggör också
+bredade plattformssupport jämfört med en hemmasnickrad emulator.
 
-\subsection{Verktyg} 
+\subsection{S2E}
 
-Applikationen ska utvecklas med hjälp av S2E, som bygger ut QEMUS virtuella 
-maskin med symbolisk exkevering. S2E är i sin tur utbyggbart med möjlighet 
-för användaren att skriva egna plugins för att utföra analyser och används 
-bland annat inom flygindustrin, forskning och cybersäkerhet. Detta i 
-kombination med att S2E är open-source och aktivt underhållet gör S2E till 
-ett passande verktyg för vår applikation. 
+\todo{skriva om S2E}
 
-Ett alternativt verktyg för symbolisk exkevering är symQEMU, som kombinerar 
-QEMUs virtuella maskin med KLEEs motor för symbolisk exkevering. Då SymQEMU 
-ej uppdateras aktivt och har bristfällig dokumentation föredrogs S2E. 
+\subsection{SymQEMU}
 
-Projektet avgränsas i och med att existerande verktyg (S2E) kommer användas 
-istället för att bygga en motor för symbolisk exkevering från grunden. 
-Att använda S2E innebär att arbetet avgränsas till att skapa plugins som 
-bygger ut motorn. Varken emulator eller motor ska byggas och de uppgifter 
-som ingår i att skapa en dekompilator exkluderas. 
+\todo{skriva om SymQEMU}
 
-\subsection{Begränsningar} 
+\subsection{Beslut}
 
-Belsutet innebär att applikationens utformning blir bunden till 
-verktygens tekniska begränsningar. Exempelvis försvinner möjligheten att 
-förbättra state-merging. 
+\todo{motivera S2E}
 
-\subsection{Inriktning} 
+Applikationen ska utvecklas med hjälp av S2E, som bygger ut QEMU:s virtuella
+maskin med stöd för symbolisk exekvering. S2E är i sin tur utbyggbart med möjlighet
+för användaren att skriva egna plugins för att utföra analyser och används
+bland annat inom flygindustrin, forskning och cybersäkerhet. Detta i
+kombination med att S2E är open-source och aktivt underhållet gör S2E till
+ett passande verktyg för vår applikation.
 
-Avgränsningen medför att fokus flyttas ifrån motorns tekniska detaljer 
-till att utveckla en användbar slutprodukt som bygger ut S2E's redan 
-existerande funktionalitet med ett grafiskt användargränsnitt 
-och möjlighet att stega igenom, analysera och interaktivt besluta om 
-värden under exkevering.
- 
+Ett alternativt verktyg för symbolisk exekvering är symQEMU, som kombinerar
+QEMUs virtuella maskin med KLEEs motor för symbolisk exekvering. Då SymQEMU
+ej uppdateras aktivt och har bristfällig dokumentation föredrogs S2E.
+
+Projektet avgränsas i och med att existerande verktyg (S2E) kommer användas
+istället för att bygga en motor för symbolisk exekvering från grunden. Att
+använda S2E innebär att arbetet avgränsas till att skapa ett plugin som bygger
+ut motorn. Varken emulator eller motor ska byggas och de uppgifter som ingår i
+att skapa en dekompilator exkluderas.
+
+\subsection{Konsekvenser}
+
+Beslutet innebär att applikationens utformning blir bunden till verktygens
+tekniska begränsningar.
+
+Avgränsningen medför dessutom att fokus flyttas ifrån motorns tekniska detaljer
+till att utveckla en användbar slutprodukt som bygger ut S2E's redan
+existerande funktionalitet med ett grafiskt användargränsnitt och möjlighet att
+stega igenom, analysera och interaktivt besluta om värden under exekvering.
