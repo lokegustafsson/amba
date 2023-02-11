@@ -59,6 +59,7 @@
             GLIBC_PATH = "${pkgs.glibc.dev}/include";
             BOOST_PATH = "${pkgs.boost.dev}/include";
             LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
+            S2E_PATH = "${s2e.s2e-src}/s2e";
           };
           doc = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [ tectonic gnumake ];
