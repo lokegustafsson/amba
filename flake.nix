@@ -44,6 +44,7 @@
               p.rust-bin.nightly.latest.clippy
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.default
+              p.rust-bin.stable.latest.rust-analyzer
               p.llvmPackages_14.libclang.dev
               p.pkgconfig
               p.stdenv
