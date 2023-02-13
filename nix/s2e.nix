@@ -1,5 +1,7 @@
 { pkgs, lib }:
 let
+  makeIncludePath = lib.makeSearchPathOutput "dev" "include";
+
   # From (https://github.com/S2E/manifest/blob/master/default.xml)
   repositories = builtins.listToAttrs (builtins.map (set: {
     name = set.repo;
@@ -114,7 +116,7 @@ let
       mkdir -p $out
       mv * $out/
       cd $out
-      S2E_PREFIX=$out make -f ./Makefile stamps/llvm-release-make
+      CMAKE_POSITION_INDEPENDENT_CODE=ON S2E_PREFIX=$out make -f ./Makefile stamps/llvm-release-make
     '';
     buildInputs = [
       fake-curl
@@ -135,24 +137,25 @@ let
     patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
-      S2E_PREFIX=$out make -f ./Makefile install
+      CMAKE_POSITION_INDEPENDENT_CODE=ON S2E_PREFIX=$out make -f ./Makefile install
     '';
     buildInputs = let p = pkgs;
     in [
       fake-curl
-      p.gcc
-      p.boost
+      p.clang_14
+      p.binutilsNoLibc
       p.cmake
       p.glib.dev
       p.libbsd
-      p.libelf
       p.libxcrypt
       p.pkg-config
       p.python3Minimal
       p.unzip
-      p.zlib
       p.libmemcached
     ];
+    CPATH = (makeIncludePath (let p = pkgs; in [ p.libelf p.zlib p.boost ]));
+    LIBRARY_PATH = lib.makeLibraryPath
+      (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost ]);
     INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
     INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
     INJECTED_SOCI_SRC = pkgs.fetchFromGitHub {
