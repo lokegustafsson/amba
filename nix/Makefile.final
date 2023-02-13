@@ -41,7 +41,7 @@ RELEASE_BUILD_TYPE=RelWithDebInfo
 # to optimize for your current CPU.
 BUILD_ARCH?=native
 
-CFLAGS_ARCH:=-march=$(BUILD_ARCH)
+CFLAGS_ARCH:=-march=$(BUILD_ARCH) -no-pie
 CXXFLAGS_ARCH:=-march=$(BUILD_ARCH)
 
 CXXFLAGS_DEBUG:=$(CXXFLAGS_ARCH)
@@ -476,6 +476,7 @@ stamps/protobuf-make: stamps/protobuf-configure
 #######
 
 stamps/lua-make: $(LUA_DIR)
+	$(SED) -i 's/gcc/clang/g' $(LUA_DIR)/src/Makefile
 	if [ "$(PLATFORM)" = "linux" ]; then \
 		$(SED) -i 's/-lreadline//g' $(LUA_DIR)/src/Makefile; \
 		$(MAKE) -C $^ linux CFLAGS="-DLUA_USE_LINUX -O2 -g -fPIC"; \
