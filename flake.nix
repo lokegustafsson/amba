@@ -31,8 +31,27 @@
               run_time_ld_library_path = p: [ ];
             };
           };
-          extra-overrides = { mkNativeDep, mkEnvDep, p }:
-            [ (mkNativeDep "decompiler" [ ]) ];
+          extra-overrides = { mkNativeDep, mkEnvDep, p }: [
+            (mkNativeDep "decompiler" [ ])
+            (mkEnvDep "s2e" {
+              # Required to parse s2e headers
+              BOOST_PATH = "${pkgs.boost.dev}/include";
+              CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
+              LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
+              GCCLIBS_PATH = "${pkgs.gcc-unwrapped}/include/c++/11.3.0";
+              GCCLIBS_PATH_L =
+                "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
+              GLIBC_PATH = "${pkgs.glibc.dev}/include";
+              S2E_PATH = "${s2e.s2e-src}/s2e";
+
+              # For autocxx to run
+              LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
+            })
+            (mkNativeDep "s2e" [
+              #p.llvmPackages_14.libclang.dev
+              p.clang_14
+            ])
+          ];
         };
         s2e = import ./nix/s2e.nix { inherit lib pkgs; };
       in {
@@ -45,22 +64,10 @@
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.default
               p.rust-bin.stable.latest.rust-analyzer
-              p.llvmPackages_14.libclang.dev
-              p.pkgconfig
-              p.stdenv
-            ] ++ builtins.attrValues rust.packages;
+              #p.pkgconfig
+              #p.stdenv
+            ];
 
-            # For autocxx to run
-            LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
-
-            # Required to parse s2e headers
-            CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
-            GCCLIBS_PATH = "${pkgs.gcc-unwrapped}/include/c++/11.3.0";
-            GCCLIBS_PATH_L = "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
-            GLIBC_PATH = "${pkgs.glibc.dev}/include";
-            BOOST_PATH = "${pkgs.boost.dev}/include";
-            LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
-            S2E_PATH = "${s2e.s2e-src}/s2e";
           };
           doc = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [ tectonic gnumake ];
