@@ -47,10 +47,7 @@
               # For autocxx to run
               LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
             })
-            (mkNativeDep "s2e" [
-              #p.llvmPackages_14.libclang.dev
-              p.clang_14
-            ])
+            (mkNativeDep "s2e" [ p.clang_14 ])
           ];
         };
         s2e = import ./nix/s2e.nix { inherit lib pkgs; };
@@ -64,8 +61,6 @@
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.default
               p.rust-bin.stable.latest.rust-analyzer
-              #p.pkgconfig
-              #p.stdenv
             ];
 
           };
