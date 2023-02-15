@@ -21,10 +21,10 @@ pub unsafe extern "C" fn initialise() {
 
 #[no_mangle]
 pub unsafe extern "C" fn slot_translate_block_start(
-	e: *mut ExecutionSignal,
-	state: *mut S2EExecutionState,
-	tb: *mut TranslationBlock,
-	pc: u64,
+	_e: *mut ExecutionSignal,
+	_state: *mut S2EExecutionState,
+	_tb: *mut TranslationBlock,
+	_pc: u64,
 ) {
 	todo!()
 	// if (m_traceBlockTranslation) {
@@ -37,7 +37,7 @@ pub unsafe extern "C" fn slot_translate_block_start(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn slot_execute_block_start(state: *mut S2EExecutionState, pc: u64) {
+pub unsafe extern "C" fn slot_execute_block_start(_state: *mut S2EExecutionState, _pc: u64) {
 	todo!()
 	// getDebugStream(state) << "Executing block at " << hexval(pc) << "\n";
 }
