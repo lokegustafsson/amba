@@ -1,5 +1,3 @@
-use autocxx::prelude::*;
-
 autocxx::include_cpp! {
 	#include "s2e/CorePlugin.h"
 	#include "s2e/Plugin.h"
@@ -12,11 +10,6 @@ autocxx::include_cpp! {
 	generate!("s2e::S2EExecutionState")
 	generate!("TranslationBlock")
 }
-
-use crate::ffi::{
-	s2e::{ExecutionSignal, Plugin, S2EExecutionState, S2E},
-	TranslationBlock,
-};
 
 pub mod types {
 	pub mod s2e {
