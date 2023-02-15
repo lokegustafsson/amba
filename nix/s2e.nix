@@ -116,7 +116,7 @@ let
       mkdir -p $out
       mv * $out/
       cd $out
-      CMAKE_POSITION_INDEPENDENT_CODE=ON S2E_PREFIX=$out make -f ./Makefile stamps/llvm-release-make
+      S2E_PREFIX=$out make -f ./Makefile stamps/llvm-release-make
     '';
     buildInputs = [
       fake-curl
@@ -130,15 +130,37 @@ let
     INJECTED_CLANG_CC = "${pkgs.clang_14}/bin/clang";
     INJECTED_CLANG_CXX = "${pkgs.clang_14}/bin/clang++";
   };
+  libgomp = let
+    version = "11.3.0";
+    src = pkgs.fetchzip {
+      url = "mirror://gcc/releases/gcc-${version}/gcc-${version}.tar.xz";
+      sha256 = "sha256-fI8Uu8GLuFfQnq09s6cgUYcAEzX1x6gWqymbb5njhQY=";
+    };
+  in pkgs.stdenv.mkDerivation {
+    pname = "libgomp";
+    inherit version src;
+    unpackPhase = ''
+      mkdir build2
+      cd build2
+      cp -r $src/* .
+      cp -r $src/config-ml.in ..
+      chmod -R +w .
+    '';
+    configurePhase = ''
+      cd libgomp && ./configure --prefix=$out
+    '';
+  };
   s2e-lib = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-lib";
     src = s2e-src;
     dontConfigure = true;
     dontInstall = true;
+    dontMoveLib64 = true;
     patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
-      CMAKE_POSITION_INDEPENDENT_CODE=ON S2E_PREFIX=$out make -f ./Makefile install
+      #S2E_PREFIX=$out make -f ./Makefile install
+      S2E_PREFIX=$out make -f ./Makefile stamps/libs2e-release-install
     '';
     buildInputs = let p = pkgs;
     in [
@@ -156,7 +178,9 @@ let
     BUILD_ARCH = "haswell";
     CPATH = (makeIncludePath (let p = pkgs; in [ p.libelf p.zlib p.boost ]));
     LIBRARY_PATH = lib.makeLibraryPath
-      (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost ]);
+      (let p = pkgs; in [ libgomp p.libelf p.zlib p.glib.out p.boost ]);
+    VERBOSE = "1";
+    INJECTED_LIBS2E_CXXFLAGS = "-v -Wno-unused-command-line-argument -L${libgomp}/lib";
     INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
     INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
     INJECTED_SOCI_SRC = pkgs.fetchFromGitHub {
@@ -178,4 +202,4 @@ let
     };
     LLVM_BUILD = "${s2e-llvm}";
   };
-in { inherit s2e-src s2e-llvm s2e-lib; }
+in { inherit s2e-src s2e-llvm s2e-lib libgomp; }

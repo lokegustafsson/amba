@@ -53,7 +53,7 @@
 
         packages = rust.packages // {
           default = rust.packages.decompiler;
-          inherit (s2e) s2e-src s2e-lib s2e-llvm;
+          inherit (s2e) s2e-src s2e-lib s2e-llvm libgomp;
         };
       });
 }
