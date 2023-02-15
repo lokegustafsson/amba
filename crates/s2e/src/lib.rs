@@ -1,4 +1,4 @@
-use autocxx::{prelude::*, subclass::prelude::*};
+use autocxx::prelude::*;
 
 autocxx::include_cpp! {
 	#include "s2e/CorePlugin.h"
