@@ -1,4 +1,4 @@
-name: nix-ci-cachix
+name: nix-ci
 
 
 on:
