@@ -64,6 +64,7 @@ fn main() -> miette::Result<()> {
 		"-DTARGET_PAGE_BITS=12",
 		"-DSE_RAM_OBJECT_BITS=12",
 		&format!("-DSE_RAM_OBJECT_MASK={}", !11),
+		"-w",
 	])
 	.build()?;
 
@@ -72,6 +73,8 @@ fn main() -> miette::Result<()> {
 		.compiler("clang++")
 		.includes(&libraries)
 		.warnings(false)
+		.extra_warnings(false)
+		.flag("-w")
 		.define("BOOST_BIND_GLOBAL_PLACEHOLDERS", "1")
 		.define("TARGET_PAGE_BITS", "12")
 		.define("SE_RAM_OBJECT_BITS", "12")
