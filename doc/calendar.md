@@ -9,8 +9,11 @@
 | 2023-02-06 Monday            | 15:15-17:00 | EG2515     | Group meeting                                 |
 | 2023-02-09 Thursday          | 13:15-15:00 | EG2515     | Group meeting                                 |
 | 2023-02-10 Friday            | 23:59       | Canvas     | Deadline project plan                         |
-| 2023-02-13 Monday            | 15:15-17:00 | EG2515     | Group+Supervisor meeting                      |
+| 2023-02-13 Monday            | 15:15-17:00 | EG2515     | Group meeting                                 |
+| 2023-02-15 Wednesday         | 13:00-14:00 | EG2515     | Group+Supervisor meeting                      |
 | 2023-02-16 Thursday          | 13:15-15:00 | EG2515     | Group meeting                                 |
+| 2023-02-20 Wednesday         | 15:15-17:00 | EG2515     | Group+Supervisor meeting                      |
+| 2023-02-23 Thursday          | 13:15-15:00 | EG2515     | Group meeting                                 |
 | 2023-02-23 Thursday          |             |            | Skicka draft bibliotekhand                    |
 | 2023-02-23 Thursday          | 14:30-15:30 | SemRum 1   | Fackspråkshandledning 1                       |
 | 2023-03-28 Tuesday           | 13:00-13:30 | Gruppyta 1 | Bibliotekshandledning 1                       |
