@@ -1,6 +1,6 @@
 use s2e::{
 	types::{
-		s2e::{ExecutionSignal, Plugin, S2EExecutionState, S2E},
+		s2e::{ExecutionSignal, S2EExecutionState},
 		TranslationBlock,
 	},
 	wrappers::hello_cpp,
