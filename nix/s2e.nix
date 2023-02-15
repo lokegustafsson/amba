@@ -125,6 +125,7 @@ let
       pkgs.libxcrypt
       pkgs.python3Minimal
     ];
+    BUILD_ARCH = "haswell";
     LD_PRELOAD_PATH = lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
     INJECTED_CLANG_CC = "${pkgs.clang_14}/bin/clang";
     INJECTED_CLANG_CXX = "${pkgs.clang_14}/bin/clang++";
@@ -143,16 +144,16 @@ let
     in [
       fake-curl
       p.clang_14
-      p.binutilsNoLibc
       p.cmake
       p.glib.dev
       p.libbsd
+      p.libmemcached
       p.libxcrypt
       p.pkg-config
       p.python3Minimal
       p.unzip
-      p.libmemcached
     ];
+    BUILD_ARCH = "haswell";
     CPATH = (makeIncludePath (let p = pkgs; in [ p.libelf p.zlib p.boost ]));
     LIBRARY_PATH = lib.makeLibraryPath
       (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost ]);
