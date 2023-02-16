@@ -178,7 +178,7 @@ let
     BUILD_ARCH = "haswell";
     CPATH = (makeIncludePath (let p = pkgs; in [ p.libelf p.zlib p.boost ]));
     LIBRARY_PATH = lib.makeLibraryPath
-      (let p = pkgs; in [ libgomp p.libelf p.zlib p.glib.out p.boost ]);
+      (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost ]);
     VERBOSE = "1";
     INJECTED_LIBS2E_CXXFLAGS = "-v -Wno-unused-command-line-argument -L${libgomp}/lib";
     INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
