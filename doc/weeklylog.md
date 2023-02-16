@@ -34,6 +34,16 @@
 - Friday all: Finalized project plan
 
 ## LP3LV5 2023-02-13 to 2023-02-19
+- Monday Samuel: Bindings fixed
+- Thursday Loke: Libs2e is now compiling, there are still some issues with other 
+	build targets.
+- Thursday Samuel: Added CI to our git repo and merged pull requests
+- Thursday Samuel: Looked around for suitable GUIs and set up relm
+- Thursday Enaya: Set up a vm to build s2e-env (tbd if it works)
+- Monday Linus: Worked on building s2e with docker (didn't work "out of the
+	box")
+- Monday Albin: fixed mailing list
+- Monday all: added suggestions to our "demo list"
 
 ## LP3LV6 2023-02-20 to 2023-02-26
 
