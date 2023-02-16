@@ -1,5 +1,6 @@
-bsc_thesis.pdf: \
+project_plan.pdf: \
   main.tex \
+  0_begreppslista.tex \
   1_bakgrund.tex \
   2_syfte.tex \
   3_problem.tex \
@@ -9,4 +10,4 @@ bsc_thesis.pdf: \
   7_tidsplan.tex \
   refs.bib
 	tectonic main.tex
-	mv main.pdf bsc_thesis.pdf
+	mv main.pdf project_plan.pdf

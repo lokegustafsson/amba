@@ -1,25 +1,72 @@
-\documentclass[12pt]{article}
+\documentclass[12pt, a4paper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[swedish]{babel}
-
-\usepackage{hyperref}
-
-\title{Projektrapport - Dekompilering med ungefärlig symbolisk exekvering}
-\author{
-    Albin Otterhäll\thanks{GU-IT} \and
-    Clara Salber\thanks{GU-IT} \and
-    Enayatullah Norozi\thanks{TKDAT} \and
-    Linus Wallman\thanks{TKITE} \and
-    Loke Gustafsson\thanks{TKTEM} \and
-    Samuel Kyletoft\footnotemark[3]
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{
+  amsmath,
+  amssymb,
+  caption,
+  color,
+  float,
+  graphicx,
+  listings,
+  siunitx,
+  tikz,
+  parskip,
+  pdflscape,
+  pgfgantt,
+  scrextend,
 }
 
+\usetikzlibrary{positioning}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  NICE PALETTE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% https://images.squarespace-cdn.com/content/v1/638773c92dfb4812d5f5ff28/1669823793535-UWL204TLLHME6SFDP2QZ/image-asset.png
+\definecolor{navy}{RGB}{16,37,38}
+\definecolor{ginger}{RGB}{205,126,89}
+\definecolor{seafoam}{RGB}{69,115,115}
+\definecolor{sunflower}{RGB}{221,178,71}
+\definecolor{jean}{RGB}{90,104,104}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  TITLE PAGE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Projektplan - Binäranalys med en hybrid av automatiska och manuella metoder}
+\author{
+    Albin Otterhäll \and
+    Clara Salberg \and
+    Enayatullah Norozi \and
+    Linus Wallman \and
+    Loke Gustafsson \and
+    Samuel Kyletoft
+}
+\date{2023-02-10}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT STRUCTURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PROJECT NAMES  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newcommand{\stoe}{S$^2$E}
+
 \maketitle
 
 \newpage
 
-Vad repporten ska innehålla:
-\url{https://chalmers.instructure.com/courses/22323/assignments/66457?module_item_id=337856}.
+% TODO remove this for final report
+\newpage
+
+\tableofcontents
+\newpage
+
+\addcontentsline{toc}{section}{Begreppslista}
+\section*{Begreppslista}
+\input{0_begreppslista.tex}
+
+\newpage
 
 \section{Bakgrund}
 \input{1_bakgrund.tex}
@@ -36,7 +83,7 @@ Vad repporten ska innehålla:
 \section{Metod/Genomförande}
 \input{5_metod.tex}
 
-\section{Samhälleliga och etiska aspekter, bedömning om det behöver beaktas för vald problemställning}
+\section{Etiska och samhälleliga aspekter}
 \input{6_etik.tex}
 
 \section{Tidsplan}
@@ -44,4 +91,5 @@ Vad repporten ska innehålla:
 
 \bibliographystyle{plain} % We choose the "plain" reference style
 \bibliography{refs} % Entries are in the refs.bib file
+
 \end{document}

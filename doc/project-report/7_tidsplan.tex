@@ -1,0 +1,142 @@
+Figur \ref{fig:tidsplan} visar en preliminär tidsplan för projektet och
+aktiviteter för varje läsvecka. Alla externa datum och deadlines för inlämningar
+är listade i tabell \ref{tab:deadlines}.
+
+
+\begin{table}[h]
+\caption{Datum och deadlines för viktiga aktiviteter}
+\begin{center}
+\begin{tabular}{| l | c |}
+\hline
+\bfseries{Aktivitet}                                 &  \bfseries{Datum} \\
+\hline
+Projektplan/Planeringsrapport                        &  2023-02-10\\
+Muntlig halvtidsredovisning                          &  2023-03-07\\
+Egen utvärdering 1                                   &  2023-03-12\\
+Slutrapport, förgranskning                           &  2023-04-27\\
+Sammanställd slutrapport                             &  2023-05-15\\
+Bidragsrapport                                       &  2023-05-16\\
+Film inlämning                                       &  2023-05-17\\
+Skriftlig individuell opposition                     &  2023-05-22\\
+Slutredovisning                                      &  2023-05-25/26\\
+Egen utvärdering 2                                   &  2023-05-29\\
+Slutlig inlämning av sammanställd slutrapport        &  2023-06-02\\
+    \hline
+\end{tabular}
+\label{tab:deadlines}
+\end{center}
+\end{table}
+
+\begin{figure}[htp]
+\begin{center}
+
+\newganttchartelement{foobar}{
+    foobar/.style={
+        shape=rectangle,
+        inner sep=0pt,
+        draw=gray!70!white,
+        % draw=black,
+        very thick,
+        top color=gray!40,
+        bottom color=gray!50,
+        rounded corners=2pt
+    },
+    foobar incomplete/.style={
+        /pgfgantt/foobar,
+        draw=gray!70!white,
+        top color=gray!30,
+        bottom color=gray!10
+    },
+    foobar label font=\slshape,
+}
+
+\begin{ganttchart}[
+        expand chart=\textwidth,
+        y unit chart=0.9cm,
+        foobar top shift=.3,
+        foobar height=.7,
+        vgrid={*{8}{gray, dotted}, *1{black, dashed}},
+        title/.style={fill=gray, draw=none},
+        title label font=\color{white}\bfseries,
+        title height=1,
+        progress=today,
+        progress label text=\relax,
+        today=4,
+        milestone inline label node/.append style={rotate=30},
+        milestone inline label node/.append style={left=2mm},
+        milestone top shift=.45,
+        milestone right shift=-.2,
+        milestone left shift=0.3,
+        foobar label font=\footnotesize,
+    ]{1}{19}
+    \gantttitle{LP 3}{9}        \gantttitle{LP 4}{9}        \gantttitle{}{1}\\
+    \gantttitlelist{1,...,9}{1} \gantttitlelist{1,...,9}{1} \gantttitle{}{1} \\
+
+    \ganttfoobar[inline]{Projektplan}{1}{4} \\
+
+    % Eget
+    \ganttfoobar[inline]{*\stoe-bygge}{2}{4} \\
+    \ganttfoobar[inline]{*\stoe-infra}{3}{5} \\
+    \ganttfoobar[inline]{*Demo-förslag}{5}{10} \\
+    \ganttfoobar[inline]{*Demo-implementation}{5}{12} \\
+    \ganttfoobar[inline]{*GUI-ramverk}{6}{11} \\ \\
+    \ganttfoobar[inline]{*Slutprodukt}{8}{15} \\
+
+    \ganttfoobar[inline]{Halvtidsredovisning}{6}{8} \\
+
+    % TODO include deadlines for drafts of report for feedback meetings with fackspråk.
+    \ganttfoobar[inline]{Film}{16}{17} \\
+    \ganttfoobar[inline]{Skriftlig opposition}{17}{18} \\
+    \ganttfoobar[inline]{Slutredovisning}{17}{18} \\
+
+    \ganttfoobar[inline, foobar inline label node/.append style={left=2mm}]{Projektrapport}{5}{19}
+    \ganttmilestone[inline]{Förgranskning}{14}{14}
+    \ganttmilestone[inline]{Slutrapport}{16}{16}
+    \ganttmilestone[inline]{Slutgiltig inlämning}{19}{19} \\
+
+    \ganttlink{elem1}{elem2}
+    \ganttlink{elem2}{elem4}
+    \ganttlink{elem2}{elem6}
+    \ganttlink{elem3}{elem4}
+    \ganttlink{elem4}{elem6}
+    \ganttlink{elem5}{elem6}
+
+\end{ganttchart}
+\end{center}
+\caption{Tidsplan}
+\label{fig:tidsplan}
+\end{figure}
+
+\subsection{Förklaring av aktiviteter i tidsplanen}
+
+Tidsplanen i figur~\ref{fig:tidsplan} innehåller deadlines i italics,
+administrativa och rapportrelaterade aktiviteter i normal stil och interna och
+produktrelaterade aktiviteter har en stjärna * som prefix. Här följer en
+förklaring av de produktrelaterade aktiviteterna:
+
+\begin{labeling}{tidsplansbegrepp}
+
+  \item [\textbf{\stoe-bygge}] Att etablera en miljö där \stoe:s huvudkomponent
+    \texttt{libs2e.so} kan byggas reproducibelt och köras tillsammans med QEMU
+    på en godtycklig binär, fast utan någon implementerad analys.
+
+  \item [\textbf{\stoe-infra}] Att generera Rust-bindings till \texttt{libs2e.so}.
+    Tooling för att kunna köra QEMU+\stoe\ med ett Rust-plugin på en testbinär.
+    Viss abstraktion som gör det ergonomiskt att utveckla Rust-plugin:et.
+
+  \item [\textbf{Demo-förslag}] Att skriftligt föreslå ett \textit{demo}, alltså
+    en analys som kan implementeras ovanpå \stoe\ i form av ett program med
+    specifikt syfte att genomföra en specifik sorts analys på små testprogram
+    implementerade som enskilda C-filer.
+
+  \item [\textbf{Demo-implementation}] Att implementera demon ovanpå \stoe, utan
+    att integrera deras analyser till en sammanhängande enhet.
+
+  \item [\textbf{GUI-ramverk}] Det kringarbete som krävs för att implementera
+    analyser i allmänhet i slutprodukten, däribland det kringarbete som krävs
+    för att bygga ett grafiskt gränssnitt.
+
+  \item [\textbf{Slutprodukt}] Slutprodukten, med analyser härstammande från
+    demon implementerade i en sammanhängande enhet.
+
+\end{labeling}

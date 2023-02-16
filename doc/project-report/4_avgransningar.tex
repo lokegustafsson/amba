@@ -1,0 +1,44 @@
+Att skapa en emulator är tidskrävande, dessutom är den resulterande produktens
+korrekthet inte tillförlitlig utan nogrann testning. För att fastställa
+korrekthet ska applikationen därför utnyttja existerande verktyg för att
+exekvera programmet med stöd för symbolisk exekvering. Detta möjliggör också
+bredare plattformssupport jämfört med en hemmasnickrad emulator.
+
+\subsection{\stoe}
+
+\stoe\cite{s2e} är en plattform för symbolisk exekvering som bygger på QEMU:s
+virtuella maskin och använder KLEE\cite{klee}, en motor för symbolisk
+exekvering, som interpreter för att möjliggöra symbolisk exekvering. \stoe\ är i
+sin tur utbyggbart med möjlighet för användaren att skriva ett eget plugin för
+att utföra analyser och används inom säkerhetsforskning för att till exempel
+analysera skadlig kod. \stoe\ användes som del av Galactica-systemet som spelade
+i DARPA Cyber Grand Challenge\cite{s2e_website}. \stoe\ är öppen källkod,
+väldokumenterat och underhålls aktivt.
+
+\subsection{SymQEMU}
+
+Ett alternativt verktyg för symbolisk exekvering är symQEMU\cite{symqemu},
+som också kombinerar QEMU:s virtuella maskin med KLEE:s motor för symbolisk
+exekvering. Till skillnad från \stoe\ kompilerar SymQEMU KLEE in i den
+analyserade binären och har jämförelsevis hög prestanda. Däremot har SymQEMU
+bristfällig dokumentation och är ej aktivt uppdaterat.
+
+\subsection{Beslut}
+
+Då SymQEMU ej uppdateras aktivt och har bristfällig dokumentation kommer \stoe\
+användas. Projektet avgränsas i och med att existerande verktyg (\stoe) kommer
+användas istället för att bygga en motor för symbolisk exekvering från grunden.
+
+\subsection{Konsekvenser}
+
+Att använda \stoe\ innebär att arbetet avgränsas till att skapa ett plugin som
+bygger ut motorn. Varken emulator eller motor ska byggas och de uppgifter som
+ingår i att skapa en exekveringsmotor exkluderas.
+
+Avgränsningen medför dessutom att fokus flyttas ifrån motorns tekniska detaljer
+till att utveckla en användbar slutprodukt som bygger ut \stoe:s redan
+existerande funktionalitet med ett grafiskt användargränsnitt och möjlighet att
+stega igenom, analysera och interaktivt besluta om värden under exekvering.
+
+Beslutet innebär att applikationens utformning blir bunden till \stoe:s tekniska
+begränsningar.
