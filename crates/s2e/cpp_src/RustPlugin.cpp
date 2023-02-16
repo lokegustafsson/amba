@@ -33,7 +33,7 @@ namespace plugins {
 S2E_DEFINE_PLUGIN(RustPlugin, "S2E plugin wrapper for a rust crate", "", );
 
 void RustPlugin::initialize() {
-	initialise();
+	initialise(this);
 }
 
 void RustPlugin::slotTranslateBlockStart(
@@ -42,11 +42,11 @@ void RustPlugin::slotTranslateBlockStart(
 	TranslationBlock *tb,
 	uint64_t pc
 ) {
-	slot_translate_block_start(signal, state, tb, pc);
+	slot_translate_block_start(this, signal, state, tb, pc);
 }
 
 void RustPlugin::slotExecuteBlockStart(s2e::S2EExecutionState *state, uint64_t pc) {
-	slot_execute_block_start(state, pc);
+	slot_execute_block_start(this, state, pc);
 }
 
 } // namespace plugins

@@ -1,7 +1,7 @@
 use s2e::{
 	types::{
 		s2e::{ExecutionSignal, S2EExecutionState},
-		TranslationBlock,
+		RustPlugin, TranslationBlock,
 	},
 	wrappers::hello_cpp,
 };
@@ -12,7 +12,7 @@ fn main() {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn initialise() {
+pub unsafe extern "C" fn initialise(_this: *mut RustPlugin) {
 	todo!()
 	// m_traceBlockTranslation = s2e()->getConfig()->getBool(getConfigKey() + ".traceBlockTranslation");
 	// m_traceBlockExecution = s2e()->getConfig()->getBool(getConfigKey() + ".traceBlockExecution");
@@ -21,6 +21,7 @@ pub unsafe extern "C" fn initialise() {
 
 #[no_mangle]
 pub unsafe extern "C" fn slot_translate_block_start(
+	_this: *mut RustPlugin,
 	_e: *mut ExecutionSignal,
 	_state: *mut S2EExecutionState,
 	_tb: *mut TranslationBlock,
@@ -37,7 +38,11 @@ pub unsafe extern "C" fn slot_translate_block_start(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn slot_execute_block_start(_state: *mut S2EExecutionState, _pc: u64) {
+pub unsafe extern "C" fn slot_execute_block_start(
+	_this: *mut RustPlugin,
+	_state: *mut S2EExecutionState,
+	_pc: u64,
+) {
 	todo!()
 	// getDebugStream(state) << "Executing block at " << hexval(pc) << "\n";
 }

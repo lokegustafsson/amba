@@ -31,7 +31,7 @@ fn main() -> miette::Result<()> {
 	let boost_libs = PathBuf::from(env!("BOOST_PATH"));
 	let llvm_libs = PathBuf::from(env!("LLVM_PATH"));
 
-	let helpers = PathBuf::from("cpp_src");
+	let helpers = PathBuf::from("./cpp_src");
 
 	// Breaks on reordering!!
 	let libraries = [

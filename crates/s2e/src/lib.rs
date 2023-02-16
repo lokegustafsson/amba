@@ -2,6 +2,7 @@ autocxx::include_cpp! {
 	#include "s2e/CorePlugin.h"
 	#include "s2e/Plugin.h"
 	#include "s2e/S2EExecutionState.h"
+	#include "RustPlugin.h"
 	safety!(unsafe_ffi)
 
 	generate!("s2e::Plugin")
@@ -9,6 +10,7 @@ autocxx::include_cpp! {
 	generate!("s2e::ExecutionSignal")
 	generate!("s2e::S2EExecutionState")
 	generate!("TranslationBlock")
+	generate!("s2e::plugins::RustPlugin")
 }
 
 pub mod types {
@@ -16,7 +18,7 @@ pub mod types {
 		pub use crate::ffi::s2e::*;
 	}
 
-	pub use crate::ffi::*;
+	pub use crate::ffi::{s2e::plugins::RustPlugin, *};
 }
 
 extern "C" {
