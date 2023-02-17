@@ -78,3 +78,21 @@
 
  	touch $@
 
+@@ -800,7 +797,7 @@ TOOLS_CONFIGURE_FLAGS = -DCMAKE_INSTALL_PREFIX=$(S2E_PREFIX)              \
+                         -DS2EPLUGINS_SRC_DIR=$(S2E_SRC)/libs2eplugins/src \
+                         -G "Unix Makefiles"
+
+-stamps/tools-debug-configure: stamps/llvm-debug-make stamps/libvmi-debug-make stamps/libfsigc++-debug-make stamps/libq-debug-make
++stamps/tools-debug-configure: stamps/llvm-debug-make stamps/libvmi-debug-make stamps/libfsigc++-debug-make stamps/libq-debug-make stamps/protobuf-make
+ stamps/tools-debug-configure: CONFIGURE_COMMAND = cmake $(TOOLS_CONFIGURE_FLAGS)                        \
+                                                   -DLLVM_DIR=$(LLVM_BUILD)/llvm-debug/lib/cmake/llvm    \
+                                                   -DVMI_DIR=$(S2E_BUILD)/libvmi-debug                   \
+@@ -810,7 +807,7 @@ stamps/tools-debug-configure: CONFIGURE_COMMAND = cmake $(TOOLS_CONFIGURE_FLAGS)
+                                                   -DCMAKE_CXX_FLAGS="$(CXXFLAGS_DEBUG)"                 \
+                                                   $(S2E_SRC)/tools
+
+-stamps/tools-release-configure: stamps/llvm-release-make stamps/libvmi-release-make stamps/libfsigc++-release-make stamps/libq-release-make
++stamps/tools-release-configure: stamps/llvm-release-make stamps/libvmi-release-make stamps/libfsigc++-release-make stamps/libq-release-make stamps/protobuf-make
+ stamps/tools-release-configure: CONFIGURE_COMMAND = cmake $(TOOLS_CONFIGURE_FLAGS)                          \
+                                                     -DLLVM_DIR=$(LLVM_BUILD)/llvm-release/lib/cmake/llvm    \
+                                                     -DVMI_DIR=$(S2E_BUILD)/libvmi-release                   \

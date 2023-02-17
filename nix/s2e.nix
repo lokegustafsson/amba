@@ -124,6 +124,18 @@ let
     name = "clang-and-llvm";
     paths = [ pkgs.clang_14 pkgs.llvmPackages_14.llvm ];
   };
+
+  BUILD_ARCH = "haswell";
+  INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
+  INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
+  INJECTED_RAPIDJSON_SRC = pkgs.fetchFromGitHub {
+    owner = "Tencent";
+    repo = "rapidjson";
+    rev = "fd3dc29a5c2852df569e1ea81dbde2c412ac5051";
+    sha256 = "sha256-r86AJJiJz2mv/2/NgtSObIVgGR3IljL3cbhYzAtrCzQ=";
+  };
+  LLVM_BUILD = "${s2e-llvm}";
+
   s2e-llvm = pkgs.stdenv.mkDerivation {
     name = "s2e-llvm";
     src = s2e-src;
@@ -143,10 +155,7 @@ let
       pkgs.libxcrypt
       pkgs.python3Minimal
     ];
-    BUILD_ARCH = "haswell";
-    LD_PRELOAD_PATH = lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
-    INJECTED_CLANG_CC = "${pkgs.clang_14}/bin/clang";
-    INJECTED_CLANG_CXX = "${pkgs.clang_14}/bin/clang++";
+    inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
   };
   libgomp = let
     version = "11.3.0";
@@ -178,15 +187,8 @@ let
     buildPhase = ''
       mkdir -p $out
 
-      #S2E_PREFIX=$out make -f ./Makefile install
-
       S2E_PREFIX=$out make -f ./Makefile stamps/libs2e-release-install \
-        stamps/libvmi-release-install stamps/llvm-release-install \
-        stamps/guest-tools64-install stamps/tools-release-install
-
-      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools32-install
-      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools32-win-install
-      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools64-win-install
+        stamps/libvmi-release-install stamps/llvm-release-install
     '';
     buildInputs = let p = pkgs;
     in [
@@ -196,38 +198,77 @@ let
       p.glib.dev
       p.libbsd
       p.libmemcached
-      p.libxcrypt
       p.pkg-config
-      p.python3Minimal
       p.unzip
-      p.nasm
     ];
-    BUILD_ARCH = "haswell";
-    CPATH = (makeIncludePath (let p = pkgs;
-    in [ p.libelf p.zlib p.boost p.glibc.dev p.pkgsCross.gnu32.glibc.dev ]));
-    LIBRARY_PATH = lib.makeLibraryPath
-      (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost p.glibc.static ]);
+    inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
+    CPATH = (makeIncludePath [ pkgs.libelf pkgs.boost ]);
+    LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libelf pkgs.boost ];
     INJECTED_LIBS2E_CXXFLAGS =
       "-Wno-unused-command-line-argument -L${libgomp}/lib";
-    INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
-    INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
+
     INJECTED_SOCI_SRC = pkgs.fetchFromGitHub {
       owner = "SOCI";
       repo = "soci";
       rev = "438e3549594eb59d84b434c814647648e7c2f10a";
       sha256 = "sha256-HsQyHhW8EP7rK/Pdi1TSXee9yKJsujoDE9QkVdU9WIk=";
     };
-    INJECTED_RAPIDJSON_SRC = pkgs.fetchFromGitHub {
-      owner = "Tencent";
-      repo = "rapidjson";
-      rev = "fd3dc29a5c2852df569e1ea81dbde2c412ac5051";
-      sha256 = "sha256-r86AJJiJz2mv/2/NgtSObIVgGR3IljL3cbhYzAtrCzQ=";
-    };
     INJECTED_GTEST_SRC = pkgs.fetchurl {
       url =
         "https://github.com/google/googletest/archive/release-1.11.0.tar.gz";
       sha256 = "sha256-tIcL8SH/d5W6INILzdhie44Ijy0dqymaAxwQNO3ck9U=";
     };
-    LLVM_BUILD = "${s2e-llvm}";
+    inherit INJECTED_RAPIDJSON_SRC LLVM_BUILD;
   };
-in { inherit s2e-src s2e-llvm s2e-lib libgomp; }
+  s2e-tools = pkgs.stdenvNoCC.mkDerivation {
+    name = "s2e-tools";
+    src = s2e-src;
+    dontConfigure = true;
+    dontInstall = true;
+    dontMoveLib64 = true;
+    patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
+    buildPhase = ''
+      mkdir -p $out
+      S2E_PREFIX=$out make -f ./Makefile stamps/tools-release-install
+    '';
+    buildInputs = let p = pkgs;
+    in [ fake-curl p.clang_14 p.cmake p.glib.dev p.libbsd p.pkg-config ];
+    inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
+    CPATH = (makeIncludePath (let p = pkgs;
+    in [ p.libelf p.boost p.glibc.dev p.pkgsCross.gnu32.glibc.dev ]));
+    LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libelf ];
+    inherit INJECTED_RAPIDJSON_SRC LLVM_BUILD;
+  };
+  s2e-guest-tools = pkgs.stdenvNoCC.mkDerivation {
+    name = "s2e-guest-tools";
+    src = s2e-src;
+    dontConfigure = true;
+    dontInstall = true;
+    dontMoveLib64 = true;
+    patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
+    buildPhase = ''
+      mkdir -p $out
+
+      S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools64-install
+
+      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools32-install
+      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools32-win-install
+      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools64-win-install
+    '';
+    buildInputs = let p = pkgs; in [ fake-curl p.clang_14 p.cmake p.nasm ];
+    inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
+    CPATH = (makeIncludePath [ pkgs.libelf ]);
+    LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libelf pkgs.glibc.static ];
+  };
+  s2e = pkgs.stdenvNoCC.mkDerivation {
+    name = "s2e";
+    phases = [ "installPhase" "fixupPhase" ];
+    buildInputs = [ pkgs.rsync ];
+    installPhase = ''
+      rsync -a ${s2e-lib}/* ${s2e-tools}/* ${s2e-guest-tools}/* $out/
+      chmod -R +w $out
+      rsync -a $out/lib64/* $out/lib/
+      rm -r $out/lib64
+    '';
+  };
+in { inherit s2e-src s2e-llvm s2e-lib s2e-tools s2e-guest-tools s2e libgomp; }
