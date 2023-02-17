@@ -70,7 +70,7 @@
 
         packages = rust.packages // {
           default = rust.packages.amba;
-          inherit (s2e) s2e;
+          inherit (s2e) s2e s2e-env;
         };
       });
 }
