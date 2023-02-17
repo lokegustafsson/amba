@@ -86,6 +86,24 @@ let
           "sha256-fIHXmAIvgedQfxpg1oF/Y6p25ImqTnBVJV8hoi9eUmo=";
         "https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protobuf-cpp-3.7.1.tar.gz" =
           "sha256-l/bNqgck1ajNM3XV9c9L0lPVrVKRFU9TPtDZSp1QHvM=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//s2e32.sys" =
+          "sha256-h+/M6MJEpOkTN5VwuEUqwxkKTD2GxDAxrphAnygk1vQ=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//s2e.inf" =
+          "sha256-HZ4soKEoqYIrbd9tyvQtmMf15a/th5ky/YRejDfI0AQ=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//drvctl32.exe" =
+          "sha256-QiD7z6cqI0slhLu17GNQmoQbRZAq2XfqVqkaRII9sOg=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//libs2e32.dll" =
+          "sha256-siqSOLCV0SMx1gE7eEbTRIDVWR4/c2t2oJbyVsb5IWk=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//tickler32.exe" =
+          "sha256-/dFzz0ZsFegxaptIVAQ3MOq3H1+DU9ZaQN4zham88Kw=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//s2e.sys" =
+          "sha256-vdqJpTKvn0HSUjDlu7nktpF0kePNX58fQR1xgn2tYP8=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//drvctl.exe" =
+          "sha256-6QmL4hurpPEPZ7H9KXyXakity91wpDIGfHaaTyNE36c=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//libs2e64.dll" =
+          "sha256-m2F+ZpQEYCZ5/VvhTRjY+iTvikpH395+u44gbJZRooQ=";
+        "https://github.com/S2E/s2e/releases/download/v2.0.0//tickler64.exe" =
+          "sha256-aaMFczwxtp91/qCF86nl0X+Cjb6a7tEdmeu/LZGvJUA=";
       });
     dict = lib.strings.concatStringsSep ","
       (lib.attrsets.mapAttrsToList (url: drv: "'${url}': '${drv}'") content);
@@ -159,8 +177,16 @@ let
     patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
+
       #S2E_PREFIX=$out make -f ./Makefile install
-      S2E_PREFIX=$out make -f ./Makefile stamps/libs2e-release-install
+
+      S2E_PREFIX=$out make -f ./Makefile stamps/libs2e-release-install \
+        stamps/libvmi-release-install stamps/llvm-release-install \
+        stamps/guest-tools64-install stamps/tools-release-install
+
+      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools32-install
+      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools32-win-install
+      #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools64-win-install
     '';
     buildInputs = let p = pkgs;
     in [
@@ -174,13 +200,16 @@ let
       p.pkg-config
       p.python3Minimal
       p.unzip
+      p.nasm
     ];
     BUILD_ARCH = "haswell";
-    CPATH = (makeIncludePath (let p = pkgs; in [ p.libelf p.zlib p.boost ]));
+    CPATH = (makeIncludePath (let p = pkgs;
+    in [ p.libelf p.zlib p.boost p.glibc.dev p.pkgsCross.gnu32.glibc.dev ]));
     LIBRARY_PATH = lib.makeLibraryPath
-      (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost ]);
+      (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost p.glibc.static ]);
     VERBOSE = "1";
-    INJECTED_LIBS2E_CXXFLAGS = "-v -Wno-unused-command-line-argument -L${libgomp}/lib";
+    INJECTED_LIBS2E_CXXFLAGS =
+      "-v -Wno-unused-command-line-argument -L${libgomp}/lib";
     INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
     INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
     INJECTED_SOCI_SRC = pkgs.fetchFromGitHub {
