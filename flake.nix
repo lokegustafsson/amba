@@ -62,7 +62,6 @@
               p.rust-bin.stable.latest.default
               p.rust-bin.stable.latest.rust-analyzer
             ];
-
           };
           doc = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [ tectonic gnumake ];
