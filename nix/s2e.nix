@@ -207,9 +207,8 @@ let
     in [ p.libelf p.zlib p.boost p.glibc.dev p.pkgsCross.gnu32.glibc.dev ]));
     LIBRARY_PATH = lib.makeLibraryPath
       (let p = pkgs; in [ p.libelf p.zlib p.glib.out p.boost p.glibc.static ]);
-    VERBOSE = "1";
     INJECTED_LIBS2E_CXXFLAGS =
-      "-v -Wno-unused-command-line-argument -L${libgomp}/lib";
+      "-Wno-unused-command-line-argument -L${libgomp}/lib";
     INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
     INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
     INJECTED_SOCI_SRC = pkgs.fetchFromGitHub {
