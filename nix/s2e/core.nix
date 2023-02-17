@@ -1,53 +1,7 @@
-{ pkgs, lib }:
+{ repositories, pkgs, lib }:
 let
   makeIncludePath = lib.makeSearchPathOutput "dev" "include";
 
-  # From (https://github.com/S2E/manifest/blob/master/default.xml)
-  repositories = builtins.listToAttrs (builtins.map (set: {
-    name = set.repo;
-    value = pkgs.fetchFromGitHub ({ owner = "S2E"; } // set);
-  }) [
-    {
-      repo = "scripts";
-      rev = "cfc158d7b82b55e21982e04cf9109f09cb3ed614";
-      sha256 = "sha256-LI7KChvD1TmQUZqCYQ2rXHfcKUUemklq80nZAilzQ44=";
-    }
-    {
-      repo = "decree";
-      rev = "a523ec2ec1ca1e1369b33db755bed135af57e09c";
-      sha256 = "sha256-BziFix8sUWvvpquv+9xvLoVL+gI/VKD0Gmn6LGaZACo=";
-    }
-    {
-      repo = "guest-images";
-      rev = "70c8591cf109d12eb35899569190a7fb1b9ae31b";
-      sha256 = "sha256-oa513Tlgu8S8G9CCb0Q/tvmxsjLL0tVtTDCU2nkSJnQ=";
-    }
-    {
-      repo = "qemu";
-      rev = "638782a47ed9bb3f280b57a3627bb4e11b2a9cf1";
-      sha256 = "sha256-hGcUKp+hXjZNYxJ2fdRSAbGM+4u5fKiwUDlyyRQS8Lw=";
-    }
-    {
-      repo = "s2e";
-      rev = "60a21a84fa1ab4754c1067f4efa3188feba59dcb";
-      sha256 = "sha256-zeySmRIneMUfhcYljyO8NRXU95a7twFen93xNOA9gdI=";
-    }
-    {
-      repo = "s2e-env";
-      rev = "98d68b694b18ed24760e67caa07885b57bba9ca8";
-      sha256 = "sha256-zV0Uk5iu3H7EWXpmkGrJz2gs2nlSgLPibg8n2i0Ho4I=";
-    }
-    {
-      repo = "s2e-linux-kernel";
-      rev = "81dcf04137d1ff68989d7823dc0689751affe3cd";
-      sha256 = "sha256-803cDp4gw9Lw8gQmfUwm4NMpG5NZGhiPrxRm7RJZinw=";
-    }
-    {
-      repo = "pyelftools";
-      rev = "a007128bb89b66e08a03fce7bfdafeb01be21f0b";
-      sha256 = "sha256-LIA1Pghs7LKQs4GdB2xQqaow0ertUQWWHZrXBjUq7O4=";
-    }
-  ]);
   s2e-src = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-src";
     inherit (repositories) scripts s2e;
@@ -146,7 +100,7 @@ let
     src = s2e-src;
     dontConfigure = true;
     dontInstall = true;
-    patches = [ ./makefile-llvm.patch ];
+    patches = [ ../patches/s2e/makefile-llvm.patch ];
     buildPhase = ''
       mkdir -p $out
       mv * $out/
@@ -188,7 +142,8 @@ let
     dontConfigure = true;
     dontInstall = true;
     dontMoveLib64 = true;
-    patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
+    patches =
+      [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
 
@@ -231,7 +186,8 @@ let
     dontConfigure = true;
     dontInstall = true;
     dontMoveLib64 = true;
-    patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
+    patches =
+      [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
       S2E_PREFIX=$out make -f ./Makefile stamps/tools-release-install
@@ -250,7 +206,8 @@ let
     dontConfigure = true;
     dontInstall = true;
     dontMoveLib64 = true;
-    patches = [ ./makefile-llvm.patch ./makefile-git.patch ];
+    patches =
+      [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
 
@@ -270,174 +227,10 @@ let
     phases = [ "installPhase" "fixupPhase" ];
     buildInputs = [ pkgs.rsync ];
     installPhase = ''
-      rsync -a ${s2e-lib}/* ${s2e-tools}/* ${s2e-guest-tools}/* $out/
+      rsync -a ${s2e-lib}/* ${s2e-tools}/* ${s2e-guest-tools}/* ${pkgs.qemu}/* $out/
       chmod -R +w $out
       rsync -a $out/lib64/* $out/lib/
       rm -r $out/lib64
     '';
   };
-  s2e-env = pkgs.python3Packages.buildPythonPackage {
-    name = "s2e-env";
-    src = repositories.s2e-env;
-    patches = [ ./s2e-env.patch ];
-    doCheck = false;
-
-    propagatedBuildInputs = let
-      p = pkgs.python3Packages;
-      unicorn = pkgs.stdenv.mkDerivation rec {
-        pname = "unicorn";
-        version = "1.0.2-rc3";
-
-        src = pkgs.fetchFromGitHub {
-          owner = "unicorn-engine";
-          repo = pname;
-          rev = version;
-          sha256 = "sha256-wgs+STqYWzTXeAER6qnBFIq8r6QX6i1I8xuD5lOKWT0=";
-        };
-
-        nativeBuildInputs = [ pkgs.pkgconfig pkgs.cmake pkgs.python3 ];
-      };
-      pyelftools = p.buildPythonPackage {
-        name = "pyelftools";
-        src = repositories.pyelftools;
-        PYTHONPATH = "${repositories.pyelftools}/test";
-      };
-
-      protobuf = p.buildPythonPackage rec {
-        pname = "protobuf";
-        version = "3.20.1";
-        src = p.fetchPypi {
-          inherit pname version;
-          sha256 = "sha256-rcMVZtAn9F7+P0TutbHzKdpDiRY01hx1pZROm+bdQsk=";
-        };
-      };
-    in [
-      pyelftools
-      (p.buildPythonPackage rec {
-        pname = "pdbparse";
-        version = "1.5";
-        src = p.fetchPypi {
-          inherit pname version;
-          sha256 = "sha256-braJoTaM7JA4nOweTWVHnnm70PH/p94TsIEtqRlDcLw=";
-        };
-        propagatedBuildInputs = [
-          (p.buildPythonPackage rec {
-            pname = "pefile";
-            version = "2019.4.18";
-            doCheck = false;
-            src = p.fetchPypi {
-              inherit pname version;
-              sha256 = "sha256-pdboMFxrIQhJtHphdN35xFKyiINAuBd4dLhiumwgdkU=";
-            };
-            propagatedBuildInputs = [ p.future ];
-          })
-          (p.buildPythonPackage rec {
-            pname = "construct";
-            version = "2.9.52";
-            doCheck = false;
-            src = p.fetchPypi {
-              inherit pname version;
-              sha256 = "sha256-Xpysve3StvcGWSNS+kR+qQ9sp+n7tZH3R1SId9bYtGc=";
-            };
-          })
-        ];
-      })
-      p.sh
-      p.pygments
-      p.patool
-      (p.buildPythonPackage rec {
-        pname = "alive-progress";
-        version = "3.0.1";
-        src = p.fetchPypi {
-          inherit pname version;
-          sha256 = "sha256-MkURQlO2rbSzjyoqGCjt/NnowBL34wpc7xkyynNE60Q=";
-        };
-        propagatedBuildInputs = [
-          (p.buildPythonPackage rec {
-            pname = "about-time";
-            version = "4.2.1";
-            src = p.fetchPypi {
-              inherit pname version;
-              sha256 = "sha256-alOIYtM85n2ZdCnRSZgxDh2/2my32bv795nEcJhH/s4=";
-            };
-          })
-          p.grapheme
-        ];
-      })
-      (p.buildPythonPackage rec {
-        pname = "PyTrie";
-        version = "0.4.0";
-        doCheck = false;
-        src = p.fetchPypi {
-          inherit pname version;
-          sha256 = "sha256-j0SI9ALTRlmT+2tu+gmGaEntjNp5A7UGR7fQNCuAU3k=";
-        };
-        propagatedBuildInputs = [ p.sortedcontainers ];
-      })
-      p.termcolor
-      p.distro
-      p.jinja2
-      p.pyftpdlib
-      p.pyyaml
-      (p.buildPythonPackage rec {
-        pname = "pyunpack";
-        version = "0.2.2";
-        src = p.fetchPypi {
-          inherit pname version;
-          sha256 = "sha256-jbjTUOMymtBvoKoAqigpX1ur+MEknOJiksAm6HW6JDY=";
-        };
-        propagatedBuildInputs = [ p.EasyProcess p.entrypoint2 ];
-      })
-      protobuf
-      p.psutil
-      (p.buildPythonPackage rec {
-        pname = "pwntools";
-        version = "4.3.1";
-        doCheck = false;
-        src = p.fetchPypi {
-          inherit pname version;
-          sha256 = "sha256-xGGI5xPEdhey2/PjLRhn+UjTXYL935qdIpSjP0dISoo=";
-        };
-        propagatedBuildInputs = [
-          p.paramiko
-          p.capstone
-          p.intervaltree
-          p.ropgadget
-          p.psutil
-          p.pysocks
-          p.python-dateutil
-          p.pyserial
-          p.packaging
-          p.Mako
-          p.pygments
-          p.requests
-          pyelftools
-          (p.buildPythonPackage rec {
-            pname = "unicorn";
-            version = "1.0.2rc3";
-            src = unicorn.src;
-            sourceRoot = "source/bindings/python";
-            prePatch = ''
-              ln -s ${unicorn}/lib/libunicorn.* prebuilt/
-            '';
-            checkPhase = ''
-              runHook preCheck
-              mv unicorn unicorn.hidden
-              patchShebangs sample_*.py shellcode.py
-              sh -e sample_all.sh
-              runHook postCheck
-            '';
-            pythonImportsCheck = [ "unicorn" ];
-          })
-        ];
-      })
-      p.immutables
-      p.python-magic
-      (p.protobuf3-to-dict.overrideAttrs (final: prev: {propagatedBuildInputs = [p.six protobuf];}))
-      p.mock
-    ];
-  };
-in {
-  inherit s2e-src s2e-llvm s2e-lib s2e-tools s2e-guest-tools s2e s2e-env
-    libgomp;
-}
+in { inherit s2e-src s2e-llvm s2e-lib s2e-tools s2e-guest-tools s2e libgomp; }

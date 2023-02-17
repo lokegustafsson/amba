@@ -1,0 +1,24 @@
+--- a/Makefile
++++ b/Makefile
+@@ -53,21 +53,11 @@ ifneq (,$(findstring -enable-kvm,$(QEMU_KVM)))
+     $(error /dev/kvm does not exist. You need KVM to build images)
+   endif
+
+-  ifeq (,$(findstring libvirtd,$(shell groups)))
+-    ifeq (,$(findstring kvm,$(shell groups)))
+-      $(error You must be member of the libvirtd or kvm groups to build images)
+-    endif
+-  endif
+-
+   ifneq (,$(findstring VBoxHeadless,$(shell ps aux)))
+     $(error VirtualBox is not compatible with KVM. Please stop all running VirtualBox instances first)
+   endif
+ endif
+
+-ifeq (,$(findstring docker,$(shell groups)))
+-  $(error You must be member of the docker group to build images)
+-endif
+-
+ endif #clean
+
+
