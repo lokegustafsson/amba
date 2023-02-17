@@ -50,7 +50,7 @@
             (mkNativeDep "s2e" [ p.clang_14 ])
           ];
         };
-        s2e = import ./nix/s2e.nix { inherit lib pkgs; };
+        s2e = import ./nix/s2e { inherit lib pkgs; };
       in {
         devShells = {
           default = rust.rustPkgs.workspaceShell {
@@ -71,7 +71,7 @@
 
         packages = rust.packages // {
           default = rust.packages.amba;
-          inherit (s2e) s2e s2e-env;
+          inherit (s2e) s2e s2e-env guest-images;
         };
       });
 }
