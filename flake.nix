@@ -71,7 +71,7 @@
 
         packages = rust.packages // {
           default = rust.packages.amba;
-          inherit (s2e) s2e-src s2e-lib s2e-llvm libgomp;
+          inherit (s2e) s2e;
         };
       });
 }
