@@ -4,7 +4,7 @@
 args@{
   release ? true,
   rootFeatures ? [
-    "decompiler/default"
+    "amba/default"
     "s2e/default"
   ],
   rustPackages,
@@ -38,7 +38,7 @@ in
 {
   cargo2nixVersion = "0.11.0";
   workspace = {
-    decompiler = rustPackages.unknown.decompiler."0.1.0";
+    amba = rustPackages.unknown.amba."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
   };
   "registry+https://github.com/rust-lang/crates.io-index".addr2line."0.19.0" = overridableMkRustCrate (profileName: rec {
@@ -83,6 +83,16 @@ in
     ];
     dependencies = {
       memchr = rustPackages."registry+https://github.com/rust-lang/crates.io-index".memchr."2.5.0" { inherit profileName; };
+    };
+  });
+  
+  "unknown".amba."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "amba";
+    version = "0.1.0";
+    registry = "unknown";
+    src = fetchCrateLocal (workspaceSrc + "/crates/amba");
+    dependencies = {
+      s2e = rustPackages."unknown".s2e."0.1.0" { inherit profileName; };
     };
   });
   
@@ -397,16 +407,6 @@ in
       proc_macro2 = rustPackages."registry+https://github.com/rust-lang/crates.io-index".proc-macro2."1.0.51" { inherit profileName; };
       quote = rustPackages."registry+https://github.com/rust-lang/crates.io-index".quote."1.0.23" { inherit profileName; };
       syn = rustPackages."registry+https://github.com/rust-lang/crates.io-index".syn."1.0.107" { inherit profileName; };
-    };
-  });
-  
-  "unknown".decompiler."0.1.0" = overridableMkRustCrate (profileName: rec {
-    name = "decompiler";
-    version = "0.1.0";
-    registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/decompiler");
-    dependencies = {
-      s2e = rustPackages."unknown".s2e."0.1.0" { inherit profileName; };
     };
   });
   

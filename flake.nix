@@ -26,13 +26,13 @@
         rust = import ./nix/rust.nix {
           inherit lib pkgs;
           workspace-binaries = {
-            decompiler = {
+            amba = {
               rpath = p: [ ];
               run_time_ld_library_path = p: [ ];
             };
           };
           extra-overrides = { mkNativeDep, mkEnvDep, p }: [
-            (mkNativeDep "decompiler" [ ])
+            (mkNativeDep "amba" [ ])
             (mkEnvDep "s2e" {
               # Required to parse s2e headers
               BOOST_PATH = "${pkgs.boost.dev}/include";
@@ -70,7 +70,7 @@
         };
 
         packages = rust.packages // {
-          default = rust.packages.decompiler;
+          default = rust.packages.amba;
           inherit (s2e) s2e-src s2e-lib s2e-llvm libgomp;
         };
       });
