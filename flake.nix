@@ -64,8 +64,9 @@
             ];
           };
           doc = pkgs.mkShell {
-            nativeBuildInputs = with pkgs; [ tectonic gnumake ];
+            packages = let p = pkgs; in [ p.tectonic p.gnumake ];
           };
+          s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
         };
 
         packages = rust.packages // {
