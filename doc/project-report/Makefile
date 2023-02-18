@@ -1,4 +1,4 @@
-project_plan.pdf: \
+group_42_project_report.pdf: \
   main.tex \
   0_begreppslista.tex \
   1_bakgrund.tex \
@@ -10,4 +10,4 @@ project_plan.pdf: \
   7_tidsplan.tex \
   refs.bib
 	tectonic main.tex
-	mv main.pdf project_plan.pdf
+	mv main.pdf group_42_project_report.pdf
