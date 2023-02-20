@@ -21,37 +21,44 @@ där bland annat autocxx ansågs som ett lovande alternativ.
 
 \subsection{Tillvägagångssätt}
 I avsikt att uppnå syftet med projektet, mer specifikt att utveckla ett
-binäranalysverktyg, bestämdes det att ta fram demon som ska leda det
+binäranalysverktyg för generella problem, bestämdes det att ta fram prototyper som ska leda det
 kontinuerliga utvecklingsarbetet.
 
-Ett demo ska bestå av en analys med hjälp av verktyget som ökar förståelse för
+En prototyp ska bestå av en analys med hjälp av verktyget som ökar förståelse för
 ett exempelprogram. Exempelprogrammet ska ha som mål att visa en förmåga i
 verktyget som underlättar förståelse för, eller belyser en känd intressant
-egenskap hos exempelprogrammet. Exempelprogrammen ska skrivas i C eftersom
+egenskap, exempelvis hos exempelprogrammet. Exempelprogrammen ska skrivas i C eftersom
 C-programs utseende i binärformat relativt väl motsvarar deras källkod. Detta
-förenklar binäranalys och låter demot fokusera på sitt huvudämne. Dessutom ska
+förenklar binäranalys och låter prototypen fokusera på sitt huvudämne. Dessutom ska
 programmen vara så enkla som möjligt samtidigt som de uppnår sina mål.
 
-Efter en framtagen id\'e för en demo och tillhörande exempelprogram, ska
-verktyget utvidgas och utvecklas för att göra demot genomförbart.
+Efter en framtagen id\'e för en prototyp och tillhörande exempelprogram, ska
+verktyget utvidgas och utvecklas för att göra analysen av prototypen genomförbar.
 
 Denna metod är önskad eftersom det tillåter att sätta uppnåbara delmål som styr
-funktionaliteter som ska implementeras härnäst. Demon fungerar som test på dessa
-funktionaliteter och visar att dessa är korrekta. Dessutom kan flera demon
+funktionaliteter som ska implementeras härnäst. Prototyperna fungerar som test på dessa
+funktionaliteter och visar att dessa är korrekta. Dessutom kan flera prototyper 
 utvecklas samtidigt vilket tillåter parallellism inom projektarbetet och
 framsteg på flera fronter.
-
-För att vidare kunna bestämma huruvida en demo är lämpligt och ska möjliggöras
-genom utvidgning av verktyget kommer en avgränsning ske efter vad som är rimligt;
-hur väl demots analysidé kan komma att tillämpas i verktyget och hur analysen
-ökar användbarhet av verktyget. Dessutom ska det sättas i perspektiv till den tid
-som krävs för att göra demot genomförbart med tanke på tidsramen för projektet.
 
 I ett senare och/eller parallellt steg ska ett grafiskt användargränssnitt
 utvecklas som tillåter användaren att traversera genom applikationen och göra
 egna beslut gällande förgreningar av programmet etc. där användaren själv
-bestämmer interaktivt nästa beslut som görs. Även detta arbetet styrs av demon
-och funktionaliteter som önskas.
+bestämmer interaktivt nästa beslut som görs. Även detta arbetet styrs av
+prototyper och funktionaliteter som önskas.
+
+\subsection{Evaluering av syfte}
+För att vidare kunna bestämma huruvida en prototyp är lämplig och ska möjliggöras
+genom utvidgning av verktyget kommer en avgränsning ske efter vad som är rimligt;
+hur väl prototypens analysidé kan komma att tillämpas i verktyget och hur analysen
+ökar användbarhet av verktyget. Dessutom ska det sättas i perspektiv till den tid
+som krävs för att göra prototypen genomförbar med tanke på tidsramen för projektet.
+
+Eftersom det huvudsakligen är prototyperna som styr den slutgiltiga
+funktionaliteten hos verktyget är det därför även dessa som styr hur väl syftet
+uppnåtts. Ett konkret sätt att mäta detta är hur generellt det slutgiltiga
+verktyget blir, det vill säga går det exempelvis att definiera nya tester, som verktyget
+ska kunna hantera, utan att göra ytterligare förändringar i verktyget 
 
 % Hur är detta kopplat till vårt syfte? Hur uppnår vi syftet med rapporten genom
 % vald metod?
