@@ -1,0 +1,40 @@
+--- a/Makefile.linux
++++ b/Makefile.linux
+@@ -178,33 +178,11 @@ endef
+
+ ### Building Linux kernel ###
+
+-# We need a special docker image to build the decree kernel.
+-# Its docker file ends with i386cgc, so we grep the image name for cgc
+-# and paste what we find to the architecture in order to build
+-# the right docker image.
+-CGCARCH=$(findstring cgc,$(1))
+-
+-# This creates the base docker image inside which the kernel will be built
+-$(STAMPS)/linux-build-%:
+-	$(call INFO_MSG,[$@] Building docker image...)
+-	mkdir -p $(STAMPS)
+-	cd $(SRC)/Linux/docker && docker build -t linux-build-$(call ARCH,$@) -f Dockerfile.$(call ARCH,$@) .
+-	touch $@
+-
+-# Build the kernel
+ define TEMPLATE_LINUX_KERNEL
+-  $(STAMPS)/$1-$2: $(STAMPS)/linux-build-$2$(call CGCARCH,$1) | $(TMPDIR)
+-	$(call INFO_MSG,[$$@] Building kernel...)
+-	rsync -a $(S2E_LINUX_KERNELS_ROOT)/$1 $(TMPDIR)/$1-$2
+-	cd $(TMPDIR)/$1-$2/$1 && mv config-$2 .config
+-
+-	# Remove old builds
+-	rm -rf $(TMPDIR)/$1-$2/*.deb
+-
+-	$(SRC)/Linux/docker/run-docker.sh $(SRC) $(S2E_LINUX_KERNELS_ROOT) linux-build-$2$(call CGCARCH,$1) \
+-	    $(TMPDIR)/$1-$2/$1 \
+-	    $(SRC)/Linux/docker/make-kernel.sh \
+-	       $(S2E_LINUX_KERNELS_ROOT)/include $(shell id -u) $(shell id -g)
++  $(STAMPS)/$1-$2: | $(TMPDIR)
++	mkdir -p $(STAMPS)
++	$(call INFO_MSG,[$$@] Copying kernel...)
++	copy_nix_built_linux_kernel $1-$2 $(TMPDIR)/$1-$2
+ 	touch $$@
+ endef
+

@@ -67,11 +67,13 @@
             packages = let p = pkgs; in [ p.tectonic p.gnumake ];
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
+          guest = s2e.guest-images-shell;
         };
 
         packages = rust.packages // {
           default = rust.packages.amba;
-          inherit (s2e) s2e s2e-env guest-images;
+          inherit (s2e)
+            s2e s2e-qemu s2e-env guest-images guest-kernel32 guest-kernel64;
         };
       });
 }

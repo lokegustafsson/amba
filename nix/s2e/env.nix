@@ -1,4 +1,4 @@
-{ repositories, pkgs, lib }:
+{ pkgs, lib, repositories }:
 let
   s2e-env = pkgs.python3Packages.buildPythonPackage {
     name = "s2e-env";
