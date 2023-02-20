@@ -19,8 +19,8 @@
 För att uppnå projektets syfte om att konstruera ett symboliskt-kapabelt
 binäranalysverktyg delas denna uppgift upp i mindre delar.
 
-Kärnan i ett \textit{korrekt} binäranalysverktyg är en
-\textit{exekveringsmotor}, en komponent som på ett korrekt vis kan köra
+Kärnan i ett korrekt binäranalysverktyg är en
+\emph{exekveringsmotor}, en komponent som på ett korrekt vis kan köra
 programmet. Att köra ett program innebär att ladda binären och dess bibliotek,
 hoppa till startadressen och sedan köra enskilda instruktioner. Om
 binäranalysverktyget ska kunna använda metoder som använder symbolisk exekvering
@@ -36,15 +36,17 @@ process communication). För att en \textit{exekveringsmotor} ska vara så
 brett tillämpbar som möjligt behöver den också stödja flera sorters
 omgivningskommunikation.
 
-Sammantaget är kraven på en \textit{exekveringsmotor} med stöd för symbolisk
-analys att den \begin{enumerate} \item kan ladda en binär i en konkret miljö
-		\item kan introducera symboliska variabler i denna miljö genom till
-			exempel omgivningskommunikation \item kan exekvera konkreta delar av
-			programmet med god prestanda genom att köra dessa delar av
-		programmet som maskinkod \item kan exekvera symboliska delar av
-			programmet på ett sätt som är tillräckligt kraftfullt för de
-			symboliska analyser som exekveringsmotorn ska användas till
-\end{enumerate} Dessutom behöver exekveringsmotorn kunna kontrolleras och dess
+Sammantaget är kraven på en exekveringsmotor med stöd för symbolisk analys att den
+\begin{enumerate}
+	\item kan ladda en binär i en konkret miljö;
+	\item kan introducera symboliska variabler i denna miljö genom till exempel kommunikation med omgivningen;
+	\item kan exekvera konkreta delar av programmet med god prestanda genom att köra dessa delar
+	avprogrammet som maskinkod; och
+	\item kan exekvera symboliska delar av programmet på ett sätt som är tillräckligt kraftfullt för de
+	symboliska analyser som exekveringsmotorn ska användas till.
+\end{enumerate}
+
+Dessutom behöver exekveringsmotorn kunna kontrolleras och dess
 slutsatser kunna användas av och presenteras i resten av programmet.
 Figur~\ref{schematic} visar förhållandet mellan användaren, analysverktyget och
 dess exekveringsmotor.
