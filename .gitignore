@@ -26,5 +26,5 @@
 **/*.tdo
 **/*.toc
 
-# 
+# Built PDFs
 !doc/pdf/**
