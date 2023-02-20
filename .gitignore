@@ -28,3 +28,6 @@
 
 # Built PDFs
 !doc/pdf/**
+
+# Local S2E copy
+/s2e
