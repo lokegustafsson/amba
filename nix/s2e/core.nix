@@ -1,7 +1,5 @@
-{ repositories, pkgs, lib }:
+{ pkgs, lib, repositories, makeIncludePath, qemu }:
 let
-  makeIncludePath = lib.makeSearchPathOutput "dev" "include";
-
   s2e-src = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-src";
     inherit (repositories) scripts s2e;
@@ -227,7 +225,7 @@ let
     phases = [ "installPhase" "fixupPhase" ];
     buildInputs = [ pkgs.rsync ];
     installPhase = ''
-      rsync -a ${s2e-lib}/* ${s2e-tools}/* ${s2e-guest-tools}/* ${pkgs.qemu}/* $out/
+      rsync -a ${s2e-lib}/* ${s2e-tools}/* ${s2e-guest-tools}/* ${qemu.s2e-qemu}/* $out/
       chmod -R +w $out
       rsync -a $out/lib64/* $out/lib/
       rm -r $out/lib64

@@ -47,54 +47,16 @@ let
     }
   ]);
 
-  core = import ./core.nix { inherit pkgs lib repositories; };
+  makeIncludePath = lib.makeSearchPathOutput "dev" "include";
+
+  qemu = import ./qemu.nix { inherit pkgs lib repositories makeIncludePath; };
+  core =
+    import ./core.nix { inherit pkgs lib repositories makeIncludePath qemu; };
   env = import ./env.nix { inherit pkgs lib repositories; };
-
-  fake-wget = let
-    content =
-      (builtins.mapAttrs (url: sha256: pkgs.fetchurl { inherit url sha256; }) {
-        "https://cdimage.debian.org/mirror/cdimage/archive/11.3.0/i386/iso-cd/debian-11.3.0-i386-netinst.iso" =
-          "sha256-GWdwWC6fT000z0EszfgRiyR+kCdIQwVdYnuX7WWixco=";
-      });
-    dict = lib.strings.concatStringsSep ","
-      (lib.attrsets.mapAttrsToList (url: drv: "'${url}': '${drv}'") content);
-  in pkgs.writeScriptBin "wget" ''
-    #!${pkgs.python3Minimal}/bin/python3
-    import sys
-    import shutil
-    argv = tuple(sys.argv)
-    if len(argv) == 5 and argv[1:3] == ("--no-use-server-timestamps", "-O"):
-      target = argv[3]
-      url = argv[4]
-      resolved = {${dict}}[url]
-      shutil.copyfile(resolved, target)
-    else:
-      raise Exception("fake wget given", argv)
-  '';
-
-  guest-images = pkgs.stdenvNoCC.mkDerivation {
-    name = "guest-images";
-    src = repositories.guest-images;
-    patches = [ ../patches/guest-images/makefile.patch ];
-    buildPhase = ''
-      patchShebangs ./scripts/*.py
-      make -j linux
-    '';
-    S2E_INSTALL_ROOT = core.s2e;
-    S2E_LINUX_KERNELS_ROOT = repositories.s2e-linux-kernel;
-
-    requiredSystemFeatures = [ "kvm" ];
-    buildInputs = [
-      (pkgs.python3.withPackages (py-pkgs: with py-pkgs; [ jinja2 ]))
-      fake-wget
-      pkgs.jq
-      pkgs.procps
-      pkgs.p7zip
-      pkgs.cdrkit
-    ];
-  };
+  guest = import ./guest.nix { inherit pkgs lib repositories core; };
 in {
   inherit (core) s2e-src s2e-llvm s2e-lib s2e-tools s2e-guest-tools s2e libgomp;
   inherit (env) s2e-env;
-  inherit guest-images;
+  inherit (guest) guest-images guest-kernel32 guest-kernel64 guest-images-shell;
+  inherit (qemu) qemu-src s2e-qemu;
 }
