@@ -1,8 +1,10 @@
 group_42_project_report.pdf: \
   main.tex \
   begreppslista.tex \
+  inledning.tex \
   bakgrund.tex \
   syfte.tex \
+  binaranalys.tex \
   problem.tex \
   avgransningar.tex \
   metod.tex \
