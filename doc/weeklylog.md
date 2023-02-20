@@ -53,7 +53,58 @@
 
 ## LP3LV6 2023-02-20 to 2023-02-26
 # TODO
+* Linus: Namnge nya relevanta rubriker för samtliga avsnitt från
+	projektplaneringen och Flytta relevant innehåll till
+	"rätt" avsnitt (se förslag på struktur till
+	slutrapporten)
+* Albin: Splitta upp problem i relevanta delar (klura på ett finurligt
+	att göra detta)
+* Albin, Clara, Linus: Hitta ett relevant paper vardera och skriv en
+	summary (se 2023-02-15.md)
+* Se över feedback från projektplaneringen (von hachts feedback) och
+	kolla vad vi kan skriva om eller utveckla (ish)
+	** Clara: Utveckla syfte (förstå nyttan och det
+                  akademiskt relevanta i arbetet)
+	** Linus: Beskriv hur avgör vi om syftet är uppnått och
+		hur vi går tillväga för att uppnå
+		detta (genomförande-del-ish (kopplat
+		till vad är ett lyckat demo?))
+* Albin: fixa mapphierarki för dokument i git repo
+* Clara: Skriva på teoridel, tydliggöra olika begrepp, koncept och
+	metoder specifika till vårt projekt
+* Albin: Konkretisera krav på prototyp -- hur definierar vi ett lyckat
+	demo?  (inte nödvändigtvis rapportspecifikt)
+* Linus: Tydliggör vad ett demo egentligen är och ytterligare utveckla
+	hur vi använder demo för hur vi uppnår vårt syfte (med
+	applikationen)
+* Background
+	Motivate reverse engineering
+	Add a number of real world use cases (the clickbaitier, the better)
+	Example that specifically motivates the need for a
+	manual automatic hybrid approach
+* Cohesive theory section
+	** Begrepp
+* Split repo in two to move meeting notes out of development?
+	Yay rebasing
+* Weekly log should contain c/p todo:s from meeting notes.
+* Write angry rant email to Wolfgang about Freedom of information and
+  fundamental human rights
+	Public repo
+	Public commit history and/or `weeklylog.md`
+* Linus skickar in, till både biblioteket och andra gruppen.
+* Läs deras rapport innan mötet på tors.
+* Loke: Titta på förbyggde guestimages.
 # DONE
+* Samuel: Har jobbat med upstream. Fallet jobbas på upstream. Testfallet minimeras, tar tid
+	** https://github.com/google/autocxx/issues/1238
+* Loke: Har jobbat med att bygga guestimages. Kan bygga kernels och
+	starta en ubuntuinstallation i qemu
+	** Headless qemu fastnar under installation av ubuntu. Minimal serial output
+	** Grafisk qemu klarar installation, men libs2e init misslyckas
+* Enaya: Har försökt jobba med s2e-env. Fastnade snabbt
+* Albin, Clara, Linus:
+	** Skrivit på rapporten
+	** Läst relevanta papers (ej summerade än)
 
 ## LP3LV7 2023-02-27 to 2023-03-05
 # TODO
