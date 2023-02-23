@@ -75,5 +75,12 @@
           inherit (s2e)
             s2e s2e-qemu s2e-env guest-images guest-kernel32 guest-kernel64;
         };
+        apps = {
+          # `nix run '.#build-guest-images' -- $BUILDDIR $OUTDIR`
+          build-guest-images = {
+            type = "app";
+            program = "${s2e.build-guest-images}";
+          };
+        };
       });
 }

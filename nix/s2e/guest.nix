@@ -161,4 +161,76 @@ let
       p.procps
     ];
   };
-in { inherit guest-kernel32 guest-kernel64 guest-images guest-images-shell; }
+  build-guest-images = let
+    SRC = pkgs.stdenvNoCC.mkDerivation {
+      name = "guest-images-src";
+      src = repositories.guest-images;
+      patches = [
+        ../patches/guest-images/makefile.patch
+        ../patches/guest-images/makefile.linux.patch
+        ../patches/guest-images/qemu.wrapper.patch
+      ];
+      installPhase = ''
+        mkdir -p $out
+        cp -r * $out/
+      '';
+      phases = [ "unpackPhase" "patchPhase" "fixupPhase" "installPhase" ];
+      buildInputs = [ pkgs.bash ];
+    };
+    S2E_INSTALL_ROOT = core.s2e;
+    S2E_LINUX_KERNELS_ROOT = repositories.s2e-linux-kernel;
+
+    PATH = let p = pkgs;
+    in lib.strings.makeBinPath [
+      (pkgs.python3.withPackages (py-pkgs: with py-pkgs; [ jinja2 ]))
+      copy_nix_built_linux_kernel
+      fake-wget
+      p.bash
+      p.cdrkit
+      p.cloud-utils
+      p.coreutils
+      p.findutils
+      p.fuse
+      p.gnumake
+      p.gnutar
+      p.jq
+      p.libguestfs-with-appliance
+      p.ncurses
+      p.p7zip
+      p.procps
+      p.rsync
+    ];
+  in pkgs.writeScript "build-guest-images" ''
+    #!${pkgs.bash}/bin/bash
+    set -e
+    BUILDDIR=$1
+    OUTDIR=$2
+
+    if [[ -z "$BUILDDIR" ]]; then
+        echo "error: MISSING BUILDDIR (first argument)"
+        exit 1
+    fi
+    if [[ -z "$OUTDIR" ]]; then
+        echo "error: missing OUTDIR (second argument)"
+        exit 1
+    fi
+    if test -d "$BUILDDIR"; then
+        echo "error: BUILDDIR=$BUILDDIR already exists"
+        exit 1
+    fi
+    if test -d "$OUTDIR"; then
+        echo "error: OUTDIR=$OUTDIR already exists"
+        exit 1
+    fi
+
+    export S2E_INSTALL_ROOT=${S2E_INSTALL_ROOT}
+    export S2E_LINUX_KERNELS_ROOT=${S2E_LINUX_KERNELS_ROOT}
+    export PATH=${PATH}
+    export GRAPHICS=" "
+
+    mkdir -p $BUILDDIR
+    cp -r ${SRC} $BUILDDIR/
+    chmod -R +w $BUILDDIR/*
+    time make -C $BUILDDIR/$(basename ${SRC}) ubuntu-22.04-x86_64 OUTDIR=$OUTDIR
+  '';
+in { inherit guest-kernel32 guest-kernel64 guest-images build-guest-images; }
