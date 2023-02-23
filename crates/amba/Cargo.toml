@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 s2e = { path = "../s2e" }
+cxx = "1.0" # Underspecified to make sure it's compatible with autocxx's cxx version
