@@ -65,6 +65,7 @@ fn main() -> miette::Result<()> {
 		"-DSE_RAM_OBJECT_BITS=12",
 		&format!("-DSE_RAM_OBJECT_MASK={}", !11),
 		"-w",
+		"-std=gnu++17",
 	])
 	.build()?;
 
@@ -75,6 +76,7 @@ fn main() -> miette::Result<()> {
 		.warnings(false)
 		.extra_warnings(false)
 		.flag("-w")
+		.flag("-std=gnu++17")
 		.define("BOOST_BIND_GLOBAL_PLACEHOLDERS", "1")
 		.define("TARGET_PAGE_BITS", "12")
 		.define("SE_RAM_OBJECT_BITS", "12")
