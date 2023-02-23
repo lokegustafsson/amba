@@ -40,7 +40,11 @@ public:
 
 	void slotExecuteBlockStart(s2e::S2EExecutionState *state, uint64_t pc);
 
-private:
+	void setTraceBlockTranslation(bool b);
+
+	void setTraceBlockExecution(bool b);
+
+	// private:
 	bool m_traceBlockTranslation;
 	bool m_traceBlockExecution;
 };

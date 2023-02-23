@@ -49,5 +49,13 @@ void RustPlugin::slotExecuteBlockStart(s2e::S2EExecutionState *state, uint64_t p
 	slot_execute_block_start(this, state, pc);
 }
 
+void RustPlugin::setTraceBlockTranslation(bool b) {
+	this->m_traceBlockTranslation = b;
+}
+
+void RustPlugin::setTraceBlockExecution(bool b) {
+	this->m_traceBlockExecution = b;
+}
+
 } // namespace plugins
 } // namespace s2e
