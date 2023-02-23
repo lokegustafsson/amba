@@ -57,6 +57,8 @@ let
 in {
   inherit (core) s2e-src s2e-llvm s2e-lib s2e-tools s2e-guest-tools s2e libgomp;
   inherit (env) s2e-env;
-  inherit (guest) guest-images guest-kernel32 guest-kernel64 guest-images-shell;
+  inherit (guest)
+    guest-images guest-kernel32 guest-kernel64 guest-images-shell
+    build-guest-images;
   inherit (qemu) qemu-src s2e-qemu;
 }
