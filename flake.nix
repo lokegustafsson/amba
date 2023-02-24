@@ -82,6 +82,17 @@
           doc = pkgs.mkShell {
             packages = let p = pkgs; in [ p.stable.tectonic p.texlab p.gnumake ];
           };
+          c_dev = pkgs.mkShell {
+            packages = (with pkgs; [
+              mold
+              clang-tools_14
+              gnumake
+            ]) ++ (with pkgs.llvmPackages_14; [
+              libcxxClang
+              libcxx
+              libcxxabi
+            ]);
+          };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
         };
 
