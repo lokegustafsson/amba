@@ -35,3 +35,6 @@
 
 # Cache signing key
 eurydice-private-key
+
+# C/C++ object files
+**/*.o
