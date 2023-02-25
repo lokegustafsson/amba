@@ -81,6 +81,10 @@
             type = "app";
             program = "${s2e.build-guest-images}";
           };
+          s2e-env = {
+            type = "app";
+            program = "${s2e.s2e-env}/bin/s2e";
+          };
         };
       });
 }
