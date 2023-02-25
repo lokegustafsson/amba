@@ -55,18 +55,15 @@ fn main() -> miette::Result<()> {
 		&glibc,
 	];
 
-	autocxx_build::Builder::new(
-		"src/lib.rs",
-		&libraries
-	)
-	.extra_clang_args(&[
-		"-DBOOST_BIND_GLOBAL_PLACEHOLDERS=1",
-		"-DTARGET_PAGE_BITS=12",
-		"-DSE_RAM_OBJECT_BITS=12",
-		&format!("-DSE_RAM_OBJECT_MASK={}", !11),
-		"-w",
-	])
-	.build()?;
+	autocxx_build::Builder::new("src/lib.rs", &libraries)
+		.extra_clang_args(&[
+			"-DBOOST_BIND_GLOBAL_PLACEHOLDERS=1",
+			"-DTARGET_PAGE_BITS=12",
+			"-DSE_RAM_OBJECT_BITS=12",
+			&format!("-DSE_RAM_OBJECT_MASK={}", !11),
+			"-w",
+		])
+		.build()?;
 
 	cc::Build::new()
 		.cpp(true)
