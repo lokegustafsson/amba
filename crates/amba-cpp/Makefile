@@ -26,7 +26,7 @@ CXX-FLAGS := \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
 S2E_PATH ?= ../../s2e
 
-Amba.o: src/Amba.cpp inc/Amba.h
+Amba.o: src/Amba.cpp inc/Amba.h inc/Numbers.h
 	$(CXX) $(CXX-FLAGS) src/Amba.cpp -o Amba.o -c
 
 clean:

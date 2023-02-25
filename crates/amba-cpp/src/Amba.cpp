@@ -1,3 +1,5 @@
+#include "Numbers.h"
+
 #include <s2e/ConfigFile.h>
 #include <s2e/S2E.h>
 #include <s2e/Utils.h>
