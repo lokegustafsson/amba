@@ -10,13 +10,16 @@ namespace plugins {
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
 
 void Amba::initialize() {
-	m_traceBlockTranslation = s2e()
+	m_traceBlockTranslation = this
+		->s2e()
 		->getConfig()
-		->getBool(getConfigKey() + ".traceBlockTranslation");
-	m_traceBlockExecution = s2e()
+		->getBool(this->getConfigKey() + ".traceBlockTranslation");
+	m_traceBlockExecution = this
+		->s2e()
 		->getConfig()
-		->getBool(getConfigKey() + ".traceBlockExecution");
-	s2e()->getCorePlugin()
+		->getBool(this->getConfigKey() + ".traceBlockExecution");
+	this->s2e()
+		->getCorePlugin()
 		->onTranslateBlockStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -30,15 +33,15 @@ void Amba::slotTranslateBlockStart(
 	TranslationBlock *tb,
 	uint64_t pc
 ) {
-	if (m_traceBlockTranslation) {
-		getDebugStream(state) << "Translating block at " << hexval(pc) << "\n";
+	if (this->m_traceBlockTranslation) {
+		this->getDebugStream(state) << "Translating block at " << hexval(pc) << "\n";
 	}
-	if (m_traceBlockExecution) {
+	if (this->m_traceBlockExecution) {
 		signal->connect(sigc::mem_fun(*this, &Amba::slotExecuteBlockStart));
 	}
 }
 
-void Amba::slotExecuteBlockStart(S2EExecutionState *state, uint64_t pc) {
+void Amba::slotExecuteBlockStart(S2EExecutionState *state, u64 pc) {
 	getDebugStream(state) << "Executing block at " << hexval(pc) << "\n";
 }
 
