@@ -233,4 +233,4 @@ let
     chmod -R +w $BUILDDIR/*
     time make -C $BUILDDIR/$(basename ${SRC}) ubuntu-22.04-x86_64 OUTDIR=$OUTDIR
   '';
-in { inherit guest-kernel32 guest-kernel64 guest-images build-guest-images; }
+in { inherit guest-kernel32 guest-kernel64 guest-images guest-images-shell build-guest-images; }
