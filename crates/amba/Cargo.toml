@@ -6,4 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-s2e = { path = "../s2e" }
+chrono = "0.4"
+clap = { version = "4", features = ["derive"] }
+handlebars = "4"
+home = "0.5"
+serde = { version = "1", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
