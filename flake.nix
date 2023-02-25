@@ -83,14 +83,28 @@
             packages = let p = pkgs; in [ p.stable.tectonic p.texlab p.gnumake ];
           };
           c_dev = pkgs.mkShell {
+            # Libraries (because setting up pkgconfig is even worse)
+            BOOST_PATH = "${pkgs.boost.dev}/include";
+            CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
+            LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
+            GCCLIBS_PATH = "${pkgs.gcc-unwrapped}/include/c++/11.3.0";
+            GCCLIBS_PATH_L =
+              "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
+            GLIBC_PATH = "${pkgs.glibc.dev}/include";
+            S2E_PATH = "${s2e.s2e-src}/s2e";
+
+            # Packages
             packages = (with pkgs; [
               mold
               clang-tools_14
               gnumake
             ]) ++ (with pkgs.llvmPackages_14; [
+              libcxxStdenv
               libcxxClang
               libcxx
               libcxxabi
+              libclang
+              libunwind
             ]);
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
