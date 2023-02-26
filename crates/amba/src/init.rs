@@ -25,10 +25,10 @@ pub fn init(cmd: &mut Cmd, src_dir: &Path, data_dir: &Path) -> ExitCode {
 			.arg("--")
 			.args([images_build, images]),
 	);
-  if !build_result.success() {
-    tracing::error!("failed to build guest images");
-    return ExitCode::FAILURE;
-  }
+	if !build_result.success() {
+		tracing::error!("failed to build guest images");
+		return ExitCode::FAILURE;
+	}
 	unmount_images_imagefs(cmd, images);
 	remove_images_build(cmd, images_build);
 	return ExitCode::SUCCESS;

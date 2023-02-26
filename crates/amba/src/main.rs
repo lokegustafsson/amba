@@ -56,7 +56,7 @@ fn main() -> ExitCode {
 	tracing::info!(AMBA_INSTALL_DIR = ?install_dir);
 	tracing::info!(?args);
 
-	let cmd = &mut cmd::Cmd::new();
+	let cmd = &mut cmd::Cmd::get();
 	match args {
 		Args::Init(InitArgs {}) => init::init(cmd, &src_dir, &data_dir),
 		Args::Run(RunArgs {}) => run::run(cmd, &data_dir, &install_dir),
