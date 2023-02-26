@@ -35,8 +35,14 @@ impl S2EConfig {
 			seeds_dir: None,
 			has_guestfs: false,
 			guestfs_paths: Vec::new(),
-			modules: tracked_process_file_names.iter().map(|&name| [name.to_owned()]).collect(),
-			processes: tracked_process_file_names.iter().map(|&name| name.to_owned()).collect(),
+			modules: tracked_process_file_names
+				.iter()
+				.map(|&name| [name.to_owned()])
+				.collect(),
+			processes: tracked_process_file_names
+				.iter()
+				.map(|&name| name.to_owned())
+				.collect(),
 			use_cupa: true,
 			enable_pov_generation: false,
 			use_test_case_generator: true,

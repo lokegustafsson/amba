@@ -1,19 +1,21 @@
 use std::{
 	fs::{self, ReadDir},
 	io, iter,
-	marker::PhantomData,
 	path::Path,
 	process::{Command, ExitStatus},
+	sync::atomic::{AtomicBool, Ordering},
 };
 
 pub struct Cmd {
-	_marker: PhantomData<()>,
+	_no_construct: (),
 }
 impl Cmd {
-	pub fn new() -> Self {
-		Self {
-			_marker: PhantomData,
-		}
+	pub fn get() -> Self {
+		static ACQUIRED: AtomicBool = AtomicBool::new(false);
+		ACQUIRED
+			.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
+			.expect("Cmd::get() can only be called once");
+		Self { _no_construct: () }
 	}
 
 	pub fn command_spawn_wait(&mut self, command: &mut Command) -> ExitStatus {

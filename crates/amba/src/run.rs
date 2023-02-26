@@ -5,7 +5,7 @@ use std::{
 
 use chrono::offset::Local;
 
-use crate::cmd::Cmd;
+use crate::{cmd::Cmd, config::S2EConfig};
 
 // See also
 // https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh
@@ -26,7 +26,12 @@ pub fn run(cmd: &mut Cmd, data_dir: &Path, install_dir: &Path) -> ExitCode {
 		);
 		return ExitCode::FAILURE;
 	}
-	cmd.create_dir_all(session_dir);
+	cmd.create_dir_all(&session_dir);
+	{
+		let tracked_process_file_names = &[todo!()];
+		let project_dir = todo!();
+		S2EConfig::new(project_dir, tracked_process_file_names).save_to(cmd, &session_dir);
+	}
 
 	// supporting single- vs multi-path
 	let s2e_mode = match true {
@@ -48,7 +53,7 @@ pub fn run(cmd: &mut Cmd, data_dir: &Path, install_dir: &Path) -> ExitCode {
 		&qemu,
 		&libs2e,
 		&libs2e_dir,
-		s2e_config,
+		&s2e_config,
 		max_processes,
 		image_name,
 		&serial_out,
@@ -87,10 +92,7 @@ fn run_qemu(
 	}
 	cmd.command_spawn_wait(command.args([
 		"-drive",
-		&format!(
-			"file={},format=s2e,cache=writeback",
-			image.to_str().unwrap()
-		),
+		&format!("file={image_name},format=s2e,cache=writeback",),
 		"-k",
 		"en-us",
 		"-monitor",
