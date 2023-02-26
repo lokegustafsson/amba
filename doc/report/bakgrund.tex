@@ -8,15 +8,14 @@ maskinkoden direkt. Detta kan vara för att
   \item utesluta påverkan av kompilatorbuggar som ger oväntad maskinkod
   \item se hur UB (\emph{undefined behaviour}) har utnyttjats av kompilatorn
   \item källkoden inte är tillgänglig
-  \item analysera skadeprogram (teknisk term för malware på svenska enl.
-    it-ord.dg.se) där källkoden inte är tillgänglig.
-  \item i ett rekreationellt syfte köra Capture the Flag, \textit{CTF}.
+  \item analysera skadlig kod där källkoden inte är tillgänglig i syfte att förebygga 
+    attacker som skulle kunna leda till att en attackerare kan köra godtycklig kod 
+    på den utsatta datorn
+  \item i ett rekreationellt syfte köra Capture the Flag
 \end{itemize}
-Samtliga listade metoder ovan är exempel på metoder som används i reverse
-engineering sammanhang, något som är centralt i denna rapport.
 
 Det finns en uppsjö av metoder som kan användas för att analysera en exekverbar
-binär. Exempel på dessa är att:
+binär. Exempel på dessa är att: 
 \begin{enumerate}
   \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
   \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
@@ -31,6 +30,9 @@ binär. Exempel på dessa är att:
     lösa för testfall som orsakar annorlunda programhopp.
   \item stega igenom programmet i en debugger för att se exakt vad programmet gör med viss input.
 \end{enumerate}
+
+Samtliga listade metoder är även exempel på metoder som används i reverse
+engineering-sammanhang, något som är centralt i denna rapport.
 
 För att bilda en allmän förståelse om programmet krävs både \textit{korrekt} och
 \textit{abstrakt} förståelse. I detta avseende syftar \textit{korrekt} på
