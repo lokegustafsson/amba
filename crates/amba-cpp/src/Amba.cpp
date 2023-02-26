@@ -12,17 +12,16 @@ namespace plugins {
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
 
 void Amba::initialize() {
-	m_traceBlockTranslation = this
-		->s2e()
-		->getConfig()
-		->getBool(this->getConfigKey() + ".traceBlockTranslation");
-	m_traceBlockExecution = this
-		->s2e()
-		->getConfig()
-		->getBool(this->getConfigKey() + ".traceBlockExecution");
-	this->s2e()
-		->getCorePlugin()
-		->onTranslateBlockStart
+	auto& s2e = *this->s2e();
+	auto& core = *s2e.getCorePlugin();
+	auto& config = *s2e.getConfig();
+	const auto& key = this->getConfigKey();
+
+	this->m_traceBlockTranslation
+		= config.getBool(key + ".traceBlockTranslation");
+	this->m_traceBlockExecution
+		= config.getBool(key + ".traceBlockExecution");
+	core.onTranslateBlockStart
 		.connect(sigc::mem_fun(
 			*this,
 			&Amba::slotTranslateBlockStart
