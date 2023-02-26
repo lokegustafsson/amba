@@ -1,8 +1,9 @@
 \subsection{Metod}
 
-Det är inte självklart hur utvecklingen av verktyget ska gå till och vilka
-förmågor applikationen ska förses med för att uppfylla syftet. I det här
-avsnittet beskrivs strategi och tillvägagångssätt för utvecklingen.
+Det är inte självklart hur utvecklingen av verktyget ska gå till och vilken 
+exakt funktionalitet applikationen ska förses med för att uppfylla syftet. I det här
+avsnittet beskrivs strategi, tillvägagångssätt samt evaluering av syfte i
+avseende för utvecklingen.
 
 \subsubsection{Val av strategi}
 
@@ -11,7 +12,9 @@ reflekterades det över två möjliga alternativ att fullfölja. Dels diskuterad
 alternativet att bygga en symbolisk exekveringsmotor från grunden och fokusera
 på dess tekniska detaljer och dels att använda en existerande produkt där
 fokuset istället ligger på att bygga plugin vars syfte är att utöka den
-existerande motorn med fler funktioner.
+existerande motorn med fler funktioner. I det senare fallet blir därmed
+slutprodukten ett program som kommunicerar med ett plugin genom \stoe\ via IPC
+eller liknande. 
 
 Med syfte att göra framsteg valdes det att kolla vidare hur \stoe\ kan hjälpa i
 frågan om att utöka funktionalitet i en existerande motor. \stoe\ är utvecklat
@@ -27,19 +30,19 @@ I avsikt att uppnå syftet med projektet, mer specifikt att utveckla ett
 binäranalysverktyg för generella problem, bestämdes det att ta fram prototyper som ska leda det
 kontinuerliga utvecklingsarbetet.
 
-En prototyp ska bestå av en analys med hjälp av verktyget som ökar förståelse för
-ett exempelprogram. Exempelprogrammet ska ha som mål att visa en förmåga i
-verktyget som underlättar förståelse för, eller belyser en känd intressant
-egenskap, exempelvis hos exempelprogrammet. Exempelprogrammen ska skrivas i C eftersom
-C-programs utseende i binärformat relativt väl motsvarar deras källkod. Detta
-förenklar binäranalys och låter prototypen fokusera på sitt huvudämne. Dessutom ska
-programmen vara så enkla som möjligt samtidigt som de uppnår sina mål.
+En prototyp är ett exempelprogram skapt i syfte att undersöka vilken
+kapacitet verktyget har för att sedan utöka dess funktionalitet. Ett
+exempelprogram ska ha som mål att visa en förmåga i verktyget som underlättar
+förståelse för, eller belyser en känd intressant egenskap. Ett typiskt
+intressant exempel är program som gör många programhopp, innehåller säkerhetshål
+eller liknande. För att detta tillvägagångssätt ska vara genomförbart ställs
+kravet att prototyperna hålls enkla samtdiigt som de uppnår sina mål.
+Fortsättningsvis ska prototypen skrivas i C eftersom C-programs utseende i
+binärformat relativt väl motsvarar dess källkod. Detta förenklar binäranalys och
+låter prototypen fokusera på sin huvudsakliga uppgift. 
 
-Efter en framtagen id\'e för en prototyp och tillhörande exempelprogram, ska
-verktyget utvidgas och utvecklas för att göra analysen av prototypen genomförbar.
-
-Denna metod är önskad eftersom det tillåter att sätta uppnåbara delmål som styr
-funktionaliteter som ska implementeras härnäst. Prototyperna fungerar som test på dessa
+Detta tillvägagångssätt är önskvärt eftersom det tillåter att sätta uppnåbara delmål som styr
+funktionalitet som ska implementeras härnäst. Prototyperna fungerar som test på dessa
 funktionaliteter och visar att dessa är korrekta. Dessutom kan flera prototyper 
 utvecklas samtidigt vilket tillåter parallellism inom projektarbetet och
 framsteg på flera fronter.
@@ -53,16 +56,19 @@ prototyper och funktionaliteter som önskas.
 \subsubsection{Evaluering av syfte}
 
 För att vidare kunna bestämma huruvida en prototyp är lämplig och ska möjliggöras
-genom utvidgning av verktyget kommer en avgränsning ske efter vad som är rimligt;
-hur väl prototypens analysidé kan komma att tillämpas i verktyget och hur analysen
-ökar användbarhet av verktyget. Dessutom ska det sättas i perspektiv till den tid
+genom utvidgning av verktyget kommer en avgränsning ske efter vad som är
+rimligt.
+Hur väl prototypens analysidé kan komma att tillämpas i verktyget och hur analysen
+ökar användbarhet av verktyget kommer användas i detta avseende. Dessutom ska det sättas i perspektiv till den tid
 som krävs för att göra prototypen genomförbar med tanke på tidsramen för projektet.
 
 Eftersom det huvudsakligen är prototyperna som styr den slutgiltiga
 funktionaliteten hos verktyget är det därför även dessa som styr hur väl syftet
 uppnåtts. Ett konkret sätt att mäta detta är hur generellt det slutgiltiga
 verktyget blir, det vill säga går det exempelvis att definiera nya tester, som verktyget
-ska kunna hantera, utan att göra ytterligare förändringar i verktyget 
+ska kunna hantera, utan att göra ytterligare förändringar i verktyget. Dessutom,
+går det att använda verktyget för generell reverse engineering eller för att lösa övningar
+inom CTF?
 
 % Hur är detta kopplat till vårt syfte? Hur uppnår vi syftet med rapporten genom
 % vald metod?
