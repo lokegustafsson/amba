@@ -8,6 +8,10 @@ group_64_project_report.pdf: \
   problem.tex \
   avgransningar.tex \
   metod.tex \
+  amba.tex \
+  resultat.tex \
+  diskussion.tex \
+  slutsatser.tex \
   refs.bib
 	tectonic main.tex
 	mv main.pdf group_64_project_report.pdf
