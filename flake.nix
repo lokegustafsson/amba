@@ -16,6 +16,7 @@
     };
   };
 
+  # Cache settings
   nixConfig = {
     extra-substituters = [ "https://nix.u3836.se/" ];
     extra-trusted-public-keys = [
