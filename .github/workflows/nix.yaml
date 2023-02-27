@@ -35,3 +35,4 @@ jobs:
         # as the `nix-ci-nixbuild` workflow to be able to compare build times
         run: |
           nix build -L --accept-flake-config .#amba
+          nix build -L --accept-flake-config .#s2e
