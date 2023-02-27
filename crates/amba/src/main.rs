@@ -1,9 +1,10 @@
-use std::{env, fs, path::PathBuf, process::ExitCode, time::Instant};
+use std::{env, ffi::OsString, fs, path::{PathBuf, Path}, process::ExitCode, time::Instant};
 
 use tracing_subscriber::fmt;
 
+use crate::run::SessionConfig;
+
 mod cmd;
-mod config;
 mod init;
 mod run;
 
@@ -23,7 +24,9 @@ enum Args {
 struct InitArgs {}
 /// Run QEMU+S2E+libamba
 #[derive(clap::Args, Debug)]
-struct RunArgs {}
+struct RunArgs {
+	host_path_to_executable: PathBuf,
+}
 
 fn main() -> ExitCode {
 	tracing::subscriber::set_global_default(
@@ -43,23 +46,26 @@ fn main() -> ExitCode {
 		Some(dir) => PathBuf::from(dir),
 		None => home::home_dir().unwrap().join("amba"),
 	};
-	let install_dir = match env::var_os("AMBA_INSTALL_DIR") {
-		Some(dir) => PathBuf::from(dir),
-		None => {
-			tracing::error!("unset $AMBA_INSTALL_DIR; must point to directory containing amba's run-time dependencies");
-			return ExitCode::FAILURE;
-		}
-	};
+  let dependencies_dir = Path::new(env!("AMBA_DEPENDENCIES_DIR"));
 
 	tracing::info!(AMBA_SRC_DIR = ?src_dir);
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
-	tracing::info!(AMBA_INSTALL_DIR = ?install_dir);
+	tracing::info!(AMBA_DEPENDENCIES_DIR = ?dependencies_dir);
 	tracing::info!(?args);
 
 	let cmd = &mut cmd::Cmd::get();
 	match args {
 		Args::Init(InitArgs {}) => init::init(cmd, &src_dir, &data_dir),
-		Args::Run(RunArgs {}) => run::run(cmd, &data_dir, &install_dir),
+		Args::Run(RunArgs {
+			host_path_to_executable,
+		}) => run::run(
+			cmd,
+			&data_dir,
+			&dependencies_dir,
+			&SessionConfig {
+				path_to_executable: host_path_to_executable,
+			},
+		),
 	}
 }
 
