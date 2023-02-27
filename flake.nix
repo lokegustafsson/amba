@@ -47,7 +47,10 @@
               LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
             })
             (mkNativeDep "s2e" [ p.clang_14 ])
-            (mkEnvDep "amba" { AMBA_DEPENDENCIES_DIR = "${s2e.amba-deps}"; })
+            # NOTE: This crate name should really be "amba", but that does not work for some reason
+            (mkEnvDep "handlebars" {
+              AMBA_DEPENDENCIES_DIR = "${s2e.amba-deps}";
+            })
           ];
         };
         s2e = import ./nix/s2e { inherit lib pkgs; };
