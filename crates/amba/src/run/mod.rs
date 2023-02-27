@@ -16,7 +16,12 @@ pub struct SessionConfig {
 // See also
 // https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh
 // TODO cross-platform
-pub fn run(cmd: &mut Cmd, data_dir: &Path, dependencies_dir: &Path, config: &SessionConfig) -> ExitCode {
+pub fn run(
+	cmd: &mut Cmd,
+	data_dir: &Path,
+	dependencies_dir: &Path,
+	config: &SessionConfig,
+) -> ExitCode {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
 		return ExitCode::FAILURE;
 	}

@@ -1,4 +1,9 @@
-use std::{env, ffi::OsString, fs, path::{PathBuf, Path}, process::ExitCode, time::Instant};
+use std::{
+	env, fs,
+	path::{Path, PathBuf},
+	process::ExitCode,
+	time::Instant,
+};
 
 use tracing_subscriber::fmt;
 
@@ -46,7 +51,7 @@ fn main() -> ExitCode {
 		Some(dir) => PathBuf::from(dir),
 		None => home::home_dir().unwrap().join("amba"),
 	};
-  let dependencies_dir = Path::new(env!("AMBA_DEPENDENCIES_DIR"));
+	let dependencies_dir = Path::new(env!("AMBA_DEPENDENCIES_DIR"));
 
 	tracing::info!(AMBA_SRC_DIR = ?src_dir);
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
