@@ -45,7 +45,8 @@ fn main() -> ExitCode {
 	let args: Args = clap::Parser::parse();
 	let src_dir = match env::var_os("AMBA_SRC_DIR") {
 		Some(dir) => PathBuf::from(dir),
-		None => fs::canonicalize(concat!(env!("CARGO_MANIFEST_DIR"), "/../../")).unwrap(),
+		None => fs::canonicalize(concat!(env!("CARGO_MANIFEST_DIR"), "/../../"))
+			.expect("AMBA_SRC_DIR must be defined when amba is run outside its source tree"),
 	};
 	let data_dir = match env::var_os("AMBA_DATA_DIR") {
 		Some(dir) => PathBuf::from(dir),
