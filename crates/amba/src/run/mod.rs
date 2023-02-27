@@ -23,6 +23,10 @@ pub fn run(
 	config: &SessionConfig,
 ) -> ExitCode {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
+		tracing::error!(
+			?data_dir,
+			"AMBA_DATA_DIR has not been initialized"
+		);
 		return ExitCode::FAILURE;
 	}
 
