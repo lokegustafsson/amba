@@ -34,4 +34,4 @@ jobs:
         # We could use `nix flake check` here, but we build in the same way
         # as the `nix-ci-nixbuild` workflow to be able to compare build times
         run: |
-          nix build -L
+          nix build -L --accept-flake-config
