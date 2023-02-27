@@ -50,7 +50,7 @@ pluginsConfig.HostFiles = {
         "{{ seeds_dir }}",
         {% endif %}
     },
-    allowWrite = true,
+    allowWrite = {{ allow_s2eput_to_host }},
 }
 
 -------------------------------------------------------------------------------

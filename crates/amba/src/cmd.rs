@@ -60,4 +60,11 @@ impl Cmd {
 		tracing::trace!(?file, "write_file");
 		fs::write(file, content).unwrap()
 	}
+
+	pub fn copy(&mut self, file: impl AsRef<Path>, target: impl AsRef<Path>) {
+		let file = file.as_ref();
+		let target = target.as_ref();
+		tracing::trace!(?file, ?target, "copy_file");
+		fs::write(target, fs::read(file).unwrap()).unwrap()
+	}
 }

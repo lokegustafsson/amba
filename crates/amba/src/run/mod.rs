@@ -1,21 +1,27 @@
 use std::{
-	path::Path,
+	path::{Path, PathBuf},
 	process::{Command, ExitCode, ExitStatus},
 };
 
 use chrono::offset::Local;
 
-use crate::{cmd::Cmd, config::S2EConfig};
+use crate::{cmd::Cmd, run::session::S2EConfig};
+
+mod session;
+
+pub struct SessionConfig {
+	pub path_to_executable: PathBuf,
+}
 
 // See also
 // https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh
 // TODO cross-platform
-pub fn run(cmd: &mut Cmd, data_dir: &Path, install_dir: &Path) -> ExitCode {
+pub fn run(cmd: &mut Cmd, data_dir: &Path, dependencies_dir: &Path, config: &SessionConfig) -> ExitCode {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
 		return ExitCode::FAILURE;
 	}
 
-	let session_dir = data_dir.join(format!(
+	let session_dir = &data_dir.join(format!(
 		"analysis-{}",
 		Local::now().format("%Y-%m-%dT%H:%M:%S")
 	));
@@ -26,11 +32,19 @@ pub fn run(cmd: &mut Cmd, data_dir: &Path, install_dir: &Path) -> ExitCode {
 		);
 		return ExitCode::FAILURE;
 	}
-	cmd.create_dir_all(&session_dir);
+	cmd.create_dir_all(session_dir);
 	{
-		let tracked_process_file_names = &[todo!()];
-		let project_dir = todo!();
-		S2EConfig::new(project_dir, tracked_process_file_names).save_to(cmd, &session_dir);
+		let executable_name = config
+			.path_to_executable
+			.file_name()
+			.unwrap()
+			.to_str()
+			.unwrap();
+		cmd.copy(
+			&config.path_to_executable,
+			session_dir.join(executable_name),
+		);
+		S2EConfig::new(session_dir, &executable_name).save_to(cmd, session_dir);
 	}
 
 	// supporting single- vs multi-path
@@ -40,23 +54,23 @@ pub fn run(cmd: &mut Cmd, data_dir: &Path, install_dir: &Path) -> ExitCode {
 	};
 	let arch = "x86_64";
 
-	let qemu = install_dir.join(format!("bin/qemu-system-{arch}"));
-	let libs2e_dir = install_dir.join("share/libs2e");
-	let libs2e = libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
-	let s2e_config = session_dir.join("s2e-config.lua");
+	let qemu = &dependencies_dir.join(format!("bin/qemu-system-{arch}"));
+	let libs2e_dir = &dependencies_dir.join("share/libs2e");
+	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
+	let s2e_config = &session_dir.join("s2e-config.lua");
 	let max_processes = 1;
 	let image_name = "ubuntu-22.04-x86_64";
-	let serial_out = session_dir.join("serial.txt");
+	let serial_out = &session_dir.join("serial.txt");
 
 	let status = run_qemu(
 		cmd,
-		&qemu,
-		&libs2e,
-		&libs2e_dir,
-		&s2e_config,
+		qemu,
+		libs2e,
+		libs2e_dir,
+		s2e_config,
 		max_processes,
 		image_name,
-		&serial_out,
+		serial_out,
 	);
 	if status.success() {
 		ExitCode::SUCCESS
