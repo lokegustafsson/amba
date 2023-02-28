@@ -32,3 +32,6 @@
 
 # Local S2E copy
 /s2e
+
+# Cache signing key
+eurydice-private-key

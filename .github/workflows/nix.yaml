@@ -2,7 +2,6 @@ name: nix-ci
 
 
 on:
-  pull_request:
   push:
     branches:
       - master
@@ -12,8 +11,8 @@ on:
 
 jobs:
 
-  checks:
-    name: Checks
+  build-s2e:
+    name: Build S2E
     runs-on: ubuntu-20.04
 
     steps:
@@ -24,14 +23,22 @@ jobs:
           nix_conf: |
             experimental-features = nix-command flakes
 
-      # - uses: cachix/cachix-action@v12
-        # with:
-          # name: nixbuild
-          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+      - name: Build Nix flake checks
+        run: |
+          nix build -L --accept-flake-config .#s2e
+
+  build-amba:
+    name: Build AMBA
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: nixbuild/nix-quick-install-action@v20
+        with:
+          nix_conf: |
+            experimental-features = nix-command flakes
 
       - name: Build Nix flake checks
-        # working-directory: thesis-decompilation
-        # We could use `nix flake check` here, but we build in the same way
-        # as the `nix-ci-nixbuild` workflow to be able to compare build times
         run: |
-          nix build -L
+          nix build -L --accept-flake-config .#amba
