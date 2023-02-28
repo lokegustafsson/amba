@@ -46,7 +46,6 @@
             };
           };
           extra-overrides = { mkNativeDep, mkEnvDep, p }: [
-            (mkNativeDep "amba" [ ])
             (mkEnvDep "s2e" {
               # Required to parse s2e headers
               BOOST_PATH = "${pkgs.boost.dev}/include";
@@ -62,6 +61,10 @@
               LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
             })
             (mkNativeDep "s2e" [ p.clang_14 ])
+            # NOTE: This crate name should really be "amba", but that does not work for some reason
+            (mkEnvDep "handlebars" {
+              AMBA_DEPENDENCIES_DIR = "${s2e.amba-deps}";
+            })
           ];
         };
         s2e = import ./nix/s2e { inherit lib pkgs; };
@@ -81,20 +84,11 @@
             packages = let p = pkgs; in [ p.stable.tectonic p.gnumake ];
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
-          guest = s2e.guest-images-shell;
         };
 
-        packages = rust.packages // {
-          default = rust.packages.amba;
-          inherit (s2e)
-            s2e s2e-qemu s2e-env guest-images guest-kernel32 guest-kernel64;
-        };
+        packages = rust.packages // s2e // { default = rust.packages.amba; };
+        # `nix run '.#build-guest-images' -- $BUILDDIR $OUTDIR`
         apps = {
-          # `nix run '.#build-guest-images' -- $BUILDDIR $OUTDIR`
-          build-guest-images = {
-            type = "app";
-            program = "${s2e.build-guest-images}";
-          };
           s2e-env = {
             type = "app";
             program = "${s2e.s2e-env}/bin/s2e";

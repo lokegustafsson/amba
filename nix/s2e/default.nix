@@ -54,11 +54,21 @@ let
     import ./core.nix { inherit pkgs lib repositories makeIncludePath qemu; };
   env = import ./env.nix { inherit pkgs lib repositories; };
   guest = import ./guest.nix { inherit pkgs lib repositories core; };
+  amba-deps = pkgs.stdenvNoCC.mkDerivation {
+    name = "amba-deps";
+    phases = [ "installPhase" ];
+    buildInputs = [ pkgs.rsync ];
+    installPhase = ''
+      mkdir -p $out/share/libs2e/ $out/bin/
+      rsync -a ${core.s2e}/share/libs2e/* $out/share/libs2e/
+      rsync -a ${core.s2e}/bin/qemu-system-* $out/bin/
+    '';
+  };
 in {
   inherit (core) s2e-src s2e-llvm s2e-lib s2e-tools s2e-guest-tools s2e libgomp;
   inherit (env) s2e-env;
   inherit (guest)
-    guest-images guest-kernel32 guest-kernel64 guest-images-shell
-    build-guest-images;
+    guest-kernel32 guest-kernel64 guest-images-src build-guest-images;
   inherit (qemu) qemu-src s2e-qemu;
+  inherit amba-deps;
 }

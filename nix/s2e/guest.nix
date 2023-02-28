@@ -83,100 +83,27 @@ let
         ${pkgs.rsync}/bin/rsync -a ${guest-kernel32}/* "$2"
       fi
     '';
-
-  guest-images = pkgs.stdenvNoCC.mkDerivation {
-    name = "guest-images";
+  guest-images-src = pkgs.stdenvNoCC.mkDerivation {
+    name = "guest-images-src";
     src = repositories.guest-images;
     patches = [
       ../patches/guest-images/makefile.patch
       ../patches/guest-images/makefile.linux.patch
-      ../patches/guest-images/qemu.wrapper.patch
     ];
-    configurePhase = ''
+    fixupPhase = ''
       patchShebangs ./scripts/*.py
+      patchShebangs ./qemu.wrapper
     '';
-    makeFlags = [
-      #"debian-11.3-i386"
-      #"debian-11.3-x86_64"
-      "ubuntu-22.04-x86_64"
-      "OUTDIR=$out"
-    ];
     installPhase = ''
       mkdir -p $out
-      cp * $out/
+      cp -r * $out/
     '';
-
-    #enableParallelBuilding = true;
-    S2E_INSTALL_ROOT = core.s2e;
-    S2E_LINUX_KERNELS_ROOT = repositories.s2e-linux-kernel;
-    GRAPHICS = " ";
-
-    requiredSystemFeatures = [ "kvm" ];
-    buildInputs = let p = pkgs;
-    in [
-      (pkgs.python3.withPackages (py-pkgs: with py-pkgs; [ jinja2 ]))
-      copy_nix_built_linux_kernel
-      fake-wget
-      p.cdrkit
-      p.cloud-utils
-      p.jq
-      p.ncurses
-      p.p7zip
-      p.procps
-      p.libguestfs-with-appliance
-    ];
+    phases = [ "unpackPhase" "patchPhase" "fixupPhase" "installPhase" ];
+    buildInputs = [ pkgs.bash ];
   };
-  guest-images-shell = pkgs.mkShell {
-    SRC = pkgs.stdenvNoCC.mkDerivation {
-      name = "guest-images-src";
-      src = repositories.guest-images;
-      patches = [
-        ../patches/guest-images/makefile.patch
-        ../patches/guest-images/makefile.linux.patch
-        ../patches/guest-images/qemu.wrapper.patch
-      ];
-      installPhase = ''
-        mkdir -p $out
-        cp -r * $out/
-      '';
-      phases = [ "unpackPhase" "patchPhase" "fixupPhase" "installPhase" ];
-      buildInputs = [ pkgs.bash ];
-    };
-    S2E_INSTALL_ROOT = core.s2e;
-    S2E_LINUX_KERNELS_ROOT = repositories.s2e-linux-kernel;
-    GRAPHICS = " ";
 
-    requiredSystemFeatures = [ "kvm" ];
-    buildInputs = let p = pkgs;
-    in [
-      (pkgs.python3.withPackages (py-pkgs: with py-pkgs; [ jinja2 ]))
-      copy_nix_built_linux_kernel
-      fake-wget
-      p.cdrkit
-      p.cloud-utils
-      p.jq
-      p.libguestfs-with-appliance
-      p.ncurses
-      p.p7zip
-      p.procps
-    ];
-  };
   build-guest-images = let
-    SRC = pkgs.stdenvNoCC.mkDerivation {
-      name = "guest-images-src";
-      src = repositories.guest-images;
-      patches = [
-        ../patches/guest-images/makefile.patch
-        ../patches/guest-images/makefile.linux.patch
-        ../patches/guest-images/qemu.wrapper.patch
-      ];
-      installPhase = ''
-        mkdir -p $out
-        cp -r * $out/
-      '';
-      phases = [ "unpackPhase" "patchPhase" "fixupPhase" "installPhase" ];
-      buildInputs = [ pkgs.bash ];
-    };
+    SRC = guest-images-src;
     S2E_INSTALL_ROOT = core.s2e;
     S2E_LINUX_KERNELS_ROOT = repositories.s2e-linux-kernel;
 
@@ -200,7 +127,8 @@ let
       p.procps
       p.rsync
     ];
-  in pkgs.writeScript "build-guest-images" ''
+    # TODO: Makefile targets "debian-11.3-i386" and "debian-11.3-x86_64"
+  in pkgs.writeScriptBin "build-guest-images" ''
     #!${pkgs.bash}/bin/bash
     set -e
     BUILDDIR=$1
@@ -233,4 +161,6 @@ let
     chmod -R +w $BUILDDIR/*
     time make -C $BUILDDIR/$(basename ${SRC}) ubuntu-22.04-x86_64 OUTDIR=$OUTDIR
   '';
-in { inherit guest-kernel32 guest-kernel64 guest-images guest-images-shell build-guest-images; }
+in {
+  inherit guest-kernel32 guest-kernel64 guest-images-src build-guest-images;
+}
