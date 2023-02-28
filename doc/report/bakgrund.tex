@@ -83,3 +83,51 @@ om processens förlopp visualiseras för användaren. Valet mellan manuell
 arbetsbörda som ger djup förståelse och en testfallsgenerationsdriven process
 som ger översiktlig förståelse kan genomföras av användaren om verktygen stödjer
 hela spektrummet.
+
+\subsubsection{Statisk och dynamisk binäranalys}
+En annan typ av kategorisering av olika analysmetoder som fokuserar på hur
+analysen genomförs delar metoderna i två grupper: statisk och dynamisk analys
+\cite{dynamic_bin_analysis}.
+
+Statisk analys syftar på analys som går att göra utan att exekvera programmet
+som analyseras. Exempel på statisk binäranalys är metod 1-2, alltså att
+disassembla binären och/eller visualisera kod.
+
+Dynamisk analys går ut på att analysera ett program under exekvering. Exempel
+på dynamisk binäranalys är metod 3-6. I alla fall krävs någon typ av injektion
+av kod eller data i programmet utan att ändra på dess beteeende i syfte att
+kunna extrahera viktig information under programmets körning. Många avancerade
+dynamiska metoder som t.ex. concolic testing kräver symbolisk exekvering. Det
+går ut på att tilldela symboliska värden till variabler och se hur dessa
+påverkar programhopp och förgreningar och vad för möjliga värden som denna
+symbol kan inneha under exekvering. I fallet med concolic testing används denna
+information för att, med hjälp av en SMT-solver ta fram konkreta värden som
+leder till att programmet kör till en program-distination som består av ett
+oväntad krasch.
+
+\subsubsection{Existerande verktyg}
+Det kan finnas flera metoder för analys av binärprogram och det finns ganska
+många verktyg idag som stödjer ett eller flera av dessa metoder. Det är inte
+möjligt att lista och gå igenom alla tillgängliga binäranalysverktyg men de
+mest populära exemplen är Ghidra\cite{ghidra_website} och
+Angr\cite{angr_github}.
+
+Ghidra är en \emph{reverse engingeering} ramverk utvecklat av USA:s NSA
+(National Security Agency) och kan disassembla en binär till pseudo-C-kod.
+Ghidra har också en debugger och funktionsgraf som ska underlätta binär
+debugging genom att integrera med andra funktioner i Ghidra och funktionsgrafen
+låter användaren se hur programmet är uppbyggt visuellt och hur olika
+funktioner interagerar med varandra. Funktionaliteter kan utökas eller andra
+funktioner utvecklas genom plugins till Ghidra\cite{ghidra_use_cases}. Ghidra
+tillåter även automatisering genom att skriva skript. Ett exempel är ett skript
+som hittar exempelvis sårbarhet i form av funktionsanropp till potentiellt
+osäkra API-anrop genom statisk analys\cite{ghidra_script}.
+
+Angr är en binäranalysverktyg med stöd för både statiska och dynamiska analyser
+med hjälp av symbolisk exekvering. Angr har, som Ghidra, stöd för
+disassemblering till pseudo-C-kod och många analyser man kan utföra. Angr är
+baserat på en emulator skriven i Python med stöd för symbolisk exekvering och
+analyser utförs genom Python-skript som interagerar med Angrs API. Angr har
+använts för att framställa skript som kan utföra \emph{reverse engineering},
+sårbarhetssökning och fungera som exploateringsverktyg\cite{angr_docs}.
+
