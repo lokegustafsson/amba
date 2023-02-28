@@ -16,6 +16,14 @@
     };
   };
 
+  # Cache settings
+  nixConfig = {
+    extra-substituters = [ "https://nix.u3836.se/" ];
+    extra-trusted-public-keys = [
+      "nix.u3836.se:t7H/bFWi14aBFYPE5A00eEQawd7Ssl/fXbq/2C+Bsrs="
+    ];
+  };
+
   outputs = { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay, cargo2nix }:
     flake-utils.lib.eachDefaultSystem (system:
       let
