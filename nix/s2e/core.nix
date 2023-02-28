@@ -115,24 +115,26 @@ let
     inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
   };
   libgomp = let
-    version = "11.3.0";
-    src = pkgs.fetchzip {
-      url = "mirror://gcc/releases/gcc-${version}/gcc-${version}.tar.xz";
-      sha256 = "sha256-fI8Uu8GLuFfQnq09s6cgUYcAEzX1x6gWqymbb5njhQY=";
+    version = "12.1.0";
+    src = pkgs.fetchurl {
+      url =
+        "http://security.ubuntu.com/ubuntu/pool/main/g/gcc-12/libgomp1_12.1.0-2ubuntu1~22.04_amd64.deb";
+      sha256 = "sha256-Jb/qsi6kAZuJTcgVhDMcLq7OJzAn2OahH8qLbdOl74w=";
     };
   in pkgs.stdenv.mkDerivation {
     pname = "libgomp";
     inherit version src;
+    phases = [ "unpackPhase" "installPhase" "fixupPhase" ];
     unpackPhase = ''
-      mkdir build2
-      cd build2
-      cp -r $src/* .
-      cp -r $src/config-ml.in ..
-      chmod -R +w .
+      dpkg --extract $src .
     '';
-    configurePhase = ''
-      cd libgomp && ./configure --prefix=$out
+    installPhase = ''
+      mkdir -p $out/lib/
+      mv usr/lib/x86_64-linux-gnu/* $out/lib/
+      ln -s lib64 lib
+      ln -s $out/lib/libgomp.so.1 $out/lib/libgomp.so
     '';
+    buildInputs = [ pkgs.dpkg ];
   };
   s2e-lib = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-lib";
