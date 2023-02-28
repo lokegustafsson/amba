@@ -153,11 +153,6 @@ pluginsConfig.TranslationBlockCoverage = {
 add_plugin("ModuleExecutionDetector")
 pluginsConfig.ModuleExecutionDetector = {
     configureAllModules = true,
-    --{% for m in modules %}
-    --mod_0 = {
-    --    moduleName = "{{ m[0] }}",
-    --},
-    --{% endfor %}
     logLevel="info"
 }
 
