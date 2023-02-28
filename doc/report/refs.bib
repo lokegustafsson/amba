@@ -26,13 +26,12 @@
 @inproceedings{s2e,
 	author = {Chipounov, Vitaly and Kuznetsov, Volodymyr and Candea, George},
 	title = {{S2E: A Platform for in-Vivo Multi-Path Analysis of Software Systems}},
-	date = {2011}
+	date = {2011},
 	isbn = {9781450302661},
 	publisher = {Association for Computing Machinery},
 	address = {New York, NY, USA},
 	url = {https://doi.org/10.1145/1950365.1950396},
 	doi = {10.1145/1950365.1950396},
-	abstract = {This paper presents S2E, a platform for analyzing the properties and behavior of software systems. We demonstrate S2E's use in developing practical tools for comprehensive performance profiling, reverse engineering of proprietary software, and bug finding for both kernel-mode and user-mode binaries. Building these tools on top of S2E took less than 770 LOC and 40 person-hours each.S2E's novelty consists of its ability to scale to large real systems, such as a full Windows stack. S2E is based on two new ideas: selective symbolic execution, a way to automatically minimize the amount of code that has to be executed symbolically given a target analysis, and relaxed execution consistency models, a way to make principled performance/accuracy trade-offs in complex analyses. These techniques give S2E three key abilities: to simultaneously analyze entire families of execution paths, instead of just one execution at a time; to perform the analyses in-vivo within a real software stack--user programs, libraries, kernel, drivers, etc.--instead of using abstract models of these layers; and to operate directly on binaries, thus being able to analyze even proprietary software.Conceptually, S2E is an automated path explorer with modular path analyzers: the explorer drives the target system down all execution paths of interest, while analyzers check properties of each such path (e.g., to look for bugs) or simply collect information (e.g., count page faults). Desired paths can be specified in multiple ways, and S2E users can either combine existing analyzers to build a custom analysis tool, or write new analyzers using the S2E API.},
 	booktitle = {Proceedings of the Sixteenth International Conference on Architectural Support for Programming Languages and Operating Systems},
 	pages = {265–278},
 	numpages = {14},
@@ -41,7 +40,7 @@
 	series = {ASPLOS XVI}
 }
 
-@book{practical_binary_analysis,
+@book{andriesse2018,
 	author = {Andriesse, Dennis},
 	title = {{Practical Binary Analysis}},
 	year = {2018},
@@ -56,7 +55,6 @@
     year = {2008},
     publisher = {USENIX Association},
     address = {USA},
-    abstract = {We present a new symbolic execution tool, KLEE, capable of automatically generating tests that achieve high coverage on a diverse set of complex and environmentally-intensive programs. We used KLEE to thoroughly check all 89 stand-alone programs in the GNU COREUTILS utility suite, which form the core user-level environment installed on millions of Unix systems, and arguably are the single most heavily tested set of open-source programs in existence. KLEE-generated tests achieve high line coverage -- on average over 90% per tool (median: over 94%) -- and significantly beat the coverage of the developers' own hand-written test suite. When we did the same for 75 equivalent tools in the BUSYBOX embedded system suite, results were even better, including 100% coverage on 31 of them.We also used KLEE as a bug finding tool, applying it to 452 applications (over 430K total lines of code), where it found 56 serious bugs, including three in COREUTILS that had been missed for over 15 years. Finally, we used KLEE to crosscheck purportedly identical BUSYBOX and COREUTILS utilities, finding functional correctness errors and a myriad of inconsistencies.},
     booktitle = {Proceedings of the 8th USENIX Conference on Operating Systems Design and Implementation},
     pages = {209–224},
     numpages = {16},
@@ -64,8 +62,10 @@
     series = {OSDI'08}
 }
 
-@misc{s2e_website,
+@online{s2e_website,
+	author = {Chipounov, Vitaly},
 	title = {{\stoe: A Platform for In-Vivo Analysis of Software Systems}},
-	howpublished = {\url{https://s2e.systems/}},
-	note = {Tillgänglig: 2023-02-10}
+	date = {2017-02-24},
+	url = {https://s2e.systems/},
+	urldate = {2023-02-10}
 }
