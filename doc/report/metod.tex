@@ -1,9 +1,8 @@
 \subsection{Metod}
 
-Det är inte självklart hur utvecklingen av verktyget ska gå till och vilken 
-exakt funktionalitet applikationen ska förses med för att uppfylla syftet. I det här
-avsnittet beskrivs strategi, tillvägagångssätt samt evaluering av syfte i
-avseende för utvecklingen.
+I det här avsnittet beskrivs strategi och tillvägagångssätt för utvecklingen
+samt evaluering av projektets mål och hur det framställda verktyget kommer att
+jämföras med existerande binäranalysverktyg.
 
 \subsubsection{Val av strategi}
 
@@ -26,61 +25,56 @@ där bland annat autocxx ansågs som ett lovande alternativ.
 
 \subsubsection{Tillvägagångssätt}
 
-I avsikt att uppnå syftet med projektet, mer specifikt att utveckla ett
-binäranalysverktyg för generella problem, bestämdes det att ta fram prototyper som ska leda det
-kontinuerliga utvecklingsarbetet.
+I avsikt att utveckla ett binäranalysverktyg, bestämdes det att ta fram demon
+(demonstrationer) som ska leda det kontinuerliga utvecklingsarbetet.
 
-En prototyp är ett exempelprogram skapt i syfte att undersöka vilken
-kapacitet verktyget har för att sedan utöka dess funktionalitet. Ett
-exempelprogram ska ha som mål att visa en förmåga i verktyget som underlättar
-förståelse för, eller belyser en känd intressant egenskap. Ett typiskt
-intressant exempel är program som gör många programhopp, innehåller säkerhetshål
-eller liknande. För att detta tillvägagångssätt ska vara genomförbart ställs
-kravet att prototyperna hålls enkla samtdiigt som de uppnår sina mål.
-Fortsättningsvis ska prototypen skrivas i C eftersom C-programs utseende i
-binärformat relativt väl motsvarar dess källkod. Detta förenklar binäranalys och
-låter prototypen fokusera på sin huvudsakliga uppgift. 
+Ett demo ska bestå av en analys med hjälp av verktyget som ökar förståelse för
+ett exempelprogram. Med förståelse menas en abstrakt programförståelse
+beskrivet i bakgrundsavsnittet. Exempelprogrammet ska framställas med en
+egenskap som man skulle vilja kunna detektera med ett analysverktyg. Mer
+konkret ska ett sådant exempelprogram inneha t.ex. minnessårbarhet, ett oväntad
+krasch eller något annat sårbarhet som inte önskas i ett program.
 
-Detta tillvägagångssätt är önskvärt eftersom det tillåter att sätta uppnåbara delmål som styr
-funktionalitet som ska implementeras härnäst. Prototyperna fungerar som test på dessa
-funktionaliteter och visar att dessa är korrekta. Dessutom kan flera prototyper 
-utvecklas samtidigt vilket tillåter parallellism inom projektarbetet och
-framsteg på flera fronter.
+Exempelprogrammen ska skrivas i C för enkelhetens skull eftersom C-programs
+utseende i binärformat relativt väl motsvarar deras källkod. 
+
+Sedan ska exempelprogrammet kompileras till en binär som analyseras med
+analysverktyget med avsikt att detektera den kända egenskapen hos
+exempelprogrammet. Om detta inte är möjligt med den nuvarande version av
+analysverktyget ska analysverktyget utökas för att möjliggöra demot.
+
+Detta tillvägagångssätt är önskvärt eftersom det tillåter att sätta uppnåbara
+delmål som styr funktionalitet i analysverktyget som ska implementeras härnäst.
+Dessutom kan flera demon utvecklas samtidigt vilket tillåter parallellism inom
+utvecklingen och framsteg på flera fronter.
 
 Tillvägagångssättet är jämförbart med den agila arbetsmetoden där utveckling sker 
 evolutionärt. Detta är önskvärt då verktygets potentiella 
 användningsbarhet inte är självklar på detaljnivå.
 
 I ett senare och/eller parallellt steg ska ett grafiskt användargränssnitt
-utvecklas som tillåter användaren att traversera genom applikationen och göra
-egna beslut gällande förgreningar av programmet etc. där användaren själv
-bestämmer interaktivt nästa beslut som görs. Även detta arbetet styrs av
-prototyper och funktionaliteter som önskas.
+utvecklas som tillåter användaren att navigera programmet som analyseras och
+göra egna beslut gällande förgreningar etc. där användaren själv bestämmer
+interaktivt nästa beslut som görs. Även detta arbete styrs av demon som
+framställs och funktionaliteter som önskas.
 
-\subsubsection{Evaluering av syfte}
+\subsubsection{Evaluering och jämförelse med andra verktyg}
 
-För att vidare kunna bestämma huruvida en prototyp är lämplig och ska möjliggöras
-genom utvidgning av verktyget kommer följande steg användas för att evaluera hur
-väl dessa tillsammans uppfyller det sammantagna syftet:
+För att det ska gå att testa verktygets förmåga och jämföra med andra
+analysverktyg ska de demon som tas fram bestå av CGC-binärer som analyseras. I
+det fall CGC-binären är för komplicerat ska den förenklas samtidigt som den
+originala sårbarheten återfinns, eller delas in i flera demon, tills dess att
+den kompletta CGC-binären kan analyseras och sårbarheten detekteras.
 
-Hur väl kan prototypens analysidé kan komma att tillämpas i verktyget och hur
-väl kommer analysen öka användbarhet av verktyget, kommer användas i detta
-avseende. Dessutom ska det sättas i perspektiv till den tid som krävs för att
-göra prototypen genomförbar med tanke på tidsramen för projektet.
+Samma CGC-binärer som kan analyseras med det framställda analysverktyget ska
+analyseras med binäranalysverktygen \emph{Angr} och \emph{Ghidra} och
+analysresultatet jämföras för att göra en kvalitativ evaluering av eventuella
+för- och nackdelar med det framtagna analysverktyget jämfört med de ovan nämnda
+existerande verktygen. Jämförelsen kommer att ta hänsyn till hur snabbt det
+gick att genomföra analysen, hur mycket ansträngning det krävde från
+användaren, om det överhuvudtaget gick att hitta sårbarheten i CGC-binären, och
+eventuellt andra för och nackdelar.
 
-Eftersom det huvudsakligen är prototyperna som styr den slutgiltiga
-funktionaliteten hos verktyget är det därför även dessa som styr hur väl syftet
-uppnåtts. Ett konkret sätt att mäta detta är hur generellt det slutgiltiga
-verktyget blir, det vill säga går det exempelvis att definiera nya tester, som verktyget
-ska kunna hantera, utan att göra ytterligare förändringar i verktyget. Dessutom,
-går det att använda verktyget för generell reverse engineering eller för att lösa övningar
-inom CTF?
-
-% Hur är detta kopplat till vårt syfte? Hur uppnår vi syftet med rapporten genom
-% vald metod?
-
-% (varför är typ besvarat i val av strategi-avsnittet)
-
-% Hur besvarar vi huruvida valet av strategi är rimligt?
-
-%
+Val av CGC-binärer att analysera kommer att vara slumpmässigt med undantag för
+fall då det anses ta för långt tid att utveckla vårt verktyg för att tillåta
+analys av programmet med hänsyn till tidsbegränsningen för detta projekt.
