@@ -33,11 +33,13 @@ pub fn init(cmd: &mut Cmd, src_dir: &Path, data_dir: &Path) -> ExitCode {
 	remove_images_build(cmd, images_build);
 	return ExitCode::SUCCESS;
 }
+
 fn remove_images(cmd: &mut Cmd, images: &Path) {
 	unmount_images_imagefs(cmd, images);
 	// Recursively delete `$AMBA_DATA_DIR/images/`
 	cmd.remove_dir_all(images);
 }
+
 fn unmount_images_imagefs(cmd: &mut Cmd, images: &Path) {
 	// Unmount `$AMBA_DATA_DIR/images-build/*/imagefs/`
 	for entry in cmd.read_dir(images) {
@@ -60,6 +62,7 @@ fn unmount_images_imagefs(cmd: &mut Cmd, images: &Path) {
 		}
 	}
 }
+
 fn remove_images_build(cmd: &mut Cmd, images_build: &Path) {
 	// Recursively chmod+w any nix-built linux kernel packages
 	for entry_src in cmd.read_dir(images_build) {

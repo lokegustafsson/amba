@@ -24,9 +24,11 @@ enum Args {
 	Init(InitArgs),
 	Run(RunArgs),
 }
-#[derive(clap::Args, Debug)]
+
 /// Initialize `$AMBA_DATA_DIR`
+#[derive(clap::Args, Debug)]
 struct InitArgs {}
+
 /// Run QEMU+S2E+libamba
 #[derive(clap::Args, Debug)]
 struct RunArgs {
@@ -87,6 +89,7 @@ impl Default for UptimeHourMinuteSeconds {
 		}
 	}
 }
+
 impl fmt::time::FormatTime for UptimeHourMinuteSeconds {
 	fn format_time(&self, w: &mut fmt::format::Writer<'_>) -> std::fmt::Result {
 		let seconds = self.epoch.elapsed().as_secs();
