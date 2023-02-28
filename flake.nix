@@ -1,5 +1,6 @@
 {
   inputs = {
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-22.11";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay = {
@@ -15,12 +16,17 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, rust-overlay, cargo2nix }:
+  outputs = { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay, cargo2nix }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ cargo2nix.overlays.default ];
+          overlays = [
+            cargo2nix.overlays.default
+            (final: prev: {
+              stable = nixpkgs-stable.legacyPackages.${system};
+            })
+          ];
         };
         lib = nixpkgs.lib;
         rust = import ./nix/rust.nix {
@@ -64,7 +70,7 @@
             ];
           };
           doc = pkgs.mkShell {
-            packages = let p = pkgs; in [ p.tectonic p.gnumake ];
+            packages = let p = pkgs; in [ p.stable.tectonic p.gnumake ];
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
           guest = s2e.guest-images-shell;
