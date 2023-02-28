@@ -19,7 +19,11 @@
   pgfgantt,
   scrextend,
 }
-
+\usepackage[
+    backend=biber,
+    style=ieee,
+    sorting=none
+]{biblatex}
 \usetikzlibrary{positioning}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  NICE PALETTE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,8 +80,6 @@
 
 \input{slutsatser.tex}
 
-\addcontentsline{toc}{section}{Referencer}
-\bibliographystyle{plain} % We choose the "plain" reference style
-\bibliography{refs} % Entries are in the refs.bib file
+\printbibliography
 
 \end{document}
