@@ -54,7 +54,6 @@ fn main() -> ExitCode {
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
 	tracing::info!(?args);
 
-	env::set_current_dir(data_dir).unwrap();
 	let cmd = &mut cmd::Cmd::get();
 	let res = match args {
 		Args::Init(args) => init::init(cmd, data_dir, args),
