@@ -17,10 +17,13 @@ void Amba::initialize() {
 	auto& config = *s2e.getConfig();
 	const auto& key = this->getConfigKey();
 
+	// Copying values from lua config?
 	this->m_traceBlockTranslation
 		= config.getBool(key + ".traceBlockTranslation");
 	this->m_traceBlockExecution
 		= config.getBool(key + ".traceBlockExecution");
+
+	// Set up event callbacks
 	core.onTranslateBlockStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -37,7 +40,7 @@ void Amba::slotTranslateBlockStart(
 	ExecutionSignal *signal,
 	S2EExecutionState *state,
 	TranslationBlock *tb,
-	uint64_t pc
+	u64 pc
 ) {
 	if (this->m_traceBlockTranslation) {
 		this->getDebugStream(state) << "Translating block at " << hexval(pc) << "\n";
