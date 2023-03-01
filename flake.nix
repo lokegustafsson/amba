@@ -64,6 +64,7 @@
             # NOTE: This crate name should really be "amba", but that does not work for some reason
             (mkEnvDep "handlebars" {
               AMBA_DEPENDENCIES_DIR = "${s2e.amba-deps}";
+              AMBA_SRC_DIR = ./.;
             })
           ];
         };
