@@ -1,13 +1,6 @@
-use std::{
-	env,
-	path::{Path, PathBuf},
-	process::ExitCode,
-	time::Instant,
-};
+use std::{env, path::PathBuf, process::ExitCode, time::Instant};
 
 use tracing_subscriber::fmt;
-
-use crate::run::SessionConfig;
 
 mod cmd;
 mod init;
@@ -26,11 +19,14 @@ enum Args {
 
 /// Initialize `$AMBA_DATA_DIR`
 #[derive(clap::Args, Debug)]
-struct InitArgs {}
+pub struct InitArgs {
+	#[arg(short, long)]
+	force: bool,
+}
 
 /// Run QEMU+S2E+libamba
 #[derive(clap::Args, Debug)]
-struct RunArgs {
+pub struct RunArgs {
 	host_path_to_executable: PathBuf,
 }
 
@@ -58,22 +54,14 @@ fn main() -> ExitCode {
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
 	tracing::info!(?args);
 
-	let dependencies_dir = Path::new(AMBA_DEPENDENCIES_DIR);
-	let src_dir = Path::new(AMBA_SRC_DIR);
-
 	let cmd = &mut cmd::Cmd::get();
-	match args {
-		Args::Init(InitArgs {}) => init::init(cmd, &src_dir, &data_dir),
-		Args::Run(RunArgs {
-			host_path_to_executable,
-		}) => run::run(
-			cmd,
-			&data_dir,
-			&dependencies_dir,
-			&SessionConfig {
-				path_to_executable: host_path_to_executable,
-			},
-		),
+	let res = match args {
+		Args::Init(args) => init::init(cmd, &data_dir, args),
+		Args::Run(args) => run::run(cmd, &data_dir, args),
+	};
+	match res {
+		Ok(()) => ExitCode::SUCCESS,
+		Err(()) => ExitCode::FAILURE,
 	}
 }
 

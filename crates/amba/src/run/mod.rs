@@ -1,17 +1,13 @@
 use std::{
-	path::{Path, PathBuf},
-	process::{Command, ExitCode, ExitStatus},
+	path::Path,
+	process::{Command, ExitStatus},
 };
 
 use chrono::offset::Local;
 
-use crate::{cmd::Cmd, run::session::S2EConfig};
+use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs, AMBA_DEPENDENCIES_DIR};
 
 mod session;
-
-pub struct SessionConfig {
-	pub path_to_executable: PathBuf,
-}
 
 // See also
 // https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh
@@ -19,15 +15,16 @@ pub struct SessionConfig {
 pub fn run(
 	cmd: &mut Cmd,
 	data_dir: &Path,
-	dependencies_dir: &Path,
-	config: &SessionConfig,
-) -> ExitCode {
+	RunArgs {
+		host_path_to_executable,
+	}: RunArgs,
+) -> Result<(), ()> {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
 		tracing::error!(
 			?data_dir,
 			"AMBA_DATA_DIR has not been initialized"
 		);
-		return ExitCode::FAILURE;
+		return Err(());
 	}
 
 	let session_dir = &data_dir.join(format!(
@@ -39,18 +36,17 @@ pub fn run(
 			?session_dir,
 			"session_dir already exists, are multiple amba instances running concurrently?"
 		);
-		return ExitCode::FAILURE;
+		return Err(());
 	}
 	cmd.create_dir_all(session_dir);
 	{
-		let executable_name = config
-			.path_to_executable
+		let executable_name = host_path_to_executable
 			.file_name()
 			.unwrap()
 			.to_str()
 			.unwrap();
 		cmd.copy(
-			&config.path_to_executable,
+			&host_path_to_executable,
 			session_dir.join(executable_name),
 		);
 		S2EConfig::new(session_dir, &executable_name).save_to(cmd, session_dir);
@@ -63,8 +59,8 @@ pub fn run(
 	};
 	let arch = "x86_64";
 
-	let qemu = &dependencies_dir.join(format!("bin/qemu-system-{arch}"));
-	let libs2e_dir = &dependencies_dir.join("share/libs2e");
+	let qemu = &Path::new(AMBA_DEPENDENCIES_DIR).join(format!("bin/qemu-system-{arch}"));
+	let libs2e_dir = &Path::new(AMBA_DEPENDENCIES_DIR).join("share/libs2e");
 	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
 	let s2e_config = &session_dir.join("s2e-config.lua");
 	let max_processes = 1;
@@ -82,10 +78,10 @@ pub fn run(
 		serial_out,
 	);
 	if status.success() {
-		ExitCode::SUCCESS
+		Ok(())
 	} else {
 		tracing::error!(?status, "qemu exited with error code");
-		ExitCode::FAILURE
+		Err(())
 	}
 }
 fn run_qemu(
