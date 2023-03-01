@@ -92,6 +92,53 @@ arbetsbörda som ger djup förståelse och en testfallsgenerationsdriven process
 som ger översiktlig förståelse kan genomföras av användaren om verktygen stödjer
 hela spektrummet.
 
+För att klargöra distinktionen mellan manuell och automatiska metoder för
+binäranalys används följande use cases:
+
+\begin{lstlisting}[label={list:first}, language=Python, caption=Use case
+manuella metoder]
+# Givet sträng-input från stdin
+s = input()
+if sha256(s) = "välkänd hash":
+  print("Winner winner chicken dinner")
+else:
+  print("you lose")
+
+\end{lstlisting}
+
+I use cases där det existerar kända konstanter, något som är typiskt i fall som
+involverar kryptografi i olika utsträckning, är det rimligt att tillämpa
+manuella metoder för att bilda förståelse om programmet. Genom att inspektera
+ett binärt program innehållande ovan källkod kan det enkelt hittas en konstant
+associerad till sha-256 algoritmen och därmed bilda förståelse om programmet.
+
+I ovan fall är det dessutom orimligt att tillämpa automatiska metoder eftersom
+dessa, såsom concolic testing, genererar alltför stora symboliska
+representationer och hade i det ovan exemplet krävt att det går att hitta
+inversen till en given SHA-256 hash vilket idag är omöjligt och leder därmed
+till att alla paths inte undersöks.
+
+\begin{lstlisting}[label={list:first}, language=Python, caption=Use case
+manuella metoder]
+# Givet sträng-input från stdin
+s = input()
+if s == "secret":
+  print("Winner winner chicken dinner")
+else:
+  print("you lost")
+\end{lstlisting}
+
+Det motsatta fallet är ovan och lämpas väl att undersökas med automatiska
+metoder eftersom det är tidskrävande att manuellt välja slumpvalda värden på s
+för att hitta den korrekta branchen. Istället lämpar concolic testing, dvs en
+automatisk metod, sig väl i detta fallet eftersom concolic testing väljer olika
+konkreta värden samtidigt som den tillämpar symbolisk exekvering med symboliska
+värden som följer den givna branchen, t.ex. om s = "hej" vilket motsvarar att
+programmet väljer else-branchen och printar("you lost"). Detta upprepas med nya
+exekveringsvägar och till slut hittas vilken input som ger print("you
+won")-branchen. 
+
+
 \subsubsection{Statisk och dynamisk binäranalys}
 En annan typ av kategorisering av olika analysmetoder som fokuserar på hur
 analysen genomförs delar metoderna i två grupper: statisk och dynamisk analys
