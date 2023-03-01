@@ -1,8 +1,11 @@
 #pragma once
 
+#include "cpu/types.h"
 #include <s2e/CorePlugin.h>
 #include <s2e/Plugin.h>
 #include <s2e/S2EExecutionState.h>
+
+#include <unordered_map>
 
 namespace s2e {
 namespace plugins {
@@ -23,11 +26,16 @@ public:
 	void initialize();
 
 	TranslationFunction slotTranslateBlockStart;
+	TranslationFunction translateInstructionStart;
 	ExecutionFunction slotExecuteBlockStart;
+	ExecutionFunction onFunctionCall;
+	ExecutionFunction onDeref;
 
 private:
 	bool m_traceBlockTranslation;
 	bool m_traceBlockExecution;
+
+	std::unordered_map<target_phys_addr_t, target_phys_addr_t> m_allocations;
 };
 
 } // namespace plugins
