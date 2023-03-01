@@ -13,17 +13,15 @@ pub fn init(cmd: &mut Cmd, data_dir: &Path, InitArgs { force }: InitArgs) -> Res
 		]))
 		.unwrap();
 	let version_file = &data_dir.join("version.txt");
-	let existing_builder_version = match version_file.exists() {
-		true => Some(cmd.read(version_file)),
-		false => None,
-	};
-	if force || existing_builder_version.as_ref() != Some(&builder_version) {
-		tracing::info!("building guest images");
-		force_init(cmd, data_dir, build_guest_images_flake_ref)?;
-		cmd.write(version_file, builder_version);
-	} else {
+	let existing_builder_version = version_file.exists().then(|| cmd.read(version_file));
+
+	if !force && existing_builder_version.as_ref() == Some(&builder_version) {
 		tracing::info!("guest images already up to date; force rebuild with --force");
+		return Ok(());
 	}
+	tracing::info!("building guest images");
+	force_init(cmd, data_dir, build_guest_images_flake_ref)?;
+	cmd.write(version_file, builder_version);
 	Ok(())
 }
 pub fn force_init(

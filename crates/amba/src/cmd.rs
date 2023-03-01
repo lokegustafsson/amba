@@ -39,7 +39,11 @@ impl Cmd {
 			stdout,
 			stderr,
 		} = command.stderr(Stdio::inherit()).output().unwrap();
-		assert_eq!(stderr.len(), 0);
+		assert!(
+			stderr.is_empty(),
+			"stderr: '{}'",
+			String::from_utf8_lossy(&stderr)
+		);
 		match status.success() {
 			true => Ok(stdout),
 			false => Err(stdout),
