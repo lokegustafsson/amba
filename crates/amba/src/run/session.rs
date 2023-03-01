@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use handlebars::Handlebars;
 use serde::Serialize;
+use tera::{Context, Tera};
 
 use crate::cmd::Cmd;
 
@@ -72,14 +72,16 @@ impl S2EConfig {
 
 	pub fn save_to(&self, cmd: &mut Cmd, session_dir: &Path) {
 		assert!(session_dir.exists());
+		let mut tera = Tera::default();
+		let context = Context::from_serialize(self).unwrap();
 		cmd.write(
 			session_dir.join("s2e-config.lua"),
-			Handlebars::new().render_template(TEMPLATE, &self).unwrap(),
+			tera.render_str(TEMPLATE, &context).unwrap(),
 		);
 		cmd.write(session_dir.join("library.lua"), LIBRARY);
 		cmd.write(
 			session_dir.join("bootstrap.sh"),
-			Handlebars::new().render_template(BOOTSTRAP, &self).unwrap(),
+			tera.render_str(BOOTSTRAP, &context).unwrap(),
 		);
 	}
 }

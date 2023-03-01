@@ -44,7 +44,7 @@ fn main() -> ExitCode {
 
 	let args: Args = clap::Parser::parse();
 
-	let data_dir = match env::var_os("AMBA_DATA_DIR") {
+	let data_dir = &match env::var_os("AMBA_DATA_DIR") {
 		Some(dir) => PathBuf::from(dir),
 		None => home::home_dir().unwrap().join("amba"),
 	};
@@ -54,10 +54,11 @@ fn main() -> ExitCode {
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
 	tracing::info!(?args);
 
+	env::set_current_dir(data_dir).unwrap();
 	let cmd = &mut cmd::Cmd::get();
 	let res = match args {
-		Args::Init(args) => init::init(cmd, &data_dir, args),
-		Args::Run(args) => run::run(cmd, &data_dir, args),
+		Args::Init(args) => init::init(cmd, data_dir, args),
+		Args::Run(args) => run::run(cmd, data_dir, args),
 	};
 	match res {
 		Ok(()) => ExitCode::SUCCESS,
