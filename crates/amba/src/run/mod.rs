@@ -64,17 +64,20 @@ pub fn run(
 	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
 	let s2e_config = &session_dir.join("s2e-config.lua");
 	let max_processes = 1;
-	let image_name = "ubuntu-22.04-x86_64";
+	let image = &data_dir.join(format!(
+		"images/ubuntu-22.04-x86_64/image.raw.s2e"
+	));
 	let serial_out = &session_dir.join("serial.txt");
 
 	let status = run_qemu(
 		cmd,
 		qemu,
+		session_dir,
 		libs2e,
 		libs2e_dir,
 		s2e_config,
 		max_processes,
-		image_name,
+		image,
 		serial_out,
 	);
 	if status.success() {
@@ -87,11 +90,12 @@ pub fn run(
 fn run_qemu(
 	cmd: &mut Cmd,
 	qemu: &Path,
+	session_dir: &Path,
 	libs2e: &Path,
 	libs2e_dir: &Path,
 	s2e_config: &Path,
 	max_processes: u16,
-	image_name: &str,
+	image: &Path,
 	serial_out: &Path,
 ) -> ExitStatus {
 	assert!(qemu.exists());
@@ -101,6 +105,7 @@ fn run_qemu(
 
 	let mut command = Command::new(qemu);
 	command
+		.current_dir(session_dir)
 		.env("LD_PRELOAD", libs2e)
 		.env("S2E_CONFIG", s2e_config)
 		.env("S2E_SHARED_DIR", libs2e_dir)
@@ -111,7 +116,10 @@ fn run_qemu(
 	}
 	cmd.command_spawn_wait(command.args([
 		"-drive",
-		&format!("file={image_name},format=s2e,cache=writeback",),
+		&format!(
+			"file={},format=s2e,cache=writeback",
+			image.to_str().unwrap()
+		),
 		"-k",
 		"en-us",
 		"-monitor",
@@ -124,7 +132,7 @@ fn run_qemu(
 		"-net",
 		"none",
 		"-net",
-		"nix,model=e1000",
+		"nic,model=e1000",
 		"-loadvm",
 		"ready",
 	]))

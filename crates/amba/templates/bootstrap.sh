@@ -171,7 +171,7 @@ function execute {
       # Patch the default symbolic file with the path to the seed
       ARGS=("${@}")
       SEED_FILE_PATH="${RAMDISK_ROOT}${SEED_FILE}"
-      for i in $(my_seq 0 $(expr ${#ARGS[*]} - 1)); do
+      for i in $(my_seq 0 $(expr ${ #ARGS[*]} - 1)); do
         if [ ${ARGS[$i]} = "${RAMDISK_ROOT}input-0" ]; then
           ARGS[$i]="${SEED_FILE_PATH}"
         fi
@@ -216,7 +216,11 @@ function execute {
 ###############################################################################
 # This section contains target-specific code
 
-{% include '%s' % target_bootstrap_template %}
+{% if target_bootstrap_template == 'bootstrap.linux.sh' %}
+{% include 'bootstrap.linux.sh' %}
+{% else %}
+this should cause an error
+{% endif %}
 
 ###############################################################################
 
@@ -249,21 +253,25 @@ sudo swapoff -a
 target_init
 
 # Download the target file to analyze
-{% for tf in target.file_names_to_s2eget -%}
+{% for tf in target.names -%}
 ${S2ECMD} get "{{ tf }}"
 {% endfor %}
 
 {% if not use_seeds %}
-download_symbolic_files {{ target.args_space_concatenated_symbolic_file_names }}
+download_symbolic_files {{ target.args.symbolic_file_names | join(sep=' ') }}
 {% endif %}
 
 {% if target %}
 # Run the analysis
 
-{% if project_type == 'windows' %}
-  TARGET_PATH='{{ target.name }}'
+{% if target.translated_path %}
+  TARGET_PATH='{{ target.translated_path }}'
 {% else %}
-  TARGET_PATH='./{{ target.name }}'
+  {% if project_type == 'windows' %}
+    TARGET_PATH='{{ target.name }}'
+  {% else %}
+    TARGET_PATH='./{{ target.name }}'
+  {% endif %}
 {% endif %}
 
 
@@ -285,7 +293,7 @@ elif [ "x${BINARY_NAME}" = "xpowerpnt.exe" ]; then
 fi
 {% endif %}
 
-execute "${TARGET_PATH}" {{ target.args_space_concatenated_all }}
+execute "${TARGET_PATH}" {{ target.args.resolved_args | join(sep=' ') }}
 
 {% else %}
 ##### NO TARGET HAS BEEN SPECIFIED DURING PROJECT CREATION #####
