@@ -17,11 +17,10 @@ pub fn init(cmd: &mut Cmd, src_dir: &Path, data_dir: &Path) -> ExitCode {
 	let build_result = cmd.command_spawn_wait(
 		Command::new("nix")
 			.arg("run")
-			.arg({
-				let mut flake = src_dir.to_owned();
-				flake.push("#build-guest-images");
-				flake
-			})
+			.arg(format!(
+				"path:{}#build-guest-images",
+				src_dir.to_owned().to_str().unwrap()
+			))
 			.arg("--")
 			.args([images_build, images]),
 	);
