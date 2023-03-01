@@ -1,11 +1,36 @@
-use std::{
-	path::Path,
-	process::{Command, ExitCode},
-};
+use std::{path::Path, process::Command};
 
-use crate::cmd::Cmd;
+use crate::{cmd::Cmd, InitArgs, AMBA_SRC_DIR};
 
-pub fn init(cmd: &mut Cmd, src_dir: &Path, data_dir: &Path) -> ExitCode {
+pub fn init(cmd: &mut Cmd, data_dir: &Path, InitArgs { force }: InitArgs) -> Result<(), ()> {
+	let build_guest_images_flake_ref = &format!("path:{AMBA_SRC_DIR}#build-guest-images",);
+	let builder_version = cmd
+		.command_capture_stdout(Command::new("nix").args([
+			"build",
+			build_guest_images_flake_ref,
+			"--no-link",
+			"--print-out-paths",
+		]))
+		.unwrap();
+	let version_file = &data_dir.join("version.txt");
+	let existing_builder_version = match version_file.exists() {
+		true => Some(cmd.read(version_file)),
+		false => None,
+	};
+	if force || existing_builder_version.as_ref() != Some(&builder_version) {
+		tracing::info!("building guest images");
+		force_init(cmd, data_dir, build_guest_images_flake_ref)?;
+		cmd.write(version_file, builder_version);
+	} else {
+		tracing::info!("guest images already up to date; force rebuild with --force");
+	}
+	Ok(())
+}
+pub fn force_init(
+	cmd: &mut Cmd,
+	data_dir: &Path,
+	build_guest_images_flake_ref: &str,
+) -> Result<(), ()> {
 	let images = &data_dir.join("images");
 	let images_build = &data_dir.join("images-build");
 	if images.exists() {
@@ -16,21 +41,16 @@ pub fn init(cmd: &mut Cmd, src_dir: &Path, data_dir: &Path) -> ExitCode {
 	}
 	let build_result = cmd.command_spawn_wait(
 		Command::new("nix")
-			.arg("run")
-			.arg(format!(
-				"path:{}#build-guest-images",
-				src_dir.to_owned().to_str().unwrap()
-			))
-			.arg("--")
+			.args(["run", build_guest_images_flake_ref, "--"])
 			.args([images_build, images]),
 	);
 	if !build_result.success() {
 		tracing::error!("failed to build guest images");
-		return ExitCode::FAILURE;
+		return Err(());
 	}
 	unmount_images_imagefs(cmd, images);
 	remove_images_build(cmd, images_build);
-	return ExitCode::SUCCESS;
+	Ok(())
 }
 
 fn remove_images(cmd: &mut Cmd, images: &Path) {

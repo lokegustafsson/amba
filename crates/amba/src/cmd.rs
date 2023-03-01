@@ -2,7 +2,7 @@ use std::{
 	fs::{self, ReadDir},
 	io, iter,
 	path::Path,
-	process::{Command, ExitStatus},
+	process::{Command, ExitStatus, Output, Stdio},
 	sync::atomic::{AtomicBool, Ordering},
 };
 
@@ -25,6 +25,25 @@ impl Cmd {
 		  args = ?iter::once(command.get_program()).chain(command.get_args()).collect::<Vec<_>>()
 		);
 		command.spawn().unwrap().wait().unwrap()
+	}
+
+	pub fn command_capture_stdout(&mut self, command: &mut Command) -> Result<Vec<u8>, Vec<u8>> {
+		tracing::trace!(
+			cwd = ?command.get_current_dir(),
+			env = ?command.get_envs().collect::<Vec<_>>(),
+			args = ?iter::once(command.get_program()).chain(command.get_args()).collect::<Vec<_>>(),
+		"capturing stdout"
+		  );
+		let Output {
+			status,
+			stdout,
+			stderr,
+		} = command.stderr(Stdio::inherit()).output().unwrap();
+		assert_eq!(stderr.len(), 0);
+		match status.success() {
+			true => Ok(stdout),
+			false => Err(stdout),
+		}
 	}
 
 	pub fn read_dir(&mut self, dir: impl AsRef<Path>) -> ReadDir {
@@ -59,6 +78,12 @@ impl Cmd {
 		let file = file.as_ref();
 		tracing::trace!(?file, "write_file");
 		fs::write(file, content).unwrap()
+	}
+
+	pub fn read(&mut self, file: impl AsRef<Path>) -> Vec<u8> {
+		let file = file.as_ref();
+		tracing::trace!(?file, "read_file");
+		fs::read(file).unwrap()
 	}
 
 	pub fn copy(&mut self, file: impl AsRef<Path>, target: impl AsRef<Path>) {
