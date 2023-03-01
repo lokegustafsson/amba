@@ -2,6 +2,14 @@
 % (fuzzing används slarvigt, inkludera tex concolic testing)
 \subsection{Bakgrund}
 
+Problematisk minneshantering har potential att påverka ett programs korrekthet och 
+kan utnyttjas av fientliga aktörer i skadliga syften. Att minne hanteras på ett 
+osäkert sätt är inte ovanligt, speciellt då proggrammet är skrivet i ett språk som är 
+"memory unsafe" som exempelvis C/C++. Det är då lätt att vid utveckling av program 
+göra misstag som introducerar sårbarheter, och kan vara svårare att upptäcka dessa 
+sårbarheter när de väl introducerats, speciellt om det inkorrekta beteendet endast 
+uppstår under körning med specifika indata.
+
 Att läsa källkod är ett sätt att förstå program, men ibland är det gynnsamt att istället betrakta
 maskinkoden direkt. Detta kan vara för att
 \begin{itemize}
@@ -35,7 +43,7 @@ Begreppet \textit{reverse engingeering} syftar på processen att söka insikt i 
 (enhet/process/mjukvara/verktyg/system) arbetar, utan en etablerad insikt i dess interna 
 uppbyggnad. Med andra ord syftar reverse engineering på att dekonstruera en produkt för att 
 öka förståelsen av den. Detta görs genom att med olika metoder plocka isär produkten för 
-att förstå hur den utför ett arbete.  Reverse engineering är ett fundamentalt verktyg då insikt 
+att förstå hur den utför ett arbete. Reverse engineering är ett fundamentalt verktyg då insikt 
 om en produkts design behövs men designspecifikationer ej existerar eller är tillgängliga. 
 Reverse engineering har flera användningsområden, däribland då äldre produkter, vars design 
 inte längre är tillgänglig, behöver undersökas, eller när funktionalitet försvunnit i 
@@ -43,7 +51,7 @@ utvecklingsaproccesen och behöver återfinnas. Reverse engineering är också a
 att analysera fel som uppstår, för att förbättra delkomponenter eller för att diagnostisera 
 en produkt.
 
-För att bilda en allmän förståelse om programmet krävs både \textit{korrekt} och
+För att bilda en allmän förståelse om ett program krävs både \textit{korrekt} och
 \textit{abstrakt} förståelse. I detta avseende syftar \textit{korrekt} på
 avsaknaden av felaktiga slutsatser och \textit{abstrakt} på möjligheten att
 resonera om programmet generellt i motsats till att resonera om en specifik
