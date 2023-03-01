@@ -77,14 +77,11 @@ let
     else:
       raise Exception("fake curl given", argv)
   '';
-  clang_and_llvm = pkgs.symlinkJoin {
-    name = "clang-and-llvm";
-    paths = [ pkgs.clang_14 pkgs.llvmPackages_14.llvm ];
-  };
 
   BUILD_ARCH = "haswell";
-  INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
-  INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
+  INJECTED_CMAKE_SYSTEM_LIBRARY_PATH = "${pkgs.ncurses}/lib";
+  INJECTED_CLANG_CC = "${s2e-llvm}/llvm-release/bin/clang";
+  INJECTED_CLANG_CXX = "${s2e-llvm}/llvm-release/bin/clang++";
   INJECTED_RAPIDJSON_SRC = pkgs.fetchFromGitHub {
     owner = "Tencent";
     repo = "rapidjson";
@@ -93,26 +90,32 @@ let
   };
   LLVM_BUILD = "${s2e-llvm}";
 
-  s2e-llvm = pkgs.stdenv.mkDerivation {
+  s2e-llvm = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-llvm";
-    src = s2e-src;
-    dontConfigure = true;
-    dontInstall = true;
-    patches = [ ../patches/s2e/makefile-llvm.patch ];
-    buildPhase = ''
-      mkdir -p $out
-      mv * $out/
-      cd $out
-      S2E_PREFIX=$out make -f ./Makefile stamps/llvm-release-make
+    phases = [ "installPhase" "fixupPhase" ];
+    installPhase = ''
+      mkdir -p $out/llvm-release
+      rsync -a ${pkgs.clang_14}/* $out/llvm-release
+      rsync -a ${pkgs.llvmPackages_14.llvm}/* $out/llvm-release
+      rsync -a ${pkgs.llvmPackages_14.llvm.dev}/* $out/llvm-release
+      rsync -a ${pkgs.llvmPackages_14.llvm.lib}/* $out/llvm-release
+
+      #chmod u+w $out/llvm-release/nix-support
+      #mv $out/llvm-release/nix-support $out
+
+      substituteInPlace \
+        $out/llvm-release/lib/cmake/llvm/LLVMConfig.cmake \
+        $out/llvm-release/lib/cmake/llvm/LLVMExports.cmake \
+        $out/llvm-release/lib/cmake/llvm/LLVMExports-release.cmake \
+        $out/llvm-release/bin/clang++ \
+        $out/llvm-release/bin/clang \
+        $out/llvm-release/bin/cpp \
+        --replace ${pkgs.clang_14} $out/llvm-release \
+        --replace ${pkgs.llvmPackages_14.llvm} $out/llvm-release \
+        --replace ${pkgs.llvmPackages_14.llvm.dev} $out/llvm-release \
+        --replace ${pkgs.llvmPackages_14.llvm.lib} $out/llvm-release
     '';
-    buildInputs = [
-      fake-curl
-      pkgs.binutils-unwrapped
-      pkgs.cmake
-      pkgs.libxcrypt
-      pkgs.python3Minimal
-    ];
-    inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
+    buildInputs = [ pkgs.rsync ];
   };
   libgomp = let
     version = "12.1.0";
@@ -142,8 +145,7 @@ let
     dontConfigure = true;
     dontInstall = true;
     dontMoveLib64 = true;
-    patches =
-      [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
+    patches = [ ../patches/s2e/makefile.patch ];
     buildPhase = ''
       mkdir -p $out
 
@@ -164,6 +166,7 @@ let
     inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
     CPATH = (makeIncludePath [ pkgs.libelf pkgs.boost ]);
     LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libelf pkgs.boost ];
+    INJECTED_KLEE_CFLAGS = "-fexceptions";
     INJECTED_LIBS2E_CXXFLAGS =
       "-Wno-unused-command-line-argument -L${libgomp}/lib";
 
@@ -178,7 +181,8 @@ let
         "https://github.com/google/googletest/archive/release-1.11.0.tar.gz";
       sha256 = "sha256-tIcL8SH/d5W6INILzdhie44Ijy0dqymaAxwQNO3ck9U=";
     };
-    inherit INJECTED_RAPIDJSON_SRC LLVM_BUILD;
+    inherit INJECTED_CMAKE_SYSTEM_LIBRARY_PATH INJECTED_RAPIDJSON_SRC
+      LLVM_BUILD;
   };
   s2e-tools = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-tools";
@@ -186,8 +190,7 @@ let
     dontConfigure = true;
     dontInstall = true;
     dontMoveLib64 = true;
-    patches =
-      [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
+    patches = [ ../patches/s2e/makefile.patch ];
     buildPhase = ''
       mkdir -p $out
       S2E_PREFIX=$out make -f ./Makefile stamps/tools-release-install
@@ -198,7 +201,8 @@ let
     CPATH = (makeIncludePath (let p = pkgs;
     in [ p.libelf p.boost p.glibc.dev p.pkgsCross.gnu32.glibc.dev ]));
     LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libelf ];
-    inherit INJECTED_RAPIDJSON_SRC LLVM_BUILD;
+    inherit INJECTED_CMAKE_SYSTEM_LIBRARY_PATH INJECTED_RAPIDJSON_SRC
+      LLVM_BUILD;
   };
   s2e-guest-tools = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-guest-tools";
@@ -206,8 +210,7 @@ let
     dontConfigure = true;
     dontInstall = true;
     dontMoveLib64 = true;
-    patches =
-      [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
+    patches = [ ../patches/s2e/makefile.patch ];
     buildPhase = ''
       mkdir -p $out
 
