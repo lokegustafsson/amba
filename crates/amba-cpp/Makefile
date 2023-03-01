@@ -33,4 +33,11 @@ clean:
 	-rm *.o
 	-rm *.a
 
+../../compile_flags.txt: compile_flags_template.txt
+	cat $^ \
+	| sed "s|LLVM_PATH|${LLVM_PATH}|" \
+	| sed "s|BOOST_PATH|${BOOST_PATH}|" \
+	| sed "s|GLIBC_PATH|${GLIBC_PATH}|" \
+	> $@
+
 .PHONY: clean

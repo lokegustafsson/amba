@@ -38,3 +38,4 @@ eurydice-private-key
 
 # C/C++ object files
 **/*.o
+compile_flags.txt

@@ -27,11 +27,11 @@ s2e/libvmi/include
 -I
 s2e/tools/lib/X8664BitcodeLibrary
 -I
-/nix/store/p3awbln3624hlf03wa9wcfw5j5drcf74-boost-1.79.0-dev/include
+BOOST_PATH
 -I
-/nix/store/mmmjp0xcmr0dm307jv1l34hvi95z6d8s-glibc-2.35-224-dev/include
+GLIBC_PATH
 -I
-/nix/store/h9w0pi8aw9dwkf1an1ypk5ihgxk5hsbc-llvm-14.0.6-dev/include
+LLVM_PATH
 -D
 BOOST_BIND_GLOBAL_PLACEHOLDERS=1
 -D
