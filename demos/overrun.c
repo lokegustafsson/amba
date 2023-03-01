@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 
 typedef void *VoidFunction();
@@ -15,7 +16,8 @@ void bye() {
 }
 
 int main() {
-	A a = (A){
+	A *a = (A *) malloc(sizeof(A));
+	*a = (A){
 		.a = {},
 		.f = (VoidFunction*) hello,
 	};
@@ -23,9 +25,9 @@ int main() {
 	int input = 0;
 	scanf("%d\n", &input);
 
-	for (size_t i = 0; i <= input; i++) {
-		a.a[i] = (ssize_t) bye;
+	for (int i = 0; i <= input; i++) {
+		a->a[i] = (ssize_t) bye;
 	}
 
-	a.f();
+	a->f();
 }
