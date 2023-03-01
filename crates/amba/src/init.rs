@@ -47,11 +47,15 @@ pub fn force_init(
 		return Err(());
 	}
 	unmount_images_imagefs(cmd, images);
+	chmod_readonly_images(cmd, images);
 	remove_images_build(cmd, images_build);
 	Ok(())
 }
 
 fn remove_images(cmd: &mut Cmd, images: &Path) {
+	let chmod_result =
+		cmd.command_spawn_wait(Command::new("chmod").args(["-R", "u+w"]).arg(images));
+	assert!(chmod_result.success());
 	unmount_images_imagefs(cmd, images);
 	// Recursively delete `$AMBA_DATA_DIR/images/`
 	cmd.remove_dir_all(images);
@@ -63,12 +67,7 @@ fn unmount_images_imagefs(cmd: &mut Cmd, images: &Path) {
 		let entry = entry.unwrap();
 		let imagefs = &entry.path().join("imagefs");
 		if imagefs.exists() {
-			let umount_result = Command::new("umount")
-				.arg(imagefs)
-				.spawn()
-				.unwrap()
-				.wait()
-				.unwrap();
+			let umount_result = cmd.command_spawn_wait(Command::new("umount").arg(imagefs));
 			match umount_result.success() {
 				true => tracing::debug!(?imagefs, "unmount successful"),
 				false => tracing::debug!(?imagefs, "unmount failed"),
@@ -78,6 +77,11 @@ fn unmount_images_imagefs(cmd: &mut Cmd, images: &Path) {
 			}
 		}
 	}
+}
+
+fn chmod_readonly_images(cmd: &mut Cmd, images: &Path) {
+	let chmod_result = cmd.command_spawn_wait(Command::new("chmod").args(["-R", "-w"]).arg(images));
+	assert!(chmod_result.success());
 }
 
 fn remove_images_build(cmd: &mut Cmd, images_build: &Path) {
@@ -95,13 +99,11 @@ fn remove_images_build(cmd: &mut Cmd, images_build: &Path) {
 				.to_string_lossy()
 				.starts_with("linux-4.9.3-")
 			{
-				let chmod_result = Command::new("chmod")
-					.args(["-R", "+w"])
-					.arg(entry_tmp.path())
-					.spawn()
-					.unwrap()
-					.wait()
-					.unwrap();
+				let chmod_result = cmd.command_spawn_wait(
+					Command::new("chmod")
+						.args(["-R", "+w"])
+						.arg(entry_tmp.path()),
+				);
 				assert!(chmod_result.success());
 			}
 		}
