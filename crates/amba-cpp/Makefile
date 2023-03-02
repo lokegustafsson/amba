@@ -53,4 +53,6 @@ clean:
 	| sed "s|ZYCORE_PATH|${ZYCORE_PATH}|" \
 	> $@
 
+compile_flags.txt: ../../compile_flags.txt
+
 .PHONY: clean
