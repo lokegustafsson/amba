@@ -2,6 +2,8 @@
 #include <s2e/S2E.h>
 #include <s2e/Utils.h>
 
+#include <cpu/types.h>
+
 #include "Amba.h"
 #include "Numbers.h"
 
@@ -9,7 +11,7 @@ namespace s2e {
 namespace plugins {
 
 static bool isCallOp(const u8 * memory, const target_phys_addr_t pc);
-static bool isDerefOp(const u64 op_code);
+static bool isDerefOp(const u8 * memory, const target_phys_addr_t pc);
 
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
 #define SUBSCRIBE(fn) signal->connect(sigc::mem_fun(*this, (fn)));
@@ -63,11 +65,11 @@ void Amba::translateInstructionStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	const u64 op = memory[pc];
-	if (isCallOp(op)) {
+	u8* memory;
+	if (isCallOp(memory, pc)) {
 		SUBSCRIBE(&Amba::onFunctionCall);
 	}
-	if (isDerefOp(op)) {
+	if (isDerefOp(memory, pc)) {
 		SUBSCRIBE(&Amba::onDeref);
 	}
 }
@@ -81,9 +83,8 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	// Check if read adr is on stack or within saved heap data
 }
 
-static bool isCallOp(const u8 * memory, const target_phys_addr_t pc) {}
-
-static bool isDerefOp(const u64 op_code) {}
+static bool isCallOp(const u8 * memory, const target_phys_addr_t pc) { return false; }
+static bool isDerefOp(const u8 * memory, const target_phys_addr_t pc) { return false; }
 
 } // namespace plugins
 } // namespace s2e
