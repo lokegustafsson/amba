@@ -53,8 +53,8 @@ clean:
 	| sed "s|LLVM_PATH|${LLVM_PATH}|" \
 	| sed "s|BOOST_PATH|${BOOST_PATH}|" \
 	| sed "s|GLIBC_PATH|${GLIBC_PATH}|" \
-	| sed "s|ZYDIS_PATH|${ZYDIS_PATH}|" \
-	| sed "s|ZYCORE_PATH|${ZYCORE_PATH}|" \
+	| sed "s|ZYDIS_PATH|${ZYDIS_PATH}/include|" \
+	| sed "s|ZYCORE_PATH|${ZYCORE_PATH}/include|" \
 	> $@
 
 compile_flags.txt: ../../compile_flags.txt
