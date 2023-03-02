@@ -1,22 +1,22 @@
 CXX := clang++
 S2E_DIRS = \
-	-I $(S2E_PATH)/klee/include \
-	-I $(S2E_PATH)/libcoroutine/include \
-	-I $(S2E_PATH)/libcpu/include \
-	-I $(S2E_PATH)/libfsigc++/include \
-	-I $(S2E_PATH)/libq/include \
-	-I $(S2E_PATH)/libs2e/include \
-	-I $(S2E_PATH)/libs2ecore/include \
-	-I $(S2E_PATH)/libs2eplugins/include \
-	-I $(S2E_PATH)/libtcg/include \
-	-I $(S2E_PATH)/libvmi/include \
-	-I $(S2E_PATH)/tools/lib/X8664BitcodeLibrary
+	-idirafter $(S2E_PATH)/klee/include \
+	-idirafter $(S2E_PATH)/libcoroutine/include \
+	-idirafter $(S2E_PATH)/libcpu/include \
+	-idirafter $(S2E_PATH)/libfsigc++/include \
+	-idirafter $(S2E_PATH)/libq/include \
+	-idirafter $(S2E_PATH)/libs2e/include \
+	-idirafter $(S2E_PATH)/libs2ecore/include \
+	-idirafter $(S2E_PATH)/libs2eplugins/include \
+	-idirafter $(S2E_PATH)/libtcg/include \
+	-idirafter $(S2E_PATH)/libvmi/include \
+	-idirafter $(S2E_PATH)/tools/lib/X8664BitcodeLibrary
 LIBS := \
-	-I $(BOOST_PATH) \
-	-I $(GLIBC_PATH) \
-	-I $(LLVM_PATH) \
-	-I $(ZYDIS_PATH)/include \
-	-I $(ZYCORE_PATH)/include
+	-idirafter $(BOOST_PATH) \
+	-idirafter $(GLIBC_PATH) \
+	-idirafter $(LLVM_PATH) \
+	-idirafter $(ZYDIS_PATH)/include \
+	-idirafter $(ZYCORE_PATH)/include
 ARCHIVES := \
 	-L $(ZYDIS_PATH)/lib \
 	-l Zydis \
