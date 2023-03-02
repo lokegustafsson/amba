@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef void *VoidFunction();
+typedef void VoidFunction();
 typedef struct A {
 	ssize_t a[12];
 	VoidFunction* f;
