@@ -23,8 +23,11 @@ ARCHIVES := \
 	-L $(ZYCORE_PATH)/lib \
 	-l Zycore
 CXX-FLAGS := \
-	-I inc \
 	-std=c++20 \
+	-g3 \
+	-O0 \
+	-I inc \
+	-U _FORTIFY_SOURCE \
 	$(S2E_DIRS) \
 	$(LIBS) \
 	$(ARCHIVES) \
