@@ -27,10 +27,7 @@ pub fn run(
 		return Err(());
 	}
 
-	let session_dir = &data_dir.join(format!(
-		"analysis-{}",
-		Local::now().format("%Y-%m-%dT%H:%M:%S")
-	));
+	let session_dir = &data_dir.join(Local::now().format("%Y-%m-%dT%H:%M:%S").to_string());
 	if session_dir.exists() {
 		tracing::error!(
 			?session_dir,
