@@ -101,12 +101,12 @@
               clang-tools_14
               gnumake
             ]) ++ (with pkgs.llvmPackages_14; [
-              libcxxStdenv
-              libcxxClang
-              libcxx
-              libcxxabi
-              libclang
-              libunwind
+              # libcxxStdenv
+              # libcxxClang
+              # libcxx
+              # libcxxabi
+              # libclang
+              # libunwind
             ]);
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
