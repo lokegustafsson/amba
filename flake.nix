@@ -92,6 +92,8 @@
               "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
             GLIBC_PATH = "${pkgs.glibc.dev}/include";
             S2E_PATH = "${s2e.s2e-src}/s2e";
+            ZYDIS_PATH = "${pkgs.zydis}";
+            ZYCORE_PATH = "${pkgs.callPackage nix/zycore.nix {}}";
 
             # Packages
             packages = (with pkgs; [
