@@ -46,6 +46,7 @@ Test: src/Test.cpp inc/Numbers.h
 clean:
 	-rm *.o
 	-rm *.a
+	-rm *.out
 
 ../../compile_flags.txt: compile_flags_template.txt
 	cat $^ \
