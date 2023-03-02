@@ -100,6 +100,7 @@
               mold
               clang-tools_14
               gnumake
+              gdb
             ]) ++ (with pkgs.llvmPackages_14; [
               # libcxxStdenv
               # libcxxClang
