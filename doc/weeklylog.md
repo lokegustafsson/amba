@@ -160,11 +160,59 @@
   code, unless through a pull-request)
 - Enaya: Try learning C++ stuff
 
+# TODO (Thursday)
+- Loke: Rewrite project as a CSV file so that a an excel program can open and edit it.
+		* Have overview of project
+		* TODOs should be clear what part of the overview it is related to
+		* TODOs should have some sort of TODO number so that DONEs and TODOs can be connected to eachother.
+
+- Enaya: Write on the report with the knowledge we have gained and direction we
+  are continuing on.
+  Background: finish discussion on existing tools, redifine static vs dynamic.
+  More if time allows.
+
+- Linus & Albin: Work on presentation, quite lot of work.
+- Samuel: Continue the `overrun` demo.
+- Clara: Try building our things `nix run . -- init` (might be problems because
+  macos->dockerlinux->qemu require nested virtualization
+  [https://graspingtech.com/nested-virtualization-mac/]),
+  Look at current gui code in gui-experiment branch and try to extend Rust
+  code. [https://github.com/lokegustafsson/amba/tree/gui-experiments]
+  To run gui-program `cargo run -p real4-test` maybe rename this folder and
+  Cargo.toml file.
+
+- Soon: Set up dynamic linking of libamba with libs2e. (not needed for mid-term presentation)
+
+# DONE (Thursday)
+- Enaya:
+	* Method: How evaluate success? - Qualititive comparison on how our vs
+	  other tools handle CGC binaries.
+	  : under - evaluering av syfte
+	TODO: vad är CGC - under metod kanske
+	* Background: existing tools and some more theory in this area.
+- Linus:
+	* Background: Compare code snippits where automatic/manual methods are
+	  preferable.
+
+- Loke: Tried but gave up building ubuntu in nix because the disk-image is
+  non-deterministic.
+- Loke: Tried to build libgomp with correct symbols. Gave up and used ubuntu
+  binary distribution. libgomp is used inside KLEE for parallelization using
+  openMP.
+- Loke: Try using nixpkgs LLVM for S2E-LLVM. Gave up after realizing they have
+  incompatible LLVM feature flags. This would've sped up the build otherwise,
+  from 7GB to 2GB disk usage for the amba installation.
+- Loke: amba. General work on trying to make `amba run` usable (still some
+  things to figure out before being able to load a binary and run the guest).
+- Albin: Wrote on background (general need for analysis).
+- Clara: Wrote on background (minnessårbarhet).
+- Samuel: trying to implement the `overrun` demo (scope needed to be narrower).
+- Samuel: Fixed caching (partly).
+
 ## LP3LV8 2023-03-06 to 2023-03-12
 # TODO
-# DONE
-
 Tuesday: Mid-term presentation
+# DONE
 
 ## LP3TV 2023-03-13 to 2023-03-19
 # TODO
