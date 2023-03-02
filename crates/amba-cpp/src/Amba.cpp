@@ -8,6 +8,9 @@
 namespace s2e {
 namespace plugins {
 
+static bool isCallOp(const u8 * memory, const target_phys_addr_t pc);
+static bool isDerefOp(const u64 op_code);
+
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
 #define SUBSCRIBE(fn) signal->connect(sigc::mem_fun(*this, (fn)));
 
@@ -78,7 +81,8 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	// Check if read adr is on stack or within saved heap data
 }
 
-static bool isCallOp(const u64 op_code) {}
+static bool isCallOp(const u8 * memory, const target_phys_addr_t pc) {}
+
 static bool isDerefOp(const u64 op_code) {}
 
 } // namespace plugins
