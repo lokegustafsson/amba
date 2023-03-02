@@ -16,7 +16,11 @@ int main(const int argc, const char **argv) {
 	u64 runtime_address = 0x007FFFFFFF400000;
 
 	ZydisDecoder decoder;
-	ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, );
+	int ret = ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
+	if (ret) {
+		std::puts("Zydis error (DecoderInit)");
+		std::exit(-1);
+	}
 
 	// Loop over the instructions in our buffer.
 	usize offset = 0;
@@ -28,7 +32,7 @@ int main(const int argc, const char **argv) {
 		/* length:          */ sizeof(program) - offset,
 		/* instruction:     */ &instruction
 	))) {
-		std::printf("%p  %s\n", runtime_address, instruction.text);
+		std::printf("%p  %s\n", (void*) runtime_address, instruction.text);
 		offset += instruction.info.length;
 		runtime_address += instruction.info.length;
 	}
