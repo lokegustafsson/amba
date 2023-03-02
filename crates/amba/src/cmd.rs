@@ -108,6 +108,12 @@ impl Cmd {
 		fs::read(file).unwrap()
 	}
 
+	pub fn remove(&mut self, file: impl AsRef<Path>) {
+		let file = file.as_ref();
+		tracing::trace!(?file, "remove_file");
+		fs::remove_file(file).unwrap()
+	}
+
 	pub fn copy(&mut self, file: impl AsRef<Path>, target: impl AsRef<Path>) {
 		let file = file.as_ref();
 		let target = target.as_ref();
