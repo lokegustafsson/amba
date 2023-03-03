@@ -42,6 +42,9 @@ Amba.o: src/Amba.cpp inc/Amba.h inc/Numbers.h
 
 Test: src/Test.cpp inc/Numbers.h
 	$(CXX) src/Test.cpp $(CXX-FLAGS) -o Test
+Zydis.o: src/Zydis.cpp inc/Zydis.h inc/AmbaException.h inc/Numbers.h
+	$(CXX) src/Zydis.cpp $(CXX-FLAGS) -o Zydis.o -c
+
 
 clean:
 	-rm *.o
