@@ -62,11 +62,20 @@ Decoder::decode(const u8 * const data, const size_t len) const {
 	
 std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
 Decoder::decode(const std::vector<u8> &program) const {
+	const std::span<const u8> s = {program.data(), program.size()};
+	return this->decode(s);
+}
+
+std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
+Decoder::decode(std::span<const u8> program) const {
+	if (program.empty()) {
+		AMBA_THROW();
+	}
 	return this->decode(program.data(), program.size());
 }
 
 std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-Decoder::next(const std::vector<u8> &program, size_t *idx) const {
+Decoder::next(const std::span<const u8> program, size_t *idx) const {
 	// Out of bounds before
 	if (program.size() <= *idx) {
 		AMBA_THROW();
@@ -81,6 +90,12 @@ Decoder::next(const std::vector<u8> &program, size_t *idx) const {
 	}
 
 	return t;
+}
+
+std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
+Decoder::next(const std::vector<u8> &program, size_t *idx) const {
+	const std::span<const u8> s = {program.data(), program.size()};
+	return this->next(s, idx);
 }
 	
 }
