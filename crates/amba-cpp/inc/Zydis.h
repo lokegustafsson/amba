@@ -16,6 +16,14 @@ enum struct Arch {
 	x86_64,
 };
 
+struct Instruction {
+	ZydisDecodedInstruction m_inst;
+	std::vector<ZydisDecodedOperand> m_ops;
+
+	bool isDeref() const;
+	bool isCall() const;
+};
+
 class Decoder {
   private:
 	ZydisDecoder m_decoder;
