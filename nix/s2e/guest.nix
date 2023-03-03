@@ -86,19 +86,19 @@ let
   guest-images-src = pkgs.stdenvNoCC.mkDerivation {
     name = "guest-images-src";
     src = repositories.guest-images;
+    phases = [ "unpackPhase" "patchPhase" "installPhase" "fixupPhase" ];
     patches = [
       ../patches/guest-images/makefile.patch
       ../patches/guest-images/makefile.linux.patch
     ];
-    fixupPhase = ''
-      patchShebangs ./scripts/*.py
-      patchShebangs ./qemu.wrapper
-    '';
     installPhase = ''
       mkdir -p $out
       cp -r * $out/
     '';
-    phases = [ "unpackPhase" "patchPhase" "fixupPhase" "installPhase" ];
+    fixupPhase = ''
+      patchShebangs $out/scripts/*.py
+      patchShebangs $out/qemu.wrapper
+    '';
     buildInputs = [ pkgs.bash ];
   };
 
@@ -154,7 +154,6 @@ let
     export S2E_INSTALL_ROOT=${S2E_INSTALL_ROOT}
     export S2E_LINUX_KERNELS_ROOT=${S2E_LINUX_KERNELS_ROOT}
     export PATH=${PATH}
-    export GRAPHICS=" "
 
     mkdir -p $BUILDDIR
     cp -r ${SRC} $BUILDDIR/

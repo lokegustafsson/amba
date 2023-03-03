@@ -61,6 +61,7 @@ let
     installPhase = ''
       mkdir -p $out/share/libs2e/ $out/bin/
       rsync -a ${core.s2e}/share/libs2e/* $out/share/libs2e/
+      rsync -a ${core.s2e}/bin/guest-tools* $out/bin/
       rsync -a ${core.s2e}/bin/qemu-system-* $out/bin/
     '';
   };
