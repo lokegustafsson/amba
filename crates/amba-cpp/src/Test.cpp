@@ -1,40 +1,36 @@
+#include <cstddef>
 #include <cstdio>
-#include <Zydis/Zydis.h>
+#include <span>
 
+#include "AmbaException.h"
 #include "Numbers.h"
-#include "Zydis/Decoder.h"
-#include "Zydis/SharedTypes.h"
+#include "Zydis.h"
 
 // Foo.cpp
-const u8 program[] = {
+const std::vector<u8> program = {
 	0x55, 0x48, 0x89 ,0xe5 ,0xb8 ,0x05 ,0x00 ,0x00 ,0x00 ,0x5d ,0xc3 ,0x0f ,
 	0x1f ,0x44 ,0x00 ,0x00 ,0x55 ,0x48 ,0x89 ,0xe5 ,0xe8 ,0x00 ,0x00 ,0x00 ,
 	0x00 ,0x83 ,0xc0 ,0x02 ,0x5d ,0xc3
 };
 
-int main(const int argc, const char **argv) {
-	ZydisDecodedInstruction inst;
-	u64 runtime_address = 0x007FFFFFFF400000;
+auto main(const int argc, const char **argv) -> int {
+	try {
+		const auto decoder = zydis::Decoder();
 
-	ZydisDecoder decoder;
-	int ret = ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
-	if (ret) {
-		std::puts("Zydis error (DecoderInit)");
-		std::exit(-1);
+		size_t idx = 0;
+		while (idx != (size_t) -1) {
+			auto idx_ = idx;
+			auto [inst, operands] = decoder.next(program, &idx);
+			std::printf(
+				"%ld:\t%s\n",
+				idx_,
+				ZydisMnemonicGetString(inst.mnemonic)
+			);
+		}
+
+		return 0;
 	}
-
-	// Loop over the instructions in our buffer.
-	usize offset = 0;
-	ZydisDisassembledInstruction instruction;
-	while (ZYAN_SUCCESS(ZydisDisassembleIntel(
-		/* machine_mode:    */ ZYDIS_MACHINE_MODE_LONG_64,
-		/* runtime_address: */ runtime_address,
-		/* buffer:          */ program + offset,
-		/* length:          */ sizeof(program) - offset,
-		/* instruction:     */ &instruction
-	))) {
-		std::printf("%p  %s\n", (void*) runtime_address, instruction.text);
-		offset += instruction.info.length;
-		runtime_address += instruction.info.length;
+	catch (AmbaException& e) {
+		std::printf("%s:%d\n", std::get<1>(e), std::get<0>(e));
 	}
 }
