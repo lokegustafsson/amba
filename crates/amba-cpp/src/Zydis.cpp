@@ -12,6 +12,17 @@
 
 namespace zydis {
 
+bool Instruction::isDeref() const {
+	return std::any_of(this->m_ops.begin(), this->m_ops.end(), [&](auto op){
+		return op.type == ZYDIS_OPERAND_TYPE_MEMORY
+			|| op.type == ZYDIS_OPERAND_TYPE_POINTER;
+	});
+}
+
+bool Instruction::isCall() const {
+	return this->m_inst.mnemonic == ZYDIS_MNEMONIC_CALL;
+}
+
 Decoder::Decoder(Arch arch) {
 	ZydisMachineMode mode;
 	ZydisStackWidth width;
