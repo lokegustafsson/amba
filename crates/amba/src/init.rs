@@ -19,7 +19,7 @@ pub fn init(cmd: &mut Cmd, data_dir: &Path, InitArgs { force }: InitArgs) -> Res
 		tracing::info!("guest images already up to date; force rebuild with --force");
 		return Ok(());
 	}
-	cmd.remove(version_file);
+	version_file.exists().then(|| cmd.remove(version_file));
 	tracing::info!("building guest images");
 	force_init(cmd, data_dir, build_guest_images_flake_ref)?;
 	cmd.write(version_file, builder_version);
