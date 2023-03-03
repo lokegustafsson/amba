@@ -11,7 +11,7 @@
 
 namespace zydis {
 
-enum class Arch {
+enum struct Arch {
 	x86,
 	x86_64,
 };
