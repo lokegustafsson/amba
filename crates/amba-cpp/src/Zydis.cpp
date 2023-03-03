@@ -44,8 +44,7 @@ Decoder::Decoder(Arch arch) {
 	}
 }
 
-std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-Decoder::decode(const u8 * const data, const size_t len) const {
+Instruction Decoder::decode(const u8 * const data, const size_t len) const {
 	ZydisDecodedInstruction inst;
 	std::vector<ZydisDecodedOperand> operands;
 
@@ -68,32 +67,32 @@ Decoder::decode(const u8 * const data, const size_t len) const {
 	// And shrink back down to the actual amount of operands
 	operands.resize(inst.operand_count);
 
-	return std::make_tuple(inst, operands);
+	return (Instruction) {
+		.m_inst = inst,
+		.m_ops = operands
+	};
 }
 	
-std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-Decoder::decode(const std::vector<u8> &program) const {
+Instruction Decoder::decode(const std::vector<u8> &program) const {
 	const std::span<const u8> s = {program.data(), program.size()};
 	return this->decode(s);
 }
 
-std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-Decoder::decode(std::span<const u8> program) const {
+Instruction Decoder::decode(std::span<const u8> program) const {
 	if (program.empty()) {
 		AMBA_THROW();
 	}
 	return this->decode(program.data(), program.size());
 }
 
-std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-Decoder::next(const std::span<const u8> program, size_t *idx) const {
+Instruction Decoder::next(const std::span<const u8> program, size_t *idx) const {
 	// Out of bounds before
 	if (program.size() <= *idx) {
 		AMBA_THROW();
 	}
 
 	const auto t = this->decode(program.data() + *idx, program.size() - *idx);
-	*idx += std::get<0>(t).length;
+	*idx += t.m_inst.length;
 
 	// Set to -1 if out of bounds afterwards
 	if (program.size() <= *idx) {
@@ -103,8 +102,7 @@ Decoder::next(const std::span<const u8> program, size_t *idx) const {
 	return t;
 }
 
-std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-Decoder::next(const std::vector<u8> &program, size_t *idx) const {
+Instruction Decoder::next(const std::vector<u8> &program, size_t *idx) const {
 	const std::span<const u8> s = {program.data(), program.size()};
 	return this->next(s, idx);
 }
