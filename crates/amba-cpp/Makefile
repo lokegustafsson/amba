@@ -40,11 +40,11 @@ S2E_PATH ?= ../../s2e
 Amba.o: src/Amba.cpp inc/Amba.h inc/Numbers.h
 	$(CXX) src/Amba.cpp $(CXX-FLAGS) -o Amba.o -c
 
-Test: src/Test.cpp inc/Numbers.h
-	$(CXX) src/Test.cpp $(CXX-FLAGS) -o Test
 Zydis.o: src/Zydis.cpp inc/Zydis.h inc/AmbaException.h inc/Numbers.h
 	$(CXX) src/Zydis.cpp $(CXX-FLAGS) -o Zydis.o -c
 
+Test: src/Test.cpp inc/Numbers.h inc/AmbaException.h Zydis.o
+	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) -o Test
 
 clean:
 	-rm *.o
