@@ -23,6 +23,7 @@ let
       mkdir -p $out
       cp -r . $out
     '';
+    dontPatchShebangs = true;
   };
   fake-curl = let
     content =
@@ -203,9 +204,7 @@ let
   s2e-guest-tools = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-guest-tools";
     src = s2e-src;
-    dontConfigure = true;
-    dontInstall = true;
-    dontMoveLib64 = true;
+    phases = [ "unpackPhase" "patchPhase" "buildPhase" "fixupPhase" ];
     patches =
       [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
     buildPhase = ''
@@ -217,6 +216,9 @@ let
       #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools32-win-install
       #S2E_PREFIX=$out make -f ./Makefile stamps/guest-tools64-win-install
     '';
+    dontMoveLib64 = true;
+    dontPatchShebangs = true;
+
     buildInputs = let p = pkgs; in [ fake-curl p.clang_14 p.cmake p.nasm ];
     inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
     CPATH = (makeIncludePath [ pkgs.libelf ]);
@@ -224,7 +226,7 @@ let
   };
   s2e = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e";
-    phases = [ "installPhase" "fixupPhase" ];
+    phases = [ "installPhase" ];
     buildInputs = [ pkgs.rsync ];
     installPhase = ''
       rsync -a ${s2e-lib}/* ${s2e-tools}/* ${s2e-guest-tools}/* ${qemu.s2e-qemu}/* $out/
