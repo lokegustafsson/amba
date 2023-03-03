@@ -38,4 +38,7 @@ eurydice-private-key
 
 # C/C++ object files
 **/*.o
+**/Test
+**/a.out
+**/overrun
 compile_flags.txt
