@@ -28,22 +28,17 @@ class Decoder {
   private:
 	ZydisDecoder m_decoder;
 
-	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-	decode (const u8* const data, const size_t len) const;
+	Instruction decode (const u8* const data, const size_t len) const;
   public:
 	Decoder(Arch arch = Arch::x86_64);
 
-	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-	decode(const std::vector<u8> &program) const;
+	Instruction decode(const std::vector<u8> &program) const;
 
-	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-	decode(const std::span<const u8> program) const;
-	
-	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-	next(const std::vector<u8> &program, size_t *idx) const;
+	Instruction decode(const std::span<const u8> program) const;
 
-	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
-	next(const std::span<const u8> program, size_t *idx) const;
+	Instruction next(const std::vector<u8> &program, size_t *idx) const;
+
+	Instruction next(const std::span<const u8> program, size_t *idx) const;
 };
 	
 }
