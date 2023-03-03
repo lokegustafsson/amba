@@ -19,21 +19,19 @@
   # Cache settings
   nixConfig = {
     extra-substituters = [ "https://nix.u3836.se/" ];
-    extra-trusted-public-keys = [
-      "nix.u3836.se:t7H/bFWi14aBFYPE5A00eEQawd7Ssl/fXbq/2C+Bsrs="
-    ];
+    extra-trusted-public-keys =
+      [ "nix.u3836.se:t7H/bFWi14aBFYPE5A00eEQawd7Ssl/fXbq/2C+Bsrs=" ];
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay, cargo2nix }:
+  outputs =
+    { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay, cargo2nix }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
             cargo2nix.overlays.default
-            (final: prev: {
-              stable = nixpkgs-stable.legacyPackages.${system};
-            })
+            (final: prev: { stable = nixpkgs-stable.legacyPackages.${system}; })
           ];
         };
         lib = nixpkgs.lib;
