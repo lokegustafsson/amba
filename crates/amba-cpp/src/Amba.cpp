@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <s2e/ConfigFile.h>
 #include <s2e/S2E.h>
 #include <s2e/Utils.h>
@@ -6,9 +7,13 @@
 
 #include "Amba.h"
 #include "Numbers.h"
+#include "Zydis.h"
+#include "Zydis/SharedTypes.h"
 
 namespace s2e {
 namespace plugins {
+
+static const zydis::Decoder DECODER;
 
 static bool isCallOp(const u8 * memory, const target_phys_addr_t pc);
 static bool isDerefOp(const u8 * memory, const target_phys_addr_t pc);
@@ -83,8 +88,19 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	// Check if read adr is on stack or within saved heap data
 }
 
-static bool isCallOp(const u8 * memory, const target_phys_addr_t pc) { return false; }
-static bool isDerefOp(const u8 * memory, const target_phys_addr_t pc) { return false; }
+static bool isCallOp(const u8 * const memory, const target_phys_addr_t pc) {
+	const std::span<const u8> s = {memory + pc, 64};
+	const auto [inst, _] = DECODER.decode(s);
+	return inst.mnemonic == ZYDIS_MNEMONIC_CALL;
+}
+static bool isDerefOp(const u8 * memory, const target_phys_addr_t pc) {
+	const std::span<const u8> s = {memory + pc, 64};
+	const auto [_, ops] = DECODER.decode(s);
+	return std::any_of(ops.begin(), ops.end(), [&](auto op){
+		return op.type == ZYDIS_OPERAND_TYPE_MEMORY
+			|| op.type == ZYDIS_OPERAND_TYPE_POINTER;
+	});
+}
 
 } // namespace plugins
 } // namespace s2e
