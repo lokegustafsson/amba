@@ -27,9 +27,15 @@ class Decoder {
 
 	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
 	decode(const std::vector<u8> &program) const;
+
+	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
+	decode(const std::span<const u8> program) const;
 	
 	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
 	next(const std::vector<u8> &program, size_t *idx) const;
+
+	std::tuple<ZydisDecodedInstruction, std::vector<ZydisDecodedOperand>>
+	next(const std::span<const u8> program, size_t *idx) const;
 };
 	
 }
