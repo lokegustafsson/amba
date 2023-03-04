@@ -80,7 +80,7 @@
             ];
           };
           doc = pkgs.mkShell {
-            packages = let p = pkgs; in [ p.stable.tectonic p.gnumake ];
+            packages = let p = pkgs; in [ p.stable.tectonic p.texlab p.gnumake ];
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
         };
