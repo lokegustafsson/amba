@@ -38,6 +38,7 @@ eurydice-private-key
 
 # C/C++ object files
 **/*.o
+**/*.so
 **/Test
 **/a.out
 **/overrun
