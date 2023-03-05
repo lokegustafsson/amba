@@ -12,7 +12,7 @@ namespace plugins {
 
 class Amba : public Plugin {
 	S2E_PLUGIN
-public:
+  public:
 	Amba(S2E *s2e) : Plugin(s2e) {}
 
 	using TranslationFunction = void (
@@ -31,7 +31,7 @@ public:
 	ExecutionFunction onFunctionCall;
 	ExecutionFunction onDeref;
 
-private:
+  protected:
 	bool m_traceBlockTranslation;
 	bool m_traceBlockExecution;
 
