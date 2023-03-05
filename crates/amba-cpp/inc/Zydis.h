@@ -2,7 +2,6 @@
 #include <Zydis/Zydis.h>
 #include <Zydis/DecoderTypes.h>
 
-#include <cstdio>
 #include <tuple>
 #include <vector>
 #include <span>
