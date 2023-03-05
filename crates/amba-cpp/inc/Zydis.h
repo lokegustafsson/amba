@@ -25,7 +25,7 @@ struct Instruction {
 };
 
 class Decoder {
-  private:
+  protected:
 	ZydisDecoder m_decoder;
 
 	Instruction decode (const u8* const data, const size_t len) const;
