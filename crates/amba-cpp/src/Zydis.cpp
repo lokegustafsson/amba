@@ -73,7 +73,7 @@ Instruction Decoder::decode(const u8 * const data, const size_t len) const {
 }
 	
 Instruction Decoder::decode(const std::vector<u8> &program) const {
-	const std::span<const u8> s = {program.data(), program.size()};
+	const std::span<const u8> s = { program.data(), program.size() };
 	return this->decode(s);
 }
 
@@ -102,7 +102,7 @@ Instruction Decoder::next(const std::span<const u8> program, size_t *idx) const 
 }
 
 Instruction Decoder::next(const std::vector<u8> &program, size_t *idx) const {
-	const std::span<const u8> s = {program.data(), program.size()};
+	const std::span<const u8> s = { program.data(), program.size() };
 	return this->next(s, idx);
 }
 	
