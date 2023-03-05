@@ -1,20 +1,28 @@
-#include <algorithm>
+// 3rd party library headers
 #include <s2e/ConfigFile.h>
 #include <s2e/S2E.h>
 #include <s2e/Utils.h>
+#include <s2e/S2EDeviceState.h>
+#include <klee/Expr.h>
+#include <Zydis/SharedTypes.h>
+// #include <cpu/types.h>
 
-#include <cpu/types.h>
+// Standard library headers
+#include <algorithm>
 
+// Our headers
 #include "Amba.h"
+#include "AmbaException.h"
 #include "Numbers.h"
 #include "Zydis.h"
-#include "Zydis/SharedTypes.h"
-
-namespace s2e {
-namespace plugins {
 
 static const zydis::Decoder DECODER;
 
+#define SPAN(d) \
+	(std::span{d.data(), d.size()})
+
+namespace s2e {
+namespace plugins {
 
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
 #define SUBSCRIBE(fn) signal->connect(sigc::mem_fun(*this, (fn)));
@@ -68,11 +76,7 @@ void Amba::translateInstructionStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	u8* memory;
-	const auto inst = DECODER.decode(std::span {
-		memory + pc,
-		MAX_INSTRUCTION_LENGTH
-	});
+	const auto inst = amba::readInstruction(state, pc);
 
 	if (inst.isCall()) {
 		SUBSCRIBE(&Amba::onFunctionCall);
@@ -93,3 +97,28 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 
 } // namespace plugins
 } // namespace s2e
+
+namespace amba {
+
+// Read one instruction's worth of memory. Will throw if read memory
+// is symbolic rather than constant
+// (x86 has a limit of 15 bytes per instruction)
+std::array<u8, MAX_INSTRUCTION_LENGTH> readConstantMemory(s2e::S2EExecutionState *state, u64 pc) {
+	// TODO: Investigate if this actually works on both big and
+	// low endian systems
+
+	// Is this repeating the same work over and over and over again?
+
+	auto mem = state->mem();
+
+	std::array<u8, MAX_INSTRUCTION_LENGTH> arr;
+	for (size_t i = 0; i < MAX_INSTRUCTION_LENGTH; i++) {
+		auto expr = mem->read(pc + i).get();
+		if (expr->getKind() != klee::Expr::Constant) {
+			AMBA_THROW();
+		}
+		// This is a major assumption, though confirmed by Loke
+		arr[i] = ((klee::ConstantExpr *) expr)->getLimitedValue(0xFF);
+	}
+	return arr;
+}
