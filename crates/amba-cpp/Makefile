@@ -39,8 +39,7 @@ Amba.so: Amba.o Zydis.o
 
 Amba.o: \
   src/Amba.cpp \
-  inc/Amba.h inc/Numbers.h \
-  Zydis.o
+  inc/Amba.h inc/Numbers.h
 	$(CXX) src/Amba.cpp $(CXX-FLAGS) -c -o $@
 
 Zydis.o: \
@@ -51,7 +50,7 @@ Zydis.o: \
 Test: \
   src/Test.cpp \
   inc/Numbers.h inc/AmbaException.h \
-  Zydis.o
+  Zydis.o Amba.o
 	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) -o $@
 
 clean:
