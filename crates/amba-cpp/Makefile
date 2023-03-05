@@ -37,6 +37,9 @@ CXX-FLAGS := \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
 S2E_PATH ?= ../../s2e
 
+Amba.so: Amba.o Zydis.o
+	$(CXX) -shared $^ $(ARCHIVES) -o $@
+
 Amba.o: \
   src/Amba.cpp \
   inc/Amba.h inc/Numbers.h \
