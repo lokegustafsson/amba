@@ -45,7 +45,7 @@ Decoder::Decoder(Arch arch) {
 
 Instruction Decoder::decode(const u8 * const data, const size_t len) const {
 	ZydisDecodedInstruction inst;
-	std::vector<ZydisDecodedOperand> operands;
+	Operands operands;
 
 	// Grow to fit max operand count elements.
 	// Is not a reserve because the shrink would replace operands
