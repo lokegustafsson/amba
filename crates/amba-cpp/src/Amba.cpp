@@ -15,8 +15,6 @@ namespace plugins {
 
 static const zydis::Decoder DECODER;
 
-// Just a guess for now
-constexpr size_t MAX_INSTRUCTION_LENGTH = 64; // bytes
 
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
 #define SUBSCRIBE(fn) signal->connect(sigc::mem_fun(*this, (fn)));
