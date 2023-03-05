@@ -16,16 +16,16 @@
 #include "Numbers.h"
 #include "Zydis.h"
 
-static const zydis::Decoder DECODER;
-
 #define SPAN(d) \
 	(std::span{d.data(), d.size()})
+#define SUBSCRIBE(fn) signal->connect(sigc::mem_fun(*this, (fn)));
+
+static const zydis::Decoder DECODER;
 
 namespace s2e {
 namespace plugins {
 
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
-#define SUBSCRIBE(fn) signal->connect(sigc::mem_fun(*this, (fn)));
 
 void Amba::initialize() {
 	auto& s2e = *this->s2e();
