@@ -20,6 +20,8 @@ struct AddressLengthPair {
 constexpr size_t MAX_INSTRUCTION_LENGTH = 15; // bytes
 
 std::array<uint8_t, MAX_INSTRUCTION_LENGTH> readConstantMemory(S2EExecutionState *state, uint64_t pc);
+zydis::Instruction readInstruction(s2e::S2EExecutionState *state, u64 pc);
+bool isStackAddress(void *adr);
 
 } // namespace amba
 
