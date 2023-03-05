@@ -17,8 +17,9 @@
 #include "Zydis.h"
 
 #define SPAN(d) \
-	(std::span{d.data(), d.size()})
-#define SUBSCRIBE(fn) signal->connect(sigc::mem_fun(*this, (fn)));
+	(std::span{ d.data(), d.size() })
+#define SUBSCRIBE(fn) \
+	(signal->connect(sigc::mem_fun(*this, (fn))))
 
 static const zydis::Decoder DECODER;
 
