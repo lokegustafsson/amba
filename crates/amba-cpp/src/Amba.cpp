@@ -88,6 +88,10 @@ void Amba::onFunctionCall(S2EExecutionState *state, u64 pc) {
 		// Add return value + alloc size to this->m_allocations
 	// if free
 		// Remove from m_allocations
+	const auto inst = amba::readInstruction(state, pc);
+
+	AMBA_ASSERT(inst.m_inst.mnemonic != ZYDIS_MNEMONIC_CALL);
+	AMBA_ASSERT(inst.m_ops.size() != 1);
 }
 
 void Amba::onDeref(S2EExecutionState *state, u64 pc) {
