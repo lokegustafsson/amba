@@ -89,6 +89,8 @@ void Amba::translateInstructionStart(
 void Amba::onFunctionCall(S2EExecutionState *state, u64 pc) {
 	// if malloc
 		// Add return value + alloc size to this->m_allocations
+	// if free
+		// Remove from m_allocations
 }
 
 void Amba::onDeref(S2EExecutionState *state, u64 pc) {
