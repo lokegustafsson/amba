@@ -95,6 +95,27 @@ void Amba::onFunctionCall(S2EExecutionState *state, u64 pc) {
 
 void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	// Check if read adr is on stack or within saved heap data
+	const auto operands = amba::readInstruction(state, pc).m_ops;
+	for (const auto& operand : operands) {
+		void * adr;
+		switch (operand.type) {
+		case ZYDIS_OPERAND_TYPE_MEMORY: {
+			const auto mem = operand.mem;
+			// Figure out how to interpret mem as a pointer
+		} break;
+		case ZYDIS_OPERAND_TYPE_POINTER: {
+			const auto reg = operand.reg;
+			// Figure out how to interpret reg as a pointer
+		} break;
+		default: break;
+		}
+
+		if (!amba::isStackAddress(adr)) {
+			// Loop through m_allocations, see if it's
+			// within any allocation or if it's out of
+			// bounds.
+		}
+	}
 }
 
 } // namespace plugins
