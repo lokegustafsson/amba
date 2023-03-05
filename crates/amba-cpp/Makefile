@@ -41,22 +41,23 @@ Amba.o: \
   src/Amba.cpp \
   inc/Amba.h inc/Numbers.h \
   Zydis.o
-	$(CXX) src/Amba.cpp $(CXX-FLAGS) -o Amba.o -c
+	$(CXX) src/Amba.cpp $(CXX-FLAGS) -c -o $@
 
 Zydis.o: \
   src/Zydis.cpp \
   inc/Zydis.h inc/AmbaException.h inc/Numbers.h
-	$(CXX) src/Zydis.cpp $(CXX-FLAGS) -o Zydis.o -c
+	$(CXX) src/Zydis.cpp $(CXX-FLAGS) -c -o $@
 
 Test: \
   src/Test.cpp \
   inc/Numbers.h inc/AmbaException.h \
   Zydis.o
-	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) -o Test
+	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) -o $@
 
 clean:
 	-rm *.o
 	-rm *.a
+	-rm *.so
 	-rm *.out
 
 ../../compile_flags.txt: compile_flags_template.txt
