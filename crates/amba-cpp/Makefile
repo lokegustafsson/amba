@@ -1,5 +1,5 @@
 CXX := g++
-S2E_DIRS = \
+LIBS := \
 	-idirafter $(S2E_PATH)/klee/include \
 	-idirafter $(S2E_PATH)/libcoroutine/include \
 	-idirafter $(S2E_PATH)/libcpu/include \
@@ -10,8 +10,7 @@ S2E_DIRS = \
 	-idirafter $(S2E_PATH)/libs2eplugins/include \
 	-idirafter $(S2E_PATH)/libtcg/include \
 	-idirafter $(S2E_PATH)/libvmi/include \
-	-idirafter $(S2E_PATH)/tools/lib/X8664BitcodeLibrary
-LIBS := \
+	-idirafter $(S2E_PATH)/tools/lib/X8664BitcodeLibrary \
 	-idirafter $(BOOST_PATH) \
 	-idirafter $(GLIBC_PATH) \
 	-idirafter $(LLVM_PATH) \
@@ -26,11 +25,9 @@ CXX-FLAGS := \
 	-std=c++20 \
 	-g3 \
 	-O0 \
-	-I inc \
 	-U _FORTIFY_SOURCE \
-	$(S2E_DIRS) \
+	-I inc \
 	$(LIBS) \
-	$(ARCHIVES) \
 	-DBOOST_BIND_GLOBAL_PLACEHOLDERS=1 \
 	-DTARGET_PAGE_BITS=12 \
 	-DSE_RAM_OBJECT_BITS=12 \
