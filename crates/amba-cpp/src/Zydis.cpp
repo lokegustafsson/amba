@@ -3,7 +3,6 @@
 #include <Zydis/SharedTypes.h>
 
 #include <cstdio>
-#include <exception>
 #include <span>
 #include <tuple>
 
