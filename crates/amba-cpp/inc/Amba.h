@@ -7,6 +7,13 @@
 
 #include <unordered_map>
 
+namespace amba {
+
+constexpr size_t MAX_INSTRUCTION_LENGTH = 15; // bytes
+
+
+} // namespace amba
+
 namespace s2e {
 namespace plugins {
 
