@@ -9,6 +9,14 @@
 
 namespace amba {
 
+struct AddressLengthPair {
+	target_phys_addr_t adr;
+	target_phys_addr_t size;
+
+	auto operator<=>(const AddressLengthPair &rhs) const = default;
+	bool operator==(const AddressLengthPair &rhs) const = default;
+};
+
 constexpr size_t MAX_INSTRUCTION_LENGTH = 15; // bytes
 
 
