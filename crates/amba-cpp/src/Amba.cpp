@@ -76,11 +76,7 @@ void Amba::translateInstructionStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	u8* memory;
-	const auto inst = DECODER.decode(std::span {
-		memory + pc,
-		MAX_INSTRUCTION_LENGTH
-	});
+	const auto inst = amba::readInstruction(state, pc);
 
 	if (inst.isCall()) {
 		SUBSCRIBE(&Amba::onFunctionCall);
