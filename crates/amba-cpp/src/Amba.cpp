@@ -5,10 +5,6 @@
 #include <s2e/S2EDeviceState.h>
 #include <klee/Expr.h>
 #include <Zydis/SharedTypes.h>
-// #include <cpu/types.h>
-
-// Standard library headers
-#include <algorithm>
 
 // Our headers
 #include "Amba.h"
