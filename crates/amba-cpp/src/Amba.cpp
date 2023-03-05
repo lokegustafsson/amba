@@ -76,7 +76,11 @@ void Amba::translateInstructionStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	const auto inst = amba::readInstruction(state, pc);
+	u8* memory;
+	const auto inst = DECODER.decode(std::span {
+		memory + pc,
+		MAX_INSTRUCTION_LENGTH
+	});
 
 	if (inst.isCall()) {
 		SUBSCRIBE(&Amba::onFunctionCall);
@@ -121,4 +125,13 @@ std::array<u8, MAX_INSTRUCTION_LENGTH> readConstantMemory(s2e::S2EExecutionState
 		arr[i] = ((klee::ConstantExpr *) expr)->getLimitedValue(0xFF);
 	}
 	return arr;
+}
+
+zydis::Instruction readInstruction(s2e::S2EExecutionState *state, u64 pc) {
+	const auto mem = readConstantMemory(state, pc);
+	return DECODER.decode(SPAN(mem));
+}
+
+bool isStackAddress(void * adr) { return false; }
+
 }
