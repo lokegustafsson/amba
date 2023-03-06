@@ -56,7 +56,7 @@ class Amba : public Plugin {
 	bool m_traceBlockTranslation;
 	bool m_traceBlockExecution;
 
-	std::priority_queue<amba::AddressLengthPair> m_allocations;
+	std::vector<amba::AddressLengthPair> m_allocations;
 };
 
 } // namespace plugins
