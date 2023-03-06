@@ -9,6 +9,9 @@
 #include <cpu/i386/cpu.h>
 #include <cpu/types.h>
 
+// Standard library
+#include <algorithm>
+
 // Our headers
 #include "Amba.h"
 #include "AmbaException.h"
@@ -100,6 +103,7 @@ void Amba::onFunctionCall(S2EExecutionState *state, u64 pc) {
 void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	// Check if read adr is on stack or within saved heap data
 	const auto operands = amba::readInstruction(state, pc).m_ops;
+	const CPUX86State &cpu_state = *state->regs()->getCpuState();
 	for (const auto& operand : operands) {
 		target_phys_addr_t adr;
 		switch (operand.type) {
@@ -109,7 +113,6 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 
 			AMBA_ASSERT(!mem.segment); // Because who knows what this even is
 
-			const CPUX86State &cpu_state = *state->regs()->getCpuState();
 			const i64 base = amba::readRegister(cpu_state, mem.base);
 			const i64 index = amba::readRegister(cpu_state, mem.index);
 
@@ -125,10 +128,30 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 		default: break;
 		}
 
-		if (!amba::isStackAddress(adr)) {
+		if (!amba::isStackAddress(cpu_state, adr)) {
 			// Loop through m_allocations, see if it's
 			// within any allocation or if it's out of
 			// bounds.
+
+			const auto allocation = (amba::AddressLengthPair) {
+				.adr = adr,
+				.size = 0
+			};
+
+			// Get a pointer to the last allocation that is considered smaller (or equal?) to allocation
+			const auto result = std::lower_bound( // std::upper_bound - 1?
+				this->m_allocations.begin(),
+				this->m_allocations.end(),
+				allocation
+			);
+
+			if (result == this->m_allocations.end()) {
+				continue;
+			}
+
+			// Assert that access is in bounds of the allocation
+			AMBA_ASSERT(result->adr <= adr);
+			AMBA_ASSERT(result->adr + result->size > adr);
 		}
 	}
 }
