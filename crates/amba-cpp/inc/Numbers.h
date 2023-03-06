@@ -16,3 +16,17 @@ typedef double f64;
 
 typedef __ssize_t isize;
 typedef std::size_t  usize;
+
+namespace prefixes {
+
+constexpr usize Ki = 1024;
+constexpr usize Mi = 1024 * Ki;
+constexpr usize Gi = 1024 * Mi;
+constexpr usize Ti = 1024 * Gi;
+
+constexpr usize K = 1'000;
+constexpr usize M = 1'000'000;
+constexpr usize G = 1'000'000'000;
+constexpr usize T = 1'000'000'000'000;
+
+}
