@@ -118,8 +118,10 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 				+ base + index * (i64) mem.scale;
 		} break;
 		case ZYDIS_OPERAND_TYPE_POINTER: {
-			const auto reg = operand.reg;
-			// Figure out how to interpret reg as a pointer
+			const auto ptr = operand.ptr;
+			AMBA_ASSERT(!ptr.segment); // Because who knows what this even is
+
+			adr = (i64) ptr.offset;
 		} break;
 		default: break;
 		}
