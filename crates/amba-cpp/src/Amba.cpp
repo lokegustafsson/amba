@@ -106,6 +106,16 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 		case ZYDIS_OPERAND_TYPE_MEMORY: {
 			const auto mem = operand.mem;
 			// Figure out how to interpret mem as a pointer
+			// segment:displacement(base register, index register, scale factor)
+
+			AMBA_ASSERT(!mem.segment); // Because who knows what this even is
+
+			const CPUX86State &cpu_state = *state->regs()->getCpuState();
+			const i64 base = amba::readRegister(cpu_state, mem.base);
+			const i64 index = amba::readRegister(cpu_state, mem.index);
+
+			adr = (mem.disp.has_displacement ? mem.disp.value : 0)
+				+ base + index * (i64) mem.scale;
 		} break;
 		case ZYDIS_OPERAND_TYPE_POINTER: {
 			const auto reg = operand.reg;
