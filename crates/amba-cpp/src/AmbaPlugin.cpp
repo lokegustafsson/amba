@@ -1,5 +1,6 @@
 // 3rd party library headers
 #include <s2e/S2E.h>
+#include <s2e/Utils.h>
 
 // Our headers
 #include "AmbaPlugin.h"
