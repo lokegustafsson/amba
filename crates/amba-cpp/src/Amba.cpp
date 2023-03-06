@@ -166,7 +166,17 @@ zydis::Instruction readInstruction(s2e::S2EExecutionState *state, u64 pc) {
 	return DECODER.decode(SPAN(mem));
 }
 
-bool isStackAddress(target_phys_addr_t adr) { return false; }
+bool isStackAddress(const CPUX86State &state, target_phys_addr_t adr) {
+	const auto sp = state.regs[6];
+	// https://stackoverflow.com/questions/1825964/c-c-maximum-stack-size-of-program-on-mainstream-oses
+	constexpr target_phys_addr_t STACK_SIZE = 7.4 * prefixes::Mi;
+
+	// Incorrect, but close enough.
+	// We can't find the start address of the stack reasonably, so we just check within the stacksize of the current stack pointer
+	// Doesn't handle leaf function frames either.
+	// TODO: Check if this is calculating the stack in the correct direction
+	return adr >= sp && adr <= sp + STACK_SIZE;
+}
 
 // Translate form ZydisRegister to S2E CPUX86State to read the value in a register
 u64 readRegister(const CPUX86State &state, const ZydisRegister reg) {
