@@ -34,13 +34,18 @@ CXX-FLAGS := \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
 S2E_PATH ?= ../../s2e
 
-Amba.so: Amba.o Zydis.o
+Amba.so: Amba.o Zydis.o HeapLeak.o
 	$(CXX) -shared $^ $(ARCHIVES) -o $@
 
 Amba.o: \
   src/Amba.cpp \
   inc/Amba.h inc/Numbers.h
 	$(CXX) src/Amba.cpp $(CXX-FLAGS) -c -o $@
+
+HeapLeak.o: \
+  src/HeapLeak.cpp \
+  inc/HeapLeak.h inc/AmbaException.h inc/Numbers.h
+	$(CXX) src/HeapLeak.cpp $(CXX-FLAGS) -c -o $@
 
 Zydis.o: \
   src/Zydis.cpp \
