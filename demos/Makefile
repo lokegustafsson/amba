@@ -1,6 +1,7 @@
 CC ?= gcc
 CFLAGS ?= \
 	-O0 \
+	-g \
 	-fno-stack-protector \
 	-U _FORTIFY_SOURCE
 
