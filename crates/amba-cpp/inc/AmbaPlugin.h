@@ -1,6 +1,5 @@
 #pragma once
 
-#include <s2e/CorePlugin.h>
 #include <s2e/Plugin.h>
 #include <s2e/S2EExecutionState.h>
 
