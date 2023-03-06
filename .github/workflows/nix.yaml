@@ -24,8 +24,15 @@ jobs:
             experimental-features = nix-command flakes
 
       - name: Build Nix flake checks
-        run: |
-          nix path-info . --accept-flake-config | tail --bytes +11 | head --bytes +33 | sed 's|^|https://nix.u3836.se|' | sed 's|$|.narinfo|' | xargs curl | grep "File not found." || nix build -L --accept-flake-config .#s2e
+        run: >
+          nix path-info .#s2e --accept-flake-config
+	    | tail --bytes +11
+	    | head --bytes +33
+	    | sed 's|^|https://nix.u3836.se|'
+	    | sed 's|$|.narinfo|'
+	    | xargs curl
+	    | grep "File not found."
+	  || nix build -L --accept-flake-config .#s2e
 
   build-amba:
     name: Build AMBA
@@ -41,4 +48,12 @@ jobs:
 
       - name: Build Nix flake checks
         run: |
-          nix path-info . --accept-flake-config | tail --bytes +11 | head --bytes +33 | sed 's|^|https://nix.u3836.se|' | sed 's|$|.narinfo|' | xargs curl | grep "File not found." || nix build -L --accept-flake-config .#amba
+        run: >
+          nix path-info .#amba --accept-flake-config
+	    | tail --bytes +11
+	    | head --bytes +33
+	    | sed 's|^|https://nix.u3836.se|'
+	    | sed 's|$|.narinfo|'
+	    | xargs curl
+	    | grep "File not found."
+	  || nix build -L --accept-flake-config .#amba
