@@ -6,6 +6,7 @@
 #include <s2e/S2EExecutionStateRegisters.h>
 #include <klee/Expr.h>
 #include <Zydis/SharedTypes.h>
+#include <Zydis/DecoderTypes.h>
 #include <cpu/i386/cpu.h>
 #include <cpu/types.h>
 
@@ -17,7 +18,6 @@
 #include "AmbaException.h"
 #include "Numbers.h"
 #include "Zydis.h"
-#include "Zydis/DecoderTypes.h"
 
 #define SPAN(d) \
 	(std::span{ d.data(), d.size() })
