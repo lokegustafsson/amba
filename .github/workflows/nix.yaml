@@ -25,7 +25,7 @@ jobs:
 
       - name: Build Nix flake checks
         run: |
-          nix build -L --accept-flake-config .#s2e
+          nix path-info . --accept-flake-config | tail --bytes +11 | head --bytes +33 | sed 's|^|https://nix.u3836.se|' | sed 's|$|.narinfo|' | xargs curl | grep "File not found." || nix build -L --accept-flake-config .#s2e
 
   build-amba:
     name: Build AMBA
@@ -41,4 +41,4 @@ jobs:
 
       - name: Build Nix flake checks
         run: |
-          nix build -L --accept-flake-config .#amba
+          nix path-info . --accept-flake-config | tail --bytes +11 | head --bytes +33 | sed 's|^|https://nix.u3836.se|' | sed 's|$|.narinfo|' | xargs curl | grep "File not found." || nix build -L --accept-flake-config .#amba
