@@ -32,7 +32,7 @@ namespace plugins {
 S2E_DEFINE_PLUGIN(Amba, "Amba S2E plugin", "", );
 
 void Amba::initialize() {
-	auto& s2e = *this->s2e();
+	const auto& s2e = *this->s2e();
 	auto& core = *s2e.getCorePlugin();
 	auto& config = *s2e.getConfig();
 	const auto& key = this->getConfigKey();
@@ -63,7 +63,10 @@ void Amba::slotTranslateBlockStart(
 	u64 pc
 ) {
 	if (this->m_traceBlockTranslation) {
-		this->getDebugStream(state) << "Translating block at " << hexval{pc} << "\n";
+		this->getDebugStream(state)
+			<< "Translating block at "
+			<< hexval{pc}
+			<< "\n";
 	}
 	if (this->m_traceBlockExecution) {
 		SUBSCRIBE(&Amba::slotExecuteBlockStart);
@@ -71,7 +74,10 @@ void Amba::slotTranslateBlockStart(
 }
 
 void Amba::slotExecuteBlockStart(S2EExecutionState *state, u64 pc) {
-	this->getDebugStream(state) << "Executing block at " << hexval{pc} << "\n";
+	this->getDebugStream(state)
+		<< "Executing block at "
+		<< hexval{pc}
+		<< "\n";
 }
 
 void Amba::translateInstructionStart(
@@ -106,6 +112,7 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	const auto operands = amba::readInstruction(state, pc).m_ops;
 	const CPUX86State &cpu_state = *state->regs()->getCpuState();
 	for (const auto& operand : operands) {
+		// Skip operand if it doesn't contain a dereference
 		const auto maybe_adr = amba::readOperandAddress(cpu_state, operand);
 		if (!maybe_adr.has_value()) {
 			continue;
@@ -177,7 +184,7 @@ std::optional<target_phys_addr_t> readOperandAddress(const CPUX86State &cpu_stat
 // (x86 has a limit of 15 bytes per instruction)
 std::array<u8, MAX_INSTRUCTION_LENGTH> readConstantMemory(s2e::S2EExecutionState *state, u64 pc) {
 	// TODO: Investigate if this actually works on both big and
-	// low endian systems
+	// little endian systems
 
 	// Is this repeating the same work over and over and over again?
 
