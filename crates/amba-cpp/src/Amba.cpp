@@ -101,7 +101,7 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	// Check if read adr is on stack or within saved heap data
 	const auto operands = amba::readInstruction(state, pc).m_ops;
 	for (const auto& operand : operands) {
-		void * adr;
+		target_phys_addr_t adr;
 		switch (operand.type) {
 		case ZYDIS_OPERAND_TYPE_MEMORY: {
 			const auto mem = operand.mem;
@@ -155,7 +155,8 @@ zydis::Instruction readInstruction(s2e::S2EExecutionState *state, u64 pc) {
 	return DECODER.decode(SPAN(mem));
 }
 
-bool isStackAddress(void * adr) { return false; }
+bool isStackAddress(target_phys_addr_t adr) { return false; }
+
 // Translate form ZydisRegister to S2E CPUX86State to read the value in a register
 u64 readRegister(const CPUX86State &state, const ZydisRegister reg) {
 	// TODO: Verify assumption that Zydis id and S2E ids line up
