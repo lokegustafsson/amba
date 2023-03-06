@@ -105,7 +105,6 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 		switch (operand.type) {
 		case ZYDIS_OPERAND_TYPE_MEMORY: {
 			const auto mem = operand.mem;
-			// Figure out how to interpret mem as a pointer
 			// segment:displacement(base register, index register, scale factor)
 
 			AMBA_ASSERT(!mem.segment); // Because who knows what this even is
@@ -202,7 +201,7 @@ u64 readRegister(const CPUX86State &state, const ZydisRegister reg) {
 	case ZYDIS_REGCLASS_XMM:
 	case ZYDIS_REGCLASS_YMM:
 	case ZYDIS_REGCLASS_ZMM: {
-		// Return the lower 64 bits of the corresponding register
+		// Return the first 64 bits of the corresponding register
 		// (Actual SIMD register is 128 bits)
 		return state.xmm_regs[reg_id]._q[0];
 	}
