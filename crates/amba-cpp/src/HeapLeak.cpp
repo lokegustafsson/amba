@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "HeapLeak.h"
 #include "AmbaException.h"
 

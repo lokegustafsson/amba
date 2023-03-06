@@ -1,23 +1,9 @@
 // 3rd party library headers
-#include <s2e/ConfigFile.h>
 #include <s2e/S2E.h>
-#include <s2e/Utils.h>
-#include <s2e/S2EDeviceState.h>
-#include <s2e/S2EExecutionStateRegisters.h>
-#include <klee/Expr.h>
-#include <Zydis/SharedTypes.h>
-#include <Zydis/DecoderTypes.h>
-
-// Standard library
-#include <algorithm>
 
 // Our headers
-#include "Amba.h"
 #include "AmbaPlugin.h"
-#include "AmbaException.h"
 #include "HeapLeak.h"
-#include "Numbers.h"
-#include "Zydis.h"
 
 #define SUBSCRIBE(fn) \
 	(signal->connect(sigc::mem_fun(*this, (fn))))
