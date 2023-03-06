@@ -91,7 +91,7 @@ void Amba::translateInstructionStart(
 
 void Amba::onFunctionCall(S2EExecutionState *state, u64 pc) {
 	// if malloc
-		// Add return value + alloc size to this->m_allocations
+		// Add return value + alloc size to this->m_allocations (make sure it's sorted)
 	// if free
 		// Remove from m_allocations
 	const auto inst = amba::readInstruction(state, pc);
