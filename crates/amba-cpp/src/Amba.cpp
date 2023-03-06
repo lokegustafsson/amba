@@ -17,6 +17,7 @@
 #include "AmbaException.h"
 #include "Numbers.h"
 #include "Zydis.h"
+#include "Zydis/DecoderTypes.h"
 
 #define SPAN(d) \
 	(std::span{ d.data(), d.size() })
@@ -105,28 +106,11 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 	const auto operands = amba::readInstruction(state, pc).m_ops;
 	const CPUX86State &cpu_state = *state->regs()->getCpuState();
 	for (const auto& operand : operands) {
-		target_phys_addr_t adr;
-		switch (operand.type) {
-		case ZYDIS_OPERAND_TYPE_MEMORY: {
-			const auto mem = operand.mem;
-			// segment:displacement(base register, index register, scale factor)
-
-			AMBA_ASSERT(!mem.segment); // Because who knows what this even is
-
-			const i64 base = amba::readRegister(cpu_state, mem.base);
-			const i64 index = amba::readRegister(cpu_state, mem.index);
-
-			adr = (mem.disp.has_displacement ? mem.disp.value : 0)
-				+ base + index * (i64) mem.scale;
-		} break;
-		case ZYDIS_OPERAND_TYPE_POINTER: {
-			const auto ptr = operand.ptr;
-			AMBA_ASSERT(!ptr.segment); // Because who knows what this even is
-
-			adr = (i64) ptr.offset;
-		} break;
-		default: break;
+		const auto maybe_adr = amba::readOperandAddress(cpu_state, operand);
+		if (!maybe_adr.has_value()) {
+			continue;
 		}
+		const auto adr = *maybe_adr;
 
 		if (!amba::isStackAddress(cpu_state, adr)) {
 			// Loop through m_allocations, see if it's
@@ -160,6 +144,33 @@ void Amba::onDeref(S2EExecutionState *state, u64 pc) {
 } // namespace s2e
 
 namespace amba {
+
+// Get a pointer from an operand if it contains one (even through indexing operations)
+std::optional<target_phys_addr_t> readOperandAddress(const CPUX86State &cpu_state, const ZydisDecodedOperand operand) {
+	switch (operand.type) {
+	case ZYDIS_OPERAND_TYPE_MEMORY: {
+		const auto mem = operand.mem;
+		// segment:displacement(base register, index register, scale factor)
+
+		AMBA_ASSERT(!mem.segment); // Because who knows what this even is
+
+		const i64 base = amba::readRegister(cpu_state, mem.base);
+		const i64 index = amba::readRegister(cpu_state, mem.index);
+
+		return (mem.disp.has_displacement ? mem.disp.value : 0)
+			+ base + index * (i64) mem.scale;
+	};
+
+	case ZYDIS_OPERAND_TYPE_POINTER: {
+		const auto ptr = operand.ptr;
+		AMBA_ASSERT(!ptr.segment); // Because who knows what this even is
+
+		return (i64) ptr.offset;
+	};
+
+	default: return std::nullopt;
+	}
+}
 
 // Read one instruction's worth of memory. Will throw if read memory
 // is symbolic rather than constant
