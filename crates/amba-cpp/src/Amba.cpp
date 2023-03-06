@@ -3,8 +3,11 @@
 #include <s2e/S2E.h>
 #include <s2e/Utils.h>
 #include <s2e/S2EDeviceState.h>
+#include <s2e/S2EExecutionStateRegisters.h>
 #include <klee/Expr.h>
 #include <Zydis/SharedTypes.h>
+#include <cpu/i386/cpu.h>
+#include <cpu/types.h>
 
 // Our headers
 #include "Amba.h"
@@ -153,5 +156,47 @@ zydis::Instruction readInstruction(s2e::S2EExecutionState *state, u64 pc) {
 }
 
 bool isStackAddress(void * adr) { return false; }
+// Translate form ZydisRegister to S2E CPUX86State to read the value in a register
+u64 readRegister(const CPUX86State &state, const ZydisRegister reg) {
+	// TODO: Verify assumption that Zydis id and S2E ids line up
 
+	const ZydisRegisterClass reg_class = ZydisRegisterGetClass(reg);
+	const u8 reg_id = ZydisRegisterGetId(reg);
+
+	AMBA_ASSERT(
+		reg_class != ZYDIS_REGCLASS_INVALID
+		&& reg_class != ZYDIS_REGCLASS_FLAGS
+		&& reg_class != ZYDIS_REGCLASS_IP
+	);
+
+	switch (reg_class) {
+	// General purpose registers in 8, 16, 32 and 64 bit varieties
+	case ZYDIS_REGCLASS_GPR8:
+	case ZYDIS_REGCLASS_GPR16:
+	case ZYDIS_REGCLASS_GPR32:
+	case ZYDIS_REGCLASS_GPR64: {
+		return state.regs[reg_id];
+	}
+	// Classic floating point registers
+	case ZYDIS_REGCLASS_X87: {
+		return state.fpregs[reg_id].mmx.q;
+	}
+	// Modern floating point registers
+	case ZYDIS_REGCLASS_MMX: {
+		return state.fpregs[reg_id].mmx.q;
+	}
+	// SIMD registers
+	case ZYDIS_REGCLASS_XMM:
+	case ZYDIS_REGCLASS_YMM:
+	case ZYDIS_REGCLASS_ZMM: {
+		// Return the lower 64 bits of the corresponding register
+		// (Actual SIMD register is 128 bits)
+		return state.xmm_regs[reg_id]._q[0];
+	}
+	default: {
+		AMBA_THROW();
+	}
+	}
 }
+
+} // namespace amba
