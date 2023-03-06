@@ -62,7 +62,7 @@ void Amba::slotTranslateBlockStart(
 	u64 pc
 ) {
 	if (this->m_traceBlockTranslation) {
-		this->getDebugStream(state) << "Translating block at " << hexval(pc) << "\n";
+		this->getDebugStream(state) << "Translating block at " << hexval{pc} << "\n";
 	}
 	if (this->m_traceBlockExecution) {
 		SUBSCRIBE(&Amba::slotExecuteBlockStart);
@@ -70,7 +70,7 @@ void Amba::slotTranslateBlockStart(
 }
 
 void Amba::slotExecuteBlockStart(S2EExecutionState *state, u64 pc) {
-	getDebugStream(state) << "Executing block at " << hexval(pc) << "\n";
+	this->getDebugStream(state) << "Executing block at " << hexval{pc} << "\n";
 }
 
 void Amba::translateInstructionStart(
