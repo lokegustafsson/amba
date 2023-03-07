@@ -4,6 +4,7 @@
 -Wextra
 -Wpedantic
 -Wconversion
+-Wno-c99-extensions
 -I
 crates/amba-cpp/inc
 -I
