@@ -25,6 +25,7 @@ CXX-FLAGS := \
 	-std=c++20 \
 	-Wall \
 	-Wextra \
+	-Wno-unused-parameter \
 	-g3 \
 	-O0 \
 	-U _FORTIFY_SOURCE \
