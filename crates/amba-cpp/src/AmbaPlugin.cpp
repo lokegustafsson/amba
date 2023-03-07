@@ -15,52 +15,14 @@ namespace plugins {
 S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
 
 void AmbaPlugin::initialize() {
-	const auto& s2e = *this->s2e();
-	auto& core = *s2e.getCorePlugin();
-	auto& config = *s2e.getConfig();
-	const auto& key = this->getConfigKey();
-
-	// Copying values from lua config?
-	this->m_traceBlockTranslation
-		= config.getBool(key + ".traceBlockTranslation");
-	this->m_traceBlockExecution
-		= config.getBool(key + ".traceBlockExecution");
+	auto& core = *this->s2e()->getCorePlugin();
 
 	// Set up event callbacks
-	core.onTranslateBlockStart
-		.connect(sigc::mem_fun(
-			*this,
-			&AmbaPlugin::slotTranslateBlockStart
-		));
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
 			&AmbaPlugin::translateInstructionStart
 		));
-}
-
-void AmbaPlugin::slotTranslateBlockStart(
-	ExecutionSignal *signal,
-	S2EExecutionState *state,
-	TranslationBlock *tb,
-	u64 pc
-) {
-	if (this->m_traceBlockTranslation) {
-		this->getDebugStream(state)
-			<< "Translating block at "
-			<< hexval{pc}
-			<< "\n";
-	}
-	if (this->m_traceBlockExecution) {
-		SUBSCRIBE(&AmbaPlugin::slotExecuteBlockStart);
-	}
-}
-
-void AmbaPlugin::slotExecuteBlockStart(S2EExecutionState *state, u64 pc) {
-	this->getDebugStream(state)
-		<< "Executing block at "
-		<< hexval{pc}
-		<< "\n";
 }
 
 void AmbaPlugin::translateInstructionStart(
