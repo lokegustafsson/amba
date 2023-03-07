@@ -1,4 +1,4 @@
-CXX := g++
+CXX ?= g++
 LIBS := \
 	-idirafter $(S2E_PATH)/klee/include \
 	-idirafter $(S2E_PATH)/libcoroutine/include \
