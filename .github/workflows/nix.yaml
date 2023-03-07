@@ -44,7 +44,7 @@ jobs:
           nix build -L --accept-flake-config .#amba
 
   build-amba-lib:
-    name: Build AMBA
+    name: Build AMBA-CPP
     runs-on: ubuntu-20.04
 
     steps:
