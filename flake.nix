@@ -119,7 +119,7 @@
             ZYCORE_PATH = "${pkgs.callPackage nix/zycore.nix { }}";
 
             # Packages
-            packages = with pkgs; [ mold clang-tools_14 gnumake gdb ];
+            packages = with pkgs; [ mold clang-tools_14 gnumake gdb ctags ];
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
         };
