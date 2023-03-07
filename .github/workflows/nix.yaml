@@ -42,3 +42,19 @@ jobs:
       - name: Build Nix flake checks
         run: |
           nix build -L --accept-flake-config .#amba
+
+  build-amba-lib:
+    name: Build AMBA
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: nixbuild/nix-quick-install-action@v20
+        with:
+          nix_conf: |
+            experimental-features = nix-command flakes
+
+      - name: Build Nix flake checks
+        run: |
+          nix build -L --accept-flake-config .#amba-cpp
