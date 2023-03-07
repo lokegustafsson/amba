@@ -23,7 +23,7 @@ bool Instruction::isCall() const {
 	return this->m_inst.mnemonic == ZYDIS_MNEMONIC_CALL;
 }
 
-Decoder::Decoder(Arch arch) {
+Decoder::Decoder(const Arch arch) {
 	ZydisMachineMode mode;
 	ZydisStackWidth width;
 
