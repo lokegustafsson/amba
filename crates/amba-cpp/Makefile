@@ -66,11 +66,6 @@ Test: \
   Zydis.o Amba.o
 	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) -o $@
 
-clean:
-	-rm *.o
-	-rm *.a
-	-rm *.so
-	-rm *.out
 
 ../../compile_flags.txt: compile_flags_template.txt
 	cat $^ \
@@ -82,5 +77,13 @@ clean:
 	> $@
 
 compile_flags.txt: ../../compile_flags.txt
+
+clean:
+	-rm *.o
+	-rm *.a
+	-rm *.so
+	-rm *.out
+	-rm Test
+	-rm ../../compile_flags.txt
 
 .PHONY: clean
