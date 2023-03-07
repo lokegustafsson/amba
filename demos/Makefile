@@ -17,8 +17,28 @@ hello: hello.c
 hello.S: hello
 	objdump -S hello > hello.S
 
+control-flow: control-flow.c
+run_control-flow: control-flow
+	./control-flow
+	./control-flow a
+	./control-flow a a
+	./control-flow a a a
+	./control-flow a a a a
+	./control-flow a a a a a
+	./control-flow a a a a a a
+	./control-flow a a a a a a a
+	./control-flow a a a a a a a a
+	./control-flow a a a a a a a a a
+	./control-flow a a a a a a a a a a
+	./control-flow a a a a a a a a a a a
+	./control-flow a a a a a a a a a a a a
+control-flow.S: control-flow
+	objdump -S control-flow > control-flow.S
+
 clean:
 	-rm overrun
 	-rm overrun.S
+	-rm control-flow
+	-rm control-flow.S
 
 .PHONY: clean run_overrun
