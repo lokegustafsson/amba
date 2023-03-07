@@ -80,12 +80,9 @@
           GLIBC_PATH = "${pkgs.glibc.dev}/include";
           S2E_PATH = "${s2e.s2e-src}/s2e";
           ZYDIS_PATH = "${pkgs.zydis}";
-          ZYCORE_PATH = "${pkgs.callPackage nix/zycore.nix {}}";
+          ZYCORE_PATH = "${pkgs.callPackage nix/zycore.nix { }}";
 
-          buildInputs = with pkgs; [
-            boost
-            zydis
-          ];
+          buildInputs = with pkgs; [ boost zydis ];
 
           installPhase = ''
             mkdir -p $out/bin
@@ -105,7 +102,8 @@
             ];
           };
           doc = pkgs.mkShell {
-            packages = let p = pkgs; in [ p.stable.tectonic p.texlab p.gnumake ];
+            packages = let p = pkgs;
+            in [ p.stable.tectonic p.texlab p.gnumake ];
           };
           c_dev = pkgs.mkShell {
             # Libraries (because setting up pkgconfig is even worse)
@@ -118,27 +116,18 @@
             GLIBC_PATH = "${pkgs.glibc.dev}/include";
             S2E_PATH = "${s2e.s2e-src}/s2e";
             ZYDIS_PATH = "${pkgs.zydis}";
-            ZYCORE_PATH = "${pkgs.callPackage nix/zycore.nix {}}";
+            ZYCORE_PATH = "${pkgs.callPackage nix/zycore.nix { }}";
 
             # Packages
-            packages = (with pkgs; [
-              mold
-              clang-tools_14
-              gnumake
-              gdb
-            ]) ++ (with pkgs.llvmPackages_14; [
-              # libcxxStdenv
-              # libcxxClang
-              # libcxx
-              # libcxxabi
-              # libclang
-              # libunwind
-            ]);
+            packages = with pkgs; [ mold clang-tools_14 gnumake gdb ];
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
         };
 
-        packages = rust.packages // s2e // { inherit amba-cpp; default = rust.packages.amba; };
+        packages = rust.packages // s2e // {
+          inherit amba-cpp;
+          default = rust.packages.amba;
+        };
         # `nix run '.#build-guest-images' -- $BUILDDIR $OUTDIR`
         apps = {
           s2e-env = {
