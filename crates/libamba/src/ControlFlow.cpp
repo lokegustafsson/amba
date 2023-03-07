@@ -3,10 +3,10 @@
 namespace control_flow {
 
 void onBlockStart(
-	s2e::S2EExecutionState *s2e_state,
-	u64 pc,
-	std::unordered_map<BlockId, Block> *control_flow_graph,
-	ControlFlowState *cfg_state
+	s2e::S2EExecutionState *const s2e_state,
+	const u64 pc,
+	std::unordered_map<BlockId, Block> *const control_flow_graph,
+	ControlFlowState *const cfg_state
 ) {
 	auto &cfg = *control_flow_graph;
 	auto &block = cfg[pc]; // unordered_map::[] will insert if it doesn't already exist
