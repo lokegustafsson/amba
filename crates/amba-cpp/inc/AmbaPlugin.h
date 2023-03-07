@@ -26,17 +26,12 @@ class AmbaPlugin : public Plugin {
 
 	void initialize();
 
-	TranslationFunction slotTranslateBlockStart;
 	TranslationFunction translateInstructionStart;
-	ExecutionFunction slotExecuteBlockStart;
 	ExecutionFunction onMalloc;
 	ExecutionFunction onFree;
 	ExecutionFunction onDeref;
 
   protected:
-	bool m_traceBlockTranslation;
-	bool m_traceBlockExecution;
-
 	std::vector<amba::AddressLengthPair> m_allocations;
 };
 
