@@ -14,7 +14,7 @@ namespace plugins {
 class AmbaPlugin : public Plugin {
 	S2E_PLUGIN
   public:
-	AmbaPlugin(S2E *s2e) : Plugin(s2e) {}
+	explicit AmbaPlugin(S2E *s2e) : Plugin(s2e) {}
 
 	using TranslationFunction = void (
 		s2e::ExecutionSignal *,
