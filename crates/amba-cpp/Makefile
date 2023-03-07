@@ -66,6 +66,11 @@ Test: \
   Zydis.o Amba.o
 	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) -o $@
 
+TAGS: inc/* src/*
+	ctags -R -e
+
+tags: inc/* src/*
+	ctags -R
 
 ../../compile_flags.txt: compile_flags_template.txt
 	cat $^ \
