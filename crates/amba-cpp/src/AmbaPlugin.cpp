@@ -28,7 +28,7 @@ void AmbaPlugin::initialize() {
 void AmbaPlugin::translateInstructionStart(
 	ExecutionSignal *signal,
 	S2EExecutionState *state,
-	TranslationBlock *tb,
+	[[maybe_unused]] TranslationBlock *tb,
 	u64 pc
 ) {
 	const auto inst = amba::readInstruction(state, pc);
