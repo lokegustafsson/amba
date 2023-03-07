@@ -31,7 +31,7 @@ class Decoder {
 
 	Instruction decode(const u8* const data, const size_t len) const;
   public:
-	explicit Decoder(Arch arch = Arch::x86_64);
+	explicit Decoder(const Arch arch = Arch::x86_64);
 
 	Instruction decode(const std::vector<u8> &program) const;
 	Instruction decode(const std::span<const u8> program) const;
