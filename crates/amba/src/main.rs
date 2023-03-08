@@ -53,6 +53,7 @@ fn main() -> ExitCode {
 		None => home::home_dir().unwrap().join("amba"),
 	};
 
+	tracing::info!(debug_assertions = cfg!(debug_assertions));
 	tracing::info!(AMBA_DEPENDENCIES_DIR);
 	tracing::info!(AMBA_SRC_DIR);
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
