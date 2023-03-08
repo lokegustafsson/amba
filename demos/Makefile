@@ -5,6 +5,8 @@ CFLAGS ?= \
 	-fno-stack-protector \
 	-U _FORTIFY_SOURCE
 
+demos: run_overrun run_control-flow
+
 overrun: overrun.c
 run_overrun: overrun
 	echo  1 | ./overrun
