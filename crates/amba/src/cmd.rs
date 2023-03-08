@@ -188,6 +188,7 @@ pub fn ctrlc_handler() {
 			}
 		}
 	}
+	tracing::error!("interrupted");
 	Box::leak(Box::new(guard));
 	process::exit(1);
 }
