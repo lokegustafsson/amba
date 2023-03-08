@@ -13,7 +13,10 @@ static const zydis::Decoder DECODER;
 namespace amba {
 
 // Get a pointer from an operand if it contains one (even through indexing operations)
-std::optional<target_phys_addr_t> readOperandAddress(const CPUX86State &cpu_state, const ZydisDecodedOperand operand) {
+std::optional<target_phys_addr_t> readOperandAddress(
+	const CPUX86State &cpu_state,
+	const ZydisDecodedOperand operand
+) {
 	switch (operand.type) {
 	case ZYDIS_OPERAND_TYPE_MEMORY: {
 		const auto mem = operand.mem;
@@ -73,7 +76,8 @@ bool isStackAddress(const CPUX86State &state, target_phys_addr_t adr) {
 	constexpr target_phys_addr_t STACK_SIZE = (target_phys_addr_t) (7.4 * prefixes::Mi);
 
 	// Incorrect, but close enough.
-	// We can't find the start address of the stack reasonably, so we just check within the stacksize of the current stack pointer
+	// We can't find the start address of the stack reasonably, so we
+	// just check within the stacksize of the current stack pointer
 	// Doesn't handle leaf function frames either.
 	// TODO: Check if this is calculating the stack in the correct direction
 	return adr >= sp && adr <= sp + STACK_SIZE;
