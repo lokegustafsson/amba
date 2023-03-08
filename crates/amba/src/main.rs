@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf, process::ExitCode, time::Instant};
 
-use tracing_subscriber::fmt;
+use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 
 mod cmd;
 mod init;
@@ -39,10 +39,16 @@ const AMBA_SRC_DIR: &str = env!("AMBA_SRC_DIR");
 
 fn main() -> ExitCode {
 	tracing::subscriber::set_global_default(
-		tracing_subscriber::FmtSubscriber::builder()
-			.with_max_level(tracing::Level::TRACE)
-			.with_timer(UptimeHourMinuteSeconds::default())
-			.finish(),
+		Targets::new()
+			.with_target("h2", tracing::Level::INFO)
+			.with_target("tokio_util::codec::framed_impl", tracing::Level::DEBUG)
+			.with_default(tracing::Level::TRACE)
+			.with_subscriber(
+				tracing_subscriber::FmtSubscriber::builder()
+					.with_max_level(tracing::Level::TRACE)
+					.with_timer(UptimeHourMinuteSeconds::default())
+					.finish(),
+			),
 	)
 	.expect("enabling global logger");
 
