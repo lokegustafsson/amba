@@ -123,13 +123,20 @@ impl Cmd {
 		fs::write(target, fs::read(file).unwrap()).unwrap()
 	}
 
-	pub fn http_get(&mut self, agent: &ureq::Agent, mut url: Url) -> ureq::Response {
+	pub fn http_get(
+		&mut self,
+		client: &reqwest::blocking::Client,
+		mut url: Url,
+	) -> reqwest::blocking::Response {
 		for _ in 0..10 {
 			tracing::trace!(url = url.as_str(), "HTTP GET");
-			let resp = agent.get(url.as_str()).call().unwrap();
+			let resp = client.get(url.as_str()).send().unwrap();
 			match resp.status() {
-				200..=299 => return resp,
-				300..=399 => url = Url::parse(resp.header("Location").unwrap()).unwrap(),
+				s if s.is_success() => return resp,
+				s if s.is_redirection() => {
+					url = Url::parse(resp.headers().get("Location").unwrap().to_str().unwrap())
+						.unwrap()
+				}
 				_ => panic!("{:#?}", resp),
 			}
 		}
