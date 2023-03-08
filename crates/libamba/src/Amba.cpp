@@ -126,4 +126,24 @@ u64 readRegister(const CPUX86State &state, const ZydisRegister reg) {
 	}
 }
 
+void printBlock(
+	const s2e::ExecutionSignal *const signal,
+	const s2e::S2EExecutionState *const state,
+	const TranslationBlock *const tb,
+	const u64 pc
+) {
+	std::span<const u8> program;
+
+	size_t idx = 0;
+	while (idx != (size_t) -1) {
+		auto idx_ = idx;
+		auto [inst, operands] = DECODER.next(program, &idx);
+		std::printf(
+			"%ld:\t%s\n",
+			idx_,
+			ZydisMnemonicGetString(inst.mnemonic)
+		);
+	}
+}
+
 } // namespace amba

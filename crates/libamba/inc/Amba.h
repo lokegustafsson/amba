@@ -42,4 +42,11 @@ bool isStackAddress(const CPUX86State &state, target_phys_addr_t adr);
 
 u64 readRegister(const CPUX86State &state, const ZydisRegister reg);
 
+void printBlock(
+	const s2e::ExecutionSignal *const signal,
+	const s2e::S2EExecutionState *const state,
+	const TranslationBlock *const tb,
+	const u64 pc
+);
+
 } // namespace amba
