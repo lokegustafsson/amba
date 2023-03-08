@@ -10,17 +10,21 @@ use crate::cmd::Cmd;
 pub fn force_init_download(cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
 	// From the URL <https://drive.google.com/file/d/102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ/view>
 	let fileid = "102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ";
-	let agent = ureq::Agent::new();
+	let client = reqwest::blocking::ClientBuilder::new()
+		.redirect(reqwest::redirect::Policy::none())
+		.cookie_store(true)
+		.build()
+		.unwrap();
 	let confirm_uuid = {
 		let confirm_page_html = cmd
 			.http_get(
-				&agent,
+				&client,
 				Url::parse(&format!(
 					"https://drive.google.com/uc?export=download&id={fileid}"
 				))
 				.unwrap(),
 			)
-			.into_string()
+			.text()
 			.unwrap();
 		const REGEX: &str = concat!(
 			"confirm=t&amp;uuid=(",
@@ -48,19 +52,21 @@ pub fn force_init_download(cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
 	};
 	{
 		let resp = cmd.http_get(
-			&agent,
+			&client,
 			Url::parse(&format!(
 					"https://drive.google.com/uc?id={fileid}&export=download&confirm=t&uuid={confirm_uuid}"
 				))
 			.unwrap(),
 		);
 		let content_length = resp
-			.header("Content-Length")
+			.headers()
+			.get("Content-Length")
+			.unwrap()
+			.to_str()
 			.unwrap()
 			.parse::<u64>()
 			.unwrap();
-		let download_read = resp.into_reader();
-		let with_progress_read = ProgressReader::new(download_read, content_length);
+		let with_progress_read = ProgressReader::new(resp, content_length);
 		let xz_read = xz2::read::XzDecoder::new(with_progress_read);
 		let mut tar_read = tar::Archive::new(xz_read);
 		tar_read.unpack(data_dir.join("images")).unwrap();
