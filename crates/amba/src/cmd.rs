@@ -12,6 +12,8 @@ use std::{
 	time::Duration,
 };
 
+use url::Url;
+
 static CHILDREN: Mutex<Option<HashMap<u32, Child>>> = Mutex::new(None);
 
 pub struct Cmd {
@@ -119,6 +121,19 @@ impl Cmd {
 		let target = target.as_ref();
 		tracing::trace!(?file, ?target, "copy_file");
 		fs::write(target, fs::read(file).unwrap()).unwrap()
+	}
+
+	pub fn http_get(&mut self, agent: &ureq::Agent, mut url: Url) -> ureq::Response {
+		for _ in 0..10 {
+			tracing::trace!(url = url.as_str(), "HTTP GET");
+			let resp = agent.get(url.as_str()).call().unwrap();
+			match resp.status() {
+				200..=299 => return resp,
+				300..=399 => url = Url::parse(resp.header("Location").unwrap()).unwrap(),
+				_ => panic!("{:#?}", resp),
+			}
+		}
+		panic!("too many redirects!")
 	}
 }
 
