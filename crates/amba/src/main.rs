@@ -22,6 +22,10 @@ enum Args {
 pub struct InitArgs {
 	#[arg(short, long)]
 	force: bool,
+	/// Download guest images built by the S2E team from Google Drive rather than
+	/// building them locally
+	#[arg(short, long)]
+	download: bool,
 }
 
 /// Run QEMU+S2E+libamba

@@ -1,31 +1,8 @@
 use std::{path::Path, process::Command};
 
-use crate::{cmd::Cmd, InitArgs, AMBA_SRC_DIR};
+use crate::cmd::Cmd;
 
-pub fn init(cmd: &mut Cmd, data_dir: &Path, InitArgs { force }: InitArgs) -> Result<(), ()> {
-	let build_guest_images_flake_ref = &format!("path:{AMBA_SRC_DIR}#build-guest-images",);
-	let builder_version = cmd
-		.command_capture_stdout(Command::new("nix").args([
-			"build",
-			build_guest_images_flake_ref,
-			"--no-link",
-			"--print-out-paths",
-		]))
-		.unwrap();
-	let version_file = &data_dir.join("version.txt");
-	let existing_builder_version = version_file.exists().then(|| cmd.read(version_file));
-
-	if !force && existing_builder_version.as_ref() == Some(&builder_version) {
-		tracing::info!("guest images already up to date; force rebuild with --force");
-		return Ok(());
-	}
-	version_file.exists().then(|| cmd.remove(version_file));
-	tracing::info!("building guest images");
-	force_init(cmd, data_dir, build_guest_images_flake_ref)?;
-	cmd.write(version_file, builder_version);
-	Ok(())
-}
-pub fn force_init(
+pub fn force_init_build(
 	cmd: &mut Cmd,
 	data_dir: &Path,
 	build_guest_images_flake_ref: &str,
@@ -50,6 +27,7 @@ pub fn force_init(
 	unmount_images_imagefs(cmd, images);
 	chmod_readonly_images(cmd, images);
 	remove_images_build(cmd, images_build);
+
 	Ok(())
 }
 
