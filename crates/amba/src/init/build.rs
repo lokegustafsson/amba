@@ -13,7 +13,7 @@ impl InitStrategy for InitBuild {
 	}
 
 	fn version(&self, cmd: &mut Cmd) -> String {
-		String::from_utf8(
+		let store_path = String::from_utf8(
 			cmd.command_capture_stdout(Command::new("nix").args([
 				"build",
 				&self.build_guest_images_flake_ref,
@@ -22,7 +22,8 @@ impl InitStrategy for InitBuild {
 			]))
 			.unwrap(),
 		)
-		.unwrap()
+		.unwrap();
+		format!("built using {store_path}\n")
 	}
 
 	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {

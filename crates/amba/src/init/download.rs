@@ -26,7 +26,10 @@ impl InitStrategy for InitDownload {
 	}
 
 	fn version(&self, _: &mut Cmd) -> String {
-		format!("{}\n", self.file_id)
+		format!(
+			"downloaded from https://drive.google.com/file/d/{}/view\n",
+			self.file_id
+		)
 	}
 
 	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
