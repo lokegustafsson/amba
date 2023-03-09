@@ -143,8 +143,14 @@ impl Cmd {
 					if s == StatusCode::SEE_OTHER {
 						method = reqwest::Method::GET;
 					}
-					url = Url::parse(resp.headers().get("Location").unwrap().to_str().unwrap())
-						.unwrap()
+					url = Url::parse(
+						resp.headers()
+							.get(reqwest::header::LOCATION)
+							.unwrap()
+							.to_str()
+							.unwrap(),
+					)
+					.unwrap()
 				}
 				_ => panic!("{:#?}", resp),
 			}
