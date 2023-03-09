@@ -33,6 +33,7 @@ pub struct S2EConfig {
 	use_test_case_generator: bool,
 	enable_cfi: bool,
 }
+
 #[derive(Serialize)]
 pub struct Target {
 	arch: &'static str,
@@ -40,6 +41,7 @@ pub struct Target {
 	names: Vec<String>,
 	args: Args,
 }
+
 #[derive(Serialize)]
 pub struct Args {
 	symbolic_file_names: Vec<String>,
@@ -115,12 +117,14 @@ impl S2EConfig {
 		renderer.render("bootstrap.sh");
 	}
 }
+
 struct Renderer<'a> {
 	cmd: &'a mut Cmd,
 	session_dir: &'a Path,
 	tera: Tera,
 	context: &'a Context,
 }
+
 impl Renderer<'_> {
 	fn render(&mut self, name: &'static str) {
 		match self.tera.render(name, &self.context) {

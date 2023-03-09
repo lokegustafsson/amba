@@ -61,9 +61,7 @@ pub fn run(
 	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
 	let s2e_config = &session_dir.join("s2e-config.lua");
 	let max_processes = 1;
-	let image = &data_dir.join(format!(
-		"images/ubuntu-22.04-x86_64/image.raw.s2e"
-	));
+	let image = &data_dir.join("images/ubuntu-22.04-x86_64/image.raw.s2e");
 	let serial_out = &session_dir.join("serial.txt");
 
 	let status = run_qemu(
