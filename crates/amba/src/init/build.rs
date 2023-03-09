@@ -5,6 +5,7 @@ use crate::{cmd::Cmd, init::InitStrategy, AMBA_SRC_DIR};
 pub struct InitBuild {
 	build_guest_images_flake_ref: String,
 }
+
 impl InitStrategy for InitBuild {
 	fn new() -> Box<Self> {
 		Box::new(Self {
