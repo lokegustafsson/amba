@@ -37,6 +37,10 @@ run_control-flow: control-flow
 control-flow.S: control-flow
 	objdump -S control-flow > control-flow.S
 
+hello: hello.c
+hello.S: hello
+	objdump -S hello > hello.S
+
 clean:
 	-rm overrun
 	-rm overrun.S
