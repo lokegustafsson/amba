@@ -5,11 +5,11 @@
 
 namespace heap_leak {
 
-void onMalloc(s2e::S2EExecutionState *state, u64 pc, std::vector<amba::AddressLengthPair> *allocations) {}
+void HeapLeak::onMalloc(s2e::S2EExecutionState *state, u64 pc) {}
 
-void onFree(s2e::S2EExecutionState *state, u64 pc, std::vector<amba::AddressLengthPair> *allocations) {}
+void HeapLeak::onFree(s2e::S2EExecutionState *state, u64 pc) {}
 
-void derefLeakCheck(s2e::S2EExecutionState *state, u64 pc, std::vector<amba::AddressLengthPair> *allocations) {
+void HeapLeak::derefLeakCheck(s2e::S2EExecutionState *state, u64 pc) {
 	// Check if read adr is on stack or within saved heap data
 	const auto operands = amba::readInstruction(state, pc).m_ops;
 	const CPUX86State &cpu_state = *state->regs()->getCpuState();
@@ -33,12 +33,12 @@ void derefLeakCheck(s2e::S2EExecutionState *state, u64 pc, std::vector<amba::Add
 
 			// Get a pointer to the last allocation that is considered smaller (or equal?) to allocation
 			const auto result = std::lower_bound( // std::upper_bound - 1?
-				allocations->begin(),
-				allocations->end(),
+				this->m_allocations.begin(),
+				this->m_allocations.end(),
 				allocation
 			);
 
-			if (result == allocations->end()) {
+			if (result == this->m_allocations.end()) {
 				continue;
 			}
 

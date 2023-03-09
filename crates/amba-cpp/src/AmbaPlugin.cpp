@@ -42,16 +42,28 @@ void AmbaPlugin::translateInstructionStart(
 	}
 }
 
+void AmbaPlugin::translateBlockStart(
+	ExecutionSignal *signal,
+	S2EExecutionState *state,
+	TranslationBlock *tb,
+	u64 pc
+) {
+	signal->connect(sigc::mem_fun(
+		*this->m_control_flow,
+		&control_flow::ControlFlow::onBlockStart
+	));
+}
+
 void AmbaPlugin::onMalloc(S2EExecutionState *state, u64 pc) {
-	heap_leak::onMalloc(state, pc, &this->m_allocations);
+	this->m_heap_leak->onMalloc(state, pc);
 }
 
 void AmbaPlugin::onFree(S2EExecutionState *state, u64 pc) {
-	heap_leak::onFree(state, pc, &this->m_allocations);
+	this->m_heap_leak->onFree(state, pc);
 }
 
 void AmbaPlugin::onDeref(S2EExecutionState *state, u64 pc) {
-	heap_leak::derefLeakCheck(state, pc, &this->m_allocations);
+	this->m_heap_leak->derefLeakCheck(state, pc);
 }
 
 } // namespace plugins
