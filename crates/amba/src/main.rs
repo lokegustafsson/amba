@@ -41,7 +41,10 @@ fn main() -> ExitCode {
 	tracing::subscriber::set_global_default(
 		Targets::new()
 			.with_target("h2", tracing::Level::INFO)
-			.with_target("tokio_util::codec::framed_impl", tracing::Level::DEBUG)
+			.with_target(
+				"tokio_util::codec::framed_impl",
+				tracing::Level::DEBUG,
+			)
 			.with_default(tracing::Level::TRACE)
 			.with_subscriber(
 				tracing_subscriber::FmtSubscriber::builder()

@@ -3,6 +3,7 @@ use std::{
 	path::Path,
 };
 
+use reqwest::Method;
 use url::Url;
 
 use crate::cmd::Cmd;
@@ -17,8 +18,9 @@ pub fn force_init_download(cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
 		.unwrap();
 	let confirm_uuid = {
 		let confirm_page_html = cmd
-			.http_get(
+			.http(
 				&client,
+				Method::GET,
 				Url::parse(&format!(
 					"https://drive.google.com/uc?export=download&id={fileid}"
 				))
@@ -51,8 +53,9 @@ pub fn force_init_download(cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
 			.to_owned()
 	};
 	{
-		let resp = cmd.http_get(
+		let resp = cmd.http(
 			&client,
+			Method::POST,
 			Url::parse(&format!(
 					"https://drive.google.com/uc?id={fileid}&export=download&confirm=t&uuid={confirm_uuid}"
 				))

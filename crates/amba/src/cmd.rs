@@ -12,6 +12,7 @@ use std::{
 	time::Duration,
 };
 
+use reqwest::StatusCode;
 use url::Url;
 
 static CHILDREN: Mutex<Option<HashMap<u32, Child>>> = Mutex::new(None);
@@ -123,17 +124,25 @@ impl Cmd {
 		fs::write(target, fs::read(file).unwrap()).unwrap()
 	}
 
-	pub fn http_get(
+	pub fn http(
 		&mut self,
 		client: &reqwest::blocking::Client,
+		mut method: reqwest::Method,
 		mut url: Url,
 	) -> reqwest::blocking::Response {
 		for _ in 0..10 {
-			tracing::trace!(url = url.as_str(), "HTTP GET");
-			let resp = client.get(url.as_str()).send().unwrap();
+			tracing::trace!(
+				method = method.as_str(),
+				url = url.as_str(),
+				"HTTP"
+			);
+			let resp = client.request(method.clone(), url.as_str()).send().unwrap();
 			match resp.status() {
 				s if s.is_success() => return resp,
 				s if s.is_redirection() => {
+					if s == StatusCode::SEE_OTHER {
+						method = reqwest::Method::GET;
+					}
 					url = Url::parse(resp.headers().get("Location").unwrap().to_str().unwrap())
 						.unwrap()
 				}
