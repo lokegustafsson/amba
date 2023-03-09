@@ -1,6 +1,6 @@
 use std::{path::Path, process::Command};
 
-use crate::{cmd::Cmd, InitArgs, AMBA_SRC_DIR};
+use crate::{cmd::Cmd, InitArgs};
 
 mod build;
 mod download;
@@ -10,45 +10,36 @@ pub fn init(
 	data_dir: &Path,
 	InitArgs { force, download }: InitArgs,
 ) -> Result<(), ()> {
-	let build_guest_images_flake_ref = &format!("path:{AMBA_SRC_DIR}#build-guest-images",);
-	let builder_version = cmd
-		.command_capture_stdout(Command::new("nix").args([
-			"build",
-			build_guest_images_flake_ref,
-			"--no-link",
-			"--print-out-paths",
-		]))
-		.unwrap();
+	let initializer: Box<dyn InitStrategy> = match download {
+		true => download::InitDownload::new(),
+		false => build::InitBuild::new(),
+	};
+	let new_version = initializer.version(cmd);
 	let version_file = &data_dir.join("version.txt");
-	let existing_builder_version = version_file.exists().then(|| cmd.read(version_file));
+	{
+		let old_version = version_file
+			.exists()
+			.then(|| String::from_utf8(cmd.read(version_file)).unwrap());
 
-	if !force && existing_builder_version.as_ref() == Some(&builder_version) {
-		tracing::info!("guest images already up to date; force rebuild with --force");
-		return Ok(());
-	}
-
-	version_file.exists().then(|| cmd.remove(version_file));
-	let images = &data_dir.join("images");
-	let images_build = &data_dir.join("images-build");
-	if images.exists() {
-		remove_images(cmd, images);
-	}
-	if images_build.exists() {
-		build::remove_images_build(cmd, images_build);
+		if !force && old_version.as_ref() == Some(&new_version) {
+			tracing::info!("guest images already up to date; force rebuild with --force");
+			return Ok(());
+		}
 	}
 
-	if download {
-		tracing::info!("downloading guest images");
-		download::force_init_download(cmd, data_dir)?;
-	} else {
-		tracing::info!("building guest images");
-		build::force_init_build(
-			cmd,
-			images,
-			images_build,
-			build_guest_images_flake_ref,
-		)?;
+	{
+		version_file.exists().then(|| cmd.remove(version_file));
+		let images = &data_dir.join("images");
+		let images_build = &data_dir.join("images-build");
+		if images.exists() {
+			remove_images(cmd, images);
+		}
+		if images_build.exists() {
+			build::remove_images_build(cmd, images_build);
+		}
 	}
+
+	initializer.init(cmd, data_dir)?;
 	assert!(data_dir
 		.join("images/ubuntu-22.04-x86_64/image.json")
 		.exists());
@@ -59,8 +50,15 @@ pub fn init(
 		.join("images/ubuntu-22.04-x86_64/image.raw.s2e.ready")
 		.exists());
 
-	cmd.write(version_file, builder_version);
+	cmd.write(version_file, new_version);
 	Ok(())
+}
+trait InitStrategy {
+	fn new() -> Box<Self>
+	where
+		Self: Sized;
+	fn version(&self, cmd: &mut Cmd) -> String;
+	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()>;
 }
 
 fn remove_images(cmd: &mut Cmd, images: &Path) {

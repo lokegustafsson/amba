@@ -1,27 +1,49 @@
 use std::{path::Path, process::Command};
 
-use crate::cmd::Cmd;
+use crate::{cmd::Cmd, init::InitStrategy, AMBA_SRC_DIR};
 
-pub fn force_init_build(
-	cmd: &mut Cmd,
-	images: &Path,
-	images_build: &Path,
-	build_guest_images_flake_ref: &str,
-) -> Result<(), ()> {
-	let build_result = cmd.command_spawn_wait(
-		Command::new("nix")
-			.args(["run", build_guest_images_flake_ref, "--"])
-			.args([images_build, images]),
-	);
-	if !build_result.success() {
-		tracing::error!("failed to build guest images");
-		return Err(());
+pub struct InitBuild {
+	build_guest_images_flake_ref: String,
+}
+impl InitStrategy for InitBuild {
+	fn new() -> Box<Self> {
+		Box::new(Self {
+			build_guest_images_flake_ref: format!("path:{AMBA_SRC_DIR}#build-guest-images"),
+		})
 	}
-	unmount_images_imagefs(cmd, images);
-	chmod_readonly_images(cmd, images);
-	remove_images_build(cmd, images_build);
 
-	Ok(())
+	fn version(&self, cmd: &mut Cmd) -> String {
+		String::from_utf8(
+			cmd.command_capture_stdout(Command::new("nix").args([
+				"build",
+				&self.build_guest_images_flake_ref,
+				"--no-link",
+				"--print-out-paths",
+			]))
+			.unwrap(),
+		)
+		.unwrap()
+	}
+
+	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
+		tracing::info!("building guest images");
+		let images = &data_dir.join("images");
+		let images_build = &data_dir.join("images-build");
+		let build_result = cmd.command_spawn_wait(
+			Command::new("nix")
+				.args(["run", &self.build_guest_images_flake_ref, "--"])
+				.args([images_build, images]),
+		);
+		if !build_result.success() {
+			tracing::error!("failed to build guest images");
+			return Err(());
+		}
+		unmount_images_imagefs(cmd, images);
+		chmod_readonly_images(cmd, images);
+		remove_images_build(cmd, images_build);
+
+		Ok(())
+	}
 }
 
 pub fn unmount_images_imagefs(cmd: &mut Cmd, images: &Path) {

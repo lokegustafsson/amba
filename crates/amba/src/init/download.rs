@@ -7,92 +7,110 @@ use std::{
 use reqwest::{cookie::CookieStore, Method};
 use url::Url;
 
-use crate::cmd::Cmd;
+use crate::{cmd::Cmd, init::InitStrategy};
 
-pub fn force_init_download(cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
-	// From the URL <https://drive.google.com/file/d/102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ/view>
-	let fileid = "102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ";
-	let jar = Arc::new(reqwest::cookie::Jar::default());
-	let client = reqwest::blocking::ClientBuilder::new()
-		.redirect(reqwest::redirect::Policy::none())
-		.cookie_provider(Arc::clone(&jar))
-		.build()
-		.unwrap();
-	{
-		// This request sets an authenication token that is required to not make the
-		// download time out later on
-		let drive_url = Url::parse("https://drive.google.com").unwrap();
-		assert!(jar.cookies(&drive_url).is_none());
-		let resp = cmd.http(
-			&client,
-			Method::GET,
-			Url::parse(&format!(
-				"https://drive.google.com/file/d/{fileid}/view"
-			))
-			.unwrap(),
-		);
-		assert!(resp.status().is_success());
-		assert!(jar.cookies(&drive_url).is_some());
+pub struct InitDownload {
+	file_id: &'static str,
+}
+impl InitStrategy for InitDownload {
+	fn new() -> Box<Self> {
+		Box::new(Self {
+			// From the URL <https://drive.google.com/file/d/102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ/view>
+			file_id: "102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ",
+		})
 	}
-	let confirm_uuid = {
-		let confirm_page_html = cmd
-			.http(
+
+	fn version(&self, _: &mut Cmd) -> String {
+		format!("{}\n", self.file_id)
+	}
+
+	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
+		tracing::info!("downloading guest images");
+		let jar = Arc::new(reqwest::cookie::Jar::default());
+		let client = reqwest::blocking::ClientBuilder::new()
+			.redirect(reqwest::redirect::Policy::none())
+			.cookie_provider(Arc::clone(&jar))
+			.build()
+			.unwrap();
+		{
+			// This request sets an authenication token that is required to not make the
+			// download time out later on
+			let drive_url = Url::parse("https://drive.google.com").unwrap();
+			assert!(jar.cookies(&drive_url).is_none());
+			let resp = cmd.http(
 				&client,
 				Method::GET,
 				Url::parse(&format!(
-					"https://drive.google.com/uc?export=download&id={fileid}"
+					"https://drive.google.com/file/d/{}/view",
+					self.file_id
 				))
 				.unwrap(),
-			)
-			.text()
-			.unwrap();
-		const REGEX: &str = concat!(
-			"confirm=t&amp;uuid=(",
-			"[0-9a-f]{8}",
-			"-",
-			"[0-9a-f]{4}",
-			"-",
-			"[0-9a-f]{4}",
-			"-",
-			"[0-9a-f]{4}",
-			"-",
-			"[0-9a-f]{12}",
-			")"
-		);
-		regex::Regex::new(REGEX)
-			.unwrap()
-			.captures(&confirm_page_html)
-			.unwrap_or_else(|| {
-				panic!("found no confirmation uuid in response body:\n{confirm_page_html}\n")
-			})
-			.get(1)
-			.unwrap()
-			.as_str()
-			.to_owned()
-	};
-	{
-		let resp = cmd.http(
-			&client,
-			Method::POST,
-			Url::parse(&format!(
-					"https://drive.google.com/uc?id={fileid}&export=download&confirm=t&uuid={confirm_uuid}"
+			);
+			assert!(resp.status().is_success());
+			assert!(jar.cookies(&drive_url).is_some());
+		}
+		let confirm_uuid = {
+			let confirm_page_html = cmd
+				.http(
+					&client,
+					Method::GET,
+					Url::parse(&format!(
+						"https://drive.google.com/uc?export=download&id={}",
+						self.file_id
+					))
+					.unwrap(),
+				)
+				.text()
+				.unwrap();
+			const REGEX: &str = concat!(
+				"confirm=t&amp;uuid=(",
+				"[0-9a-f]{8}",
+				"-",
+				"[0-9a-f]{4}",
+				"-",
+				"[0-9a-f]{4}",
+				"-",
+				"[0-9a-f]{4}",
+				"-",
+				"[0-9a-f]{12}",
+				")"
+			);
+			regex::Regex::new(REGEX)
+				.unwrap()
+				.captures(&confirm_page_html)
+				.unwrap_or_else(|| {
+					panic!("found no confirmation uuid in response body:\n{confirm_page_html}\n")
+				})
+				.get(1)
+				.unwrap()
+				.as_str()
+				.to_owned()
+		};
+		{
+			let resp = cmd.http(
+				&client,
+				Method::POST,
+				Url::parse(&format!(
+					"https://drive.google.com/uc?id={}&export=download&confirm=t&uuid={}",
+					self.file_id, confirm_uuid
 				))
-			.unwrap(),
-		);
-		let content_length = resp
-			.headers()
-			.get("Content-Length")
-			.unwrap()
-			.to_str()
-			.unwrap()
-			.parse::<u64>()
-			.unwrap();
-		let with_progress_read = ProgressReader::new(resp, content_length);
-		let xz_read = xz2::read::XzDecoder::new(with_progress_read);
-		let mut tar_read = tar::Archive::new(xz_read);
-		tar_read.unpack(data_dir.join("images")).unwrap();
+				.unwrap(),
+			);
+			let content_length = resp
+				.headers()
+				.get("Content-Length")
+				.unwrap()
+				.to_str()
+				.unwrap()
+				.parse::<u64>()
+				.unwrap();
+			let with_progress_read = ProgressReader::new(resp, content_length);
+			let xz_read = xz2::read::XzDecoder::new(with_progress_read);
+			let mut tar_read = tar::Archive::new(xz_read);
+			tar_read.unpack(data_dir.join("images")).unwrap();
+		}
+		Ok(())
 	}
-	Ok(())
 }
 
 struct ProgressReader<R> {
@@ -119,9 +137,9 @@ impl<R: Read> Read for ProgressReader<R> {
 			self.current += bytes as u64;
 			if self.current - self.latest_log > THRESHOLD {
 				self.latest_log = self.current;
-				let progress_mibibytes = self.current / (1024 * 1024);
-				let total_mibibytes = self.total / (1024 * 1024);
-				tracing::trace!(progress_mibibytes, total_mibibytes);
+				let progress_mb = self.current / (1024 * 1024);
+				let total_mb = self.total / (1024 * 1024);
+				tracing::trace!(progress_mb, total_mb);
 			}
 		}
 		ret
