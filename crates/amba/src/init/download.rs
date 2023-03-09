@@ -1,9 +1,10 @@
 use std::{
 	io::{self, Read},
 	path::Path,
+	sync::Arc,
 };
 
-use reqwest::Method;
+use reqwest::{cookie::CookieStore, Method};
 use url::Url;
 
 use crate::cmd::Cmd;
@@ -11,11 +12,28 @@ use crate::cmd::Cmd;
 pub fn force_init_download(cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
 	// From the URL <https://drive.google.com/file/d/102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ/view>
 	let fileid = "102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ";
+	let jar = Arc::new(reqwest::cookie::Jar::default());
 	let client = reqwest::blocking::ClientBuilder::new()
 		.redirect(reqwest::redirect::Policy::none())
-		.cookie_store(true)
+		.cookie_provider(Arc::clone(&jar))
 		.build()
 		.unwrap();
+	{
+		// This request sets an authenication token that is required to not make the
+		// download time out later on
+		let drive_url = Url::parse("https://drive.google.com").unwrap();
+		assert!(jar.cookies(&drive_url).is_none());
+		let resp = cmd.http(
+			&client,
+			Method::GET,
+			Url::parse(&format!(
+				"https://drive.google.com/file/d/{fileid}/view"
+			))
+			.unwrap(),
+		);
+		assert!(resp.status().is_success());
+		assert!(jar.cookies(&drive_url).is_some());
+	}
 	let confirm_uuid = {
 		let confirm_page_html = cmd
 			.http(
