@@ -43,6 +43,6 @@ eurydice-private-key
 **/Test
 **/a.out
 **/overrun
-compile_flags.txt
+**compile_flags.txt
 **/TAGS
 **/tags

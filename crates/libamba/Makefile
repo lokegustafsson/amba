@@ -103,6 +103,9 @@ tags: inc/* src/*
 	> $@
 
 compile_flags.txt: ../../compile_flags.txt
+	cat $^ \
+	| sed "s|crates/amba/||" \
+	> $@
 
 clean:
 	-rm *.o
