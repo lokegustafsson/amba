@@ -17,6 +17,7 @@ use crate::{cmd::Cmd, init::InitStrategy};
 pub struct InitDownload {
 	file_id: &'static str,
 }
+
 impl InitStrategy for InitDownload {
 	fn new() -> Box<Self> {
 		Box::new(Self {
@@ -128,6 +129,7 @@ struct RestartingReader<F: FnMut(u64) -> Response> {
 	current: u64,
 	content_length: u64,
 }
+
 impl<F: FnMut(u64) -> Response> RestartingReader<F> {
 	fn new(mut start_download: F) -> Self {
 		let inner = start_download(0);
@@ -147,6 +149,7 @@ impl<F: FnMut(u64) -> Response> RestartingReader<F> {
 		}
 	}
 }
+
 impl<F: FnMut(u64) -> Response> Read for RestartingReader<F> {
 	fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
 		let err: io::Error = match self.inner.read(buf) {
@@ -159,11 +162,8 @@ impl<F: FnMut(u64) -> Response> Read for RestartingReader<F> {
 		if err.kind() != io::ErrorKind::Other {
 			return Err(err);
 		}
-		let rerr: &reqwest::Error = match err.get_ref() {
-			Some(rerr) => match rerr.downcast_ref() {
-				Some(rerr) => rerr,
-				None => return Err(err),
-			},
+		let rerr: &reqwest::Error = match err.get_ref().and_then(|e| e.downcast_ref()) {
+			Some(rerr) => rerr,
 			None => return Err(err),
 		};
 		assert!(rerr.is_timeout());
@@ -182,6 +182,7 @@ struct ProgressReader<R> {
 	latest_log: u64,
 	total: u64,
 }
+
 impl<R: Read> ProgressReader<R> {
 	fn new(inner: R, total: u64) -> Self {
 		Self {
@@ -192,6 +193,7 @@ impl<R: Read> ProgressReader<R> {
 		}
 	}
 }
+
 impl<R: Read> Read for ProgressReader<R> {
 	fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
 		let ret = self.inner.read(buf);

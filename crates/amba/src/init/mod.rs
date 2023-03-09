@@ -53,6 +53,7 @@ pub fn init(
 	cmd.write(version_file, new_version);
 	Ok(())
 }
+
 trait InitStrategy {
 	fn new() -> Box<Self>
 	where
