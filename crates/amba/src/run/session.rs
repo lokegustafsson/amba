@@ -7,7 +7,7 @@ use std::{
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::cmd::Cmd;
+use crate::{cmd::Cmd, AMBA_DEPENDENCIES_DIR};
 
 #[derive(Serialize)]
 pub struct S2EConfig {
@@ -87,6 +87,14 @@ impl S2EConfig {
 	pub fn save_to(&self, cmd: &mut Cmd, session_dir: &Path) {
 		assert!(session_dir.exists());
 		cmd.write(session_dir.join("library.lua"), LIBRARY_LUA);
+		cmd.symlink(
+			format!("{AMBA_DEPENDENCIES_DIR}/bin/guest-tools64"),
+			session_dir.join("guest-tools64"),
+		);
+		cmd.symlink(
+			format!("{AMBA_DEPENDENCIES_DIR}/bin/guest-tools32"),
+			session_dir.join("guest-tools32"),
+		);
 
 		assert!(
 			Path::new(TEMPLATE_DIR).exists(),
