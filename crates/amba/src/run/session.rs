@@ -93,7 +93,7 @@ impl S2EConfig {
 			"non-existent {TEMPLATE_DIR}"
 		);
 		let template_dir = fs::canonicalize(TEMPLATE_DIR).unwrap();
-		tracing::trace!(?template_dir, "Using templates from");
+		tracing::debug!(?template_dir, "Using templates from");
 		let mut renderer = Renderer {
 			cmd,
 			session_dir,
