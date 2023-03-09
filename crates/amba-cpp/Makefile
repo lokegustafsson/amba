@@ -82,6 +82,9 @@ tags: inc/* src/*
 	> $@
 
 compile_flags.txt: ../../compile_flags.txt
+	cat $^ \
+	| sed "s|crates/amba/||" \
+	> $@
 
 clean:
 	-rm *.o
@@ -90,5 +93,6 @@ clean:
 	-rm *.out
 	-rm Test
 	-rm ../../compile_flags.txt
+	-rm compile_flags.txt
 
 .PHONY: clean
