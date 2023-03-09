@@ -120,6 +120,8 @@
 
             # Packages
             packages = with pkgs; [ mold clang-tools_14 gnumake gdb ctags ];
+
+            shellHook = "make -sC crates/amba-cpp compile_flags.txt";
           };
           s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
         };
