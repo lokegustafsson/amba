@@ -128,6 +128,14 @@ impl Cmd {
 		fs::write(target, fs::read(file).unwrap()).unwrap()
 	}
 
+	#[cfg(target_family = "unix")]
+	pub fn symlink(&mut self, original: impl AsRef<Path>, link: impl AsRef<Path>) {
+		let original = original.as_ref();
+		let link = link.as_ref();
+		tracing::debug!(?original, ?link, "symlink");
+		std::os::unix::fs::symlink(original, link).unwrap();
+	}
+
 	pub fn http(
 		&mut self,
 		client: &Client,
