@@ -4,7 +4,12 @@ use std::{
 	sync::Arc,
 };
 
-use reqwest::{cookie::CookieStore, Method};
+use reqwest::{
+	blocking::{ClientBuilder, Response},
+	cookie::{CookieStore, Jar},
+	header::{self, HeaderValue},
+	redirect, Method,
+};
 use url::Url;
 
 use crate::{cmd::Cmd, init::InitStrategy};
@@ -26,9 +31,9 @@ impl InitStrategy for InitDownload {
 
 	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
 		tracing::info!("downloading guest images");
-		let jar = Arc::new(reqwest::cookie::Jar::default());
-		let client = reqwest::blocking::ClientBuilder::new()
-			.redirect(reqwest::redirect::Policy::none())
+		let jar = Arc::new(Jar::default());
+		let client = ClientBuilder::new()
+			.redirect(redirect::Policy::none())
 			.cookie_provider(Arc::clone(&jar))
 			.build()
 			.unwrap();
@@ -45,6 +50,7 @@ impl InitStrategy for InitDownload {
 					self.file_id
 				))
 				.unwrap(),
+				&[],
 			);
 			assert!(resp.status().is_success());
 			assert!(jar.cookies(&drive_url).is_some());
@@ -59,6 +65,7 @@ impl InitStrategy for InitDownload {
 						self.file_id
 					))
 					.unwrap(),
+					&[],
 				)
 				.text()
 				.unwrap();
@@ -87,29 +94,82 @@ impl InitStrategy for InitDownload {
 				.to_owned()
 		};
 		{
-			let resp = cmd.http(
-				&client,
-				Method::POST,
-				Url::parse(&format!(
-					"https://drive.google.com/uc?id={}&export=download&confirm=t&uuid={}",
-					self.file_id, confirm_uuid
-				))
-				.unwrap(),
-			);
-			let content_length = resp
-				.headers()
-				.get("Content-Length")
-				.unwrap()
-				.to_str()
-				.unwrap()
-				.parse::<u64>()
-				.unwrap();
-			let with_progress_read = ProgressReader::new(resp, content_length);
+			let download_read = RestartingReader::new(move |offset| {
+				cmd.http(
+					&client,
+					Method::POST,
+					Url::parse(&format!(
+						"https://drive.google.com/uc?id={}&export=download&confirm=t&uuid={}",
+						self.file_id, confirm_uuid
+					))
+					.unwrap(),
+					&[(
+						header::RANGE,
+						HeaderValue::try_from(format!("bytes={offset}-")).unwrap(),
+					)],
+				)
+			});
+			let content_length = download_read.content_length;
+			let with_progress_read = ProgressReader::new(download_read, content_length);
 			let xz_read = xz2::read::XzDecoder::new(with_progress_read);
 			let mut tar_read = tar::Archive::new(xz_read);
 			tar_read.unpack(data_dir.join("images")).unwrap();
 		}
 		Ok(())
+	}
+}
+
+struct RestartingReader<F: FnMut(u64) -> Response> {
+	start_download: F,
+	inner: Response,
+	current: u64,
+	content_length: u64,
+}
+impl<F: FnMut(u64) -> Response> RestartingReader<F> {
+	fn new(mut start_download: F) -> Self {
+		let inner = start_download(0);
+		let content_length = inner
+			.headers()
+			.get("Content-Length")
+			.unwrap()
+			.to_str()
+			.unwrap()
+			.parse::<u64>()
+			.unwrap();
+		Self {
+			start_download,
+			inner,
+			current: 0,
+			content_length,
+		}
+	}
+}
+impl<F: FnMut(u64) -> Response> Read for RestartingReader<F> {
+	fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+		let err: io::Error = match self.inner.read(buf) {
+			Ok(len) => {
+				self.current += len as u64;
+				return Ok(len);
+			}
+			Err(err) => err,
+		};
+		if err.kind() != io::ErrorKind::Other {
+			return Err(err);
+		}
+		let rerr: &reqwest::Error = match err.get_ref() {
+			Some(rerr) => match rerr.downcast_ref() {
+				Some(rerr) => rerr,
+				None => return Err(err),
+			},
+			None => return Err(err),
+		};
+		assert!(rerr.is_timeout());
+		tracing::debug!(bytes = self.current, "restarting download at");
+		self.inner = (self.start_download)(self.current);
+		Err(io::Error::new(
+			io::ErrorKind::Interrupted,
+			"had to restart download due to timeout",
+		))
 	}
 }
 

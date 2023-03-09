@@ -12,7 +12,11 @@ use std::{
 	time::Duration,
 };
 
-use reqwest::StatusCode;
+use reqwest::{
+	blocking::{Client, Response},
+	header::{self, HeaderName, HeaderValue},
+	Method, StatusCode,
+};
 use url::Url;
 
 static CHILDREN: Mutex<Option<HashMap<u32, Child>>> = Mutex::new(None);
@@ -126,26 +130,32 @@ impl Cmd {
 
 	pub fn http(
 		&mut self,
-		client: &reqwest::blocking::Client,
-		mut method: reqwest::Method,
+		client: &Client,
+		mut method: Method,
 		mut url: Url,
-	) -> reqwest::blocking::Response {
+		headers: &[(HeaderName, HeaderValue)],
+	) -> Response {
 		for _ in 0..10 {
 			tracing::debug!(
 				method = method.as_str(),
 				url = url.as_str(),
+				?headers,
 				"HTTP"
 			);
-			let resp = client.request(method.clone(), url.as_str()).send().unwrap();
+			let resp = client
+				.request(method.clone(), url.as_str())
+				.headers(headers.iter().cloned().collect())
+				.send()
+				.unwrap();
 			match resp.status() {
 				s if s.is_success() => return resp,
 				s if s.is_redirection() => {
 					if s == StatusCode::SEE_OTHER {
-						method = reqwest::Method::GET;
+						method = Method::GET;
 					}
 					url = Url::parse(
 						resp.headers()
-							.get(reqwest::header::LOCATION)
+							.get(header::LOCATION)
 							.unwrap()
 							.to_str()
 							.unwrap(),
