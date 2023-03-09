@@ -26,13 +26,28 @@ pub fn init(
 		tracing::info!("guest images already up to date; force rebuild with --force");
 		return Ok(());
 	}
+
 	version_file.exists().then(|| cmd.remove(version_file));
+	let images = &data_dir.join("images");
+	let images_build = &data_dir.join("images-build");
+	if images.exists() {
+		remove_images(cmd, images);
+	}
+	if images_build.exists() {
+		build::remove_images_build(cmd, images_build);
+	}
+
 	if download {
 		tracing::info!("downloading guest images");
 		download::force_init_download(cmd, data_dir)?;
 	} else {
 		tracing::info!("building guest images");
-		build::force_init_build(cmd, data_dir, build_guest_images_flake_ref)?;
+		build::force_init_build(
+			cmd,
+			images,
+			images_build,
+			build_guest_images_flake_ref,
+		)?;
 	}
 	assert!(data_dir
 		.join("images/ubuntu-22.04-x86_64/image.json")
@@ -46,4 +61,13 @@ pub fn init(
 
 	cmd.write(version_file, builder_version);
 	Ok(())
+}
+
+fn remove_images(cmd: &mut Cmd, images: &Path) {
+	let chmod_result =
+		cmd.command_spawn_wait(Command::new("chmod").args(["-R", "u+w"]).arg(images));
+	assert!(chmod_result.success());
+	build::unmount_images_imagefs(cmd, images);
+	// Recursively delete `$AMBA_DATA_DIR/images/`
+	cmd.remove_dir_all(images);
 }

@@ -4,17 +4,10 @@ use crate::cmd::Cmd;
 
 pub fn force_init_build(
 	cmd: &mut Cmd,
-	data_dir: &Path,
+	images: &Path,
+	images_build: &Path,
 	build_guest_images_flake_ref: &str,
 ) -> Result<(), ()> {
-	let images = &data_dir.join("images");
-	let images_build = &data_dir.join("images-build");
-	if images.exists() {
-		remove_images(cmd, images);
-	}
-	if images_build.exists() {
-		remove_images_build(cmd, images_build);
-	}
 	let build_result = cmd.command_spawn_wait(
 		Command::new("nix")
 			.args(["run", build_guest_images_flake_ref, "--"])
@@ -31,16 +24,7 @@ pub fn force_init_build(
 	Ok(())
 }
 
-fn remove_images(cmd: &mut Cmd, images: &Path) {
-	let chmod_result =
-		cmd.command_spawn_wait(Command::new("chmod").args(["-R", "u+w"]).arg(images));
-	assert!(chmod_result.success());
-	unmount_images_imagefs(cmd, images);
-	// Recursively delete `$AMBA_DATA_DIR/images/`
-	cmd.remove_dir_all(images);
-}
-
-fn unmount_images_imagefs(cmd: &mut Cmd, images: &Path) {
+pub fn unmount_images_imagefs(cmd: &mut Cmd, images: &Path) {
 	// Unmount `$AMBA_DATA_DIR/images-build/*/imagefs/`
 	for entry in cmd.read_dir(images) {
 		let entry = entry.unwrap();
@@ -63,7 +47,7 @@ fn chmod_readonly_images(cmd: &mut Cmd, images: &Path) {
 	assert!(chmod_result.success());
 }
 
-fn remove_images_build(cmd: &mut Cmd, images_build: &Path) {
+pub fn remove_images_build(cmd: &mut Cmd, images_build: &Path) {
 	// Recursively chmod+w any nix-built linux kernel packages
 	for entry_src in cmd.read_dir(images_build) {
 		let entry_src = entry_src.unwrap();
