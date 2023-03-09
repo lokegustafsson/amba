@@ -12,6 +12,10 @@ run_overrun: overrun
 overrun.S: overrun
 	objdump -S overrun > overrun.S
 
+hello: hello.c
+hello.S: hello
+	objdump -S hello > hello.S
+
 clean:
 	-rm overrun
 	-rm overrun.S
