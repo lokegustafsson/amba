@@ -38,7 +38,7 @@ CXX-FLAGS := \
 S2E_PATH ?= ../../s2e
 
 libamba.so: Amba.o Zydis.o HeapLeak.o AmbaPlugin.o
-	$(CXX) -shared $^ $(ARCHIVES) -o $@
+	$(CXX) -shared $^ $(ARCHIVES) -Wl,-soname,$@ -o $@
 
 Amba.o: \
   src/Amba.cpp \

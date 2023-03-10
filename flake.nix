@@ -36,7 +36,7 @@
         };
         lib = nixpkgs.lib;
 
-        s2e = import ./nix/s2e { inherit lib pkgs; };
+        s2e = import ./nix/s2e { inherit lib pkgs libamba; };
         libamba = import ./nix/libamba.nix { inherit lib pkgs s2e; };
 
         rust = import ./nix/rust.nix {

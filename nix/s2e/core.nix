@@ -147,6 +147,7 @@ let
       [ ../patches/s2e/makefile-llvm.patch ../patches/s2e/makefile-git.patch ];
     buildPhase = ''
       mkdir -p $out
+      cp ${../patches/s2e/mapfile.replace} ./s2e/libs2e/src/mapfile
 
       S2E_PREFIX=$out make -f ./Makefile stamps/libs2e-release-install \
         stamps/libvmi-release-install stamps/llvm-release-install
