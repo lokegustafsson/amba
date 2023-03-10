@@ -59,6 +59,7 @@ dependencies = [
  "chrono",
  "clap",
  "ctrlc",
+ "dummy-dep",
  "home",
  "regex",
  "reqwest",
@@ -559,6 +560,10 @@ dependencies = [
  "block-buffer",
  "crypto-common",
 ]
+
+[[package]]
+name = "dummy-dep"
+version = "0.1.0"
 
 [[package]]
 name = "either"

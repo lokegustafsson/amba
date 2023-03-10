@@ -5,6 +5,7 @@ args@{
   release ? true,
   rootFeatures ? [
     "amba/default"
+    "dummy-dep/default"
     "libamba/default"
     "s2e/default"
   ],
@@ -40,6 +41,7 @@ in
   cargo2nixVersion = "0.11.0";
   workspace = {
     amba = rustPackages.unknown.amba."0.1.0";
+    dummy-dep = rustPackages.unknown.dummy-dep."0.1.0";
     libamba = rustPackages.unknown.libamba."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
   };
@@ -114,6 +116,7 @@ in
       chrono = rustPackages."registry+https://github.com/rust-lang/crates.io-index".chrono."0.4.23" { inherit profileName; };
       clap = rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.1.6" { inherit profileName; };
       ctrlc = rustPackages."registry+https://github.com/rust-lang/crates.io-index".ctrlc."3.2.5" { inherit profileName; };
+      dummy_dep = rustPackages."unknown".dummy-dep."0.1.0" { inherit profileName; };
       home = rustPackages."registry+https://github.com/rust-lang/crates.io-index".home."0.5.4" { inherit profileName; };
       regex = rustPackages."registry+https://github.com/rust-lang/crates.io-index".regex."1.7.1" { inherit profileName; };
       reqwest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.11.14" { inherit profileName; };
@@ -782,6 +785,13 @@ in
       block_buffer = rustPackages."registry+https://github.com/rust-lang/crates.io-index".block-buffer."0.10.3" { inherit profileName; };
       crypto_common = rustPackages."registry+https://github.com/rust-lang/crates.io-index".crypto-common."0.1.6" { inherit profileName; };
     };
+  });
+  
+  "unknown".dummy-dep."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "dummy-dep";
+    version = "0.1.0";
+    registry = "unknown";
+    src = fetchCrateLocal (workspaceSrc + "/crates/dummy-dep");
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".either."1.8.1" = overridableMkRustCrate (profileName: rec {
