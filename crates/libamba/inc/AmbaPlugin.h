@@ -32,10 +32,6 @@ class AmbaPlugin : public Plugin {
 
 	TranslationFunction translateInstructionStart;
 	TranslationFunction translateBlockStart;
-	ExecutionFunction onMalloc;
-	ExecutionFunction onFree;
-	ExecutionFunction onDeref;
-	ExecutionFunction onBlockStart;
 
   protected:
 	heap_leak::HeapLeak m_heap_leak;
