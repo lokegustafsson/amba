@@ -55,7 +55,7 @@ fn main() -> miette::Result<()> {
 		&glibc,
 	];
 
-	autocxx_build::Builder::new("src/lib.rs", &libraries)
+	autocxx_build::Builder::new("src/lib.rs", libraries)
 		.extra_clang_args(&[
 			"-DBOOST_BIND_GLOBAL_PLACEHOLDERS=1",
 			"-DTARGET_PAGE_BITS=12",
