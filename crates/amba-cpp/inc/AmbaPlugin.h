@@ -6,9 +6,9 @@
 #include <vector>
 #include <memory>
 
-#include "Amba.h"
-#include "AmbaData.h"
 #include "Numbers.h"
+
+namespace data { struct AmbaData; }
 
 namespace s2e {
 namespace plugins {
@@ -29,9 +29,6 @@ class AmbaPlugin : public Plugin {
 	void initialize();
 
 	TranslationFunction translateInstructionStart;
-	ExecutionFunction onMalloc;
-	ExecutionFunction onFree;
-	ExecutionFunction onDeref;
 
   protected:
 	std::unique_ptr<data::AmbaData> m_amba_data;

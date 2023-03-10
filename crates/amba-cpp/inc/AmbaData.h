@@ -6,15 +6,8 @@
 
 namespace data {
 
-class AmbaData {
-
-public:
-	AmbaData() :
-		m_heap_leak(std::make_unique<heap_leak::HeapLeak>(heap_leak::HeapLeak()))
-	{}
-
-	std::unique_ptr<heap_leak::HeapLeak> m_heap_leak;
-
-}; // AmbaData
+struct AmbaData {
+	heap_leak::HeapLeak heap_leak;
+};
 
 } // namespace data
