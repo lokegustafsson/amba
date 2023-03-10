@@ -17,11 +17,9 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
 	, m_amba_data(std::make_unique<data::AmbaData>(
 			(data::AmbaData) {
-				.heap_leak = heap_leak::HeapLeak()
+				.heap_leak = heap_leak::HeapLeak(),
+				.control_flow = control_flow::ControlFlow(),
 			}
-		))
-	, m_control_flow(std::make_unique<control_flow::ControlFlow>(
-			control_flow::ControlFlow()
 		))
 	{}
 
@@ -53,7 +51,7 @@ void AmbaPlugin::translateBlockStart(
 	u64 pc
 ) {
 	signal->connect(sigc::mem_fun(
-		*this->m_control_flow,
+		this->m_amba_data->control_flow,
 		&control_flow::ControlFlow::onBlockStart
 	));
 }

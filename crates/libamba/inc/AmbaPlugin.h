@@ -10,7 +10,6 @@
 #include "Numbers.h"
 
 namespace data { struct AmbaData; }
-namespace control_flow { class ControlFlow; }
 
 namespace s2e {
 namespace plugins {
