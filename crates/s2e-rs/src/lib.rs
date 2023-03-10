@@ -1,3 +1,6 @@
+#![allow(clippy::missing_safety_doc)]
+#![allow(unsafe_code)]
+
 autocxx::include_cpp! {
 	#include "s2e/CorePlugin.h"
 	#include "s2e/Plugin.h"
