@@ -7,8 +7,8 @@
 #include <memory>
 
 #include "Amba.h"
+#include "AmbaData.h"
 #include "Numbers.h"
-#include "HeapLeak.h"
 
 namespace s2e {
 namespace plugins {
@@ -34,7 +34,7 @@ class AmbaPlugin : public Plugin {
 	ExecutionFunction onDeref;
 
   protected:
-	std::unique_ptr<heap_leak::HeapLeak> m_heap_leak;
+	std::unique_ptr<data::AmbaData> m_amba_data;
 };
 
 } // namespace plugins
