@@ -34,6 +34,8 @@ let
     name = "libamba";
     src = ../crates/libamba;
 
+    enableParallelBuilding = true;
+
     buildInputs = let p = pkgs; in [ p.boost p.zydis ];
 
     installPhase = ''
