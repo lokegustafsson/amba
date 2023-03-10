@@ -22,7 +22,7 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	{}
 
 void AmbaPlugin::initialize() {
-	auto& debug = getDebugStream();
+	auto& debug = this->getDebugStream();
 	debug << "Begin initializing AmbaPlugin\n";
 
 	auto& core = *this->s2e()->getCorePlugin();
@@ -40,7 +40,7 @@ void AmbaPlugin::initialize() {
 void AmbaPlugin::translateInstructionStart(
 	ExecutionSignal *signal,
 	S2EExecutionState *state,
-	[[maybe_unused]] TranslationBlock *tb,
+	TranslationBlock *tb,
 	u64 pc
 ) {
 	const auto inst = amba::readInstruction(state, pc);

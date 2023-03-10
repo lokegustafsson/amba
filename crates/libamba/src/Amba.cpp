@@ -13,7 +13,10 @@ static const zydis::Decoder DECODER;
 namespace amba {
 
 // Get a pointer from an operand if it contains one (even through indexing operations)
-std::optional<target_phys_addr_t> readOperandAddress(const CPUX86State &cpu_state, const ZydisDecodedOperand operand) {
+std::optional<target_phys_addr_t> readOperandAddress(
+	const CPUX86State &cpu_state,
+	const ZydisDecodedOperand operand
+) {
 	switch (operand.type) {
 	case ZYDIS_OPERAND_TYPE_MEMORY: {
 		const auto mem = operand.mem;
@@ -21,8 +24,8 @@ std::optional<target_phys_addr_t> readOperandAddress(const CPUX86State &cpu_stat
 
 		AMBA_ASSERT(!mem.segment); // Because who knows what this even is
 
-		const i64 base = amba::readRegister(cpu_state, mem.base);
-		const i64 index = amba::readRegister(cpu_state, mem.index);
+		const i64 base = (i64) amba::readRegister(cpu_state, mem.base);
+		const i64 index = (i64) amba::readRegister(cpu_state, mem.index);
 
 		return (mem.disp.has_displacement ? mem.disp.value : 0)
 			+ base + index * (i64) mem.scale;
@@ -57,7 +60,7 @@ std::array<u8, MAX_INSTRUCTION_LENGTH> readConstantMemory(s2e::S2EExecutionState
 			AMBA_THROW();
 		}
 		// This is a major assumption, though confirmed by Loke
-		arr[i] = ((klee::ConstantExpr *) expr)->getLimitedValue(0xFF);
+		arr[i] = (u8) ((klee::ConstantExpr *) expr)->getLimitedValue(0xFF);
 	}
 	return arr;
 }
@@ -70,10 +73,11 @@ zydis::Instruction readInstruction(s2e::S2EExecutionState *state, u64 pc) {
 bool isStackAddress(const CPUX86State &state, target_phys_addr_t adr) {
 	const auto sp = state.regs[6];
 	// https://stackoverflow.com/questions/1825964/c-c-maximum-stack-size-of-program-on-mainstream-oses
-	constexpr target_phys_addr_t STACK_SIZE = 7.4 * prefixes::Mi;
+	constexpr target_phys_addr_t STACK_SIZE = (target_phys_addr_t) (7.4 * prefixes::Mi);
 
 	// Incorrect, but close enough.
-	// We can't find the start address of the stack reasonably, so we just check within the stacksize of the current stack pointer
+	// We can't find the start address of the stack reasonably, so we
+	// just check within the stacksize of the current stack pointer
 	// Doesn't handle leaf function frames either.
 	// TODO: Check if this is calculating the stack in the correct direction
 	return adr >= sp && adr <= sp + STACK_SIZE;
@@ -84,7 +88,7 @@ u64 readRegister(const CPUX86State &state, const ZydisRegister reg) {
 	// TODO: Verify assumption that Zydis id and S2E ids line up
 
 	const ZydisRegisterClass reg_class = ZydisRegisterGetClass(reg);
-	const u8 reg_id = ZydisRegisterGetId(reg);
+	const size_t reg_id = (size_t) ZydisRegisterGetId(reg);
 
 	AMBA_ASSERT(
 		reg_class != ZYDIS_REGCLASS_INVALID

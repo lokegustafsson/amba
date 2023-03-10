@@ -29,7 +29,10 @@ struct AddressLengthPair {
 
 constexpr size_t MAX_INSTRUCTION_LENGTH = 15; // bytes
 
-std::optional<target_phys_addr_t> readOperandAddress(const CPUX86State &cpu_state, const ZydisDecodedOperand operand);
+std::optional<target_phys_addr_t> readOperandAddress(
+	const CPUX86State &cpu_state,
+	const ZydisDecodedOperand operand
+);
 
 std::array<uint8_t, MAX_INSTRUCTION_LENGTH> readConstantMemory(S2EExecutionState *state, uint64_t pc);
 
