@@ -46,6 +46,18 @@ void AmbaPlugin::initialize() {
 	debug << "Finished initializing AmbaPlugin\n";
 }
 
+void AmbaPlugin::translateBlockStart(
+	ExecutionSignal *signal,
+	S2EExecutionState *state,
+	TranslationBlock *tb,
+	u64 pc
+) {
+	signal->connect(sigc::mem_fun(
+		*this->m_control_flow,
+		&control_flow::ControlFlow::onBlockStart
+	));
+}
+
 void AmbaPlugin::translateInstructionStart(
 	ExecutionSignal *signal,
 	S2EExecutionState *state,
