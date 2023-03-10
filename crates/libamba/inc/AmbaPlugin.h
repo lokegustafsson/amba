@@ -8,7 +8,9 @@
 
 #include "HeapLeak.h"
 #include "Numbers.h"
-#include "ControlFlow.h"
+
+namespace data { struct AmbaData; }
+namespace control_flow { class ControlFlow; }
 
 namespace s2e {
 namespace plugins {
