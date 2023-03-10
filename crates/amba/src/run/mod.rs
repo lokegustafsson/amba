@@ -144,7 +144,7 @@ fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
 		.then(|| String::from_utf8(cmd.read(version_file)).unwrap());
 	let initialized = version.is_some() && !version.unwrap().is_empty();
 	if !initialized {
-		tracing::error!("$AMBA_DATA_DIR/images is empty");
+		tracing::error!("$AMBA_DATA_DIR/version.txt is missing or empty");
 	}
 	initialized
 }
