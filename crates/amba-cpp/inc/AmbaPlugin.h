@@ -16,10 +16,7 @@ namespace plugins {
 class AmbaPlugin : public Plugin {
 	S2E_PLUGIN
   public:
-	explicit AmbaPlugin(S2E *s2e)
-		: Plugin(s2e)
-		, m_heap_leak(std::make_unique<heap_leak::HeapLeak>(heap_leak::HeapLeak()))
-	{}
+	explicit AmbaPlugin(S2E *s2e);
 
 	using TranslationFunction = void (
 		s2e::ExecutionSignal *,
