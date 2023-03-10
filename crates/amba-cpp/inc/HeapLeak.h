@@ -7,23 +7,17 @@
 #include "Amba.h"
 
 namespace heap_leak {
+class HeapLeak {
+  protected:
+	std::vector<amba::AddressLengthPair> m_allocations;
 
-void onMalloc(
-	s2e::S2EExecutionState *state,
-	u64 pc,
-	std::vector<amba::AddressLengthPair> *allocations
-);
+  public:
+	HeapLeak() {}
 
-void onFree(
-	s2e::S2EExecutionState *state,
-	u64 pc,
-	std::vector<amba::AddressLengthPair> *allocations
-);
+	amba::ExecutionFunction onMalloc;
 
-void derefLeakCheck(
-	s2e::S2EExecutionState *state,
-	u64 pc,
-	std::vector<amba::AddressLengthPair> *allocations
-);
+	amba::ExecutionFunction onFree;
 
-}
+	amba::ExecutionFunction derefLeakCheck;
+};
+} // namespace heap_leak
