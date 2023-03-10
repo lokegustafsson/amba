@@ -20,7 +20,7 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 				.heap_leak = heap_leak::HeapLeak()
 			}
 		))
-	, m_control_flow(std::make_unique<control_flow::ControlFlow(
+	, m_control_flow(std::make_unique<control_flow::ControlFlow>(
 			control_flow::ControlFlow()
 		))
 	{}
