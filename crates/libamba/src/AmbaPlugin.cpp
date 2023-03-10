@@ -22,7 +22,8 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	{}
 
 void AmbaPlugin::initialize() {
-	getDebugStream() << "Begin initializing AmbaPlugin\n";
+	auto& debug = getDebugStream();
+	debug << "Begin initializing AmbaPlugin\n";
 
 	auto& core = *this->s2e()->getCorePlugin();
 
@@ -33,7 +34,7 @@ void AmbaPlugin::initialize() {
 			&AmbaPlugin::translateInstructionStart
 		));
 
-	getDebugStream() << "Finished initializing AmbaPlugin\n";
+	debug << "Finished initializing AmbaPlugin\n";
 }
 
 void AmbaPlugin::translateInstructionStart(

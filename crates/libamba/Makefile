@@ -35,10 +35,11 @@ CXX-FLAGS := \
 	-DTARGET_PAGE_BITS=12 \
 	-DSE_RAM_OBJECT_BITS=12 \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
+LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
 
 libamba.so: Amba.o Zydis.o HeapLeak.o AmbaPlugin.o
-	$(CXX) -shared $^ $(ARCHIVES) -Wl,-soname,$@ -o $@
+	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
 Amba.o: \
   src/Amba.cpp \
