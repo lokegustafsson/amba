@@ -1,4 +1,4 @@
-{ pkgs, lib }:
+{ pkgs, lib, libamba }:
 let
   # From (https://github.com/S2E/manifest/blob/master/default.xml)
   repositories = builtins.listToAttrs (builtins.map (set: {
@@ -56,13 +56,21 @@ let
   guest = import ./guest.nix { inherit pkgs lib repositories core; };
   amba-deps = pkgs.stdenvNoCC.mkDerivation {
     name = "amba-deps";
-    phases = [ "installPhase" ];
+    phases = [ "installPhase" "fixupPhase" ];
     buildInputs = [ pkgs.rsync ];
     installPhase = ''
       mkdir -p $out/share/libs2e/ $out/bin/
       rsync -a ${core.s2e}/share/libs2e/* $out/share/libs2e/
       rsync -a ${core.s2e}/bin/guest-tools* $out/bin/
       rsync -a ${core.s2e}/bin/qemu-system-* $out/bin/
+    '';
+    fixupPhase = ''
+      chmod -R u+w $out/share/libs2e/*
+
+      patchelf \
+        --add-needed libamba.so \
+        --add-rpath ${libamba.libamba}/lib \
+        $out/share/libs2e/libs2e-*.so
     '';
   };
 in {

@@ -55,6 +55,10 @@ pub struct Args {
 const LIBRARY_LUA: &str = include_str!("../../data/library.lua");
 const TEMPLATE_DIR: &str = concat!(env!("AMBA_SRC_DIR"), "/crates/amba/templates");
 
+const CUSTOM_LUA_STRING: &str = r#"
+add_plugin("AmbaPlugin")
+"#;
+
 impl S2EConfig {
 	/// Default template parameters. Update this to change the S2E run time
 	/// configuration.
@@ -68,7 +72,7 @@ impl S2EConfig {
 			processes: vec![executable_file_name.to_owned()],
 			use_cupa: true,
 			target_lua_template: "s2e-config.linux.lua",
-			custom_lua_string: "",
+			custom_lua_string: CUSTOM_LUA_STRING,
 			project_type: "linux",
 			image_arch: "x86_64",
 			target_bootstrap_template: "bootstrap.linux.sh",
