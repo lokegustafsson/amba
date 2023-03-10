@@ -3,10 +3,11 @@
 #include <s2e/Plugin.h>
 #include <s2e/S2EExecutionState.h>
 
-#include <vector>
+#include <memory>
 
-#include "Amba.h"
 #include "Numbers.h"
+
+namespace data { struct AmbaData; }
 
 namespace s2e {
 namespace plugins {
@@ -14,7 +15,7 @@ namespace plugins {
 class AmbaPlugin : public Plugin {
 	S2E_PLUGIN
   public:
-	explicit AmbaPlugin(S2E *s2e) : Plugin(s2e) {}
+	explicit AmbaPlugin(S2E *s2e);
 
 	using TranslationFunction = void (
 		s2e::ExecutionSignal *,
@@ -27,12 +28,9 @@ class AmbaPlugin : public Plugin {
 	void initialize();
 
 	TranslationFunction translateInstructionStart;
-	ExecutionFunction onMalloc;
-	ExecutionFunction onFree;
-	ExecutionFunction onDeref;
 
   protected:
-	std::vector<amba::AddressLengthPair> m_allocations;
+	std::unique_ptr<data::AmbaData> m_amba_data;
 };
 
 } // namespace plugins
