@@ -35,6 +35,16 @@
           ];
         };
         lib = nixpkgs.lib;
+        s2e-include-paths = {
+          BOOST_PATH = "${pkgs.boost.dev}/include";
+          CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
+          LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
+          GCCLIBS_PATH = "${pkgs.gcc-unwrapped}/include/c++/11.3.0";
+          GCCLIBS_PATH_L =
+            "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
+          GLIBC_PATH = "${pkgs.glibc.dev}/include";
+          S2E_PATH = "${s2e.s2e-src}/s2e";
+        };
         rust = import ./nix/rust.nix {
           inherit lib pkgs;
           workspace-binaries = {
@@ -44,20 +54,10 @@
             };
           };
           extra-overrides = { mkNativeDep, mkEnvDep, p }: [
-            (mkEnvDep "s2e" {
-              # Required to parse s2e headers
-              BOOST_PATH = "${pkgs.boost.dev}/include";
-              CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
-              LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
-              GCCLIBS_PATH = "${pkgs.gcc-unwrapped}/include/c++/11.3.0";
-              GCCLIBS_PATH_L =
-                "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
-              GLIBC_PATH = "${pkgs.glibc.dev}/include";
-              S2E_PATH = "${s2e.s2e-src}/s2e";
-
+            (mkEnvDep "s2e" ({
               # For autocxx to run
               LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
-            })
+            } // s2e-include-paths))
             (mkNativeDep "s2e" [ p.clang_14 ])
             # NOTE: This crate name should really be "amba", but that does not work for some reason
             (mkEnvDep "dummy-dep" {
@@ -67,28 +67,20 @@
           ];
         };
         s2e = import ./nix/s2e { inherit lib pkgs; };
-        amba-cpp = pkgs.stdenv.mkDerivation {
-          name = "amba-cpp";
-          src = ./crates/amba-cpp;
+        libamba = pkgs.stdenv.mkDerivation ({
+          name = "libamba";
+          src = ./crates/libamba;
 
-          BOOST_PATH = "${pkgs.boost.dev}/include";
-          CLANGLIBS_PATH = "${pkgs.clang_14}/resource-root/include";
-          LLVM_PATH = "${pkgs.llvmPackages_14.llvm.dev}/include";
-          GCCLIBS_PATH = "${pkgs.gcc-unwrapped}/include/c++/11.3.0";
-          GCCLIBS_PATH_L =
-            "${pkgs.gcc-unwrapped}/include/c++/11.3.0/x86_64-unknown-linux-gnu";
-          GLIBC_PATH = "${pkgs.glibc.dev}/include";
-          S2E_PATH = "${s2e.s2e-src}/s2e";
           ZYDIS_PATH = "${pkgs.zydis}";
           ZYCORE_PATH = "${pkgs.callPackage nix/zycore.nix { }}";
 
-          buildInputs = with pkgs; [ boost zydis ];
+          buildInputs = let p = pkgs; in [ p.boost p.zydis ];
 
           installPhase = ''
             mkdir -p $out/bin
             cp Amba.so $out/bin
           '';
-        };
+        } // s2e-include-paths);
       in {
         devShells = {
           default = rust.rustPkgs.workspaceShell {
@@ -125,7 +117,7 @@
         };
 
         packages = rust.packages // s2e // {
-          inherit amba-cpp;
+          inherit libamba;
           default = rust.packages.amba;
         };
         # `nix run '.#build-guest-images' -- $BUILDDIR $OUTDIR`
