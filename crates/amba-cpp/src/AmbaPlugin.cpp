@@ -43,16 +43,15 @@ void AmbaPlugin::translateInstructionStart(
 }
 
 void AmbaPlugin::onMalloc(S2EExecutionState *state, u64 pc) {
-	heap_leak::onMalloc(state, pc, &this->m_allocations);
+	this->m_heap_leak->onMalloc(state, pc);
 }
 
 void AmbaPlugin::onFree(S2EExecutionState *state, u64 pc) {
-	heap_leak::onFree(state, pc, &this->m_allocations);
+	this->m_heap_leak->onFree(state, pc);
 }
 
 void AmbaPlugin::onDeref(S2EExecutionState *state, u64 pc) {
-	heap_leak::derefLeakCheck(state, pc, &this->m_allocations);
+	this->m_heap_leak->derefLeakCheck(state, pc);
 }
-
 } // namespace plugins
 } // namespace s2e

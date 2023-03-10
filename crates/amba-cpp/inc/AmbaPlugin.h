@@ -4,9 +4,11 @@
 #include <s2e/S2EExecutionState.h>
 
 #include <vector>
+#include <memory>
 
 #include "Amba.h"
 #include "Numbers.h"
+#include "HeapLeak.h"
 
 namespace s2e {
 namespace plugins {
@@ -14,7 +16,10 @@ namespace plugins {
 class AmbaPlugin : public Plugin {
 	S2E_PLUGIN
   public:
-	explicit AmbaPlugin(S2E *s2e) : Plugin(s2e) {}
+	explicit AmbaPlugin(S2E *s2e)
+		: Plugin(s2e)
+		, m_heap_leak(std::make_unique<heap_leak::HeapLeak>(heap_leak::HeapLeak()))
+	{}
 
 	using TranslationFunction = void (
 		s2e::ExecutionSignal *,
@@ -32,7 +37,7 @@ class AmbaPlugin : public Plugin {
 	ExecutionFunction onDeref;
 
   protected:
-	std::vector<amba::AddressLengthPair> m_allocations;
+	std::unique_ptr<heap_leak::HeapLeak> m_heap_leak;
 };
 
 } // namespace plugins
