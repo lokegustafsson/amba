@@ -3,8 +3,12 @@
 #include <s2e/Plugin.h>
 #include <s2e/S2EExecutionState.h>
 
+#include <memory>
+#include <unordered_map>
+
 #include "HeapLeak.h"
 #include "Numbers.h"
+#include "ControlFlow.h"
 
 namespace s2e {
 namespace plugins {
@@ -25,9 +29,17 @@ class AmbaPlugin : public Plugin {
 	void initialize();
 
 	TranslationFunction translateInstructionStart;
+	TranslationFunction translateBlockStart;
+	ExecutionFunction onMalloc;
+	ExecutionFunction onFree;
+	ExecutionFunction onDeref;
+	ExecutionFunction onBlockStart;
 
   protected:
 	heap_leak::HeapLeak m_heap_leak;
+	std::unique_ptr<data::AmbaData> m_amba_data;
+	std::unordered_map<u64, control_flow::Block> m_cfg;
+	control_flow::ControlFlowState m_cfg_state;
 };
 
 } // namespace plugins
