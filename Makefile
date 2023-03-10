@@ -1,4 +1,4 @@
-.PHONY: upload upload-amba upload-s2e
+.PHONY: upload upload-amba upload-s2e get-libamba-symbols
 
 upload: upload-amba upload-s2e upload-libamba
 
