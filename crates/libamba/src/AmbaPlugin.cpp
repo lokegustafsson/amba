@@ -22,6 +22,8 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	{}
 
 void AmbaPlugin::initialize() {
+	getDebugStream() << "Begin initializing AmbaPlugin\n";
+
 	auto& core = *this->s2e()->getCorePlugin();
 
 	// Set up event callbacks
@@ -30,6 +32,8 @@ void AmbaPlugin::initialize() {
 			*this,
 			&AmbaPlugin::translateInstructionStart
 		));
+
+	getDebugStream() << "Finished initializing AmbaPlugin\n";
 }
 
 void AmbaPlugin::translateInstructionStart(
