@@ -38,6 +38,7 @@ control-flow.S: control-flow
 	objdump -S control-flow > control-flow.S
 
 hello: hello.c
+	musl-gcc -static $(CFLAGS) $^ -o $@
 hello.S: hello
 	objdump -S hello > hello.S
 
