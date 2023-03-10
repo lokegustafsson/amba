@@ -20,10 +20,11 @@ enum Args {
 /// Initialize `$AMBA_DATA_DIR`
 #[derive(clap::Args, Debug)]
 pub struct InitArgs {
+	/// Perform initialization even if amba has already been initialized.
 	#[arg(short, long)]
 	force: bool,
 	/// Download guest images built by the S2E team from Google Drive rather than
-	/// building them locally
+	/// building them locally.
 	#[arg(short, long)]
 	download: bool,
 }
@@ -34,7 +35,11 @@ pub struct RunArgs {
 	host_path_to_executable: PathBuf,
 }
 
+/// The nix store path of amba run time dependencies such as S2E and QEMU.
 const AMBA_DEPENDENCIES_DIR: &str = env!("AMBA_DEPENDENCIES_DIR");
+
+/// The nix store path of the amba source tree. Required for building guest
+/// images.
 const AMBA_SRC_DIR: &str = env!("AMBA_SRC_DIR");
 
 fn main() -> ExitCode {
@@ -79,6 +84,7 @@ fn main() -> ExitCode {
 	}
 }
 
+/// A timer to add `{h}h{m}m{s}s` to logs.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub struct UptimeHourMinuteSeconds {
 	epoch: Instant,

@@ -1,3 +1,5 @@
+//! Logged I/O
+
 use std::{
 	collections::{hash_map, HashMap},
 	fs::{self, ReadDir},
@@ -19,8 +21,12 @@ use reqwest::{
 };
 use url::Url;
 
+/// Track `(PID, Child)` of currently running subprocesses.
 static CHILDREN: Mutex<Option<HashMap<u32, Child>>> = Mutex::new(None);
 
+/// A wrapper around all I/O that provides logging and a higher-level
+/// interface. For example, subprocesses spawned by `Cmd::command_*` will be
+/// killed on parent SIGINT.
 pub struct Cmd {
 	_no_construct: (),
 }
@@ -136,6 +142,7 @@ impl Cmd {
 		std::os::unix::fs::symlink(original, link).unwrap();
 	}
 
+	/// Send HTTP requests through reqwest, following redirects.
 	pub fn http(
 		&mut self,
 		client: &Client,
@@ -177,6 +184,11 @@ impl Cmd {
 	}
 }
 
+/// Blocking wait for child termination, implemented as a loop polling and then
+/// sleeping for 50ms. [`CHILDREN`] is only locked during the poll, allowing the
+/// SIGINT handler to lock and kill all children while still using the stdlib
+/// interface of requiring `&mut Child` for all operations. The alternative
+/// would be to use [`libc::kill`].
 fn safe_wait(child: Child) -> Child {
 	let id = child.id();
 	{
@@ -202,6 +214,7 @@ fn safe_wait(child: Child) -> Child {
 	}
 }
 
+/// Try to kill all [`CHILDREN`] before exiting.
 pub fn ctrlc_handler() {
 	println!();
 	let mut guard = match CHILDREN.try_lock() {
