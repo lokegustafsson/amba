@@ -53,6 +53,7 @@
               LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
             } // libamba.s2e-include-paths))
             (mkNativeDep "s2e" [ p.clang_14 ])
+
             # NOTE: This crate name should really be "amba", but that does not work for some reason
             (mkEnvDep "dummy-dep" {
               AMBA_DEPENDENCIES_DIR = "${s2e.amba-deps}";
