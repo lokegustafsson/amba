@@ -11,6 +11,14 @@
 
 namespace amba {
 
+using TranslationFunction = void (
+	s2e::ExecutionSignal *,
+	s2e::S2EExecutionState *state,
+	TranslationBlock *tb,
+	u64 p
+);
+using ExecutionFunction = void (s2e::S2EExecutionState *state, u64 pc);
+
 struct AddressLengthPair {
 	target_phys_addr_t adr;
 	target_phys_addr_t size;
