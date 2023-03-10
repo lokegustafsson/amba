@@ -9,7 +9,8 @@ mod run;
 /// The executable component of amba that runs QEMU+S2E+libamba as a subprocess
 ///
 /// Set `AMBA_DATA_DIR` to a directory where amba should read and write
-/// run time artifacts such as disk images. The default is `$HOME/amba`.
+/// run time artifacts such as disk images. The default is `$XDG_DATA_HOME/amba`
+/// or `$HOME/.local/share`.
 #[derive(clap::Parser, Debug)]
 #[command(about, verbatim_doc_comment)]
 enum Args {

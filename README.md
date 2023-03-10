@@ -20,4 +20,5 @@ the `nix.u3836.se` cache.
 
 You can run AMBA directly through `nix run . -- --help`. You can configure the
 directory where guest vm images and session files are placed by setting the
-environment variable `AMBA_DATA_DIR`, which defaults to `$HOME/amba`.
+environment variable `AMBA_DATA_DIR`, which defaults to `$XDG_DATA_HOME/amba` or
+`$HOME/.local/share/amba`.
