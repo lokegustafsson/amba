@@ -60,7 +60,7 @@
             })
             (mkNativeDep "s2e" [ p.clang_14 ])
             # NOTE: This crate name should really be "amba", but that does not work for some reason
-            (mkEnvDep "tera" {
+            (mkEnvDep "dummy-dep" {
               AMBA_DEPENDENCIES_DIR = "${s2e.amba-deps}";
               AMBA_SRC_DIR = ./.;
             })
