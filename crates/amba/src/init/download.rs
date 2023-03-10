@@ -1,3 +1,5 @@
+//! Download guest images from Google Drive
+
 use std::{
 	io::{self, Read},
 	path::Path,
@@ -14,6 +16,7 @@ use url::Url;
 
 use crate::{cmd::Cmd, init::InitStrategy};
 
+/// Download guest images from Google Drive
 pub struct InitDownload {
 	file_id: &'static str,
 }
@@ -26,6 +29,8 @@ impl InitStrategy for InitDownload {
 		})
 	}
 
+	/// The version string of the `InitDownload` strategy is the Google Drive url of
+	/// the tarball.
 	fn version(&self, _: &mut Cmd) -> String {
 		format!(
 			"downloaded from https://drive.google.com/file/d/{}/view\n",
@@ -33,17 +38,20 @@ impl InitStrategy for InitDownload {
 		)
 	}
 
+	/// Download and extract the guest images using the undocumented token-less
+	/// Google Drive API (the API used by not-logged-in humans for files >100MB in
+	/// the web browser)
 	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
 		tracing::info!("downloading guest images");
+		// Set up a HTTP client with persistent cookies.
 		let jar = Arc::new(Jar::default());
 		let client = ClientBuilder::new()
 			.redirect(redirect::Policy::none())
 			.cookie_provider(Arc::clone(&jar))
 			.build()
 			.unwrap();
+		// Acquire a cookie token, possibly helping the download later. (not sure)
 		{
-			// This request sets an authenication token that is required to not make the
-			// download time out later on
 			let drive_url = Url::parse("https://drive.google.com").unwrap();
 			assert!(jar.cookies(&drive_url).is_none());
 			let resp = cmd.http(
@@ -59,6 +67,9 @@ impl InitStrategy for InitDownload {
 			assert!(resp.status().is_success());
 			assert!(jar.cookies(&drive_url).is_some());
 		}
+		// Acquire the uuid confirming that we still want to download the file after seeing:
+		// > ubuntu-22.04-x86_64.tar.xz (3.1G) is too large for Google to scan for viruses.
+		// > Would you still like to download this file?
 		let confirm_uuid = {
 			let confirm_page_html = cmd
 				.http(
@@ -97,8 +108,13 @@ impl InitStrategy for InitDownload {
 				.as_str()
 				.to_owned()
 		};
+		// Download the file in a streaming manner, using readers
+		// 1. [`ResumingReader`] (download, supporting resume after timeouts)
+		// 2. [`ProgressReader`] (log progress periodically)
+		// 3. [`xz2::read::XzDecoder`] (uncompress `.xz`)
+		// 4. [`tar::Archive::new`] (unpack `.tar`)
 		{
-			let download_read = RestartingReader::new(move |offset| {
+			let download_read = ResumingReader::new(move |offset| {
 				cmd.http(
 					&client,
 					Method::POST,
@@ -123,14 +139,16 @@ impl InitStrategy for InitDownload {
 	}
 }
 
-struct RestartingReader<F: FnMut(u64) -> Response> {
+/// A reader wrapper around [`reqwest::Response`] that restarts the request with
+/// the `Range: bytes=<start>-` HTTP header on [`reqwest::Error::is_timeout`].
+struct ResumingReader<F: FnMut(u64) -> Response> {
 	start_download: F,
 	inner: Response,
 	current: u64,
 	content_length: u64,
 }
 
-impl<F: FnMut(u64) -> Response> RestartingReader<F> {
+impl<F: FnMut(u64) -> Response> ResumingReader<F> {
 	fn new(mut start_download: F) -> Self {
 		let inner = start_download(0);
 		let content_length = inner
@@ -150,7 +168,7 @@ impl<F: FnMut(u64) -> Response> RestartingReader<F> {
 	}
 }
 
-impl<F: FnMut(u64) -> Response> Read for RestartingReader<F> {
+impl<F: FnMut(u64) -> Response> Read for ResumingReader<F> {
 	fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
 		let err: io::Error = match self.inner.read(buf) {
 			Ok(len) => {
@@ -176,6 +194,8 @@ impl<F: FnMut(u64) -> Response> Read for RestartingReader<F> {
 	}
 }
 
+/// A generic reader wrapper that tracks the current read length and logs every
+/// 64MB of progress.
 struct ProgressReader<R> {
 	inner: R,
 	current: u64,

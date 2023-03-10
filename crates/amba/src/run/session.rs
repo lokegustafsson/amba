@@ -1,3 +1,5 @@
+//! Populating the session directory
+
 use std::{
 	error::Error,
 	fs,
@@ -9,6 +11,8 @@ use tera::{Context, Tera};
 
 use crate::{cmd::Cmd, AMBA_DEPENDENCIES_DIR};
 
+/// All data required to populate the templates in `crates/amba/templates/`.
+/// The templates are kept as close to the upstream S2E templates as possible.
 #[derive(Serialize)]
 pub struct S2EConfig {
 	creation_time: &'static str,
@@ -52,6 +56,8 @@ const LIBRARY_LUA: &str = include_str!("../../data/library.lua");
 const TEMPLATE_DIR: &str = concat!(env!("AMBA_SRC_DIR"), "/crates/amba/templates");
 
 impl S2EConfig {
+	/// Default template parameters. Update this to change the S2E run time
+	/// configuration.
 	pub fn new(session_dir: &Path, executable_file_name: &str) -> Self {
 		Self {
 			creation_time: "CREATION_TIME",
@@ -133,6 +139,7 @@ impl Renderer<'_> {
 		}
 	}
 
+	/// Inspect the `tera::Error` to possibly pretty-print it before panicking.
 	fn handle_error(name: &'static str, err: tera::Error) -> ! {
 		let msg = match (&err.kind, err.source()) {
 			(tera::ErrorKind::Msg(msg), None) => Some(msg.to_owned()),
