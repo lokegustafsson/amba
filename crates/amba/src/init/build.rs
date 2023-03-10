@@ -1,7 +1,10 @@
+//! Build guest images locally
+
 use std::{path::Path, process::Command};
 
 use crate::{cmd::Cmd, init::InitStrategy, AMBA_SRC_DIR};
 
+/// Build guest images locally
 pub struct InitBuild {
 	build_guest_images_flake_ref: String,
 }
@@ -13,6 +16,8 @@ impl InitStrategy for InitBuild {
 		})
 	}
 
+	/// The version string of the `InitBuild` strategy is the nix store path of the
+	/// nix-app that builds the guest images.
 	fn version(&self, cmd: &mut Cmd) -> String {
 		let store_path = String::from_utf8(
 			cmd.command_capture_stdout(Command::new("nix").args([

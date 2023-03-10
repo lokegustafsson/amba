@@ -1,3 +1,5 @@
+//! The run subcommand
+
 use std::{
 	path::Path,
 	process::{Command, ExitStatus},
@@ -9,9 +11,11 @@ use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs, AMBA_DEPENDENCIES_DIR};
 
 mod session;
 
-// See also
-// https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh
-// TODO cross-platform
+/// Launch QEMU+S2E. That is, we do the equivalent of
+/// <https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh>
+/// but in rust code.
+///
+/// TODO: support more guests than just `ubuntu-22.04-x86_64`
 pub fn run(
 	cmd: &mut Cmd,
 	data_dir: &Path,
@@ -36,6 +40,7 @@ pub fn run(
 		return Err(());
 	}
 	cmd.create_dir_all(session_dir);
+	// Populate the `session_dir`
 	{
 		let executable_name = host_path_to_executable
 			.file_name()

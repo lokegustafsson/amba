@@ -1,3 +1,5 @@
+//! The init subcommand
+
 use std::{path::Path, process::Command};
 
 use crate::{cmd::Cmd, InitArgs};
@@ -5,15 +7,19 @@ use crate::{cmd::Cmd, InitArgs};
 mod build;
 mod download;
 
+/// Initialize amba by building/downloading the guest images to be run in
+/// QEMU+S2E+libamba.
 pub fn init(
 	cmd: &mut Cmd,
 	data_dir: &Path,
 	InitArgs { force, download }: InitArgs,
 ) -> Result<(), ()> {
+	// Choose strategy.
 	let initializer: Box<dyn InitStrategy> = match download {
 		true => download::InitDownload::new(),
 		false => build::InitBuild::new(),
 	};
+	// Already up to date?
 	let new_version = initializer.version(cmd);
 	let version_file = &data_dir.join("version.txt");
 	{
@@ -27,6 +33,7 @@ pub fn init(
 		}
 	}
 
+	// Remove artifacts from old or unfinished builds.
 	{
 		version_file.exists().then(|| cmd.remove(version_file));
 		let images = &data_dir.join("images");
@@ -39,6 +46,7 @@ pub fn init(
 		}
 	}
 
+	// Perform initialization, assert success.
 	initializer.init(cmd, data_dir)?;
 	assert!(data_dir
 		.join("images/ubuntu-22.04-x86_64/image.json")
@@ -54,11 +62,17 @@ pub fn init(
 	Ok(())
 }
 
+/// A method for acquiring guest images.
 trait InitStrategy {
+	/// Construct a strategy.
 	fn new() -> Box<Self>
 	where
 		Self: Sized;
+
+	/// Get strategy version string, to check up-to-date:ness.
 	fn version(&self, cmd: &mut Cmd) -> String;
+
+	/// Perform initialization.
 	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()>;
 }
 
