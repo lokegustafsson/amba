@@ -14,6 +14,11 @@ namespace plugins {
 
 S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
 
+AmbaPlugin::AmbaPlugin(S2E *s2e)
+		: Plugin(s2e)
+		, m_heap_leak(std::make_unique<heap_leak::HeapLeak>(heap_leak::HeapLeak()))
+	{}
+
 void AmbaPlugin::initialize() {
 	auto& core = *this->s2e()->getCorePlugin();
 
