@@ -22,7 +22,7 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	{}
 
 void AmbaPlugin::initialize() {
-	auto& debug = getDebugStream();
+	auto& debug = this->getDebugStream();
 	debug << "Begin initializing AmbaPlugin\n";
 
 	auto& core = *this->s2e()->getCorePlugin();
