@@ -14,10 +14,10 @@ class HeapLeak {
   public:
 	HeapLeak() {}
 
-	void onMalloc(s2e::S2EExecutionState *state, u64 pc);
+	amba::ExecutionFunction onMalloc;
 
-	void onFree(s2e::S2EExecutionState *state, u64 pc);
+	amba::ExecutionFunction onFree;
 
-	void derefLeakCheck(s2e::S2EExecutionState *state, u64 pc);
+	amba::ExecutionFunction derefLeakCheck;
 };
 } // namespace heap_leak
