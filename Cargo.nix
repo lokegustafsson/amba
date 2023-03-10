@@ -6,7 +6,6 @@ args@{
   rootFeatures ? [
     "amba/default"
     "dummy-dep/default"
-    "libamba/default"
     "s2e/default"
   ],
   rustPackages,
@@ -42,7 +41,6 @@ in
   workspace = {
     amba = rustPackages.unknown.amba."0.1.0";
     dummy-dep = rustPackages.unknown.dummy-dep."0.1.0";
-    libamba = rustPackages.unknown.libamba."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
   };
   "registry+https://github.com/rust-lang/crates.io-index".addr2line."0.19.0" = overridableMkRustCrate (profileName: rec {
@@ -1494,16 +1492,6 @@ in
     src = fetchCratesIo { inherit name version; sha256 = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"; };
   });
   
-  "unknown".libamba."0.1.0" = overridableMkRustCrate (profileName: rec {
-    name = "libamba";
-    version = "0.1.0";
-    registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/libamba");
-    dependencies = {
-      s2e = rustPackages."unknown".s2e."0.1.0" { inherit profileName; };
-    };
-  });
-  
   "registry+https://github.com/rust-lang/crates.io-index".libc."0.2.139" = overridableMkRustCrate (profileName: rec {
     name = "libc";
     version = "0.2.139";
@@ -2420,7 +2408,7 @@ in
     name = "s2e";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/s2e");
+    src = fetchCrateLocal (workspaceSrc + "/crates/s2e-rs");
     dependencies = {
       autocxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".autocxx."0.24.0" { inherit profileName; };
       cxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".cxx."1.0.89" { inherit profileName; };
