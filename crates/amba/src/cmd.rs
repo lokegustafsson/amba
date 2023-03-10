@@ -90,11 +90,11 @@ impl Cmd {
 	pub fn remove_dir(&mut self, dir: impl AsRef<Path>) {
 		let dir = dir.as_ref();
 		tracing::debug!(?dir, "remove_dir");
-		fs::remove_dir(dir).unwrap()
+		fs::remove_dir(dir).unwrap();
 	}
 
 	pub fn remove_dir_all(&mut self, dir: impl AsRef<Path>) {
-		self.try_remove_dir_all(dir).unwrap()
+		self.try_remove_dir_all(dir).unwrap();
 	}
 
 	pub fn try_remove_dir_all(&mut self, dir: impl AsRef<Path>) -> io::Result<()> {
@@ -106,13 +106,13 @@ impl Cmd {
 	pub fn create_dir_all(&mut self, dir: impl AsRef<Path>) {
 		let dir = dir.as_ref();
 		tracing::debug!(?dir, "create_dir_all");
-		fs::create_dir_all(dir).unwrap()
+		fs::create_dir_all(dir).unwrap();
 	}
 
 	pub fn write(&mut self, file: impl AsRef<Path>, content: impl AsRef<[u8]>) {
 		let file = file.as_ref();
 		tracing::debug!(?file, "write_file");
-		fs::write(file, content).unwrap()
+		fs::write(file, content).unwrap();
 	}
 
 	pub fn read(&mut self, file: impl AsRef<Path>) -> Vec<u8> {
@@ -124,14 +124,14 @@ impl Cmd {
 	pub fn remove(&mut self, file: impl AsRef<Path>) {
 		let file = file.as_ref();
 		tracing::debug!(?file, "remove_file");
-		fs::remove_file(file).unwrap()
+		fs::remove_file(file).unwrap();
 	}
 
 	pub fn copy(&mut self, file: impl AsRef<Path>, target: impl AsRef<Path>) {
 		let file = file.as_ref();
 		let target = target.as_ref();
 		tracing::debug!(?file, ?target, "copy_file");
-		fs::write(target, fs::read(file).unwrap()).unwrap()
+		fs::write(target, fs::read(file).unwrap()).unwrap();
 	}
 
 	#[cfg(target_family = "unix")]
@@ -175,7 +175,7 @@ impl Cmd {
 							.to_str()
 							.unwrap(),
 					)
-					.unwrap()
+					.unwrap();
 				}
 				_ => panic!("{:#?}", resp),
 			}
@@ -215,6 +215,7 @@ fn safe_wait(child: Child) -> Child {
 }
 
 /// Try to kill all [`CHILDREN`] before exiting.
+#[allow(clippy::exit)]
 pub fn ctrlc_handler() {
 	println!();
 	let mut guard = match CHILDREN.try_lock() {
@@ -235,7 +236,7 @@ pub fn ctrlc_handler() {
 					tracing::info!(
 						pid,
 						"handling SIGINT; child process already exited"
-					)
+					);
 				}
 				Err(err) => panic!("unexpected io error: {:#?}", err),
 			}

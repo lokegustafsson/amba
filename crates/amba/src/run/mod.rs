@@ -51,7 +51,7 @@ pub fn run(
 			&host_path_to_executable,
 			session_dir.join(executable_name),
 		);
-		S2EConfig::new(session_dir, &executable_name).save_to(cmd, session_dir);
+		S2EConfig::new(session_dir, executable_name).save_to(cmd, session_dir);
 	}
 
 	// supporting single- vs multi-path
