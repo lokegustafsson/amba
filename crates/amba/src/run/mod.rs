@@ -138,20 +138,13 @@ fn run_qemu(
 	]))
 }
 fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
-	let mut count = 0;
-	let images = data_dir.join("images");
-	if !images.exists() {
-		return false;
+	let version_file = &data_dir.join("version.txt");
+	let version = version_file
+		.exists()
+		.then(|| String::from_utf8(cmd.read(version_file)).unwrap());
+	let initialized = version.is_some() && !version.unwrap().is_empty();
+	if !initialized {
+		tracing::error!("$AMBA_DATA_DIR/images is empty");
 	}
-	for entry in cmd.read_dir(images) {
-		let _ = entry.unwrap();
-		count += 1;
-	}
-	match count {
-		0 => {
-			tracing::error!("$AMBA_DATA_DIR/images is empty");
-			false
-		}
-		_ => true,
-	}
+	initialized
 }
