@@ -137,7 +137,7 @@ struct Renderer<'a> {
 
 impl Renderer<'_> {
 	fn render(&mut self, name: &'static str) {
-		match self.tera.render(name, &self.context) {
+		match self.tera.render(name, self.context) {
 			Ok(content) => self.cmd.write(self.session_dir.join(name), content),
 			Err(err) => Self::handle_error(name, err),
 		}
@@ -146,7 +146,7 @@ impl Renderer<'_> {
 	/// Inspect the `tera::Error` to possibly pretty-print it before panicking.
 	fn handle_error(name: &'static str, err: tera::Error) -> ! {
 		let msg = match (&err.kind, err.source()) {
-			(tera::ErrorKind::Msg(msg), None) => Some(msg.to_owned()),
+			(tera::ErrorKind::Msg(msg), None) => Some(msg.clone()),
 			(tera::ErrorKind::Msg(msg), Some(inner)) => {
 				match (
 					inner.downcast_ref::<tera::Error>().map(|e| &e.kind),
