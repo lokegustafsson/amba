@@ -44,7 +44,7 @@ jobs:
           nix build -L --accept-flake-config .#amba
 
   build-amba-lib:
-    name: Build AMBA-CPP
+    name: Build LIBAMBA
     runs-on: ubuntu-20.04
 
     steps:
@@ -57,4 +57,4 @@ jobs:
 
       - name: Build Nix flake checks
         run: |
-          nix build -L --accept-flake-config .#amba-cpp
+          nix build -L --accept-flake-config .#libamba
