@@ -2408,7 +2408,7 @@ in
     name = "s2e";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/s2e");
+    src = fetchCrateLocal (workspaceSrc + "/crates/s2e-rs");
     dependencies = {
       autocxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".autocxx."0.24.0" { inherit profileName; };
       cxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".cxx."1.0.89" { inherit profileName; };
