@@ -13,6 +13,7 @@ overrun.S: overrun
 	objdump -S overrun > overrun.S
 
 hello: hello.c
+	musl-gcc -static $(CFLAGS) $^ -o $@
 hello.S: hello
 	objdump -S hello > hello.S
 
