@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "HeapLeak.h"
 
 namespace data {

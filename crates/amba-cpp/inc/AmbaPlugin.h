@@ -3,7 +3,6 @@
 #include <s2e/Plugin.h>
 #include <s2e/S2EExecutionState.h>
 
-#include <vector>
 #include <memory>
 
 #include "Numbers.h"
