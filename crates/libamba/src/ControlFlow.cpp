@@ -2,22 +2,19 @@
 
 namespace control_flow {
 
-void onBlockStart(
+void ControlFlow::onBlockStart(
 	s2e::S2EExecutionState *const s2e_state,
-	const u64 pc,
-	std::unordered_map<BlockId, Block> *const control_flow_graph,
-	ControlFlowState *const cfg_state
+	const u64 pc
 ) {
-	auto &cfg = *control_flow_graph;
-	auto &block = cfg[pc]; // unordered_map::[] will insert if it doesn't already exist
+	auto &block = this->m_cfg[pc]; // unordered_map::[] will insert if it doesn't already exist
 
-	block.from.insert(cfg_state->last);
+	block.from.insert(this->last);
 
 	for (auto from : block.from) {
-		cfg[from].to.insert(pc);
+		this->m_cfg[from].to.insert(pc);
 	}
 
-	cfg_state->last = pc;
+	this->last = pc;
 }
 
 }

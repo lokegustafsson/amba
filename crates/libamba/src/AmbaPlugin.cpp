@@ -15,6 +15,14 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
+	, m_amba_data(std::make_unique<data::AmbaData>(
+			(data::AmbaData) {
+				.heap_leak = heap_leak::HeapLeak()
+			}
+		))
+	, m_control_flow(std::make_unique<control_flow::ControlFlow(
+			control_flow::ControlFlow()
+		))
 	{}
 
 void AmbaPlugin::initialize() {
