@@ -24,8 +24,8 @@ let
     buildInputs = let p = pkgs; in [ p.boost p.zydis ];
 
     installPhase = ''
-      mkdir -p $out/bin
-      cp Amba.so $out/bin
+      mkdir -p $out/lib
+      cp libamba.so $out/lib
     '';
   } // all-include-paths);
 

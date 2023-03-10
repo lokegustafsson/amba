@@ -37,7 +37,7 @@ CXX-FLAGS := \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
 S2E_PATH ?= ../../s2e
 
-Amba.so: Amba.o Zydis.o HeapLeak.o AmbaPlugin.o
+libamba.so: Amba.o Zydis.o HeapLeak.o AmbaPlugin.o
 	$(CXX) -shared $^ $(ARCHIVES) -o $@
 
 Amba.o: \
