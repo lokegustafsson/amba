@@ -59,7 +59,7 @@ fn main() -> ExitCode {
 
 	let data_dir = &match env::var_os("AMBA_DATA_DIR") {
 		Some(dir) => PathBuf::from(dir),
-		None => home::home_dir().unwrap().join("amba"),
+		None => dirs::data_dir().unwrap().join("amba"),
 	};
 
 	tracing::info!(debug_assertions = cfg!(debug_assertions));
