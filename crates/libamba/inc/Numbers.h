@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cstdint>
 
 typedef std::int8_t i8;

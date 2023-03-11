@@ -1,4 +1,5 @@
 #pragma once
+
 #include <tuple>
 
 using AmbaException = std::tuple<int, char const*>;

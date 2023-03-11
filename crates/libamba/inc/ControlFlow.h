@@ -20,6 +20,7 @@ class ControlFlow {
   protected:
 	std::unordered_map<u64, Block> m_cfg;
 	BlockId last;
+
   public:
 	ControlFlow () {}
 

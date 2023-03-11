@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Zydis/Zydis.h>
 #include <Zydis/DecoderTypes.h>
 
