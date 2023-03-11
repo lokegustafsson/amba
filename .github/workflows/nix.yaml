@@ -12,7 +12,7 @@ jobs:
 
       - name: Build Nix flake checks
         run: |
-          nix build -L --no-accept-flake-config .#s2e
+          nix build -L --accept-flake-config .#s2e
 
   build-amba:
     name: Build AMBA
@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Nix flake checks
         run: |
-          nix build -L --no-accept-flake-config .#amba
+          nix build -L --accept-flake-config .#amba
 
   build-amba-lib:
     name: Build LIBAMBA
@@ -34,4 +34,4 @@ jobs:
 
       - name: Build Nix flake checks
         run: |
-          nix build -L --no-accept-flake-config .#libamba
+          nix build -L --accept-flake-config .#libamba
