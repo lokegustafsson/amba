@@ -10,19 +10,23 @@ A bachelor thesis project
 - Maybe 20GB of disk space
 - Maybe 16GB RAM or 8GB+swap+patience, if not using the `nix.u3836.se` binary cache
 - A functioning [Nix](https://github.com/NixOS/nix) installation,
-- with config flags `experimental-features = nix-command flakes`
+- with the `/etc/nix/nix.conf` settings including
+```
+trusted-users = root <YOUR USERNAME>
+experimental-features = nix-command flakes
+```
+replacing `<YOUR USERNAME>` with your username. On NixOS you configure this in
+your system config.
+
+Missing the `trusted-users`-line may manifest in the warning `ignoring untrusted
+substituter 'https://nix.u3836.se'`, followed by the build not using the binary
+cache.
 
 ## Instructions for running and building
 
 Build AMBA by running `nix build`. This might take anywhere from 15 minutes to
 several hours depending on your hardware, network speed and the population of
 the `nix.u3836.se` cache.
-
-If you get the following warning when running nix `ignoring untrusted
-substituter 'https://nix.u3836.se/`, the issue could be that you are not in the
-list of trusted users in your nix config. Add config flags `trusted-users =
-root $USER` where `$USER` is your username. One way is to edit your
-`/etc/nix/nix.conf` file and add the above flag.
 
 You can run AMBA directly through `nix run . -- --help`. You can configure the
 directory where guest vm images and session files are placed by setting the
