@@ -1,28 +1,21 @@
 #pragma once
 
-#include <unordered_map>
-#include <unordered_set>
-
 #include "S2EForwardDeclarations.h"
 #include "Numbers.h"
 
+struct ControlFlowGraph;
+ControlFlowGraph *rust_create_control_flow_graph();
+void rust_free_control_flow_graph(ControlFlowGraph *);
+
 namespace control_flow {
-
-using BlockId = u64;
-
-struct Block {
-	BlockId id;
-	std::unordered_set<BlockId> from;
-	std::unordered_set<BlockId> to;
-};
 
 class ControlFlow {
   protected:
-	std::unordered_map<u64, Block> m_cfg;
-	BlockId last;
+	ControlFlowGraph *m_cfg;
 
   public:
-	ControlFlow () {}
+	ControlFlow ();
+	~ControlFlow ();
 
 	void onBlockStart(
 		s2e::S2EExecutionState *s2e_state,
