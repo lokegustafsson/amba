@@ -61,8 +61,10 @@
           } // libamba.all-include-paths);
         };
 
-        packages = amba.rust.packages // s2e // {
+        packages = amba.rust.packages // {
           inherit (libamba) libamba;
+          inherit (amba) amba-deps impure-amba;
+          inherit (s2e) s2e s2e-src build-guest-images guest-images-src;
           default = amba.rust.packages.amba;
         };
         apps = {
