@@ -1,10 +1,9 @@
 #pragma once
 
-#include <s2e/S2EExecutionState.h>
-
 #include <unordered_map>
 #include <unordered_set>
 
+#include "S2EForwardDeclarations.h"
 #include "Numbers.h"
 
 namespace control_flow {

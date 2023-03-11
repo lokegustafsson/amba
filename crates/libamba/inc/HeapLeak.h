@@ -1,9 +1,8 @@
 #pragma once
 
-#include <s2e/S2EExecutionState.h>
-
 #include <vector>
 
+#include "S2EForwardDeclarations.h"
 #include "Amba.h"
 
 namespace heap_leak {

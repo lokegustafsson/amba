@@ -1,3 +1,5 @@
+#include <s2e/S2EExecutionState.h>
+
 #include <algorithm>
 
 #include "HeapLeak.h"

@@ -1,15 +1,13 @@
 #pragma once
 
 #include <s2e/Plugin.h>
-#include <s2e/S2EExecutionState.h>
 
 #include <memory>
 #include <unordered_map>
 
-#include "HeapLeak.h"
+#include "S2EForwardDeclarations.h"
 #include "Numbers.h"
-
-namespace data { struct AmbaData; }
+#include "HeapLeak.h"
 
 namespace s2e {
 namespace plugins {
