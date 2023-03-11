@@ -10,7 +10,7 @@ mod run;
 ///
 /// Set `AMBA_DATA_DIR` to a directory where amba should read and write
 /// run time artifacts such as disk images. The default is `$XDG_DATA_HOME/amba`
-/// or `$HOME/.local/share`.
+/// or `$HOME/.local/share/amba`.
 #[derive(clap::Parser, Debug)]
 #[command(about, verbatim_doc_comment)]
 enum Args {
@@ -35,9 +35,6 @@ pub struct InitArgs {
 pub struct RunArgs {
 	host_path_to_executable: PathBuf,
 }
-
-/// The nix store path of amba run time dependencies such as S2E and QEMU.
-const AMBA_DEPENDENCIES_DIR: &str = env!("AMBA_DEPENDENCIES_DIR");
 
 /// The nix store path of the amba source tree. Required for building guest
 /// images.
@@ -67,9 +64,13 @@ fn main() -> ExitCode {
 		Some(dir) => PathBuf::from(dir),
 		None => dirs::data_dir().unwrap().join("amba"),
 	};
+	let dependencies_dir = &match env::var_os("AMBA_DEPENDENCIES_DIR") {
+		Some(dir) => PathBuf::from(dir),
+		None => PathBuf::from(env!("AMBA_DEPENDENCIES_DIR")),
+	};
 
 	tracing::info!(debug_assertions = cfg!(debug_assertions));
-	tracing::info!(AMBA_DEPENDENCIES_DIR);
+	tracing::info!(AMBA_DEPENDENCIES_DIR = ?dependencies_dir);
 	tracing::info!(AMBA_SRC_DIR);
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
 	tracing::info!(?args);
@@ -77,7 +78,7 @@ fn main() -> ExitCode {
 	let cmd = &mut cmd::Cmd::get();
 	let res = match args {
 		Args::Init(args) => init::init(cmd, data_dir, args),
-		Args::Run(args) => run::run(cmd, data_dir, args),
+		Args::Run(args) => run::run(cmd, dependencies_dir, data_dir, args),
 	};
 	match res {
 		Ok(()) => ExitCode::SUCCESS,

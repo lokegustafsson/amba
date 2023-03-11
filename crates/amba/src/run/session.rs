@@ -9,7 +9,7 @@ use std::{
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::{cmd::Cmd, AMBA_DEPENDENCIES_DIR};
+use crate::cmd::Cmd;
 
 /// All data required to populate the templates in `crates/amba/templates/`.
 /// The templates are kept as close to the upstream S2E templates as possible.
@@ -96,15 +96,21 @@ impl S2EConfig {
 		}
 	}
 
-	pub fn save_to(&self, cmd: &mut Cmd, session_dir: &Path) {
+	pub fn save_to(&self, cmd: &mut Cmd, dependencies_dir: &Path, session_dir: &Path) {
 		assert!(session_dir.exists());
 		cmd.write(session_dir.join("library.lua"), LIBRARY_LUA);
 		cmd.symlink(
-			format!("{AMBA_DEPENDENCIES_DIR}/bin/guest-tools64"),
+			format!(
+				"{}/bin/guest-tools64",
+				dependencies_dir.to_str().unwrap()
+			),
 			session_dir.join("guest-tools64"),
 		);
 		cmd.symlink(
-			format!("{AMBA_DEPENDENCIES_DIR}/bin/guest-tools32"),
+			format!(
+				"{}/bin/guest-tools32",
+				dependencies_dir.to_str().unwrap()
+			),
 			session_dir.join("guest-tools32"),
 		);
 
