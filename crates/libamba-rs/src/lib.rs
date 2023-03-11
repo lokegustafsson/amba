@@ -1,22 +1,6 @@
-use std::{rc::Rc, default::Default};
+pub mod graph;
 
-type Set<T> = std::collections::HashSet<T>;
-type Map<K, V> = std::collections::HashMap<K, V>;
-type BlockId = u64;
-
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct ControlFlowGraph {
-	graph: Map<u64, Block>,
-	// merged_nodes: Map<u64, Rc<Set<Block>>>,
-	last: BlockId
-}
-
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-struct Block {
-	id: BlockId,
-	from: Set<BlockId>,
-	to: Set<BlockId>,
-}
+use graph::ControlFlowGraph;
 
 #[no_mangle]
 pub extern "C" fn rust_create_control_flow_grapgh() -> *mut ControlFlowGraph {
@@ -31,8 +15,7 @@ pub unsafe extern "C" fn rust_free_control_flow_grapgh(ptr: *mut ControlFlowGrap
 	let _ = Box::from_raw(ptr);
 }
 
-
 #[no_mangle]
-pub extern "C" fn four() -> i32 {
-	4
+pub extern "C" fn rust_main() -> std::ffi::c_int {
+	0
 }
