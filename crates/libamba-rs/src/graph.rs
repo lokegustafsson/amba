@@ -102,11 +102,11 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
-	/// 5 -> 4 -> 0
-	/// ^        / \
-	/// 6       1   2
-	///          \ /
-	///           3
+	/// 4 -> 0
+	/// ^   / \
+	/// 5  1   2
+	/// ^   \ /
+	/// 6    3
 	#[test]
 	fn diamond_on_stick() {
 		let mut graph = Graph(
