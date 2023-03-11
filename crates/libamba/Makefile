@@ -20,7 +20,9 @@ ARCHIVES := \
 	-L $(ZYDIS_PATH)/lib \
 	-l Zydis \
 	-L $(ZYCORE_PATH)/lib \
-	-l Zycore
+	-l Zycore \
+	-L . \
+	-l amba_rs
 CXX-FLAGS := \
 	-std=c++20 \
 	-Wall \
@@ -37,9 +39,16 @@ CXX-FLAGS := \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
 LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
+LIBAMBARS_PATH ?= ../../target/debug
 
 libamba.so: Amba.o Zydis.o HeapLeak.o AmbaPlugin.o
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
+
+libamba_rs.a: ../libamba-rs/*
+	cargo build -p libamba-rs
+	cp $(LIBAMBARS_PATH)/libamba_rs.a .
+
+$(LIBAMBARS_PATH)/libamba_rs.a:
 
 Amba.o: \
   src/Amba.cpp \
@@ -64,8 +73,9 @@ Zydis.o: \
 Test: \
   src/Test.cpp \
   inc/Numbers.h inc/AmbaException.h \
-  Zydis.o Amba.o
-	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) -o $@
+  Zydis.o Amba.o \
+  libamba_rs.a
+	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) $(ARCHIVES) -o $@
 
 TAGS: inc/* src/*
 	ctags -R -e
@@ -91,5 +101,7 @@ clean:
 	-rm *.out
 	-rm Test
 	-rm ../../compile_flags.txt
+	-rm compile_flags.txt
+	-cargo clean
 
 .PHONY: clean
