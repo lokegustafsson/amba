@@ -10,7 +10,17 @@ A bachelor thesis project
 - Maybe 20GB of disk space
 - Maybe 16GB RAM or 8GB+swap+patience, if not using the `nix.u3836.se` binary cache
 - A functioning [Nix](https://github.com/NixOS/nix) installation,
-- with config flags `experimental-features = nix-command flakes`
+- with the `/etc/nix/nix.conf` settings including
+```
+trusted-users = root <YOUR USERNAME>
+experimental-features = nix-command flakes
+```
+replacing `<YOUR USERNAME>` with your username. On NixOS you configure this in
+your system config.
+
+Missing the `trusted-users`-line may manifest in the warning `ignoring untrusted
+substituter 'https://nix.u3836.se'`, followed by the build not using the binary
+cache.
 
 ## Instructions for running and building
 
