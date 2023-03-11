@@ -37,7 +37,7 @@
         lib = nixpkgs.lib;
 
         s2e = import ./nix/s2e { inherit lib pkgs libamba; };
-        libamba = import ./nix/libamba.nix { inherit lib pkgs s2e; };
+        libamba = import ./nix/libamba.nix { inherit lib pkgs rust s2e; };
 
         rust = import ./nix/rust.nix {
           inherit lib pkgs;
@@ -67,8 +67,8 @@
             packages = let p = pkgs;
             in [
               cargo2nix.outputs.packages.${system}.cargo2nix
-              p.rust-bin.stable.latest.clippy
               p.rust-bin.nightly.latest.rustfmt
+              p.rust-bin.stable.latest.clippy
               p.rust-bin.stable.latest.default
               p.rust-bin.stable.latest.rust-analyzer
             ];

@@ -7,7 +7,7 @@ use std::{
 
 use chrono::offset::Local;
 
-use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs, AMBA_DEPENDENCIES_DIR};
+use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
 mod session;
 
@@ -18,6 +18,7 @@ mod session;
 /// TODO: support more guests than just `ubuntu-22.04-x86_64`
 pub fn run(
 	cmd: &mut Cmd,
+	dependencies_dir: &Path,
 	data_dir: &Path,
 	RunArgs {
 		host_path_to_executable,
@@ -51,7 +52,7 @@ pub fn run(
 			&host_path_to_executable,
 			session_dir.join(executable_name),
 		);
-		S2EConfig::new(session_dir, executable_name).save_to(cmd, session_dir);
+		S2EConfig::new(session_dir, executable_name).save_to(cmd, dependencies_dir, session_dir);
 	}
 
 	// supporting single- vs multi-path
@@ -61,8 +62,8 @@ pub fn run(
 	};
 	let arch = "x86_64";
 
-	let qemu = &Path::new(AMBA_DEPENDENCIES_DIR).join(format!("bin/qemu-system-{arch}"));
-	let libs2e_dir = &Path::new(AMBA_DEPENDENCIES_DIR).join("share/libs2e");
+	let qemu = &dependencies_dir.join(format!("bin/qemu-system-{arch}"));
+	let libs2e_dir = &dependencies_dir.join("share/libs2e");
 	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
 	let s2e_config = &session_dir.join("s2e-config.lua");
 	let max_processes = 1;
