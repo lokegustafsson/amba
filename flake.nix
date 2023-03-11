@@ -36,54 +36,34 @@
         };
         lib = nixpkgs.lib;
 
-        s2e = import ./nix/s2e { inherit lib pkgs libamba; };
-        libamba = import ./nix/libamba.nix { inherit lib pkgs rust s2e; };
-
-        rust = import ./nix/rust.nix {
-          inherit lib pkgs;
-          workspace-binaries = {
-            amba = {
-              rpath = p: [ ];
-              run_time_ld_library_path = p: [ ];
-            };
-          };
-          extra-overrides = { mkNativeDep, mkEnvDep, p }: [
-            (mkEnvDep "s2e" ({
-              # For autocxx to run
-              LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
-            } // libamba.s2e-include-paths))
-            (mkNativeDep "s2e" [ p.clang_14 ])
-
-            # NOTE: This crate name should really be "amba", but that does not work for some reason
-            (mkEnvDep "dummy-dep" {
-              AMBA_DEPENDENCIES_DIR = "${s2e.amba-deps}";
-              AMBA_SRC_DIR = ./.;
-            })
-          ];
-        };
+        s2e = import ./nix/s2e { inherit lib pkgs; };
+        libamba = import ./nix/libamba.nix { inherit lib pkgs s2e; };
+        amba = import ./nix/amba.nix { inherit lib pkgs s2e libamba; };
       in {
         devShells = {
-          default = rust.rustPkgs.workspaceShell {
+          default = amba.rust.rustPkgs.workspaceShell ({
             packages = let p = pkgs;
             in [
               cargo2nix.outputs.packages.${system}.cargo2nix
+              amba.impure-amba
+              p.clang-tools_14
+              p.ctags
+              p.gdb
+              p.gnumake
+              p.mold
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.clippy
               p.rust-bin.stable.latest.default
               p.rust-bin.stable.latest.rust-analyzer
+              p.stable.tectonic
+              p.texlab
             ];
-          };
-          doc = pkgs.mkShell {
-            packages = let p = pkgs;
-            in [ p.stable.tectonic p.texlab p.gnumake ];
-          };
-          c_dev = libamba.devShell;
-          s2e = pkgs.mkShell { packages = [ s2e.s2e-env ]; };
+          } // libamba.all-include-paths);
         };
 
-        packages = rust.packages // s2e // {
+        packages = amba.rust.packages // s2e // {
           inherit (libamba) libamba;
-          default = rust.packages.amba;
+          default = amba.rust.packages.amba;
         };
         apps = {
           s2e-env = {
