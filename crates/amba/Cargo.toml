@@ -10,7 +10,6 @@ chrono = "0.4"
 clap = { version = "4", features = ["derive"] }
 ctrlc = "3"
 dirs = "4"
-dummy-dep = { path = "../dummy-dep" }
 regex = "1"
 reqwest = { version = "0.11", default-features = false, features = ["blocking", "cookies", "brotli", "rustls-tls", "rustls-tls-webpki-roots"] }
 serde = { version = "1", features = ["derive"] }

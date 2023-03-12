@@ -20,6 +20,10 @@ let
     '';
   };
 
+  AMBA_DEPENDENCIES_DIR = "${amba-deps}";
+  AMBA_BUILD_GUEST_IMAGES_SCRIPT =
+    "${s2e.build-guest-images}/bin/build-guest-images";
+
   rust = import ./rust.nix {
     inherit lib pkgs;
     workspace-binaries = {
@@ -35,10 +39,8 @@ let
       } // libamba.s2e-include-paths))
       (mkNativeDep "s2e" [ p.clang_14 ])
 
-      # NOTE: This crate name should really be "amba", but that does not work for some reason
-      (mkEnvDep "dummy-dep" {
-        AMBA_DEPENDENCIES_DIR = "${amba-deps}";
-        AMBA_SRC_DIR = ./.;
+      (mkEnvDep "amba" {
+        inherit AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
       })
     ];
   };
@@ -75,5 +77,6 @@ let
     '';
   };
 in {
-  inherit amba-deps rust impure-amba;
+  inherit AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT amba-deps rust
+    impure-amba;
 }

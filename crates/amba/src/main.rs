@@ -36,9 +36,8 @@ pub struct RunArgs {
 	host_path_to_executable: PathBuf,
 }
 
-/// The nix store path of the amba source tree. Required for building guest
-/// images.
-const AMBA_SRC_DIR: &str = env!("AMBA_SRC_DIR");
+/// The nix store path of the script that builds guest images.
+const AMBA_BUILD_GUEST_IMAGES_SCRIPT: &str = env!("AMBA_BUILD_GUEST_IMAGES_SCRIPT");
 
 fn main() -> ExitCode {
 	tracing::subscriber::set_global_default(
@@ -71,7 +70,7 @@ fn main() -> ExitCode {
 
 	tracing::info!(debug_assertions = cfg!(debug_assertions));
 	tracing::info!(AMBA_DEPENDENCIES_DIR = ?dependencies_dir);
-	tracing::info!(AMBA_SRC_DIR);
+	tracing::info!(AMBA_BUILD_GUEST_IMAGES_SCRIPT);
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
 	tracing::info!(?args);
 

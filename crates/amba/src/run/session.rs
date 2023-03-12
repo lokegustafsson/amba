@@ -53,7 +53,7 @@ pub struct Args {
 }
 
 const LIBRARY_LUA: &str = include_str!("../../data/library.lua");
-const TEMPLATE_DIR: &str = concat!(env!("AMBA_SRC_DIR"), "/crates/amba/templates");
+const TEMPLATE_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/templates");
 
 const CUSTOM_LUA_STRING: &str = r#"
 add_plugin("AmbaPlugin")

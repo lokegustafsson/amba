@@ -58,6 +58,7 @@
               p.stable.tectonic
               p.texlab
             ];
+            inherit (amba) AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
           } // libamba.all-include-paths);
         };
 
