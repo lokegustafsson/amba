@@ -18,11 +18,9 @@
 
   # Cache settings
   nixConfig = {
-    extra-substituters = [ "https://nix.u3836.se/" "https://cache.nixos.org/" ];
-    extra-trusted-public-keys = [
-      "nix.u3836.se:t7H/bFWi14aBFYPE5A00eEQawd7Ssl/fXbq/2C+Bsrs="
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    ];
+    extra-substituters = [ "https://nix.u3836.se/" ];
+    extra-trusted-public-keys =
+      [ "nix.u3836.se:t7H/bFWi14aBFYPE5A00eEQawd7Ssl/fXbq/2C+Bsrs=" ];
   };
 
   outputs =
