@@ -42,17 +42,47 @@ impl Graph {
 			return;
 		}
 
-		let to = mem::take(&mut self.0.get_mut(&r).unwrap().to);
+		assert!(self.0.contains_key(&l));
+		assert!(self.0.contains_key(&r));
 
-		for connection in to.iter() {
-			if let Some(out_node) = self.0.get_mut(connection) {
-				out_node.from.remove(&r);
-				out_node.from.insert(l);
+		// Take the union of both nodes' input and then remove the nodes themselves
+
+		let to = {
+			let mut to_l = mem::take(&mut self.0.get_mut(&l).unwrap().to);
+			let mut to_r = mem::take(&mut self.0.get_mut(&r).unwrap().to);
+			to_l.union(&mut to_r)
+				.copied()
+				.filter(|&x| x != l && x != r)
+				.collect::<Set<_>>()
+		};
+
+		let from = {
+			let mut from_l = mem::take(&mut self.0.get_mut(&l).unwrap().from);
+			let mut from_r = mem::take(&mut self.0.get_mut(&r).unwrap().from);
+			from_l
+				.union(&mut from_r)
+				.copied()
+				.filter(|&x| x != l && x != r)
+				.collect::<Set<_>>()
+		};
+
+		// Set the left node's connections to be the unions
+		let l_ref = self.0.get_mut(&l).unwrap();
+		l_ref.to = to;
+		l_ref.from = from;
+
+		// Remove the right node from the graph
+		self.0.remove(&r);
+
+		// And fix any pointers to the right node so that they point to the left node
+		for node in self.0.values_mut() {
+			if node.from.remove(&r) {
+				node.from.insert(l);
+			}
+			if node.to.remove(&r) {
+				node.to.insert(l);
 			}
 		}
-
-		self.0.get_mut(&l).unwrap().to = to;
-		self.0.remove(&r);
 	}
 
 	fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
