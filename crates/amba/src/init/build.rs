@@ -2,34 +2,22 @@
 
 use std::{path::Path, process::Command};
 
-use crate::{cmd::Cmd, init::InitStrategy, AMBA_SRC_DIR};
+use crate::{cmd::Cmd, init::InitStrategy, AMBA_BUILD_GUEST_IMAGES_SCRIPT};
 
 /// Build guest images locally
 pub struct InitBuild {
-	build_guest_images_flake_ref: String,
+	_no_copy: (),
 }
 
 impl InitStrategy for InitBuild {
 	fn new() -> Box<Self> {
-		Box::new(Self {
-			build_guest_images_flake_ref: format!("path:{AMBA_SRC_DIR}#build-guest-images"),
-		})
+		Box::new(Self { _no_copy: () })
 	}
 
 	/// The version string of the `InitBuild` strategy is the nix store path of the
 	/// nix-app that builds the guest images.
-	fn version(&self, cmd: &mut Cmd) -> String {
-		let store_path = String::from_utf8(
-			cmd.command_capture_stdout(Command::new("nix").args([
-				"build",
-				&self.build_guest_images_flake_ref,
-				"--no-link",
-				"--print-out-paths",
-			]))
-			.unwrap(),
-		)
-		.unwrap();
-		format!("built using {store_path}\n")
+	fn version(&self) -> String {
+		format!("built using {AMBA_BUILD_GUEST_IMAGES_SCRIPT}\n")
 	}
 
 	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()> {
@@ -37,9 +25,7 @@ impl InitStrategy for InitBuild {
 		let images = &data_dir.join("images");
 		let images_build = &data_dir.join("images-build");
 		let build_result = cmd.command_spawn_wait(
-			Command::new("nix")
-				.args(["run", &self.build_guest_images_flake_ref, "--"])
-				.args([images_build, images]),
+			Command::new(AMBA_BUILD_GUEST_IMAGES_SCRIPT).args([images_build, images]),
 		);
 		if !build_result.success() {
 			tracing::error!("failed to build guest images");

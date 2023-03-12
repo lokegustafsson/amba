@@ -20,7 +20,7 @@ pub fn init(
 		false => build::InitBuild::new(),
 	};
 	// Already up to date?
-	let new_version = initializer.version(cmd);
+	let new_version = initializer.version();
 	let version_file = &data_dir.join("version.txt");
 	{
 		let old_version = version_file
@@ -70,7 +70,7 @@ trait InitStrategy {
 		Self: Sized;
 
 	/// Get strategy version string, to check up-to-date:ness.
-	fn version(&self, cmd: &mut Cmd) -> String;
+	fn version(&self) -> String;
 
 	/// Perform initialization.
 	fn init(self: Box<Self>, cmd: &mut Cmd, data_dir: &Path) -> Result<(), ()>;
