@@ -419,4 +419,36 @@ mod test {
 		graph.verify();
 		assert_eq!(graph, expected);
 	}
+
+	///   0
+	///  ↙ ↖
+	/// 3   1
+	///  ↘ ↗
+	///   2
+	#[test]
+	fn cycle_rev() {
+		let mut graph = Graph(
+			[
+				(0, (0, [1], [3]).into()),
+				(1, (1, [2], [0]).into()),
+				(2, (2, [3], [1]).into()),
+				(3, (3, [0], [2]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph(
+			[
+				(0, (0, [1], [1]).into()),
+				(1, (1, [0], [0]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
 }
