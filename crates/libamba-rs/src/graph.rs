@@ -42,6 +42,9 @@ impl Graph {
 			return;
 		}
 
+	}
+
+	fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
 		todo!()
 	}
 
