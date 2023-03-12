@@ -8,8 +8,11 @@ type BlockId = u64;
 pub struct Graph(Map<u64, Block>);
 
 impl Graph {
-	fn compress(&mut self) {
-		dbg!(&self);
+	pub fn new() -> Self {
+		Default::default()
+	}
+
+	pub fn compress(&mut self) {
 		let m = &mut self.0;
 
 		let mut to_merge = m
