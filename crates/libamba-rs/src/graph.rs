@@ -21,9 +21,9 @@ impl Graph {
 		let mut to_merge = m
 			.values()
 			.filter(|l| l.from.len() == 1)
-			.map(|l| (l.id, &m[l.from.iter().next().unwrap()]))
+			.map(|l| (l, &m[l.from.iter().next().unwrap()]))
 			.filter(|(_, r)| r.to.len() == 1)
-			.map(|(l, r)| (l.min(r.id), l.max(r.id)))
+			.map(|(l, r)| (l.id.min(r.id), l.id.max(r.id)))
 			.collect::<Vec<_>>();
 
 		// Sort pairs and make sure that a node is always
@@ -42,12 +42,26 @@ impl Graph {
 			}
 		}
 
+		dbg!(&to_merge);
+
 		// We always merge two nodes to the lowest one's id.
 		// We can merge nodes highest first to make sure we
 		// don't have any references that outlive the node.
 		for (l, r) in to_merge.into_iter() {
+			// Don't merge cycles
+			if self.do_loop(l, r) {
+				continue;
+			}
 			self.merge_nodes(l, r);
 		}
+	}
+
+	fn do_loop(&self, l: u64, r: u64) -> bool {
+		if l == r {
+			return true;
+		}
+		let m = &self.0;
+		m[&l].from.contains(&r) && m[&r].from.contains(&l)
 	}
 
 	fn merge_nodes(&mut self, l: u64, r: u64) {
