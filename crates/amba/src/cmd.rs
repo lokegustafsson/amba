@@ -5,7 +5,7 @@ use std::{
 	fs::{self, ReadDir},
 	io, iter, mem,
 	path::Path,
-	process::{self, Child, Command, ExitStatus, Output, Stdio},
+	process::{self, Child, Command, ExitStatus},
 	sync::{
 		atomic::{AtomicBool, Ordering},
 		Mutex, TryLockError,
@@ -47,38 +47,6 @@ impl Cmd {
 			args = ?iter::once(command.get_program()).chain(command.get_args()).collect::<Vec<_>>()
 		);
 		safe_wait(command.spawn().unwrap()).wait().unwrap()
-	}
-
-	pub fn command_capture_stdout(&mut self, command: &mut Command) -> Result<Vec<u8>, Vec<u8>> {
-		tracing::debug!(
-			cwd = ?command.get_current_dir(),
-			env = ?command.get_envs().collect::<Vec<_>>(),
-			args = ?iter::once(command.get_program()).chain(command.get_args()).collect::<Vec<_>>(),
-			"capturing stdout"
-		);
-		let Output {
-			status,
-			stdout,
-			stderr,
-		} = safe_wait(
-			command
-				.stdin(Stdio::piped())
-				.stdout(Stdio::piped())
-				.stderr(Stdio::inherit())
-				.spawn()
-				.unwrap(),
-		)
-		.wait_with_output()
-		.unwrap();
-		assert!(
-			stderr.is_empty(),
-			"stderr: '{}'",
-			String::from_utf8_lossy(&stderr)
-		);
-		match status.success() {
-			true => Ok(stdout),
-			false => Err(stdout),
-		}
 	}
 
 	pub fn read_dir(&mut self, dir: impl AsRef<Path>) -> ReadDir {
