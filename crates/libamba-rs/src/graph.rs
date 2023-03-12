@@ -77,6 +77,26 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
+	/// 2 -> 1 -> 0
+	#[test]
+	fn straight_line_rev() {
+		let mut graph = Graph(
+			[
+				(0, (0, [1], []).into()),
+				(1, (1, [2], [0]).into()),
+				(2, (2, [], [1]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
+
 	///   0
 	///  / \
 	/// 1   2
@@ -90,6 +110,31 @@ mod test {
 				(1, (1, [0], [3]).into()),
 				(2, (2, [0], [3]).into()),
 				(3, (2, [1, 2], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = graph.clone();
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
+
+	///   3
+	///  / \
+	/// 1   2
+	///  \ /
+	///   0
+	#[test]
+	fn diamond_rev() {
+		let mut graph = Graph(
+			[
+				(0, (0, [1, 2], []).into()),
+				(1, (1, [3], [0]).into()),
+				(2, (2, [3], [0]).into()),
+				(3, (2, [], [1, 2]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -128,6 +173,121 @@ mod test {
 				(1, (1, [0], [3]).into()),
 				(2, (2, [0], [3]).into()),
 				(3, (2, [1, 2], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
+
+	/// 6 -> 3
+	/// ^   / \
+	/// 5  1   2
+	/// ^   \ /
+	/// 4    0
+	#[test]
+	fn diamond_on_stick_rev() {
+		let mut graph = Graph(
+			[
+				(0, (0, [1,2], []).into()),
+				(1, (1, [3], [0]).into()),
+				(2, (2, [3], [0]).into()),
+				(3, (3, [], [1,2]).into()),
+				(4, (4, [], [5]).into()),
+				(5, (5, [4], [6]).into()),
+				(6, (6, [5], [3]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph(
+			[
+				(0, (0, [1,2], []).into()),
+				(1, (1, [3], [0]).into()),
+				(2, (2, [3], [0]).into()),
+				(3, (2, [], [1,2]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
+
+	/// 0   1
+	///  \ /
+	///   2
+	///   |
+	///   3
+	///  / \
+	/// 4   5
+	#[test]
+	fn cross() {
+		let mut graph = Graph(
+			[
+				(0, (0, [], [2]).into()),
+				(1, (1, [], [2]).into()),
+				(2, (2, [0, 1], [3]).into()),
+				(3, (3, [2], [4, 5]).into()),
+				(4, (4, [3], []).into()),
+				(5, (5, [3], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph(
+			[
+				(0, (0, [], [2]).into()),
+				(1, (1, [], [2]).into()),
+				(2, (2, [0, 1], [4, 5]).into()),
+				(4, (4, [2], []).into()),
+				(5, (5, [2], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
+
+	/// 4   5
+	///  \ /
+	///   3
+	///   |
+	///   2
+	///  / \
+	/// 0   1
+	#[test]
+	fn cross_rev() {
+		let mut graph = Graph(
+			[
+				(0, (0, [2], []).into()),
+				(1, (1, [2], []).into()),
+				(2, (2, [3], [0,1]).into()),
+				(3, (3, [4,5], [2]).into()),
+				(4, (4, [], [3]).into()),
+				(5, (5, [], [3]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph(
+			[
+				(0, (0, [2], []).into()),
+				(1, (1, [2], []).into()),
+				(2, (2, [4, 5], [0, 1]).into()),
+				(4, (4, [], [2]).into()),
+				(5, (5, [], [2]).into()),
 			]
 			.into_iter()
 			.collect(),
