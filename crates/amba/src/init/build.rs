@@ -14,8 +14,8 @@ impl InitStrategy for InitBuild {
 		Box::new(Self { _no_copy: () })
 	}
 
-	/// The version string of the `InitBuild` strategy is the nix store path of the
-	/// nix-app that builds the guest images.
+	/// The version string of the `InitBuild` strategy is the script that builds
+	/// the guest images.
 	fn version(&self) -> String {
 		format!("built using {AMBA_BUILD_GUEST_IMAGES_SCRIPT}\n")
 	}
