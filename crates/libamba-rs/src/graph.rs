@@ -64,7 +64,7 @@ impl Graph {
 		m[&l].from.contains(&r) && m[&r].from.contains(&l)
 	}
 
-	fn merge_nodes(&mut self, l: u64, r: u64) {
+	pub fn merge_nodes(&mut self, l: u64, r: u64) {
 		if l > r {
 			self.merge_nodes(r, l);
 			return;
@@ -112,7 +112,7 @@ impl Graph {
 
 	/// Split `node` into two nodes, with the new node using the requested id if it's not already in use.
 	/// Returns the id of the new node
-	fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
+	pub fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
 		if self.0.contains_key(&requested_id) {
 			return self.split_node(node, requested_id + 1);
 		}
