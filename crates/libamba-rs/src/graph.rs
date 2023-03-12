@@ -24,6 +24,25 @@ impl Graph {
 			.map(|(l, r)| (l.min(r.id), l.max(r.id)))
 			.collect::<Vec<_>>();
 		to_merge.sort_unstable();
+
+		// We always merge two nodes to the lowest one's id.
+		// We can merge nodes highest first to make sure we
+		// don't have any references that outlive the node.
+		for (l, r) in to_merge.into_iter().rev() {
+			self.merge_nodes(l, r);
+		}
+	}
+
+	fn merge_nodes(&mut self, l: u64, r: u64) {
+		if r > l {
+			self.merge_nodes(r, l);
+			return;
+		}
+		if l == r {
+			return;
+		}
+
+		todo!()
 	}
 
 	/// Verify that all node pairs have matching to and from
