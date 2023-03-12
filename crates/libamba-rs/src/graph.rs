@@ -66,13 +66,19 @@ impl Graph {
 
 		for (k, v) in m.iter() {
 			for out in v.from.iter() {
-				assert!(m[out].to.contains(k));
+				assert!(
+					m[out].to.contains(k),
+					"{out}.to contains {k}?\n{self:#?}"
+				);
 			}
 		}
 
 		for (k, v) in m.iter() {
 			for to in v.to.iter() {
-				assert!(m[to].from.contains(k));
+				assert!(
+					m[to].from.contains(k),
+					"{to}.from contains {k}?\n{self:#?}"
+				);
 			}
 		}
 	}
