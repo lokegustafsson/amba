@@ -16,25 +16,26 @@ use url::Url;
 
 use crate::{cmd::Cmd, init::InitStrategy};
 
+/// From the URL
+/// <https://drive.google.com/file/d/102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ/view>
+const GOOGLE_DRIVE_FILE_ID: &str = "102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ";
+
 /// Download guest images from Google Drive
 pub struct InitDownload {
-	file_id: &'static str,
+	_no_copy: (),
 }
 
 impl InitStrategy for InitDownload {
 	fn new() -> Box<Self> {
-		Box::new(Self {
-			// From the URL <https://drive.google.com/file/d/102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ/view>
-			file_id: "102EgrujJE5Pzlg98qe3twLNIeMz5MkJQ",
-		})
+		Box::new(Self { _no_copy: () })
 	}
 
 	/// The version string of the `InitDownload` strategy is the Google Drive url of
 	/// the tarball.
-	fn version(&self, _: &mut Cmd) -> String {
+	fn version(&self) -> String {
 		format!(
 			"downloaded from https://drive.google.com/file/d/{}/view\n",
-			self.file_id
+			GOOGLE_DRIVE_FILE_ID
 		)
 	}
 
@@ -59,7 +60,7 @@ impl InitStrategy for InitDownload {
 				Method::GET,
 				Url::parse(&format!(
 					"https://drive.google.com/file/d/{}/view",
-					self.file_id
+					GOOGLE_DRIVE_FILE_ID
 				))
 				.unwrap(),
 				&[],
@@ -77,7 +78,7 @@ impl InitStrategy for InitDownload {
 					Method::GET,
 					Url::parse(&format!(
 						"https://drive.google.com/uc?export=download&id={}",
-						self.file_id
+						GOOGLE_DRIVE_FILE_ID
 					))
 					.unwrap(),
 					&[],
@@ -120,7 +121,7 @@ impl InitStrategy for InitDownload {
 					Method::POST,
 					Url::parse(&format!(
 						"https://drive.google.com/uc?id={}&export=download&confirm=t&uuid={}",
-						self.file_id, confirm_uuid
+						GOOGLE_DRIVE_FILE_ID, confirm_uuid
 					))
 					.unwrap(),
 					&[(
