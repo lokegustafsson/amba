@@ -39,14 +39,23 @@ CXX-FLAGS := \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
 LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
-LIBAMBARS_PATH ?= ../../target/debug
 
-libamba.so: Amba.o Zydis.o HeapLeak.o AmbaPlugin.o
+libamba.so: \
+  Amba.o Zydis.o HeapLeak.o AmbaPlugin.o \
+  libamba_rs.a
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
-libamba_rs.a: ../libamba-rs/*
+libamba_rs.a:
+	if [ -v IMPURE_RUST ]; then \
+		make libamba_rs_impure; \
+	else \
+		cp $(LIBAMBARS_PATH)/libamba_rs.a . ; \
+	fi
+
+libamba_rs_impure: ../libamba-rs/*
 	cargo build -p libamba-rs
-	cp $(LIBAMBARS_PATH)/libamba_rs.a .
+	cp ../../target/debug/libamba_rs.a .
+	touch libamba_rs_impure
 
 $(LIBAMBARS_PATH)/libamba_rs.a:
 
@@ -102,6 +111,7 @@ clean:
 	-rm Test
 	-rm ../../compile_flags.txt
 	-rm compile_flags.txt
+	-rm libamba_rs_impure
 	-cargo clean
 
-.PHONY: clean
+.PHONY: clean libamba_rs.a

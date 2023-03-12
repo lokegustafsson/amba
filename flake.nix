@@ -58,6 +58,7 @@
               p.stable.tectonic
               p.texlab
             ];
+            IMPURE_RUST = 1;
             inherit (amba) AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
 
             meta.description = "Rust, C++ and LaTeX tooling for developing AMBA";
