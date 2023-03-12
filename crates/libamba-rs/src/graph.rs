@@ -224,7 +224,6 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
-		dbg!(&graph);
 		graph.verify();
 		assert_eq!(graph, expected);
 	}
@@ -241,7 +240,6 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
-		dbg!(&graph);
 		graph.verify();
 		assert_eq!(graph, expected);
 	}
@@ -329,7 +327,6 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
-		dbg!(&graph);
 		graph.verify();
 		assert_eq!(graph, expected);
 	}
