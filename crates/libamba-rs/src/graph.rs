@@ -8,7 +8,19 @@ type BlockId = u64;
 struct Graph(Map<u64, Block>);
 
 impl Graph {
-	fn compress(&mut self) {}
+	fn compress(&mut self) {
+		dbg!(&self);
+		let m = &mut self.0;
+
+		let mut to_merge = m
+			.values()
+			.filter(|l| l.from.len() == 1)
+			.map(|l| (l.id, &m[l.from.iter().next().unwrap()]))
+			.filter(|(_, r)| r.to.len() == 1)
+			.map(|(l, r)| (l.min(r.id), l.max(r.id)))
+			.collect::<Vec<_>>();
+		to_merge.sort_unstable();
+	}
 
 	/// Verify that all node pairs have matching to and from
 	#[cfg(test)]
