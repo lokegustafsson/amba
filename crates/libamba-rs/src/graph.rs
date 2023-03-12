@@ -16,6 +16,8 @@ impl Graph {
 	pub fn compress(&mut self) {
 		let m = &mut self.0;
 
+		// Merge any nodes (x, y) where x always goes to y and
+		// y always comes from x
 		let mut to_merge = m
 			.values()
 			.filter(|l| l.from.len() == 1)
@@ -23,12 +25,27 @@ impl Graph {
 			.filter(|(_, r)| r.to.len() == 1)
 			.map(|(l, r)| (l.min(r.id), l.max(r.id)))
 			.collect::<Vec<_>>();
-		to_merge.sort_unstable();
+
+		// Sort pairs and make sure that a node is always
+		// referred to by its merged name afterwards
+		to_merge.sort_unstable_by(|x, y| x.cmp(y).reverse());
+		for i in 1..to_merge.len() {
+			let (done, to_do) = to_merge.split_at_mut(i);
+			let (to, from) = done[i - 1];
+			for (x, y) in to_do.iter_mut() {
+				if *x == from {
+					*x = to;
+				}
+				if *y == from {
+					*y = to;
+				}
+			}
+		}
 
 		// We always merge two nodes to the lowest one's id.
 		// We can merge nodes highest first to make sure we
 		// don't have any references that outlive the node.
-		for (l, r) in to_merge.into_iter().rev() {
+		for (l, r) in to_merge.into_iter() {
 			self.merge_nodes(l, r);
 		}
 	}
