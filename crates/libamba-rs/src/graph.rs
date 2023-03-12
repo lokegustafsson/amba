@@ -178,8 +178,8 @@ impl<const N: usize, const M: usize> From<(BlockId, [BlockId; N], [BlockId; M])>
 	fn from((id, f, t): (BlockId, [BlockId; N], [BlockId; M])) -> Self {
 		Block {
 			id,
-			from: f.iter().cloned().collect(),
-			to: t.iter().cloned().collect(),
+			from: f.into_iter().collect(),
+			to: t.into_iter().collect(),
 		}
 	}
 }
