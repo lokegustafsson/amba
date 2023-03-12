@@ -6,14 +6,14 @@ pub(crate) type Map<K, V> = std::collections::HashMap<K, V>;
 pub(crate) type BlockId = u64;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-struct Block {
-	id: BlockId,
-	from: Set<BlockId>,
-	to: Set<BlockId>,
+pub struct Block {
+	pub(crate) id: BlockId,
+	pub(crate) from: Set<BlockId>,
+	pub(crate) to: Set<BlockId>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Graph(Map<u64, Block>);
+pub struct Graph(pub(crate) Map<u64, Block>);
 
 impl Graph {
 	pub fn new() -> Self {
