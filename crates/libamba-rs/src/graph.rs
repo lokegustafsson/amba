@@ -1,4 +1,4 @@
-use std::default::Default;
+use std::{default::Default, mem};
 
 // Aliased so we can swap them to binary versions easily.
 type Set<T> = std::collections::HashSet<T>;
@@ -42,6 +42,17 @@ impl Graph {
 			return;
 		}
 
+		let to = mem::take(&mut self.0.get_mut(&r).unwrap().to);
+
+		for connection in to.iter() {
+			if let Some(out_node) = self.0.get_mut(connection) {
+				out_node.from.remove(&r);
+				out_node.from.insert(l);
+			}
+		}
+
+		self.0.get_mut(&l).unwrap().to = to;
+		self.0.remove(&r);
 	}
 
 	fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
