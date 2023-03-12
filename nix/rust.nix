@@ -42,6 +42,11 @@ let
               value = lib.makeLibraryPath libs;
             }])
           ];
+        mkOverride = cratename: overrideAttrs:
+          p.rustBuilder.rustLib.makeOverride {
+            name = cratename;
+            inherit overrideAttrs;
+          };
       in [
         (p.rustBuilder.rustLib.makeOverride {
           overrideArgs = old: {
@@ -60,7 +65,7 @@ let
               ++ [ "--cap-lints" "warn" ];
           };
         })
-      ] ++ (extra-overrides { inherit mkNativeDep mkEnvDep p; })
+      ] ++ (extra-overrides { inherit mkNativeDep mkEnvDep mkOverride p; })
       ++ (builtins.concatLists (builtins.attrValues (builtins.mapAttrs
         (cratename:
           { rpath, run_time_ld_library_path }: [
