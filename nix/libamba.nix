@@ -14,6 +14,20 @@ let
   all-include-paths = s2e-include-paths // {
     ZYDIS_PATH = "${pkgs.zydis}";
     ZYCORE_PATH = "${pkgs.callPackage ./zycore.nix { }}";
+    LIBAMBARS_PATH = "${rust.packages.libamba-rs}/lib/";
+  };
+
+  rust = import ./rust.nix {
+    inherit lib pkgs;
+    workspace-binaries = {
+      libamba-rs = {
+        rpath = p: [ ];
+        run_time_ld_library_path = p: [ ];
+      };
+    };
+    extra-overrides = { mkNativeDep, mkEnvDep, mkOverride, p }: [
+      (mkOverride "libamba-rs" (old: { dontFixup = true; }))
+    ];
   };
 
   libamba = pkgs.stdenv.mkDerivation ({
