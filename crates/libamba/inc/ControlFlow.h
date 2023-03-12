@@ -3,9 +3,11 @@
 #include "S2EForwardDeclarations.h"
 #include "Numbers.h"
 
-struct ControlFlowGraph;
-ControlFlowGraph *rust_create_control_flow_graph();
-void rust_free_control_flow_graph(ControlFlowGraph *);
+extern "C" {
+	struct ControlFlowGraph;
+	ControlFlowGraph *rust_create_control_flow_graph();
+	void rust_free_control_flow_graph(ControlFlowGraph *);
+}
 
 namespace control_flow {
 

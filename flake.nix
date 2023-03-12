@@ -63,6 +63,7 @@
 
             meta.description = "Rust, C++ and LaTeX tooling for developing AMBA";
             shellHook = "make -sC crates/libamba compile_flags.txt";
+            IMPURE_RUST = 1;
           } // libamba.all-include-paths);
         };
 

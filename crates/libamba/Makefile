@@ -39,10 +39,13 @@ CXX-FLAGS := \
 	-D"SE_RAM_OBJECT_MASK=(~11)"
 LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
-LIBAMBARS_PATH ?= ../../target/debug
 
 libamba.so: \
+<<<<<<< HEAD
   Amba.o Zydis.o HeapLeak.o AmbaPlugin.o \
+=======
+  Amba.o Zydis.o HeapLeak.o AmbaPlugin.o ControlFlow.o \
+>>>>>>> c2c61c8 (libamba, libamba-rs: WIP fix linking)
   libamba_rs.a
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
