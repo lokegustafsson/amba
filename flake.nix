@@ -58,6 +58,7 @@
               p.stable.tectonic
               p.texlab
             ];
+            IMPURE_RUST = 1;
           } // libamba.all-include-paths);
         };
 
