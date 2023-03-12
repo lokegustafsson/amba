@@ -112,7 +112,7 @@ impl<const N: usize, const M: usize> From<(BlockId, [BlockId; N], [BlockId; M])>
 mod test {
 	use crate::graph::*;
 
-	/// 0 -> 1 -> 2
+	/// 0 → 1 → 2
 	#[test]
 	fn straight_line() {
 		let mut graph = Graph(
@@ -132,7 +132,7 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
-	/// 0 -> 1
+	/// 0 → 1
 	#[test]
 	fn short_line() {
 		let mut graph = Graph(
@@ -151,7 +151,7 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
-	/// 2 -> 1 -> 0
+	/// 2 → 1 → 0
 	#[test]
 	fn straight_line_rev() {
 		let mut graph = Graph(
@@ -172,7 +172,7 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
-	/// 1 -> 0
+	/// 1 → 0
 	#[test]
 	fn short_line_rev() {
 		let mut graph = Graph(
@@ -242,11 +242,11 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
-	/// 4 -> 0
-	/// ↑   ↙ ↘
-	/// 5  1   2
-	/// ↑   ↘ ↙
-	/// 6    3
+	/// 4 → 0
+	/// ↑  ↙ ↘
+	/// 5 1   2
+	/// ↑  ↘ ↙
+	/// 6   3
 	#[test]
 	fn diamond_on_stick() {
 		let mut graph = Graph(
@@ -279,11 +279,11 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
-	/// 6 -> 3
-	/// ↑   ↙ ↘
-	/// 5  1   2
-	/// ↑   ↘ ↙
-	/// 4    0
+	/// 6 → 3
+	/// ↑  ↙ ↘
+	/// 5 1   2
+	/// ↑  ↘ ↙
+	/// 4   0
 	#[test]
 	fn diamond_on_stick_rev() {
 		let mut graph = Graph(
