@@ -1,12 +1,19 @@
 use std::{default::Default, mem};
 
 // Aliased so we can swap them to binary versions easily.
-type Set<T> = std::collections::HashSet<T>;
-type Map<K, V> = std::collections::HashMap<K, V>;
-type BlockId = u64;
+pub(crate) type Set<T> = std::collections::HashSet<T>;
+pub(crate) type Map<K, V> = std::collections::HashMap<K, V>;
+pub(crate) type BlockId = u64;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Graph(Map<u64, Block>);
+pub struct Block {
+	pub(crate) id: BlockId,
+	pub(crate) from: Set<BlockId>,
+	pub(crate) to: Set<BlockId>,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Graph(pub(crate) Map<u64, Block>);
 
 impl Graph {
 	pub fn new() -> Self {
@@ -172,13 +179,6 @@ pub struct ControlFlowGraph {
 	graph: Graph,
 	compressed_graph: Graph,
 	last: BlockId,
-}
-
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-struct Block {
-	id: BlockId,
-	from: Set<BlockId>,
-	to: Set<BlockId>,
 }
 
 impl<const N: usize, const M: usize> From<(BlockId, [BlockId; N], [BlockId; M])> for Block {
