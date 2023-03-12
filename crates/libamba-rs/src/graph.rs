@@ -5,7 +5,7 @@ type Map<K, V> = std::collections::HashMap<K, V>;
 type BlockId = u64;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-struct Graph(Map<u64, Block>);
+pub struct Graph(Map<u64, Block>);
 
 impl Graph {
 	fn compress(&mut self) {
