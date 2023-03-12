@@ -45,37 +45,35 @@ impl Graph {
 		assert!(self.0.contains_key(&l));
 		assert!(self.0.contains_key(&r));
 
+		let map = &mut self.0;
+
 		// Take the union of both nodes' input and then remove the nodes themselves
+		let to_r = mem::take(&mut map.get_mut(&r).unwrap().to);
+		let from_r = mem::take(&mut map.get_mut(&r).unwrap().from);
 
-		let to = {
-			let mut to_l = mem::take(&mut self.0.get_mut(&l).unwrap().to);
-			let mut to_r = mem::take(&mut self.0.get_mut(&r).unwrap().to);
-			to_l.union(&mut to_r)
-				.copied()
+		let l_ref = map.get_mut(&l).unwrap();
+
+		for node in to_r.into_iter()
 				.filter(|&x| x != l && x != r)
-				.collect::<Set<_>>()
-		};
+		{
+			l_ref.to.insert(node);
+		}
+		l_ref.to.remove(&l);
+		l_ref.to.remove(&r);
 
-		let from = {
-			let mut from_l = mem::take(&mut self.0.get_mut(&l).unwrap().from);
-			let mut from_r = mem::take(&mut self.0.get_mut(&r).unwrap().from);
-			from_l
-				.union(&mut from_r)
-				.copied()
+		for node in from_r.into_iter()
 				.filter(|&x| x != l && x != r)
-				.collect::<Set<_>>()
-		};
-
-		// Set the left node's connections to be the unions
-		let l_ref = self.0.get_mut(&l).unwrap();
-		l_ref.to = to;
-		l_ref.from = from;
+		{
+			l_ref.from.insert(node);
+		}
+		l_ref.from.remove(&l);
+		l_ref.from.remove(&r);
 
 		// Remove the right node from the graph
-		self.0.remove(&r);
+		map.remove(&r);
 
 		// And fix any pointers to the right node so that they point to the left node
-		for node in self.0.values_mut() {
+		for node in map.values_mut() {
 			if node.from.remove(&r) {
 				node.from.insert(l);
 			}
