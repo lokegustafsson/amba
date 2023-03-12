@@ -38,7 +38,7 @@ let
         run_time_ld_library_path = p: [ ];
       };
     };
-    extra-overrides = { mkNativeDep, mkEnvDep, p }: [
+    extra-overrides = { mkNativeDep, mkEnvDep, mkOverride, p }: [
       (mkEnvDep "s2e" ({
         # For autocxx to run
         LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
