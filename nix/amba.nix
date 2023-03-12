@@ -38,7 +38,7 @@ let
       # NOTE: This crate name should really be "amba", but that does not work for some reason
       (mkEnvDep "dummy-dep" {
         AMBA_DEPENDENCIES_DIR = "${amba-deps}";
-        AMBA_SRC_DIR = ./.;
+        AMBA_SRC_DIR = ./..;
       })
     ];
   };
