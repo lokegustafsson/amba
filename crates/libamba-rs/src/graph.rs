@@ -34,7 +34,7 @@ impl Graph {
 	}
 
 	fn merge_nodes(&mut self, l: u64, r: u64) {
-		if r > l {
+		if l > r {
 			self.merge_nodes(r, l);
 			return;
 		}
