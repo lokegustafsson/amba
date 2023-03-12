@@ -4,7 +4,6 @@
 
 // Our headers
 #include "AmbaPlugin.h"
-#include "AmbaData.h"
 #include "HeapLeak.h"
 
 namespace s2e {

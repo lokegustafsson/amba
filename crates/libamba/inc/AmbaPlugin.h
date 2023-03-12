@@ -6,8 +6,6 @@
 #include "HeapLeak.h"
 #include "Numbers.h"
 
-namespace data { struct AmbaData; }
-
 namespace s2e {
 namespace plugins {
 
