@@ -126,6 +126,25 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
+	/// 0 -> 1
+	#[test]
+	fn short_line() {
+		let mut graph = Graph(
+			[
+				(0, (0, [], [1]).into()),
+				(1, (1, [0], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
+
 	/// 2 -> 1 -> 0
 	#[test]
 	fn straight_line_rev() {
@@ -142,6 +161,27 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		dbg!(&graph);
+		graph.verify();
+		assert_eq!(graph, expected);
+	}
+
+	/// 1 -> 0
+	#[test]
+	fn short_line_rev() {
+		let mut graph = Graph(
+			[
+				(0, (0, [1], []).into()),
+				(1, (1, [], [0]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		graph.verify();
+		expected.verify();
+		graph.compress();
+		dbg!(&graph);
 		graph.verify();
 		assert_eq!(graph, expected);
 	}
