@@ -1,5 +1,6 @@
 use std::default::Default;
 
+// Aliased so we can swap them to binary versions easily.
 type Set<T> = std::collections::HashSet<T>;
 type Map<K, V> = std::collections::HashMap<K, V>;
 type BlockId = u64;
