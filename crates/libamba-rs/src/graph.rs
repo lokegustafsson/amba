@@ -42,8 +42,6 @@ impl Graph {
 			}
 		}
 
-		dbg!(&to_merge);
-
 		// We always merge two nodes to the lowest one's id.
 		// We can merge nodes highest first to make sure we
 		// don't have any references that outlive the node.
