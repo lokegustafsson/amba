@@ -78,7 +78,8 @@ impl Graph {
 
 		let map = &mut self.0;
 
-		// Take the union of both nodes' input and then remove the nodes themselves
+		// Take the union of both nodes' input and then remove
+		// the nodes themselves
 		let to_r = mem::take(&mut map.get_mut(&r).unwrap().to);
 		let from_r = mem::take(&mut map.get_mut(&r).unwrap().from);
 
@@ -99,7 +100,8 @@ impl Graph {
 		// Remove the right node from the graph
 		map.remove(&r);
 
-		// And fix any pointers to the right node so that they point to the left node
+		// And fix any pointers to the right node so that they
+		// point to the left node
 		for node in map.values_mut() {
 			if node.from.remove(&r) {
 				node.from.insert(l);
@@ -110,8 +112,9 @@ impl Graph {
 		}
 	}
 
-	/// Split `node` into two nodes, with the new node using the requested id if it's not already in use.
-	/// Returns the id of the new node
+	/// Split `node` into two nodes, with the new node using the
+	/// requested id if it's not already in use. Returns the id of
+	/// the new node
 	pub fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
 		if self.0.contains_key(&requested_id) {
 			return self.split_node(node, requested_id + 1);
