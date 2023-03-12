@@ -1,60 +1,37 @@
-name: nix-ci
+name: self-hosted-nix-ci
 
-
-on:
-  push:
-    branches:
-      - master
-      - ci
-      - autocxx
-
+on: push
 
 jobs:
-
   build-s2e:
     name: Build S2E
-    runs-on: ubuntu-20.04
+    runs-on: [self-hosted, nixos]
 
     steps:
       - uses: actions/checkout@v3
-
-      - uses: nixbuild/nix-quick-install-action@v20
-        with:
-          nix_conf: |
-            experimental-features = nix-command flakes
 
       - name: Build Nix flake checks
         run: |
           nix build -L --accept-flake-config .#s2e
 
-  build-amba:
-    name: Build AMBA
-    runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: nixbuild/nix-quick-install-action@v20
-        with:
-          nix_conf: |
-            experimental-features = nix-command flakes
-
-      - name: Build Nix flake checks
-        run: |
-          nix build -L --accept-flake-config .#amba
-
   build-amba-lib:
     name: Build LIBAMBA
-    runs-on: ubuntu-20.04
+    runs-on: [self-hosted, nixos]
 
     steps:
       - uses: actions/checkout@v3
-
-      - uses: nixbuild/nix-quick-install-action@v20
-        with:
-          nix_conf: |
-            experimental-features = nix-command flakes
 
       - name: Build Nix flake checks
         run: |
           nix build -L --accept-flake-config .#libamba
+
+  build-amba:
+    name: Build AMBA
+    runs-on: [self-hosted, nixos]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Nix flake checks
+        run: |
+          nix build -L --accept-flake-config .#amba
