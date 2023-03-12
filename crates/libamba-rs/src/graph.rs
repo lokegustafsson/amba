@@ -449,6 +449,46 @@ mod test {
 		assert_eq!(graph, expected);
 	}
 
+	/// 0   1
+	///  ↘ ↙
+	///   2
+	///   ↓
+	///   3
+	///  ↙ ↘
+	/// 4   5
+	#[test]
+	fn cross_split() {
+		let mut graph = Graph(
+			[
+				(0, (0, [], [2]).into()),
+				(1, (1, [], [2]).into()),
+				(2, (2, [0, 1], [4, 5]).into()),
+				(4, (4, [2], []).into()),
+				(5, (5, [2], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected = Graph(
+			[
+				(0, (0, [], [2]).into()),
+				(1, (1, [], [2]).into()),
+				(2, (2, [0, 1], [3]).into()),
+				(3, (3, [2], [4, 5]).into()),
+				(4, (4, [3], []).into()),
+				(5, (5, [3], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+		expected.verify();
+		let node = graph.split_node(2, 3);
+		graph.verify();
+		assert_eq!(graph, expected);
+		assert_eq!(node, 3);
+	}
+
 	///   0
 	///  ↙ ↖
 	/// 1   3
