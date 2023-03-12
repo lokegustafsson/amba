@@ -8,8 +8,8 @@ use control_flow::ControlFlowGraph;
 #[no_mangle]
 pub extern "C" fn rust_create_control_flow_graph() -> *mut ControlFlowGraph {
 	// Allocate a ControlFlowGraph by leaking a Box
-	let b = Box::new(ControlFlowGraph::default());
-	Box::into_raw(b) as _
+	let b = Box::new(ControlFlowGraph::new());
+	Box::into_raw(b)
 }
 
 #[no_mangle]
