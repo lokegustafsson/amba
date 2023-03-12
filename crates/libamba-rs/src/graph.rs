@@ -116,7 +116,29 @@ impl Graph {
 		if self.0.contains_key(&requested_id) {
 			return self.split_node(node, requested_id + 1);
 		}
-		todo!()
+
+		// Swap the existing outgoing set with a set pointing
+		// solely to the new node
+		let mut to = [requested_id].into_iter().collect::<Set<_>>();
+		mem::swap(&mut self.0.get_mut(&node).unwrap().to, &mut to);
+
+		// Fix incoming sets of connected nodes
+		for connection_id in to.iter() {
+			let connection = self.0.get_mut(connection_id).unwrap();
+			assert!(connection.from.remove(&node));
+			connection.from.insert(requested_id);
+		}
+
+		// And create the new node
+		let from = [node].into_iter().collect::<Set<_>>();
+		let block = Block {
+			id: requested_id,
+			to,
+			from,
+		};
+		self.0.insert(requested_id, block);
+
+		requested_id
 	}
 
 	/// Verify that all node pairs have matching to and from
