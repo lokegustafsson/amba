@@ -53,17 +53,13 @@ impl Graph {
 
 		let l_ref = map.get_mut(&l).unwrap();
 
-		for node in to_r.into_iter()
-				.filter(|&x| x != l && x != r)
-		{
+		for node in to_r.into_iter().filter(|&x| x != l && x != r) {
 			l_ref.to.insert(node);
 		}
 		l_ref.to.remove(&l);
 		l_ref.to.remove(&r);
 
-		for node in from_r.into_iter()
-				.filter(|&x| x != l && x != r)
-		{
+		for node in from_r.into_iter().filter(|&x| x != l && x != r) {
 			l_ref.from.insert(node);
 		}
 		l_ref.from.remove(&l);
