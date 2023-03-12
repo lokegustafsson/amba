@@ -2,10 +2,10 @@
 
 use std::{
 	error::Error,
-	fs,
 	path::{Path, PathBuf},
 };
 
+use include_dir::{include_dir, Dir};
 use serde::Serialize;
 use tera::{Context, Tera};
 
@@ -53,7 +53,7 @@ pub struct Args {
 }
 
 const LIBRARY_LUA: &str = include_str!("../../data/library.lua");
-const TEMPLATE_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/templates");
+const TEMPLATE_DIR: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/templates");
 
 const CUSTOM_LUA_STRING: &str = r#"
 add_plugin("AmbaPlugin")
@@ -114,21 +114,8 @@ impl S2EConfig {
 			session_dir.join("guest-tools32"),
 		);
 
-		assert!(
-			Path::new(TEMPLATE_DIR).exists(),
-			"non-existent {TEMPLATE_DIR}"
-		);
-		let template_dir = fs::canonicalize(TEMPLATE_DIR).unwrap();
-		tracing::debug!(?template_dir, "Using templates from");
-		let mut renderer = Renderer {
-			cmd,
-			session_dir,
-			tera: match Tera::new(&format!("{}/*", template_dir.to_str().unwrap())) {
-				Ok(tera) => tera,
-				Err(err) => Renderer::handle_error("template dir", err),
-			},
-			context: &Context::from_serialize(self).unwrap(),
-		};
+		tracing::debug!(TEMPLATE_DIR = ?TEMPLATE_DIR.path(), "Using templates from");
+		let mut renderer = Renderer::new(cmd, session_dir, self);
 		renderer.render("s2e-config.lua");
 		renderer.render("bootstrap.sh");
 	}
@@ -138,12 +125,32 @@ struct Renderer<'a> {
 	cmd: &'a mut Cmd,
 	session_dir: &'a Path,
 	tera: Tera,
-	context: &'a Context,
+	context: Context,
 }
 
-impl Renderer<'_> {
+impl<'a> Renderer<'a> {
+	fn new(cmd: &'a mut Cmd, session_dir: &'a Path, config: &S2EConfig) -> Self {
+		Self {
+			cmd,
+			session_dir,
+			tera: {
+				let mut tera = Tera::default();
+				tera.add_raw_templates(TEMPLATE_DIR.entries().iter().map(|entry| {
+					let file = entry.as_file().unwrap();
+					(
+						file.path().file_name().unwrap().to_str().unwrap(),
+						std::str::from_utf8(file.contents()).unwrap(),
+					)
+				}))
+				.unwrap_or_else(|err| Renderer::handle_error("template_dir", err));
+				tera
+			},
+			context: Context::from_serialize(config).unwrap(),
+		}
+	}
+
 	fn render(&mut self, name: &'static str) {
-		match self.tera.render(name, self.context) {
+		match self.tera.render(name, &self.context) {
 			Ok(content) => self.cmd.write(self.session_dir.join(name), content),
 			Err(err) => Self::handle_error(name, err),
 		}
