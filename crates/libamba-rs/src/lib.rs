@@ -1,8 +1,9 @@
 #![allow(unsafe_code)]
 
 pub mod graph;
+pub mod control_flow;
 
-use graph::ControlFlowGraph;
+use control_flow::ControlFlowGraph;
 
 #[no_mangle]
 pub extern "C" fn rust_create_control_flow_graph() -> *mut ControlFlowGraph {
