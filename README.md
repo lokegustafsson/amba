@@ -34,3 +34,10 @@ You can run AMBA directly through `nix run . -- --help`. You can configure the
 directory where guest VM images and session files are placed by setting the
 environment variable `AMBA_DATA_DIR`, which defaults to `$XDG_DATA_HOME/amba` or
 `$HOME/.local/share/amba`.
+
+## License
+
+AMBA is licensed under AGPLv3 or later. The main dependency S2E consists of
+software components with various licenses, described in
+<https://github.com/S2E/s2e/blob/master/LICENSE>. All Nix derivations should
+have the proper license metadata.
