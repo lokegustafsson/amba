@@ -63,10 +63,6 @@ impl Graph {
 
 			let x = l.min(r);
 			let y = l.max(r);
-
-			if self.are_loop(l, r) {
-				continue;
-			}
 			self.merge_nodes(x, y);
 
 			translation_map.insert(l, x);
@@ -96,6 +92,7 @@ impl Graph {
 		assert!(self.0.contains_key(&l));
 		assert!(self.0.contains_key(&r));
 
+		let are_loop = self.are_loop(l, r);
 		let map = &mut self.0;
 
 		// Take the union of both nodes' input and then remove
@@ -116,6 +113,12 @@ impl Graph {
 		}
 		l_ref.from.remove(&l);
 		l_ref.from.remove(&r);
+
+		// Restore loop if they were a loop beforehand
+		if are_loop {
+			l_ref.from.insert(l);
+			l_ref.to.insert(l);
+		}
 
 		// Remove the right node from the graph
 		map.remove(&r);
