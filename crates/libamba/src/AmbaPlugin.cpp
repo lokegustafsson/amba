@@ -43,8 +43,11 @@ void AmbaPlugin::translateInstructionStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	const auto inst = amba::readInstruction(state, pc);
+	auto& debug = this->getDebugStream();
+	debug << "Translating instruction at " << hexval(pc) << '\n';
 
+	/*
+	const auto inst = amba::readInstruction(state, pc);
 	if (inst.isCall()) {
 		signal->connect(sigc::mem_fun(
 			this->m_amba_data->heap_leak,
@@ -61,6 +64,7 @@ void AmbaPlugin::translateInstructionStart(
 			&heap_leak::HeapLeak::derefLeakCheck
 		));
 	}
+	*/
 }
 
 } // namespace plugins
