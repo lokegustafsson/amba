@@ -4,7 +4,6 @@
 
 // Our headers
 #include "AmbaPlugin.h"
-#include "AmbaData.h"
 #include "HeapLeak.h"
 
 namespace s2e {
@@ -14,16 +13,12 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
 
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
-	, m_amba_data(std::make_unique<data::AmbaData>(
-			(data::AmbaData) {
-				.heap_leak = heap_leak::HeapLeak()
-			}
-		))
+	, m_heap_leak(heap_leak::HeapLeak {})
 	{}
 
 void AmbaPlugin::initialize() {
 	auto& debug = this->getDebugStream();
-	debug << "Begin initializing AmbaPlugin!\n";
+	debug << "Begin initializing AmbaPlugin\n";
 
 	auto& core = *this->s2e()->getCorePlugin();
 
@@ -47,17 +42,17 @@ void AmbaPlugin::translateInstructionStart(
 
 	if (inst.isCall()) {
 		signal->connect(sigc::mem_fun(
-			this->m_amba_data->heap_leak,
+			this->m_heap_leak,
 			&heap_leak::HeapLeak::onMalloc
 		));
 		signal->connect(sigc::mem_fun(
-			this->m_amba_data->heap_leak,
+			this->m_heap_leak,
 			&heap_leak::HeapLeak::onFree
 		));
 	}
 	if (inst.isDeref()) {
 		signal->connect(sigc::mem_fun(
-			this->m_amba_data->heap_leak,
+			this->m_heap_leak,
 			&heap_leak::HeapLeak::derefLeakCheck
 		));
 	}
