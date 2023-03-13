@@ -111,6 +111,12 @@ let
       ${rsyncSubmodules}
     '';
     buildInputs = [ pkgs.rsync ];
+
+    meta = {
+      homepage = "https://github.com/S2E/qemu";
+      description = "Source code";
+      license = lib.licenses.gpl2Plus;
+    };
   };
 
   s2e-qemu = pkgs.stdenv.mkDerivation {
@@ -137,5 +143,11 @@ let
 
     CPATH = (makeIncludePath [ pkgs.zlib.dev pkgs.libpng.dev ]);
     LIBRARY_PATH = lib.makeLibraryPath [ pkgs.zlib pkgs.libpng ];
+
+    meta = {
+      homepage = "https://github.com/S2E/qemu";
+      description = "Executable";
+      license = lib.licenses.gpl2Plus;
+    };
   };
 in { inherit qemu-src s2e-qemu; }

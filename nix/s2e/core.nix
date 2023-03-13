@@ -24,6 +24,12 @@ let
       cp -r . $out
     '';
     dontPatchShebangs = true;
+
+    meta = {
+      homepage = "https://github.com/S2E/s2e";
+      description = "Source code";
+      license = with lib.licenses; [ lgpl21Only mit ncsa ];
+    };
   };
   fake-curl = let
     content =
@@ -114,6 +120,12 @@ let
       pkgs.python3Minimal
     ];
     inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
+
+    meta = {
+      homepage = "https://github.com/S2E/s2e";
+      description = "S2E makefile target LLVM";
+      license = lib.licenses.ncsa;
+    };
   };
   libgomp = let
     version = "12.1.0";
@@ -136,6 +148,12 @@ let
       ln -s $out/lib/libgomp.so.1 $out/lib/libgomp.so
     '';
     buildInputs = [ pkgs.dpkg ];
+
+    meta = {
+      homepage = "https://gcc.gnu.org/onlinedocs/libgomp/";
+      description = "OpenMP run time library, extracted from GCC";
+      license = with lib.licenses; [ lgpl21Only ];
+    };
   };
   s2e-lib = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-lib";
@@ -181,6 +199,12 @@ let
       sha256 = "sha256-tIcL8SH/d5W6INILzdhie44Ijy0dqymaAxwQNO3ck9U=";
     };
     inherit INJECTED_RAPIDJSON_SRC LLVM_BUILD;
+
+    meta = {
+      homepage = "https://github.com/S2E/s2e";
+      description = "Shared library libs2e.so";
+      license = with lib.licenses; [ lgpl21Only mit ncsa ];
+    };
   };
   s2e-tools = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-tools";
@@ -201,6 +225,12 @@ let
     in [ p.libelf p.boost p.glibc.dev p.pkgsCross.gnu32.glibc.dev ]));
     LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libelf ];
     inherit INJECTED_RAPIDJSON_SRC LLVM_BUILD;
+
+    meta = {
+      homepage = "https://github.com/S2E/s2e";
+      description = "S2E host tools";
+      license = with lib.licenses; [ lgpl21Only mit ncsa ];
+    };
   };
   s2e-guest-tools = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e-guest-tools";
@@ -224,6 +254,12 @@ let
     inherit BUILD_ARCH INJECTED_CLANG_CC INJECTED_CLANG_CXX;
     CPATH = (makeIncludePath [ pkgs.libelf ]);
     LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libelf pkgs.glibc.static ];
+
+    meta = {
+      homepage = "https://github.com/S2E/s2e";
+      description = "S2E guest tools";
+      license = with lib.licenses; [ lgpl21Only mit ncsa ];
+    };
   };
   s2e = pkgs.stdenvNoCC.mkDerivation {
     name = "s2e";
@@ -235,5 +271,11 @@ let
       rsync -a $out/lib64/* $out/lib/
       rm -r $out/lib64
     '';
+
+    meta = {
+      homepage = "https://s2e.systems/";
+      description = "A Platform for In-Vivo Analysis of Software Systems";
+      license = with lib.licenses; [ lgpl21Only mit ncsa gpl2Plus ];
+    };
   };
 in { inherit s2e-src s2e-llvm s2e-lib s2e-tools s2e-guest-tools s2e libgomp; }

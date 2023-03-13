@@ -1,9 +1,6 @@
 # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/development/libraries/zydis/zycore.nix
 
-{ stdenv
-, fetchFromGitHub
-, cmake
-}:
+{ lib, stdenv, fetchFromGitHub, cmake }:
 
 stdenv.mkDerivation rec {
   pname = "zycore";
@@ -20,8 +17,12 @@ stdenv.mkDerivation rec {
 
   # The absolute paths set by the Nix CMake build manager confuse
   # Zycore's config generation (which appends them to the package path).
-  cmakeFlags = [
-    "-DCMAKE_INSTALL_LIBDIR=lib"
-    "-DCMAKE_INSTALL_INCLUDEDIR=include"
-  ];
+  cmakeFlags =
+    [ "-DCMAKE_INSTALL_LIBDIR=lib" "-DCMAKE_INSTALL_INCLUDEDIR=include" ];
+
+  meta = {
+    homepage = "https://zydis.re/";
+    description = "Fast and lightweight x86/x86-64 disassembler library";
+    license = lib.licenses.mit;
+  };
 }
