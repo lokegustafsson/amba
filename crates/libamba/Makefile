@@ -57,8 +57,6 @@ libamba_rs_impure: ../libamba-rs/*
 	cp ../../target/debug/libamba_rs.a .
 	touch libamba_rs_impure
 
-$(LIBAMBARS_PATH)/libamba_rs.a:
-
 Amba.o: \
   src/Amba.cpp \
   inc/Amba.h inc/Numbers.h
@@ -73,6 +71,11 @@ HeapLeak.o: \
   src/HeapLeak.cpp \
   inc/HeapLeak.h inc/AmbaException.h inc/Numbers.h
 	$(CXX) src/HeapLeak.cpp $(CXX-FLAGS) -c -o $@
+
+ControlFlow.o: \
+  src/ControlFlow.cpp \
+  inc/ControlFlow.h inc/AmbaException.h inc/Numbers.h
+	$(CXX) src/ControlFlow.cpp $(CXX-FLAGS) -c -o $@
 
 Zydis.o: \
   src/Zydis.cpp \
