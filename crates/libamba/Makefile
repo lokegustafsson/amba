@@ -41,11 +41,7 @@ LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
 
 libamba.so: \
-<<<<<<< HEAD
-  Amba.o Zydis.o HeapLeak.o AmbaPlugin.o \
-=======
   Amba.o Zydis.o HeapLeak.o AmbaPlugin.o ControlFlow.o \
->>>>>>> c2c61c8 (libamba, libamba-rs: WIP fix linking)
   libamba_rs.a
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
