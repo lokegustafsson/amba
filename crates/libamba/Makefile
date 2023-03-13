@@ -79,11 +79,12 @@ Zydis.o: \
   inc/Zydis.h inc/AmbaException.h inc/Numbers.h
 	$(CXX) src/Zydis.cpp $(CXX-FLAGS) -c -o $@
 
-Test: \
+Test: compile_flags.txt \
   src/Test.cpp \
   inc/Numbers.h inc/AmbaException.h \
-  Zydis.o Amba.o \
+  Zydis.o Amba.o HeapLeak.o ControlFlow.o \
   libamba_rs.a
+>>>>>>> 8e217af (amba-cpp/Makefile, Test: Link in ControlFlow.o)
 	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) $(ARCHIVES) -o $@
 
 TAGS: inc/* src/*
