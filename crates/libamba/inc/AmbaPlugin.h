@@ -3,11 +3,8 @@
 #include <s2e/Plugin.h>
 #include <s2e/S2EExecutionState.h>
 
-#include <memory>
-
+#include "HeapLeak.h"
 #include "Numbers.h"
-
-namespace data { struct AmbaData; }
 
 namespace s2e {
 namespace plugins {
@@ -30,7 +27,7 @@ class AmbaPlugin : public Plugin {
 	TranslationFunction translateInstructionStart;
 
   protected:
-	std::unique_ptr<data::AmbaData> m_amba_data;
+	heap_leak::HeapLeak m_heap_leak;
 };
 
 } // namespace plugins
