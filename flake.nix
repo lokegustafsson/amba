@@ -59,6 +59,8 @@
               p.texlab
             ];
             inherit (amba) AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
+
+            meta.description = "Rust, C++ and LaTeX tooling for developing AMBA";
           } // libamba.all-include-paths);
         };
 
