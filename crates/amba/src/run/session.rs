@@ -129,7 +129,7 @@ struct Renderer<'a> {
 }
 
 impl<'a> Renderer<'a> {
-	fn new(cmd: &'a mut Cmd, session_dir: &'a Path, config: &S2EConfig) -> Self<'a> {
+	fn new(cmd: &'a mut Cmd, session_dir: &'a Path, config: &S2EConfig) -> Self {
 		Self {
 			cmd,
 			session_dir,
