@@ -6,6 +6,12 @@ let
     patches = [ ../patches/s2e-env/setup.py.patch ];
     doCheck = false;
 
+    meta = {
+      homepage = "https://github.com/S2E/s2e-env";
+      description = "A tool to run S2E (not used by amba)";
+      license = licenses.gpl2Plus;
+    };
+
     propagatedBuildInputs = let
       p = pkgs.python3Packages;
       unicorn = pkgs.stdenv.mkDerivation rec {
