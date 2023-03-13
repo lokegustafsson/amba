@@ -5,7 +5,7 @@ on: push
 jobs:
   build-s2e:
     name: Build S2E
-    runs-on: [self-hosted, nixos]
+    runs-on: [self-hosted, nixos, X64]
 
     steps:
       - uses: actions/checkout@v3
@@ -16,7 +16,7 @@ jobs:
 
   build-amba-lib:
     name: Build LIBAMBA
-    runs-on: [self-hosted, nixos]
+    runs-on: [self-hosted, nixos, X64]
 
     steps:
       - uses: actions/checkout@v3
@@ -27,7 +27,7 @@ jobs:
 
   build-amba:
     name: Build AMBA
-    runs-on: [self-hosted, nixos]
+    runs-on: [self-hosted, nixos, X64]
 
     steps:
       - uses: actions/checkout@v3
@@ -35,3 +35,14 @@ jobs:
       - name: Build Nix flake checks
         run: |
           nix build -L --accept-flake-config .#amba
+
+  build-devshell:
+    name: Build AMBA devshell
+    runs-on: [self-hosted, nixos, X64]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Nix flake checks
+        run: |
+          nix build -L --accept-flake-config .#devShells.x86_64-linux.default

@@ -18,6 +18,12 @@ let
         --add-rpath ${libamba.libamba}/lib \
         $out/share/libs2e/libs2e-*.so
     '';
+
+    meta = {
+      homepage = "https://github.com/lokegustafsson/amba";
+      description = "Run time dependencies of AMBA";
+      license = lib.licenses.agpl3Plus;
+    };
   };
 
   AMBA_DEPENDENCIES_DIR = "${amba-deps}";

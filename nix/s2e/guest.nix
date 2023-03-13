@@ -31,6 +31,12 @@ let
         p.perl
         pkgsCross.stdenv.cc
       ];
+
+      meta = {
+        homepage = "https://github.com/S2E/s2e-linux-kernel";
+        description = "Linux kernel used as S2E ${arch} guest";
+        license = lib.licenses.gpl2Only;
+      };
     };
   guest-kernel64 = mkGuestKernel {
     name = "linux-4.9.3";

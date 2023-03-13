@@ -26,6 +26,12 @@ let
       mkdir -p $out/lib
       cp libamba.so $out/lib
     '';
+
+    meta = {
+      homepage = "https://github.com/lokegustafsson/amba";
+      description = "The S2E plugin part of AMBA";
+      license = lib.licenses.agpl3Plus;
+    };
   } // all-include-paths);
 
 in { inherit all-include-paths s2e-include-paths libamba; }
