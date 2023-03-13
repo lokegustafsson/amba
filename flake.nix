@@ -58,12 +58,12 @@
               p.stable.tectonic
               p.texlab
             ];
-            IMPURE_RUST = 1;
             inherit (amba) AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
 
-            meta.description = "Rust, C++ and LaTeX tooling for developing AMBA";
             shellHook = "make -sC crates/libamba compile_flags.txt";
             IMPURE_RUST = 1;
+
+            meta.description = "Rust, C++ and LaTeX tooling for developing AMBA";
           } // libamba.all-include-paths);
         };
 
