@@ -17,9 +17,19 @@ impl ControlFlowGraph {
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
 		let modified = self.graph.update(from, to);
 
+		// Only edit the compressed graph if this was a new link
 		if modified {
-			// Do cleverly when performance actually needs it
-			self.compressed_graph = self.graph.clone();
+			// If both links exist we can just add this one link
+			if self.compressed_graph.0.contains_key(&to)
+				&& self.compressed_graph.0.contains_key(&from)
+			{
+				self.compressed_graph.update(from, to);
+			} else {
+				// but if either link is gone, we construct a new graph.
+				// TODO: Figure out how to split nodes
+				// and only compress new things.
+				self.compressed_graph = self.graph.clone();
+			}
 			self.compressed_graph.compress();
 		}
 
