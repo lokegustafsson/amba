@@ -28,6 +28,43 @@ impl Graph {
 		self.0.is_empty()
 	}
 
+	/// Insert a node connection. Returns true if the connection
+	/// is new.
+	pub fn update(&mut self, from: u64, to: u64) -> bool {
+		let mut modified = false;
+		self.0
+			.entry(from)
+			.and_modify(|node| {
+				modified |= node.to.insert(to);
+			})
+			.or_insert_with(|| {
+				modified = true;
+				Block {
+					id: from,
+					to: [to].into_iter().collect(),
+					from: Default::default(),
+				}
+			});
+		self.0
+			.entry(to)
+			.and_modify(|node| {
+				modified |= node.from.insert(from);
+			})
+			.or_insert_with(|| {
+				modified = true;
+				Block {
+					id: to,
+					to: Default::default(),
+					from: [from].into_iter().collect(),
+				}
+			});
+
+		modified
+	}
+
+	/// Compresses graph by merging every node pair that always go
+	/// from one to the other
+
 	pub fn compress(&mut self) {
 		let m = &mut self.0;
 
