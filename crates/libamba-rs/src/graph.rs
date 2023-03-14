@@ -28,6 +28,8 @@ impl Graph {
 		self.0.is_empty()
 	}
 
+	/// Insert a node connection. Returns true if the connection
+	/// is new.
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
 		let mut modified = false;
 		self.0
@@ -60,6 +62,8 @@ impl Graph {
 		modified
 	}
 
+	/// Compresses graph by merging every node pair that always go
+	/// from one to the other
 	pub fn compress(&mut self) {
 		let m = &mut self.0;
 
