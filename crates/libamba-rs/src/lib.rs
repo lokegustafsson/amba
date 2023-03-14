@@ -1,7 +1,4 @@
-#[repr(C)]
-struct ControlFlowGraph {}
-
 #[no_mangle]
-pub extern "C" fn four() -> i32 {
-	4
+pub extern "C" fn rust_main() -> std::ffi::c_int {
+	0
 }
