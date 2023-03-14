@@ -63,13 +63,14 @@ fn main() -> ExitCode {
 		Some(dir) => PathBuf::from(dir),
 		None => dirs::data_dir().unwrap().join("amba"),
 	};
-	let dependencies_dir = &match env::var_os("AMBA_DEPENDENCIES_DIR") {
+	let dependencies_dir = &match env::var_os("RUN_TIME_AMBA_DEPENDENCIES_DIR") {
 		Some(dir) => PathBuf::from(dir),
-		None => PathBuf::from(env!("AMBA_DEPENDENCIES_DIR")),
+		None => PathBuf::from(env!("COMPILE_TIME_AMBA_DEPENDENCIES_DIR")),
 	};
 
 	tracing::info!(debug_assertions = cfg!(debug_assertions));
 	tracing::info!(AMBA_DEPENDENCIES_DIR = ?dependencies_dir);
+	// tracing::info!(COMPILE_TIME_DEPENDENCIES_DIR = ?dependencies_dir);
 	tracing::info!(AMBA_BUILD_GUEST_IMAGES_SCRIPT);
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
 	tracing::info!(?args);
