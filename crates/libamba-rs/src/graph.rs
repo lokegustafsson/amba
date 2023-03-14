@@ -294,12 +294,9 @@ mod test {
 	fn short_line() {
 		#[rustfmt::skip]
 		let mut graph = Graph(
-			[
-				(0, (0, [], [1]).into()),
-				(1, (1, [0], []).into()),
-			]
-			.into_iter()
-			.collect(),
+			[(0, (0, [], [1]).into()), (1, (1, [0], []).into())]
+				.into_iter()
+				.collect(),
 		);
 		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
 		graph.verify();
