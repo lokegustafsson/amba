@@ -1,3 +1,5 @@
+pub mod graph;
+
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
 	#[no_mangle]
