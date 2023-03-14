@@ -14,9 +14,9 @@ let
     name = "test-amba";
     text = ''
       if [[ -v AMBA_DATA_DIR && -d $AMBA_DATA_DIR ]]; then
-        ${amba.rust.packages.amba}/bin/amba init --download
-      else
         echo "Amba already setup"
+      else
+        ${amba.rust.packages.amba}/bin/amba init --download
       fi
       ${amba.rust.packages.amba}/bin/amba run ${hello}/bin/hello
     '';
