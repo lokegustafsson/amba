@@ -1,7 +1,6 @@
 #![allow(unsafe_code)]
 
 pub mod graph;
-pub mod lin_graph;
 pub mod control_flow;
 
 use control_flow::ControlFlowGraph;

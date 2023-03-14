@@ -31,45 +31,48 @@ impl Graph {
 	pub fn compress(&mut self) {
 		let m = &mut self.0;
 
-		// Merge any nodes (x, y) where x always goes to y and
-		// y always comes from x
-		let mut to_merge = m
+		// Visit every node in arbirtrary order.
+		// We have to check (a, b) AND (b, a) seperately
+		//  because we have a directed *cyclic* graph.
+		// Following a depth-first order would just require
+		//  a visited collection for no benefit.
+		// We have to traverse the graph twice anyway because
+		//  of the borrow checker.
+		// The first value is always the smallest and the
+		//  merged node will take the id of the smallest of
+		//  the parents.
+		let to_merge = m
 			.values()
 			.filter(|l| l.from.len() == 1)
 			.map(|l| (l, &m[l.from.iter().next().unwrap()]))
 			.filter(|(_, r)| r.to.len() == 1)
-			.map(|(l, r)| (l.id.min(r.id), l.id.max(r.id)))
-			.collect::<Vec<_>>();
+			.map(|(l, r)| (l.id, r.id))
+			.collect::<Set<_>>();
 
-		// Sort pairs and make sure that a node is always
-		// referred to by its merged name afterwards
-		to_merge.sort_unstable_by(|x, y| x.cmp(y).reverse());
-		for i in 1..to_merge.len() {
-			let (done, to_do) = to_merge.split_at_mut(i);
-			let (to, from) = done[i - 1];
-			for (x, y) in to_do.iter_mut() {
-				if *x == from {
-					*x = to;
-				}
-				if *y == from {
-					*y = to;
-				}
+		let mut translation_map = Map::new();
+		fn translate(key: u64, map: &Map<u64, u64>) -> u64 {
+			match map.get(&key) {
+				Some(k) => translate(*k, map),
+				None => key,
 			}
 		}
 
-		// We always merge two nodes to the lowest one's id.
-		// We can merge nodes highest first to make sure we
-		// don't have any references that outlive the node.
-		for (l, r) in to_merge.into_iter() {
-			// Don't merge cycles
-			if self.do_loop(l, r) {
-				continue;
-			}
-			self.merge_nodes(l, r);
+		for (mut l, mut r) in to_merge.into_iter() {
+			l = translate(l, &translation_map);
+			r = translate(r, &translation_map);
+
+			let x = l.min(r);
+			let y = l.max(r);
+			self.merge_nodes(x, y);
+
+			translation_map.insert(l, x);
+			translation_map.insert(r, x);
+			translation_map.insert(y, x);
+			translation_map.remove(&x);
 		}
 	}
 
-	fn do_loop(&self, l: u64, r: u64) -> bool {
+	fn are_loop(&self, l: u64, r: u64) -> bool {
 		if l == r {
 			return true;
 		}
@@ -89,6 +92,7 @@ impl Graph {
 		assert!(self.0.contains_key(&l));
 		assert!(self.0.contains_key(&r));
 
+		let are_loop = self.are_loop(l, r);
 		let map = &mut self.0;
 
 		// Take the union of both nodes' input and then remove
@@ -109,6 +113,12 @@ impl Graph {
 		}
 		l_ref.from.remove(&l);
 		l_ref.from.remove(&r);
+
+		// Restore loop if they were a loop beforehand
+		if are_loop {
+			l_ref.from.insert(l);
+			l_ref.to.insert(l);
+		}
 
 		// Remove the right node from the graph
 		map.remove(&r);
@@ -527,11 +537,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
-			[(0, (0, [1], [1]).into()), (1, (1, [0], [0]).into())]
-				.into_iter()
-				.collect(),
-		);
+		let expected = Graph([(0, (0, [0], [0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -556,11 +562,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
-			[(0, (0, [1], [1]).into()), (1, (1, [0], [0]).into())]
-				.into_iter()
-				.collect(),
-		);
+		let expected = Graph([(0, (0, [0], [0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
