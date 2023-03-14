@@ -46,3 +46,13 @@ jobs:
       - name: Build Nix flake checks
         run: |
           nix build -L --accept-flake-config .#devShells.x86_64-linux.default
+  run-amba:
+    name: Run Hello world in amba
+    runs-on: [self-hosted, nixos, X64]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Nix flake checks
+        run: |
+          nix run -L --accept-flake-config .#test-amba
