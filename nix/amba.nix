@@ -26,7 +26,7 @@ let
     };
   };
 
-  AMBA_DEPENDENCIES_DIR = "${amba-deps}";
+  COMPILE_TIME_AMBA_DEPENDENCIES_DIR = "${amba-deps}";
   AMBA_BUILD_GUEST_IMAGES_SCRIPT =
     "${s2e.build-guest-images}/bin/build-guest-images";
 
@@ -46,7 +46,7 @@ let
       (mkNativeDep "s2e" [ p.clang_14 ])
 
       (mkEnvDep "amba" {
-        inherit AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
+        inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
       })
     ];
   };
@@ -79,10 +79,10 @@ let
         target/impure-amba-deps/share/libs2e/libs2e-x86_64-*.so
 
       echo 'Running amba'
-      AMBA_DEPENDENCIES_DIR="$PWD""/target/impure-amba-deps" ${rust.packages.amba}/bin/amba "$@"
+      RUN_TIME_AMBA_DEPENDENCIES_DIR="$PWD""/target/impure-amba-deps" ${rust.packages.amba}/bin/amba "$@"
     '';
   };
 in {
-  inherit AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT amba-deps rust
+  inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT amba-deps rust
     impure-amba;
 }
