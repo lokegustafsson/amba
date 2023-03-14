@@ -108,6 +108,9 @@ impl Graph {
 		}
 	}
 
+	/// Version of the compression function that will only compress around an update
+	pub fn compress_with_hint(&mut self, from: u64, to: u64) { todo!() }
+
 	fn are_loop(&self, l: u64, r: u64) -> bool {
 		if l == r {
 			return true;
