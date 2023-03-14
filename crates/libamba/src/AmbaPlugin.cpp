@@ -68,18 +68,14 @@ void AmbaPlugin::translateInstructionStart(
 	/*
 	const auto inst = amba::readInstruction(state, pc);
 	if (inst.isCall()) {
-		/*
 		signal->connect(sigc::mem_fun(
 			this->m_heap_leak,
 			&heap_leak::HeapLeak::onMalloc
 		));
-		*/
-		/*
 		signal->connect(sigc::mem_fun(
 			this->m_heap_leak,
 			&heap_leak::HeapLeak::onFree
 		));
-		*/
 	}
 	if (inst.isDeref()) {
 		signal->connect(sigc::mem_fun(
