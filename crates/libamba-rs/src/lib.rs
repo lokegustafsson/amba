@@ -19,6 +19,16 @@ mod ffi {
 	}
 
 	#[no_mangle]
+	pub unsafe extern "C" fn rust_update_graph(
+		ptr: *mut ControlFlowGraph,
+		from: u64,
+		to: u64,
+	) -> bool {
+		let cfg = &mut *ptr;
+		cfg.update(from, to)
+	}
+
+	#[no_mangle]
 	pub extern "C" fn rust_main() -> std::ffi::c_int {
 		println!("Hello world");
 		let p = rust_create_control_flow_graph();
