@@ -108,8 +108,26 @@ impl Graph {
 		}
 	}
 
-	/// Version of the compression function that will only compress around an update
-	pub fn compress_with_hint(&mut self, from: u64, to: u64) { todo!() }
+	/// Version of the compression function that will only compress around an update.
+	/// Returns true if graph changed.
+	pub fn compress_with_hint(&mut self, from: u64, to: u64) -> bool {
+		if !self.0[&from].to.contains(&to) || !self.0[&to].from.contains(&from) {
+			return false;
+		}
+		let mut this = from.min(to);
+		self.merge_nodes(from, to);
+		if self.0[&this].from.len() == 1 {
+			let from = *self.0[&this].from.iter().next().unwrap();
+			if self.compress_with_hint(from, this) {
+				this = from;
+			}
+		}
+		if self.0[&this].to.len() == 1 {
+			let to = *self.0[&this].to.iter().next().unwrap();
+			self.compress_with_hint(this, to);
+		}
+		true
+	}
 
 	fn are_loop(&self, l: u64, r: u64) -> bool {
 		if l == r {
