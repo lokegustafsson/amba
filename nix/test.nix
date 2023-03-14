@@ -21,6 +21,4 @@ let
       ${amba.rust.packages.amba}/bin/amba run ${hello}/bin/hello
     '';
   };
-in {
-  inherit test-amba;
-}
+in { inherit test-amba; }
