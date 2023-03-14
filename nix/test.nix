@@ -13,7 +13,7 @@ let
   test-amba = pkgs.writeShellApplication {
     name = "test-amba";
     text = ''
-      if [[ -d $AMBA_DATA_DIR ]]; then
+      if [[ -v AMBA_DATA_DIR && -d $AMBA_DATA_DIR ]]; then
         ${amba.rust.packages.amba}/bin/amba init --download
       else
         echo "Amba already setup"
