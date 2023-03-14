@@ -1,4 +1,4 @@
-use crate::graph::{Graph, BlockId};
+use crate::graph::{BlockId, Graph};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ControlFlowGraph {
