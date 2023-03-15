@@ -67,7 +67,7 @@ impl Graph {
 	pub fn compress(&mut self) {
 		let m = &mut self.0;
 
-		// Visit every node in arbirtrary order.
+		// Visit every node in arbitrary order.
 		// We have to check (a, b) AND (b, a) seperately
 		//  because we have a directed *cyclic* graph.
 		// Following a depth-first order would just require
