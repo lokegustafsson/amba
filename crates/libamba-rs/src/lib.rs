@@ -33,11 +33,17 @@ mod ffi {
 		from: u64,
 		to: u64,
 	) -> bool {
-		(&mut *ptr).update(from, to)
+		let cfg = &mut *ptr;
+		cfg.update(from, to)
 	}
 
 	#[no_mangle]
-	pub unsafe extern "C" fn rust_print_graph_size(ptr: *mut ControlFlowGraph) {}
+	pub unsafe extern "C" fn rust_print_graph_size(
+		ptr: *mut ControlFlowGraph,
+	) {
+		let cfg = &*ptr;
+		println!("{cfg}");
+	}
 
 	#[no_mangle]
 	pub extern "C" fn rust_main() -> std::ffi::c_int {
