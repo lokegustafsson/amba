@@ -39,7 +39,7 @@
         s2e = import ./nix/s2e { inherit lib pkgs; };
         libamba = import ./nix/libamba.nix { inherit lib pkgs s2e; };
         amba = import ./nix/amba.nix { inherit lib pkgs s2e libamba; };
-        test = import ./nix/test.nix {inherit lib pkgs amba; };
+        test = import ./nix/test.nix { inherit lib pkgs amba; };
       in {
         devShells = {
           default = amba.rust.rustPkgs.workspaceShell ({
