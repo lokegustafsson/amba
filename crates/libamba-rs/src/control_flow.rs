@@ -1,21 +1,40 @@
+use std::{
+	fmt,
+	time::{Duration, Instant},
+};
+
 use crate::graph::{BlockId, Graph};
 
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ControlFlowGraph {
-	graph: Graph,
-	compressed_graph: Graph,
-	last: BlockId,
+	pub(crate) graph: Graph,
+	pub(crate) compressed_graph: Graph,
+	pub(crate) last: BlockId,
+	pub(crate) updates: usize,
+	pub(crate) rebuilds: usize,
+	pub(crate) spawned_at: Instant,
+	pub(crate) rebuilding_time: Duration,
 }
 
 impl ControlFlowGraph {
 	pub fn new() -> Self {
-		Default::default()
+		ControlFlowGraph {
+			graph: Graph::default(),
+			compressed_graph: Graph::default(),
+			last: 0,
+			updates: 0,
+			rebuilds: 0,
+			spawned_at: std::time::Instant::now(),
+			rebuilding_time: Duration::new(0, 0),
+		}
 	}
 
 	/// Insert a node connection. Returns true if the connection
 	/// is new.
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
 		let modified = self.graph.update(from, to);
+		self.updates += 1;
+		return true;
 
 		// Only edit the compressed graph if this was a new link
 		if modified {
@@ -29,8 +48,11 @@ impl ControlFlowGraph {
 				// TODO: Figure out how to split nodes
 				// and only compress new things.
 				self.compressed_graph = self.graph.clone();
+				self.rebuilds += 1;
 			}
+			let now = Instant::now();
 			self.compressed_graph.compress();
+			self.rebuilding_time += Instant::now() - now;
 		}
 
 		modified
