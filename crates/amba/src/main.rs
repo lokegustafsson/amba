@@ -38,6 +38,8 @@ pub struct RunArgs {
 	host_path_to_executable: PathBuf,
 	#[arg(short, long)]
 	debugger: bool,
+	#[arg(short, long)]
+	qmp: bool,
 }
 
 /// The nix store path of the script that builds guest images.
