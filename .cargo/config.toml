@@ -79,4 +79,5 @@ rustflags = [
     "-Aclippy::single-match",
     "-Aclippy::too-many-arguments",
     "-Aclippy::unused-self",
+    "-Aclippy::explicit_into_iter_loop",
 ]
