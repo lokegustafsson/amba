@@ -26,6 +26,7 @@ class AmbaPlugin : public Plugin {
 	void initialize();
 
 	TranslationFunction translateInstructionStart;
+	TranslationFunction translateBlockStart;
 
   protected:
 	heap_leak::HeapLeak m_heap_leak;
