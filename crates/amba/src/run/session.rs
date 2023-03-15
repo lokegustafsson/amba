@@ -64,18 +64,7 @@ impl S2EConfig {
 	/// Default template parameters. Update this to change the S2E run time
 	/// configuration.
 	pub fn new(session_dir: &Path, executable_file_name: &OsStr) -> Self {
-		// Lua strings are arbitrary byte sequences. We already only support unix. On
-		// unix, `OsStr` is an arbitrary byte sequence.
-		let executable_file_name: Vec<u8> =
-			<OsStr as std::os::unix::ffi::OsStrExt>::as_bytes(executable_file_name)
-				.escape_ascii()
-				.collect();
-		if !executable_file_name.is_ascii() {
-			unreachable!(
-				"should be ascii after escaping: executable_file_name='{executable_file_name:?}'"
-			);
-		}
-		let executable_file_name = String::from_utf8(executable_file_name).unwrap();
+		let executable_file_name = crate::util::os_str_to_escaped_ascii(executable_file_name);
 
 		Self {
 			creation_time: "CREATION_TIME",

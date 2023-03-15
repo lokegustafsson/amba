@@ -23,6 +23,7 @@ pub fn run(
 	data_dir: &Path,
 	RunArgs {
 		host_path_to_executable,
+		debugger,
 	}: RunArgs,
 ) -> Result<(), ()> {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
@@ -59,6 +60,7 @@ pub fn run(
 	};
 	let arch = "x86_64";
 
+	let gdb = &dependencies_dir.join("bin/gdb");
 	let qemu = &dependencies_dir.join(format!("bin/qemu-system-{arch}"));
 	let libs2e_dir = &dependencies_dir.join("share/libs2e");
 	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
@@ -69,6 +71,8 @@ pub fn run(
 
 	let status = run_qemu(
 		cmd,
+		debugger,
+		gdb,
 		qemu,
 		session_dir,
 		libs2e,
@@ -87,6 +91,8 @@ pub fn run(
 }
 fn run_qemu(
 	cmd: &mut Cmd,
+	debugger: bool,
+	gdb: &Path,
 	qemu: &Path,
 	session_dir: &Path,
 	libs2e: &Path,
@@ -96,61 +102,100 @@ fn run_qemu(
 	image: &Path,
 	serial_out: &Path,
 ) -> ExitStatus {
+	assert!(gdb.exists());
 	assert!(qemu.exists());
 	assert!(libs2e.exists());
 	assert!(s2e_config.exists());
 	assert!(libs2e_dir.exists());
 
-	let mut command = Command::new(qemu);
-	command
-		.current_dir(session_dir)
-		.env("LD_PRELOAD", libs2e)
-		.env("S2E_CONFIG", s2e_config)
-		.env("S2E_SHARED_DIR", libs2e_dir)
-		.env("S2E_MAX_PROCESSES", max_processes.to_string())
-		.env("S2E_UNBUFFERED_STREAM", "1");
+	let mut command = if debugger {
+		// Set env vars within GDB, run QEMU in GDB
+		cmd.write(session_dir.join("gdb.ini"), {
+			use std::fmt::Write;
+			let mut init = String::new();
+			writeln!(init, "handle SIGUSR1 noprint").unwrap();
+			writeln!(init, "handle SIGUSR2 noprint").unwrap();
+			writeln!(init, "set disassembly-flavor intel").unwrap();
+			writeln!(init, "set print pretty on").unwrap();
+			for (k, v) in [
+				(
+					"LD_PRELOAD",
+					crate::util::os_str_to_escaped_ascii(libs2e),
+				),
+				(
+					"S2E_CONFIG",
+					crate::util::os_str_to_escaped_ascii(s2e_config),
+				),
+				(
+					"S2E_SHARED_DIR",
+					crate::util::os_str_to_escaped_ascii(libs2e_dir),
+				),
+				("S2E_MAX_PROCESSES", max_processes.to_string()),
+				("S2E_UNBUFFERED_STREAM", "1".to_owned()),
+			] {
+				writeln!(init, "set environment {k}={v}").unwrap();
+			}
+			init
+		});
+		let mut command = Command::new(gdb);
+		command.args(["--init-command=gdb.ini", "--args"]).arg(qemu);
+		command
+	} else {
+		// Set env vars directly, run QEMU
+		let mut command = Command::new(qemu);
+		command
+			.env("LD_PRELOAD", libs2e)
+			.env("S2E_CONFIG", s2e_config)
+			.env("S2E_SHARED_DIR", libs2e_dir)
+			.env("S2E_MAX_PROCESSES", max_processes.to_string())
+			.env("S2E_UNBUFFERED_STREAM", "1");
+		command
+	};
+	command.current_dir(session_dir);
+
+	// QEMU arguments
 	if max_processes > 1 {
 		command.arg("-nographic");
 	}
-	cmd.command_spawn_wait(
-		command
-			.arg("-drive")
-			.arg({
-				let mut line = OsString::new();
-				line.push("file=");
-				line.push(image);
-				{
-					let bytes = <OsStr as std::os::unix::ffi::OsStrExt>::as_bytes(image.as_ref());
-					assert!(!bytes.contains(&b','));
-				}
-				line.push(",format=s2e,cache=writeback");
-				line
-			})
-			.args([
-				"-k",
-				"en-us",
-				"-monitor",
-				"null",
-				"-m",
-				"256M",
-				"-enable-kvm",
-				"-serial",
-			])
-			.arg({
-				let mut line = OsString::new();
-				line.push("file:");
-				line.push(serial_out);
-				line
-			})
-			.args([
-				"-net",
-				"none",
-				"-net",
-				"nic,model=e1000",
-				"-loadvm",
-				"ready",
-			]),
-	)
+	command
+		.arg("-drive")
+		.arg({
+			let mut line = OsString::new();
+			line.push("file=");
+			line.push(image);
+			{
+				let bytes = <OsStr as std::os::unix::ffi::OsStrExt>::as_bytes(image.as_ref());
+				assert!(!bytes.contains(&b','));
+			}
+			line.push(",format=s2e,cache=writeback");
+			line
+		})
+		.args([
+			"-k",
+			"en-us",
+			"-monitor",
+			"null",
+			"-m",
+			"256M",
+			"-enable-kvm",
+			"-serial",
+		])
+		.arg({
+			let mut line = OsString::new();
+			line.push("file:");
+			line.push(serial_out);
+			line
+		})
+		.args([
+			"-net",
+			"none",
+			"-net",
+			"nic,model=e1000",
+			"-loadvm",
+			"ready",
+		]);
+	// Run subprocess
+	cmd.command_spawn_wait(&mut command)
 }
 fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
 	let version_file = &data_dir.join("version.txt");
