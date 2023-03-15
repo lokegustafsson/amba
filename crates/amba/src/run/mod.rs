@@ -7,9 +7,13 @@ use std::{
 	os::unix::process::CommandExt,
 	path::Path,
 	process::{self, Command, ExitStatus},
+	thread,
+	time::Duration,
+	net::TcpStream
 };
 
 use chrono::offset::Local;
+use qapi::{qmp, Qmp};
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
@@ -27,6 +31,7 @@ pub fn run(
 	RunArgs {
 		host_path_to_executable,
 		debugger,
+		qmp,
 	}: RunArgs,
 ) -> Result<(), ()> {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
@@ -71,25 +76,39 @@ pub fn run(
 	let image = &data_dir.join("images/ubuntu-22.04-x86_64/image.raw.s2e");
 	let serial_out = &session_dir.join("serial.txt");
 
-	let status = run_qemu(
-		cmd,
-		debugger,
-		qemu,
-		session_dir,
-		libs2e,
-		libs2e_dir,
-		s2e_config,
-		max_processes,
-		image,
-		serial_out,
-	);
-	if status.success() {
-		Ok(())
-	} else {
-		tracing::error!(?status, "qemu exited with error code");
-		Err(())
-	}
+	const TCP_SOCKET: &str = "127.0.0.1:3836";
+
+	thread::scope(|s| {
+		let join_handle = s.spawn(|| {
+			let status = run_qemu(
+				cmd,
+				debugger,
+				qemu,
+				session_dir,
+				libs2e,
+				libs2e_dir,
+				s2e_config,
+				max_processes,
+				image,
+				serial_out,
+				(qmp, TCP_SOCKET),
+			);
+			if status.success() {
+				Ok(())
+			} else {
+				tracing::error!(?status, "qemu exited with error code");
+				Err(())
+			}
+		});
+		if qmp {
+			thread::sleep(Duration::from_millis(1000));
+			tracing::trace!(TCP_SOCKET = ?TCP_SOCKET, "Calling run_qmp with ");
+			run_qmp(TCP_SOCKET);
+		}
+		join_handle.join().unwrap()
+	})
 }
+
 fn run_qemu(
 	cmd: &mut Cmd,
 	debugger: bool,
@@ -101,6 +120,7 @@ fn run_qemu(
 	max_processes: u16,
 	image: &Path,
 	serial_out: &Path,
+	(qmp, socket): (bool, &str),
 ) -> ExitStatus {
 	assert!(qemu.exists());
 	assert!(libs2e.exists());
@@ -143,6 +163,11 @@ fn run_qemu(
 	if max_processes > 1 {
 		command.arg("-nographic");
 	}
+	if qmp {
+		let qmp_flag_value = format!("tcp:{},server,nowait", socket);
+		tracing::trace!(?qmp_flag_value, "using -qmp flag");
+		command.args(["-qmp", &qmp_flag_value]);
+	}
 	command
 		.arg("-drive")
 		.arg({
@@ -182,6 +207,27 @@ fn run_qemu(
 		]);
 	cmd.command_spawn_wait(&mut command)
 }
+
+fn run_qmp(socket: &str) {
+	let stream = TcpStream::connect(socket).expect("Failed to connect to socket");
+	let mut qmp = Qmp::from_stream(&stream);
+
+	let info = qmp.handshake().expect("handshake failed");
+	tracing::info!(?info, "QMP info");
+
+	let status = qmp.execute(&qmp::query_status {}).unwrap();
+	tracing::info!(?status, "VCPU status");
+
+	loop {
+		qmp.nop().unwrap();
+		for event in qmp.events() {
+			tracing::trace!(?event, "Got event");
+		}
+
+		thread::sleep(Duration::from_micros(100));
+	}
+}
+
 fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
 	let version_file = &data_dir.join("version.txt");
 	let version = version_file
