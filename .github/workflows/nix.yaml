@@ -1,3 +1,6 @@
+# NOTE: Our CI runs on a persistent nix-enabled self hosted server.
+# NOTE: Talk to Loke before/when doing significant changes to the CI workload.
+
 name: self-hosted-nix-ci
 
 on: push
@@ -6,53 +9,44 @@ jobs:
   build-s2e:
     name: Build S2E
     runs-on: [self-hosted, nixos, X64]
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Build Nix flake checks
+      - name: nix build s2e
         run: |
           nix build -L --accept-flake-config .#s2e
 
   build-amba-lib:
     name: Build LIBAMBA
     runs-on: [self-hosted, nixos, X64]
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Build Nix flake checks
+      - name: nix build libamba
         run: |
           nix build -L --accept-flake-config .#libamba
 
   build-amba:
     name: Build AMBA
     runs-on: [self-hosted, nixos, X64]
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Build Nix flake checks
+      - name: nix build amba
         run: |
           nix build -L --accept-flake-config .#amba
 
   build-devshell:
     name: Build AMBA devshell
     runs-on: [self-hosted, nixos, X64]
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Build Nix flake checks
+      - name: nix build devshell
         run: |
           nix build -L --accept-flake-config .#devShells.x86_64-linux.default
-  run-amba:
-    name: Run Hello world in amba
-    runs-on: [self-hosted, nixos, X64]
 
+  test-amba-run:
+    name: Run AMBA on musl-hello-world
+    runs-on: [self-hosted, nixos, X64, impure-persistent-amba-data-dir]
     steps:
       - uses: actions/checkout@v3
-
-      - name: Build Nix flake checks
+      - name: nix run test-amba
         run: |
           nix run -L --accept-flake-config .#test-amba
