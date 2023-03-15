@@ -1,9 +1,12 @@
 //! The run subcommand
 
+#![allow(unsafe_code)]
+
 use std::{
 	ffi::{OsStr, OsString},
+	os::unix::process::CommandExt,
 	path::Path,
-	process::{Command, ExitStatus},
+	process::{self, Command, ExitStatus},
 };
 
 use chrono::offset::Local;
@@ -23,6 +26,7 @@ pub fn run(
 	data_dir: &Path,
 	RunArgs {
 		host_path_to_executable,
+		debugger,
 	}: RunArgs,
 ) -> Result<(), ()> {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
@@ -69,6 +73,7 @@ pub fn run(
 
 	let status = run_qemu(
 		cmd,
+		debugger,
 		qemu,
 		session_dir,
 		libs2e,
@@ -87,6 +92,7 @@ pub fn run(
 }
 fn run_qemu(
 	cmd: &mut Cmd,
+	debugger: bool,
 	qemu: &Path,
 	session_dir: &Path,
 	libs2e: &Path,
@@ -109,48 +115,72 @@ fn run_qemu(
 		.env("S2E_SHARED_DIR", libs2e_dir)
 		.env("S2E_MAX_PROCESSES", max_processes.to_string())
 		.env("S2E_UNBUFFERED_STREAM", "1");
+
+	if debugger {
+		// Before exec, and hence actually starting QEMU, the child process sends
+		// SIGSTOP to itself. We can then start debugging by attaching to the QEMU pid
+		// and sending SIGCONT
+		// SAFETY: `raise` and `write` are async-safe. We do not allocate memory.
+		unsafe {
+			let mut buf = String::with_capacity(256);
+			command.pre_exec(move || {
+				use std::fmt::Write;
+
+				let _ = writeln!(
+					buf,
+					"[pre-exec before SIGSTOP] stopped with pid={}",
+					process::id()
+				);
+
+				nix::unistd::write(2, buf.as_ref())?;
+				nix::sys::signal::raise(nix::sys::signal::Signal::SIGSTOP)?;
+				nix::unistd::write(2, b"[pre-exec after SIGSTOP] resuming!\n")?;
+
+				Ok(())
+			});
+		}
+	}
 	if max_processes > 1 {
 		command.arg("-nographic");
 	}
-	cmd.command_spawn_wait(
-		command
-			.arg("-drive")
-			.arg({
-				let mut line = OsString::new();
-				line.push("file=");
-				line.push(image);
-				{
-					let bytes = <OsStr as std::os::unix::ffi::OsStrExt>::as_bytes(image.as_ref());
-					assert!(!bytes.contains(&b','));
-				}
-				line.push(",format=s2e,cache=writeback");
-				line
-			})
-			.args([
-				"-k",
-				"en-us",
-				"-monitor",
-				"null",
-				"-m",
-				"256M",
-				"-enable-kvm",
-				"-serial",
-			])
-			.arg({
-				let mut line = OsString::new();
-				line.push("file:");
-				line.push(serial_out);
-				line
-			})
-			.args([
-				"-net",
-				"none",
-				"-net",
-				"nic,model=e1000",
-				"-loadvm",
-				"ready",
-			]),
-	)
+	command
+		.arg("-drive")
+		.arg({
+			let mut line = OsString::new();
+			line.push("file=");
+			line.push(image);
+			{
+				let bytes = <OsStr as std::os::unix::ffi::OsStrExt>::as_bytes(image.as_ref());
+				assert!(!bytes.contains(&b','));
+			}
+			line.push(",format=s2e,cache=writeback");
+			line
+		})
+		.args([
+			"-k",
+			"en-us",
+			"-monitor",
+			"null",
+			"-m",
+			"256M",
+			"-enable-kvm",
+			"-serial",
+		])
+		.arg({
+			let mut line = OsString::new();
+			line.push("file:");
+			line.push(serial_out);
+			line
+		})
+		.args([
+			"-net",
+			"none",
+			"-net",
+			"nic,model=e1000",
+			"-loadvm",
+			"ready",
+		]);
+	cmd.command_spawn_wait(&mut command)
 }
 fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
 	let version_file = &data_dir.join("version.txt");
