@@ -2,6 +2,7 @@
 
 use std::{
 	error::Error,
+	ffi::OsStr,
 	path::{Path, PathBuf},
 };
 
@@ -62,14 +63,27 @@ add_plugin("AmbaPlugin")
 impl S2EConfig {
 	/// Default template parameters. Update this to change the S2E run time
 	/// configuration.
-	pub fn new(session_dir: &Path, executable_file_name: &str) -> Self {
+	pub fn new(session_dir: &Path, executable_file_name: &OsStr) -> Self {
+		// Lua strings are arbitrary byte sequences. We already only support unix. On
+		// unix, `OsStr` is an arbitrary byte sequence.
+		let executable_file_name: Vec<u8> =
+			<OsStr as std::os::unix::ffi::OsStrExt>::as_bytes(executable_file_name)
+				.escape_ascii()
+				.collect();
+		if !executable_file_name.is_ascii() {
+			unreachable!(
+				"should be ascii after escaping: executable_file_name='{executable_file_name:?}'"
+			);
+		}
+		let executable_file_name = String::from_utf8(executable_file_name).unwrap();
+
 		Self {
 			creation_time: "CREATION_TIME",
 			project_dir: session_dir.to_owned(),
 			use_seeds: false,
 			project_name: "PROJECT_NAME",
-			modules: vec![[executable_file_name.to_owned()]],
-			processes: vec![executable_file_name.to_owned()],
+			modules: vec![[executable_file_name.clone()]],
+			processes: vec![executable_file_name.clone()],
 			use_cupa: true,
 			target_lua_template: "s2e-config.linux.lua",
 			custom_lua_string: CUSTOM_LUA_STRING,
@@ -78,8 +92,8 @@ impl S2EConfig {
 			target_bootstrap_template: "bootstrap.linux.sh",
 			target: Target {
 				arch: "x86_64",
-				name: executable_file_name.to_owned(),
-				names: vec![executable_file_name.to_owned()],
+				name: executable_file_name.clone(),
+				names: vec![executable_file_name],
 				args: Args {
 					symbolic_file_names: vec![],
 					resolved_args: vec![],
