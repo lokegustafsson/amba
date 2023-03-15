@@ -72,7 +72,6 @@
           inherit (libamba) libamba;
           inherit (amba) amba-deps impure-amba;
           inherit (s2e) s2e s2e-src build-guest-images guest-images-src;
-          inherit (test) test-amba;
           default = amba.rust.packages.amba;
         };
         apps = {
@@ -94,6 +93,10 @@
                 make -C doc/plan
                 make -C doc/report
               '');
+          };
+          test-amba = {
+            type = "app";
+            program = "${test.test-amba}/bin/test-amba";
           };
         };
       });
