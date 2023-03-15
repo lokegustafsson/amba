@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Numbers.h"
+#include "Amba.h"
 
 struct ControlFlowGraph;
 
@@ -20,6 +21,8 @@ class ControlFlow {
   public:
 	ControlFlow();
 	~ControlFlow();
+
+	amba::ExecutionFunction onBlockStart;
   protected:
 	u64 m_last;
 	ControlFlowGraph *m_cfg;

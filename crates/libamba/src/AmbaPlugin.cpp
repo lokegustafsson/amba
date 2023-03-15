@@ -5,6 +5,7 @@
 // Our headers
 #include "Amba.h"
 #include "AmbaPlugin.h"
+#include "ControlFlow.h"
 #include "HeapLeak.h"
 
 namespace s2e {
@@ -33,6 +34,11 @@ void AmbaPlugin::initialize() {
 		.connect(sigc::mem_fun(
 			*this,
 			&AmbaPlugin::translateInstructionStart
+		));
+	core.onTranslateBlockStart
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::translateBlockStart
 		));
 
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
@@ -65,6 +71,18 @@ void AmbaPlugin::translateInstructionStart(
 		));
 	}
 	*/
+}
+
+void AmbaPlugin::translateBlockStart(
+	ExecutionSignal *signal,
+	S2EExecutionState *state,
+	TranslationBlock *tb,
+	u64 pc
+) {
+	signal->connect(sigc::mem_fun(
+		this->m_control_flow,
+		&control_flow::ControlFlow::onBlockStart
+	));
 }
 
 } // namespace plugins
