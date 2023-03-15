@@ -9,7 +9,6 @@ let
       rsync -a ${s2e.s2e}/share/libs2e/* $out/share/libs2e/
       rsync -a ${s2e.s2e}/bin/guest-tools* $out/bin/
       rsync -a ${s2e.s2e}/bin/qemu-system-* $out/bin/
-      ln -s ${pkgs.gdb}/bin/gdb $out/bin
     '';
     fixupPhase = ''
       chmod -R u+w $out/share/libs2e/*
