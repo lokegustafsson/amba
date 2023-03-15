@@ -3,6 +3,7 @@
 #include <s2e/Utils.h>
 
 // Our headers
+#include "Amba.h"
 #include "AmbaPlugin.h"
 #include "HeapLeak.h"
 
@@ -14,7 +15,12 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
-	{}
+{
+	auto self = this;
+	amba::debug_stream = [=](){ return &self->getDebugStream(); };
+	amba::info_stream = [=](){ return &self->getInfoStream(); };
+	amba::warning_stream = [=](){ return &self->getWarningsStream(); };
+}
 
 void AmbaPlugin::initialize() {
 	auto& debug = this->getDebugStream();
