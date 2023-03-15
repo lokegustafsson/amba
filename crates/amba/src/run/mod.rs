@@ -1,6 +1,7 @@
 //! The run subcommand
 
 use std::{
+	ffi::{OsStr, OsString},
 	path::Path,
 	process::{Command, ExitStatus},
 };
@@ -43,11 +44,7 @@ pub fn run(
 	cmd.create_dir_all(session_dir);
 	// Populate the `session_dir`
 	{
-		let executable_name = host_path_to_executable
-			.file_name()
-			.unwrap()
-			.to_str()
-			.unwrap();
+		let executable_name = host_path_to_executable.file_name().unwrap();
 		cmd.copy(
 			&host_path_to_executable,
 			session_dir.join(executable_name),
@@ -115,28 +112,45 @@ fn run_qemu(
 	if max_processes > 1 {
 		command.arg("-nographic");
 	}
-	cmd.command_spawn_wait(command.args([
-		"-drive",
-		&format!(
-			"file={},format=s2e,cache=writeback",
-			image.to_str().unwrap()
-		),
-		"-k",
-		"en-us",
-		"-monitor",
-		"null",
-		"-m",
-		"256M",
-		"-enable-kvm",
-		"-serial",
-		&format!("file:{}", serial_out.to_str().unwrap()),
-		"-net",
-		"none",
-		"-net",
-		"nic,model=e1000",
-		"-loadvm",
-		"ready",
-	]))
+	cmd.command_spawn_wait(
+		command
+			.arg("-drive")
+			.arg({
+				let mut line = OsString::new();
+				line.push("file=");
+				line.push(image);
+				{
+					let bytes = <OsStr as std::os::unix::ffi::OsStrExt>::as_bytes(image.as_ref());
+					assert!(!bytes.contains(&b','));
+				}
+				line.push(",format=s2e,cache=writeback");
+				line
+			})
+			.args([
+				"-k",
+				"en-us",
+				"-monitor",
+				"null",
+				"-m",
+				"256M",
+				"-enable-kvm",
+				"-serial",
+			])
+			.arg({
+				let mut line = OsString::new();
+				line.push("file:");
+				line.push(serial_out);
+				line
+			})
+			.args([
+				"-net",
+				"none",
+				"-net",
+				"nic,model=e1000",
+				"-loadvm",
+				"ready",
+			]),
+	)
 }
 fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
 	let version_file = &data_dir.join("version.txt");
