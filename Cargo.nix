@@ -5,7 +5,6 @@ args@{
   release ? true,
   rootFeatures ? [
     "amba/default"
-    "dummy-dep/default"
     "libamba-rs/default"
     "s2e/default"
   ],
@@ -41,7 +40,6 @@ in
   cargo2nixVersion = "0.11.0";
   workspace = {
     amba = rustPackages.unknown.amba."0.1.0";
-    dummy-dep = rustPackages.unknown.dummy-dep."0.1.0";
     libamba-rs = rustPackages.unknown.libamba-rs."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
   };
@@ -118,6 +116,7 @@ in
       ctrlc = rustPackages."registry+https://github.com/rust-lang/crates.io-index".ctrlc."3.2.5" { inherit profileName; };
       dirs = rustPackages."registry+https://github.com/rust-lang/crates.io-index".dirs."4.0.0" { inherit profileName; };
       include_dir = rustPackages."registry+https://github.com/rust-lang/crates.io-index".include_dir."0.7.3" { inherit profileName; };
+      nix = rustPackages."registry+https://github.com/rust-lang/crates.io-index".nix."0.26.2" { inherit profileName; };
       regex = rustPackages."registry+https://github.com/rust-lang/crates.io-index".regex."1.7.1" { inherit profileName; };
       reqwest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.11.14" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
@@ -807,13 +806,6 @@ in
       ${ if hostPlatform.parsed.kernel.name == "redox" then "redox_users" else null } = rustPackages."registry+https://github.com/rust-lang/crates.io-index".redox_users."0.4.3" { inherit profileName; };
       ${ if hostPlatform.isWindows then "winapi" else null } = rustPackages."registry+https://github.com/rust-lang/crates.io-index".winapi."0.3.9" { inherit profileName; };
     };
-  });
-  
-  "unknown".dummy-dep."0.1.0" = overridableMkRustCrate (profileName: rec {
-    name = "dummy-dep";
-    version = "0.1.0";
-    registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/dummy-dep");
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".either."1.8.1" = overridableMkRustCrate (profileName: rec {
@@ -1619,6 +1611,19 @@ in
     ];
   });
   
+  "registry+https://github.com/rust-lang/crates.io-index".memoffset."0.7.1" = overridableMkRustCrate (profileName: rec {
+    name = "memoffset";
+    version = "0.7.1";
+    registry = "registry+https://github.com/rust-lang/crates.io-index";
+    src = fetchCratesIo { inherit name version; sha256 = "5de893c32cde5f383baa4c04c5d6dbdd735cfd4a794b0debdb2bb1b421da5ff4"; };
+    features = builtins.concatLists [
+      [ "default" ]
+    ];
+    buildDependencies = {
+      autocfg = buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".autocfg."1.1.0" { profileName = "__noProfile"; };
+    };
+  });
+  
   "registry+https://github.com/rust-lang/crates.io-index".miette."5.5.0" = overridableMkRustCrate (profileName: rec {
     name = "miette";
     version = "5.5.0";
@@ -1732,14 +1737,48 @@ in
     registry = "registry+https://github.com/rust-lang/crates.io-index";
     src = fetchCratesIo { inherit name version; sha256 = "bfdda3d196821d6af13126e40375cdf7da646a96114af134d5f417a9a1dc8e1a"; };
     features = builtins.concatLists [
+      [ "acct" ]
+      [ "aio" ]
+      [ "default" ]
+      [ "dir" ]
+      [ "env" ]
+      [ "event" ]
+      [ "feature" ]
       [ "fs" ]
+      [ "hostname" ]
+      [ "inotify" ]
+      [ "ioctl" ]
+      [ "kmod" ]
+      [ "memoffset" ]
+      [ "mman" ]
+      [ "mount" ]
+      [ "mqueue" ]
+      [ "net" ]
+      [ "personality" ]
+      [ "pin-utils" ]
+      [ "poll" ]
       [ "process" ]
+      [ "pthread" ]
+      [ "ptrace" ]
+      [ "quota" ]
+      [ "reboot" ]
+      [ "resource" ]
+      [ "sched" ]
       [ "signal" ]
+      [ "socket" ]
+      [ "term" ]
+      [ "time" ]
+      [ "ucontext" ]
+      [ "uio" ]
+      [ "user" ]
+      [ "zerocopy" ]
     ];
     dependencies = {
       bitflags = rustPackages."registry+https://github.com/rust-lang/crates.io-index".bitflags."1.3.2" { inherit profileName; };
       cfg_if = rustPackages."registry+https://github.com/rust-lang/crates.io-index".cfg-if."1.0.0" { inherit profileName; };
       libc = rustPackages."registry+https://github.com/rust-lang/crates.io-index".libc."0.2.139" { inherit profileName; };
+      ${ if !(hostPlatform.parsed.kernel.name == "redox") then "memoffset" else null } = rustPackages."registry+https://github.com/rust-lang/crates.io-index".memoffset."0.7.1" { inherit profileName; };
+      pin_utils = rustPackages."registry+https://github.com/rust-lang/crates.io-index".pin-utils."0.1.0" { inherit profileName; };
       static_assertions = rustPackages."registry+https://github.com/rust-lang/crates.io-index".static_assertions."1.1.0" { inherit profileName; };
     };
   });
