@@ -59,9 +59,11 @@
               p.texlab
             ];
             IMPURE_RUST = 1;
-            inherit (amba) COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
+            inherit (amba)
+              COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
 
-            meta.description = "Rust, C++ and LaTeX tooling for developing AMBA";
+            meta.description =
+              "Rust, C++ and LaTeX tooling for developing AMBA";
           } // libamba.all-include-paths);
         };
 
@@ -75,6 +77,21 @@
           s2e-env = {
             type = "app";
             program = "${s2e.s2e-env}/bin/s2e";
+          };
+          documents = {
+            type = "app";
+            program = builtins.toString
+              (pkgs.writeShellScript "build-documents" ''
+                export PATH=${
+                  lib.strings.makeBinPath [
+                    pkgs.coreutils
+                    pkgs.gnumake
+                    pkgs.stable.tectonic
+                  ]
+                }
+                make -C doc/plan
+                make -C doc/report
+              '');
           };
         };
       });
