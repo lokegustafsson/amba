@@ -1,5 +1,5 @@
 pub mod control_flow;
-mod disjoint_sets;
+pub mod disjoint_sets;
 pub mod graph;
 pub mod small_set;
 
@@ -33,7 +33,7 @@ mod ffi {
 		from: u64,
 		to: u64,
 	) -> bool {
-		false
+		(&mut *ptr).update(from, to)
 	}
 
 	#[no_mangle]
