@@ -5,6 +5,7 @@
 
 #include "HeapLeak.h"
 #include "Numbers.h"
+#include "ControlFlow.h"
 
 namespace s2e {
 namespace plugins {
@@ -28,6 +29,7 @@ class AmbaPlugin : public Plugin {
 
   protected:
 	heap_leak::HeapLeak m_heap_leak;
+	control_flow::ControlFlow m_control_flow;
 };
 
 } // namespace plugins
