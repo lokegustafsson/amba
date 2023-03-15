@@ -64,7 +64,6 @@ impl Graph {
 
 	/// Compresses graph by merging every node pair that always go
 	/// from one to the other
-
 	pub fn compress(&mut self) {
 		let m = &mut self.0;
 
