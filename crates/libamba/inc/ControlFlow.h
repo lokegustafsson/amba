@@ -21,6 +21,7 @@ class ControlFlow {
 	ControlFlow();
 	~ControlFlow();
   protected:
+	u64 m_last;
 	ControlFlowGraph *m_cfg;
 };
 
