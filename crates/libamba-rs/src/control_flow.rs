@@ -59,6 +59,25 @@ impl ControlFlowGraph {
 	}
 }
 
+impl fmt::Display for ControlFlowGraph {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let now = Instant::now();
+		let mut g = self.graph.clone();
+		g.compress();
+		let now2 = Instant::now();
+		write!(
+			f,
+			"\nNodes: {} ({})\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
+			g.len(),
+			self.graph.len(),
+			self.updates,
+			self.rebuilds,
+			now - self.spawned_at,
+			now2 - now,
+		)
+	}
+}
+
 #[cfg(test)]
 mod test {
 	use crate::control_flow::*;
