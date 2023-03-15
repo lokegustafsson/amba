@@ -9,7 +9,7 @@ let
     meta = {
       homepage = "https://github.com/S2E/s2e-env";
       description = "A tool to run S2E (not used by amba)";
-      license = licenses.gpl2Plus;
+      license = lib.licenses.gpl2Plus;
     };
 
     propagatedBuildInputs = let
