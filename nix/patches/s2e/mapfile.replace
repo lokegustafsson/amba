@@ -22,6 +22,8 @@
             llvm::raw_ostream::write*;
             s2e::CompiledPlugin::s_compiledPlugins;
             s2e::Plugin::getDebugStream*;
+            s2e::Plugin::getInfoStream*;
+            s2e::Plugin::getWarningsStream*;
             s2e::S2EExecutionStateMemory::read*;
             s2e::S2EExecutionStateRegisters::getCpuState*;
             sigc::connection::connection*;
