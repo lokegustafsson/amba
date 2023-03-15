@@ -1,6 +1,6 @@
 use std::{default::Default, mem};
 
-// Aliased so we can swap them to binary versions easily.
+// Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::HashSet<T>;
 pub(crate) type Map<K, V> = std::collections::HashMap<K, V>;
 pub(crate) type BlockId = u64;
