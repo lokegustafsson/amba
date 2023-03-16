@@ -101,16 +101,20 @@ impl Graph {
 		// world is one long straight line ends up never
 		// taking more than a single step.
 		let mut translation_map = Map::new();
-		fn translate(key: u64, map: &Map<u64, u64>) -> u64 {
+		fn translate(key: u64, map: &mut Map<u64, u64>) -> u64 {
 			match map.get(&key) {
-				Some(k) => translate(*k, map),
+				Some(k) => {
+					let res = translate(*k, map);
+					*map.get_mut(&key).unwrap() = res;
+					res
+				},
 				None => key,
 			}
 		}
 
 		for (mut l, mut r) in to_merge.into_iter() {
-			l = translate(l, &translation_map);
-			r = translate(r, &translation_map);
+			l = translate(l, &mut translation_map);
+			r = translate(r, &mut translation_map);
 
 			let x = l.min(r);
 			let y = l.max(r);
