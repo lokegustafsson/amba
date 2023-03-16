@@ -191,6 +191,19 @@ impl Graph {
 		let are_loop = self.are_loop(l, r);
 		let map = &mut self.0;
 
+		let combine_sets = |mut left_set: SmallU64Set, mut right_set: SmallU64Set| -> SmallU64Set {
+			if left_set.len() < right_set.len() {
+				mem::swap(&mut left_set, &mut right_set);
+			}
+			for node in right_set.into_iter().filter(|&x| x != l && x != r) {
+				left_set.insert(node);
+			}
+			left_set.remove(&l);
+			left_set.remove(&r);
+
+			left_set
+		};
+
 		// Take the union of both nodes' input and then remove
 		// the nodes themselves
 		let r_ = map.get_mut(&r).unwrap();
@@ -198,28 +211,20 @@ impl Graph {
 		let from_r = mem::take(&mut r_.from);
 		let of_r = mem::take(&mut r_.of);
 
-		let l_ref = map.get_mut(&l).unwrap();
+		let l_ = map.get_mut(&l).unwrap();
+		let to_l = mem::take(&mut l_.to);
+		let from_l = mem::take(&mut l_.from);
+		let of_l = mem::take(&mut l_.of);
 
-		for node in to_r.into_iter().filter(|&x| x != l && x != r) {
-			l_ref.to.insert(node);
-		}
-		l_ref.to.remove(&l);
-		l_ref.to.remove(&r);
 
-		for node in from_r.into_iter().filter(|&x| x != l && x != r) {
-			l_ref.from.insert(node);
-		}
-		l_ref.from.remove(&l);
-		l_ref.from.remove(&r);
-
-		for node in of_r.into_iter() {
-			l_ref.of.insert(node);
-		}
+		l_.to = combine_sets(to_l, to_r);
+		l_.from = combine_sets(from_l, from_r);
+		l_.of = combine_sets(of_l, of_r);
 
 		// Restore loop if they were a loop beforehand
 		if are_loop {
-			l_ref.from.insert(l);
-			l_ref.to.insert(l);
+			l_.from.insert(l);
+			l_.to.insert(l);
 		}
 
 		// Remove the right node from the graph
