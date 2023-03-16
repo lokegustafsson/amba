@@ -68,7 +68,7 @@ impl Graph {
 	}
 
 	/// Revert compression of nodes and then update their connections
-	pub fn revert_and_update(&mut self, from: u64, to: u64) -> bool {
+	pub fn revert_and_update(&mut self, source: &Graph, from: u64, to: u64) -> bool {
 		todo!()
 	}
 
@@ -1095,7 +1095,7 @@ mod test {
 		expected_2.verify();
 		graph.compress();
 		assert_eq!(&graph, &expected_1);
-		graph.revert_and_update(0, 3);
+		graph.revert_and_update(&Graph::new(), 0, 3);
 		graph.compress();
 		assert_eq!(&graph, &expected_2);
 	}
