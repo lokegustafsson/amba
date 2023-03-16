@@ -1127,6 +1127,8 @@ name = "libamba-rs"
 version = "0.1.0"
 dependencies = [
  "proptest",
+ "itertools 0.10.5",
+ "smallvec",
 ]
 
 [[package]]
