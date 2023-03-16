@@ -10,6 +10,7 @@ pub struct Block {
 	pub(crate) id: BlockId,
 	pub(crate) from: Set<BlockId>,
 	pub(crate) to: Set<BlockId>,
+	pub(crate) of: Set<BlockId>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -39,10 +40,12 @@ impl Graph {
 			})
 			.or_insert_with(|| {
 				modified = true;
+				let to = [to].into_iter().collect::<Set<_>>();
 				Block {
 					id: from,
-					to: [to].into_iter().collect(),
+					to: to.clone(),
 					from: Default::default(),
+					of: to,
 				}
 			});
 		self.0
@@ -52,10 +55,12 @@ impl Graph {
 			})
 			.or_insert_with(|| {
 				modified = true;
+				let from = [from].into_iter().collect::<Set<_>>();
 				Block {
 					id: to,
 					to: Default::default(),
-					from: [from].into_iter().collect(),
+					from: from.clone(),
+					of: from,
 				}
 			});
 
@@ -223,6 +228,7 @@ impl Graph {
 			id: requested_id,
 			to,
 			from,
+			of: [requested_id].into_iter().collect(),
 		};
 		self.0.insert(requested_id, block);
 
@@ -261,12 +267,15 @@ pub struct ControlFlowGraph {
 	last: BlockId,
 }
 
-impl<const N: usize, const M: usize> From<(BlockId, [BlockId; N], [BlockId; M])> for Block {
-	fn from((id, f, t): (BlockId, [BlockId; N], [BlockId; M])) -> Self {
+impl<const N: usize, const M: usize, const O: usize>
+	From<(BlockId, [BlockId; N], [BlockId; M], [BlockId; O])> for Block
+{
+	fn from((id, f, t, o): (BlockId, [BlockId; N], [BlockId; M], [BlockId; O])) -> Self {
 		Block {
 			id,
 			from: f.into_iter().collect(),
 			to: t.into_iter().collect(),
+			of: o.into_iter().collect(),
 		}
 	}
 }
@@ -280,14 +289,14 @@ mod test {
 	fn straight_line() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [1]).into()),
-				(1, (1, [0], [2]).into()),
-				(2, (2, [1], []).into()),
+				(0, (0, [], [1], [0]).into()),
+				(1, (1, [0], [2], [1]).into()),
+				(2, (2, [1], [], [2]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -300,14 +309,14 @@ mod test {
 	fn straight_line_rev() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1], []).into()),
-				(1, (1, [2], [0]).into()),
-				(2, (2, [], [1]).into()),
+				(0, (0, [1], [], [0]).into()),
+				(1, (1, [2], [0], [1]).into()),
+				(2, (2, [], [1], [2]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -320,11 +329,11 @@ mod test {
 	fn short_line() {
 		#[rustfmt::skip]
 		let mut graph = Graph(
-			[(0, (0, [], [1]).into()), (1, (1, [0], []).into())]
+			[(0, (0, [], [1], [0]).into()), (1, (1, [0], [], [1]).into())]
 				.into_iter()
 				.collect(),
 		);
-		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected = Graph([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -336,11 +345,11 @@ mod test {
 	#[test]
 	fn short_line_rev() {
 		let mut graph = Graph(
-			[(0, (0, [1], []).into()), (1, (1, [], [0]).into())]
+			[(0, (0, [1], [], [0]).into()), (1, (1, [], [0], [1]).into())]
 				.into_iter()
 				.collect(),
 		);
-		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected = Graph([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -357,10 +366,10 @@ mod test {
 	fn diamond() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [1, 2]).into()),
-				(1, (1, [0], [3]).into()),
-				(2, (2, [0], [3]).into()),
-				(3, (3, [1, 2], []).into()),
+				(0, (0, [], [1, 2], [0]).into()),
+				(1, (1, [0], [3], [1]).into()),
+				(2, (2, [0], [3], [2]).into()),
+				(3, (3, [1, 2], [], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -382,10 +391,10 @@ mod test {
 	fn diamond_rev() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1, 2], []).into()),
-				(1, (1, [3], [0]).into()),
-				(2, (2, [3], [0]).into()),
-				(3, (3, [], [1, 2]).into()),
+				(0, (0, [1, 2], [], [0]).into()),
+				(1, (1, [3], [0], [1]).into()),
+				(2, (2, [3], [0], [2]).into()),
+				(3, (3, [], [1, 2], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -407,23 +416,23 @@ mod test {
 	fn diamond_on_stick() {
 		let mut graph = Graph(
 			[
-				(0, (0, [4], [1, 2]).into()),
-				(1, (1, [0], [3]).into()),
-				(2, (2, [0], [3]).into()),
-				(3, (3, [1, 2], []).into()),
-				(4, (4, [5], [0]).into()),
-				(5, (5, [6], [4]).into()),
-				(6, (6, [], [5]).into()),
+				(0, (0, [4], [1, 2], [0]).into()),
+				(1, (1, [0], [3], [1]).into()),
+				(2, (2, [0], [3], [2]).into()),
+				(3, (3, [1, 2], [], [3]).into()),
+				(4, (4, [5], [0], [4]).into()),
+				(5, (5, [6], [4], [5]).into()),
+				(6, (6, [], [5], [6]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [], [1, 2]).into()),
-				(1, (1, [0], [3]).into()),
-				(2, (2, [0], [3]).into()),
-				(3, (3, [1, 2], []).into()),
+				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
+				(1, (1, [0], [3], [1]).into()),
+				(2, (2, [0], [3], [2]).into()),
+				(3, (3, [1, 2], [], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -444,23 +453,23 @@ mod test {
 	fn diamond_on_stick_rev() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1, 2], []).into()),
-				(1, (1, [3], [0]).into()),
-				(2, (2, [3], [0]).into()),
-				(3, (3, [6], [1, 2]).into()),
-				(4, (4, [], [5]).into()),
-				(5, (5, [4], [6]).into()),
-				(6, (6, [5], [3]).into()),
+				(0, (0, [1, 2], [], [0]).into()),
+				(1, (1, [3], [0], [1]).into()),
+				(2, (2, [3], [0], [2]).into()),
+				(3, (3, [6], [1, 2], [3]).into()),
+				(4, (4, [], [5], [4]).into()),
+				(5, (5, [4], [6], [5]).into()),
+				(6, (6, [5], [3], [6]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [1, 2], []).into()),
-				(1, (1, [3], [0]).into()),
-				(2, (2, [3], [0]).into()),
-				(3, (3, [], [1, 2]).into()),
+				(0, (0, [1, 2], [], [0]).into()),
+				(1, (1, [3], [0], [1]).into()),
+				(2, (2, [3], [0], [2]).into()),
+				(3, (3, [], [1, 2], [3, 4, 5, 6]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -483,23 +492,23 @@ mod test {
 	fn cross() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [2]).into()),
-				(2, (2, [0, 1], [3]).into()),
-				(3, (3, [2], [4, 5]).into()),
-				(4, (4, [3], []).into()),
-				(5, (5, [3], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [2], [1]).into()),
+				(2, (2, [0, 1], [3], [2]).into()),
+				(3, (3, [2], [4, 5], [3]).into()),
+				(4, (4, [3], [], [4]).into()),
+				(5, (5, [3], [], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [2]).into()),
-				(2, (2, [0, 1], [4, 5]).into()),
-				(4, (4, [2], []).into()),
-				(5, (5, [2], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [2], [1]).into()),
+				(2, (2, [0, 1], [4, 5], [2,3]).into()),
+				(4, (4, [2], [], [4]).into()),
+				(5, (5, [2], [], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -522,23 +531,23 @@ mod test {
 	fn cross_rev() {
 		let mut graph = Graph(
 			[
-				(0, (0, [2], []).into()),
-				(1, (1, [2], []).into()),
-				(2, (2, [3], [0, 1]).into()),
-				(3, (3, [4, 5], [2]).into()),
-				(4, (4, [], [3]).into()),
-				(5, (5, [], [3]).into()),
+				(0, (0, [2], [], [0]).into()),
+				(1, (1, [2], [], [1]).into()),
+				(2, (2, [3], [0, 1], [2]).into()),
+				(3, (3, [4, 5], [2], [3]).into()),
+				(4, (4, [], [3], [4]).into()),
+				(5, (5, [], [3], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [2], []).into()),
-				(1, (1, [2], []).into()),
-				(2, (2, [4, 5], [0, 1]).into()),
-				(4, (4, [], [2]).into()),
-				(5, (5, [], [2]).into()),
+				(0, (0, [2], [], [0]).into()),
+				(1, (1, [2], [], [1]).into()),
+				(2, (2, [4, 5], [0, 1], [2,3]).into()),
+				(4, (4, [], [2], [4]).into()),
+				(5, (5, [], [2], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -561,23 +570,23 @@ mod test {
 	fn cross_split() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [2]).into()),
-				(2, (2, [0, 1], [4, 5]).into()),
-				(4, (4, [2], []).into()),
-				(5, (5, [2], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [2], [1]).into()),
+				(2, (2, [0, 1], [4, 5], [2, 3]).into()),
+				(4, (4, [2], [], [4]).into()),
+				(5, (5, [2], [], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [2]).into()),
-				(2, (2, [0, 1], [3]).into()),
-				(3, (3, [2], [4, 5]).into()),
-				(4, (4, [3], []).into()),
-				(5, (5, [3], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [2], [1]).into()),
+				(2, (2, [0, 1], [3], [2]).into()),
+				(3, (3, [2], [4, 5], [3]).into()),
+				(4, (4, [3], [], [4]).into()),
+				(5, (5, [3], [], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -599,15 +608,19 @@ mod test {
 	fn cycle() {
 		let mut graph = Graph(
 			[
-				(0, (0, [3], [1]).into()),
-				(1, (1, [0], [2]).into()),
-				(2, (2, [1], [3]).into()),
-				(3, (3, [2], [0]).into()),
+				(0, (0, [3], [1], [0]).into()),
+				(1, (1, [0], [2], [1]).into()),
+				(2, (2, [1], [3], [2]).into()),
+				(3, (3, [2], [0], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [0], [0]).into())].into_iter().collect());
+		let expected = Graph(
+			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+				.into_iter()
+				.collect(),
+		);
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -624,15 +637,19 @@ mod test {
 	fn cycle_rev() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1], [3]).into()),
-				(1, (1, [2], [0]).into()),
-				(2, (2, [3], [1]).into()),
-				(3, (3, [0], [2]).into()),
+				(0, (0, [1], [3], [0]).into()),
+				(1, (1, [2], [0], [1]).into()),
+				(2, (2, [3], [1], [2]).into()),
+				(3, (3, [0], [2], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [0], [0]).into())].into_iter().collect());
+		let expected = Graph(
+			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+				.into_iter()
+				.collect(),
+		);
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -649,20 +666,20 @@ mod test {
 	fn v() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [3]).into()),
-				(2, (2, [0], [4]).into()),
-				(3, (3, [1], [4]).into()),
-				(4, (4, [2, 3], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [3], [1]).into()),
+				(2, (2, [0], [4], [2]).into()),
+				(3, (3, [1], [4], [3]).into()),
+				(4, (4, [2, 3], [], [4]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [], [4]).into()),
-				(1, (1, [], [4]).into()),
-				(4, (4, [0, 1], []).into()),
+				(0, (0, [], [4], [0, 2]).into()),
+				(1, (1, [], [4], [1, 3]).into()),
+				(4, (4, [0, 1], [], [4]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -679,14 +696,14 @@ mod test {
 	fn straight_line_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [1]).into()),
-				(1, (1, [0], [2]).into()),
-				(2, (2, [1], []).into()),
+				(0, (0, [], [1], [0]).into()),
+				(1, (1, [0], [2], [1]).into()),
+				(2, (2, [1], [], [2]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(0, 1);
@@ -699,14 +716,14 @@ mod test {
 	fn straight_line_rev_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1], []).into()),
-				(1, (1, [2], [0]).into()),
-				(2, (2, [], [1]).into()),
+				(0, (0, [1], [], [0]).into()),
+				(1, (1, [2], [0], [1]).into()),
+				(2, (2, [], [1], [2]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected = Graph([(0, (0, [], [], [0,1,2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(0, 1);
@@ -723,10 +740,10 @@ mod test {
 	fn diamond_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [1, 2]).into()),
-				(1, (1, [0], [3]).into()),
-				(2, (2, [0], [3]).into()),
-				(3, (3, [1, 2], []).into()),
+				(0, (0, [], [1, 2], [0]).into()),
+				(1, (1, [0], [3], [1]).into()),
+				(2, (2, [0], [3], [2]).into()),
+				(3, (3, [1, 2], [], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -748,10 +765,10 @@ mod test {
 	fn diamond_rev_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1, 2], []).into()),
-				(1, (1, [3], [0]).into()),
-				(2, (2, [3], [0]).into()),
-				(3, (3, [], [1, 2]).into()),
+				(0, (0, [1, 2], [], [0]).into()),
+				(1, (1, [3], [0], [1]).into()),
+				(2, (2, [3], [0], [2]).into()),
+				(3, (3, [], [1, 2], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -773,23 +790,23 @@ mod test {
 	fn diamond_on_stick_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [4], [1, 2]).into()),
-				(1, (1, [0], [3]).into()),
-				(2, (2, [0], [3]).into()),
-				(3, (3, [1, 2], []).into()),
-				(4, (4, [5], [0]).into()),
-				(5, (5, [6], [4]).into()),
-				(6, (6, [], [5]).into()),
+				(0, (0, [4], [1, 2], [0]).into()),
+				(1, (1, [0], [3], [1]).into()),
+				(2, (2, [0], [3], [2]).into()),
+				(3, (3, [1, 2], [], [3]).into()),
+				(4, (4, [5], [0], [4]).into()),
+				(5, (5, [6], [4], [5]).into()),
+				(6, (6, [], [5], [6]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [], [1, 2]).into()),
-				(1, (1, [0], [3]).into()),
-				(2, (2, [0], [3]).into()),
-				(3, (3, [1, 2], []).into()),
+				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
+				(1, (1, [0], [3], [1]).into()),
+				(2, (2, [0], [3], [2]).into()),
+				(3, (3, [1, 2], [], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -810,23 +827,23 @@ mod test {
 	fn diamond_on_stick_rev_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1, 2], []).into()),
-				(1, (1, [3], [0]).into()),
-				(2, (2, [3], [0]).into()),
-				(3, (3, [6], [1, 2]).into()),
-				(4, (4, [], [5]).into()),
-				(5, (5, [4], [6]).into()),
-				(6, (6, [5], [3]).into()),
+				(0, (0, [1, 2], [], [0]).into()),
+				(1, (1, [3], [0], [1]).into()),
+				(2, (2, [3], [0], [2]).into()),
+				(3, (3, [6], [1, 2], [3]).into()),
+				(4, (4, [], [5], [4]).into()),
+				(5, (5, [4], [6], [5]).into()),
+				(6, (6, [5], [3], [6]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [1, 2], []).into()),
-				(1, (1, [3], [0]).into()),
-				(2, (2, [3], [0]).into()),
-				(3, (3, [], [1, 2]).into()),
+				(0, (0, [1, 2], [], [0, 4, 5, 6]).into()),
+				(1, (1, [3], [0], [1]).into()),
+				(2, (2, [3], [0], [2]).into()),
+				(3, (3, [], [1, 2], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -849,23 +866,23 @@ mod test {
 	fn cross_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [2]).into()),
-				(2, (2, [0, 1], [3]).into()),
-				(3, (3, [2], [4, 5]).into()),
-				(4, (4, [3], []).into()),
-				(5, (5, [3], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [2], [1]).into()),
+				(2, (2, [0, 1], [3], [2]).into()),
+				(3, (3, [2], [4, 5], [3]).into()),
+				(4, (4, [3], [], [4]).into()),
+				(5, (5, [3], [], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [2]).into()),
-				(2, (2, [0, 1], [4, 5]).into()),
-				(4, (4, [2], []).into()),
-				(5, (5, [2], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [2], [1]).into()),
+				(2, (2, [0, 1], [4, 5], [2, 3]).into()),
+				(4, (4, [2], [], [4]).into()),
+				(5, (5, [2], [], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -888,23 +905,23 @@ mod test {
 	fn cross_rev_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [2], []).into()),
-				(1, (1, [2], []).into()),
-				(2, (2, [3], [0, 1]).into()),
-				(3, (3, [4, 5], [2]).into()),
-				(4, (4, [], [3]).into()),
-				(5, (5, [], [3]).into()),
+				(0, (0, [2], [], [0]).into()),
+				(1, (1, [2], [], [1]).into()),
+				(2, (2, [3], [0, 1], [2]).into()),
+				(3, (3, [4, 5], [2], [3]).into()),
+				(4, (4, [], [3], [4]).into()),
+				(5, (5, [], [3], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [2], []).into()),
-				(1, (1, [2], []).into()),
-				(2, (2, [4, 5], [0, 1]).into()),
-				(4, (4, [], [2]).into()),
-				(5, (5, [], [2]).into()),
+				(0, (0, [2], [], [0]).into()),
+				(1, (1, [2], [], [1]).into()),
+				(2, (2, [4, 5], [0, 1], [2, 3]).into()),
+				(4, (4, [], [2], [4]).into()),
+				(5, (5, [], [2], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -925,15 +942,19 @@ mod test {
 	fn cycle_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [3], [1]).into()),
-				(1, (1, [0], [2]).into()),
-				(2, (2, [1], [3]).into()),
-				(3, (3, [2], [0]).into()),
+				(0, (0, [3], [1], [0]).into()),
+				(1, (1, [0], [2], [1]).into()),
+				(2, (2, [1], [3], [2]).into()),
+				(3, (3, [2], [0], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [0], [0]).into())].into_iter().collect());
+		let expected = Graph(
+			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+				.into_iter()
+				.collect(),
+		);
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -950,15 +971,19 @@ mod test {
 	fn cycle_rev_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [1], [3]).into()),
-				(1, (1, [2], [0]).into()),
-				(2, (2, [3], [1]).into()),
-				(3, (3, [0], [2]).into()),
+				(0, (0, [1], [3], [0]).into()),
+				(1, (1, [2], [0], [1]).into()),
+				(2, (2, [3], [1], [2]).into()),
+				(3, (3, [0], [2], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [0], [0]).into())].into_iter().collect());
+		let expected = Graph(
+			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+				.into_iter()
+				.collect(),
+		);
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(2, 1);
@@ -975,20 +1000,20 @@ mod test {
 	fn v_hint() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [2]).into()),
-				(1, (1, [], [3]).into()),
-				(2, (2, [0], [4]).into()),
-				(3, (3, [1], [4]).into()),
-				(4, (4, [2, 3], []).into()),
+				(0, (0, [], [2], [0]).into()),
+				(1, (1, [], [3], [1]).into()),
+				(2, (2, [0], [4], [2]).into()),
+				(3, (3, [1], [4], [3]).into()),
+				(4, (4, [2, 3], [], [4]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		let expected = Graph(
 			[
-				(0, (0, [], [4]).into()),
-				(1, (1, [], [4]).into()),
-				(4, (4, [0, 1], []).into()),
+				(0, (0, [], [4], [0, 2]).into()),
+				(1, (1, [], [4], [1, 3]).into()),
+				(4, (4, [0, 1], [], [4]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -1007,19 +1032,19 @@ mod test {
 	fn incremental_l() {
 		let mut graph = Graph(
 			[
-				(0, (0, [], [1]).into()),
-				(1, (1, [0], [2]).into()),
-				(2, (2, [1], []).into()),
+				(0, (0, [], [1], [0]).into()),
+				(1, (1, [0], [2], [1]).into()),
+				(2, (2, [1], [], [2]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
-		let expected_1 = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected_1 = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		let expected_2 = Graph(
 			[
-				(0, (0, [], [1, 3]).into()),
-				(1, (1, [0], []).into()),
-				(3, (3, [0], []).into()),
+				(0, (0, [], [1, 3], [0]).into()),
+				(1, (1, [0], [], [1, 2]).into()),
+				(3, (3, [0], [], [3]).into()),
 			]
 			.into_iter()
 			.collect(),
