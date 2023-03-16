@@ -292,6 +292,7 @@ mod test {
 	/// 0 → 1
 	#[test]
 	fn short_line() {
+		#[rustfmt::skip]
 		let mut graph = Graph(
 			[
 				(0, (0, [], [1]).into()),
