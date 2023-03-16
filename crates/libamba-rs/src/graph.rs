@@ -1,8 +1,8 @@
 use std::{default::Default, mem, collections::BTreeSet};
 
 // Aliased so we can swap them to BTree versions easily.
-pub(crate) type Set<T> = std::collections::HashSet<T>;
-pub(crate) type Map<K, V> = std::collections::HashMap<K, V>;
+pub(crate) type Set<T> = std::collections::BTreeSet<T>;
+pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
 pub(crate) type BlockId = u64;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
