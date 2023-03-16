@@ -62,6 +62,11 @@ impl Graph {
 		modified
 	}
 
+	/// Revert compression of nodes and then update their connections
+	pub fn revert_and_update(&mut self, from: u64, to: u64) -> bool {
+		todo!()
+	}
+
 	/// Compresses graph by merging every node pair that always go
 	/// from one to the other
 	pub fn compress(&mut self) {
