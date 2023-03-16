@@ -13,7 +13,7 @@ const ACTUAL_SIZE: usize = 6;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SmallU64Set {
 	Set(BTreeSet<u64>),
-	Vec(ArrayVec<u64, ACTUAL_SIZE>),
+	Vec(ArrayVec<u64, ACTUAL_SIZE>), // Invariant: Buffer must be sorted for equality to hold
 }
 
 impl SmallU64Set {
@@ -34,7 +34,9 @@ impl SmallU64Set {
 					let s = v.iter().copied().chain(iter::once(val)).collect();
 					*self = SmallU64Set::Set(s);
 				} else {
-					v.push(val);
+					// Keep the buffer sorted to simplify equality
+					let idx = v.binary_search(&val).unwrap_err();
+					v.insert(idx, val);
 				}
 
 				true
@@ -49,7 +51,7 @@ impl SmallU64Set {
 				let val = *val;
 				match v.iter().position(|&x| x == val) {
 					Some(idx) => {
-						v.swap_remove(idx);
+						v.remove(idx); // Must upload sorting
 						true
 					}
 					None => false,
