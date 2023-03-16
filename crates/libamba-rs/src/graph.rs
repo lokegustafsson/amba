@@ -1,4 +1,4 @@
-use std::{default::Default, mem, collections::BTreeSet};
+use std::{collections::BTreeSet, default::Default, mem};
 
 use crate::small_set::SmallU64Set;
 
@@ -16,26 +16,62 @@ pub struct Block {
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Graph(pub(crate) Map<u64, Block>);
+pub struct Graph {
+	pub(crate) nodes: Map<u64, Block>,
+	pub(crate) merges: Map<u64, u64>,
+}
 
 impl Graph {
 	pub fn new() -> Self {
 		Default::default()
 	}
 
+	pub fn with_nodes(nodes: Map<u64, Block>) -> Self {
+		Graph {
+			nodes,
+			merges: Map::new(),
+		}
+	}
+
 	pub fn len(&self) -> usize {
-		self.0.len()
+		self.nodes.len()
 	}
 
 	pub fn is_empty(&self) -> bool {
-		self.0.is_empty()
+		self.nodes.is_empty()
+	}
+
+	pub fn get(&mut self, mut idx: u64) -> Option<&Block> {
+		idx = translate(idx, &mut self.merges);
+		self.nodes.get(&idx)
+	}
+
+	pub fn get_mut(&mut self, mut idx: u64) -> Option<&mut Block> {
+		idx = translate(idx, &mut self.merges);
+		self.nodes.get_mut(&idx)
+	}
+
+	pub fn apply_merges(&mut self) {
+		for Block { from, to, .. } in self.nodes.values_mut() {
+			*from = from
+				.iter()
+				.copied()
+				.map(|x| translate(x, &mut self.merges))
+				.collect();
+			*to = to
+				.iter()
+				.copied()
+				.map(|x| translate(x, &mut self.merges))
+				.collect();
+		}
+		self.merges = Map::new();
 	}
 
 	/// Insert a node connection. Returns true if the connection
 	/// is new.
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
 		let mut modified = false;
-		self.0
+		self.nodes
 			.entry(from)
 			.and_modify(|node| {
 				modified |= node.to.insert(to);
@@ -50,7 +86,7 @@ impl Graph {
 					of: to,
 				}
 			});
-		self.0
+		self.nodes
 			.entry(to)
 			.and_modify(|node| {
 				modified |= node.from.insert(from);
@@ -77,7 +113,7 @@ impl Graph {
 	/// Compresses graph by merging every node pair that always go
 	/// from one to the other
 	pub fn compress(&mut self) {
-		let m = &mut self.0;
+		let m = &mut self.nodes;
 
 		// Visit every node in arbitrary order.
 		// We have to check (a, b) AND (b, a) seperately
@@ -92,57 +128,40 @@ impl Graph {
 		let to_merge = m
 			.values()
 			.filter(|l| l.from.len() == 1)
-			.map(|l| (l, &m[l.from.iter().next().unwrap()]))
+			.map(|l| {
+				let key = translate(l.from.get_any(), &mut self.merges);
+				(l, &m[&key])
+			})
 			.filter(|(_, r)| r.to.len() == 1)
 			.map(|(l, r)| (l.id, r.id))
 			.collect::<Set<_>>();
 
-		// Seems linear, but in practice, unless the entire
-		// world is one long straight line ends up never
-		// taking more than a single step.
-		let mut translation_map = Map::new();
-		fn translate(key: u64, map: &mut Map<u64, u64>) -> u64 {
-			match map.get(&key) {
-				Some(k) => {
-					let res = translate(*k, map);
-					*map.get_mut(&key).unwrap() = res;
-					res
-				},
-				None => key,
-			}
-		}
-
 		for (mut l, mut r) in to_merge.into_iter() {
-			l = translate(l, &mut translation_map);
-			r = translate(r, &mut translation_map);
+			l = translate(l, &mut self.merges);
+			r = translate(r, &mut self.merges);
 
 			let x = l.min(r);
 			let y = l.max(r);
 			self.merge_nodes(x, y);
-
-			translation_map.insert(l, x);
-			translation_map.insert(r, x);
-			translation_map.insert(y, x);
-			translation_map.remove(&x);
 		}
 	}
 
 	/// Version of the compression function that will only compress around an update.
 	/// Returns true if graph changed.
 	pub fn compress_with_hint(&mut self, from: u64, to: u64) -> bool {
-		if !self.0[&from].to.contains(&to) || !self.0[&to].from.contains(&from) {
+		if !self.nodes[&from].to.contains(&to) || !self.nodes[&to].from.contains(&from) {
 			return false;
 		}
 		let mut this = from.min(to);
 		self.merge_nodes(from, to);
-		if self.0[&this].from.len() == 1 {
-			let from = *self.0[&this].from.iter().next().unwrap();
+		if self.nodes[&this].from.len() == 1 {
+			let from = *self.nodes[&this].from.iter().next().unwrap();
 			if self.compress_with_hint(from, this) {
 				this = from;
 			}
 		}
-		if self.0[&this].to.len() == 1 {
-			let to = *self.0[&this].to.iter().next().unwrap();
+		if self.nodes[&this].to.len() == 1 {
+			let to = *self.nodes[&this].to.iter().next().unwrap();
 			self.compress_with_hint(this, to);
 		}
 		true
@@ -156,28 +175,40 @@ impl Graph {
 	// function.
 	pub fn compress_with_hint_2(&mut self, mut queued: BTreeSet<(u64, u64)>) {
 		while let Some((from, to)) = queued.pop_first() {
-			if !(self.0[&from].to.len() == 1
-				&& self.0[&from].to.contains(&to)
-				&& self.0[&to].from.len() == 1
-				&& self.0[&to].from.contains(&from))
+			if !(self.nodes[&from].to.len() == 1
+				&& self.nodes[&from].to.contains(&to)
+				&& self.nodes[&to].from.len() == 1
+				&& self.nodes[&to].from.contains(&from))
 			{
 				continue;
 			}
 			self.merge_nodes(from, to);
 			let this = from;
-			let node = &self.0[&this];
+			let node = &self.nodes[&this];
 			for &connection in node.to.iter().chain(node.from.iter()) {
 				queued.insert((connection, this));
 			}
 		}
 	}
 
-	fn are_loop(&self, l: u64, r: u64) -> bool {
+	fn are_loop(&mut self, l: u64, r: u64) -> bool {
 		if l == r {
 			return true;
 		}
-		let m = &self.0;
-		m[&l].from.contains(&r) && m[&r].from.contains(&l)
+		let m = &self.nodes;
+
+		let there = m[&l]
+			.from
+			.iter()
+			.map(|&i| translate(i, &mut self.merges))
+			.any(|x| x == r);
+		let back_again = m[&r]
+			.from
+			.iter()
+			.map(|&i| translate(i, &mut self.merges))
+			.any(|x| x == l);
+
+		there && back_again
 	}
 
 	pub fn merge_nodes(&mut self, l: u64, r: u64) {
@@ -189,21 +220,23 @@ impl Graph {
 			return;
 		}
 
-		assert!(self.0.contains_key(&l));
-		assert!(self.0.contains_key(&r));
+		assert!(self.nodes.contains_key(&l));
+		assert!(self.nodes.contains_key(&r));
 
 		let are_loop = self.are_loop(l, r);
-		let map = &mut self.0;
+		let map = &mut self.nodes;
+
+		// Must be after are_loop
+		self.merges.insert(r, l);
+		self.merges.remove(&l);
 
 		let combine_sets = |mut left_set: SmallU64Set, mut right_set: SmallU64Set| -> SmallU64Set {
 			if left_set.len() < right_set.len() {
 				mem::swap(&mut left_set, &mut right_set);
 			}
-			for node in right_set.into_iter().filter(|&x| x != l && x != r) {
+			for node in right_set.into_iter() {
 				left_set.insert(node);
 			}
-			left_set.remove(&l);
-			left_set.remove(&r);
 
 			left_set
 		};
@@ -220,37 +253,31 @@ impl Graph {
 		let from_l = mem::take(&mut l_.from);
 		let of_l = mem::take(&mut l_.of);
 
-
 		l_.to = combine_sets(to_l, to_r);
 		l_.from = combine_sets(from_l, from_r);
 		l_.of = combine_sets(of_l, of_r);
+
+		for parent in l_.of.iter() {
+			l_.to.remove(parent);
+			l_.from.remove(parent);
+		}
 
 		// Restore loop if they were a loop beforehand
 		if are_loop {
 			l_.from.insert(l);
 			l_.to.insert(l);
 		}
+		l_.of.insert(l);
+		l_.of.insert(r);
 
 		// Remove the right node from the graph
 		map.remove(&r);
-
-		// And fix any pointers to the right node so that they
-		// point to the left node
-		for node in map.values_mut() {
-			if node.from.remove(&r) {
-				node.from.insert(l);
-			}
-			if node.to.remove(&r) {
-				node.to.insert(l);
-			}
-		}
 	}
 
 	/// Split `node` into two nodes, with the new node using the
 	/// requested id if it's not already in use. Returns the id of
 	/// the new node
 	pub fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
-
 		todo!("This doesn't work as a restoration mechanism at all");
 		// This allows a set that's gone from
 		// 0 → 1 → 2 → 3
@@ -258,19 +285,22 @@ impl Graph {
 		// to
 		// 0(1, 3) → 2
 
-		if self.0.contains_key(&requested_id) {
+		if self.nodes.contains_key(&requested_id) {
 			return self.split_node(node, requested_id + 1);
 		}
 
 		// Swap the existing outgoing set with a set pointing
 		// solely to the new node
 		let mut to = [requested_id].into_iter().collect::<SmallU64Set>();
-		mem::swap(&mut self.0.get_mut(&node).unwrap().to, &mut to);
+		mem::swap(
+			&mut self.nodes.get_mut(&node).unwrap().to,
+			&mut to,
+		);
 
 		// Fix incoming sets of connected nodes
 		for connection_id in to.iter() {
-			let connection = self.0.get_mut(connection_id).unwrap();
-			assert!(connection.from.remove(&node));
+			let connection = self.nodes.get_mut(connection_id).unwrap();
+			debug_assert!(connection.from.remove(&node));
 			connection.from.insert(requested_id);
 		}
 
@@ -282,7 +312,7 @@ impl Graph {
 			from,
 			of: [requested_id].into_iter().collect(),
 		};
-		self.0.insert(requested_id, block);
+		self.nodes.insert(requested_id, block);
 
 		requested_id
 	}
@@ -290,7 +320,7 @@ impl Graph {
 	/// Verify that all node pairs have matching to and from
 	#[cfg(test)]
 	fn verify(&self) {
-		let m = &self.0;
+		let m = &self.nodes;
 
 		for (k, v) in m.iter() {
 			for out in v.from.iter() {
@@ -309,6 +339,20 @@ impl Graph {
 				);
 			}
 		}
+	}
+}
+
+// Seems linear, but in practice, unless the entire
+// world is one long straight line ends up never
+// taking more than a single step.
+fn translate(key: u64, map: &mut Map<u64, u64>) -> u64 {
+	match map.get(&key) {
+		Some(k) => {
+			let res = translate(*k, map);
+			*map.get_mut(&key).unwrap() = res;
+			res
+		}
+		None => key,
 	}
 }
 
@@ -339,7 +383,7 @@ mod test {
 	/// 0 → 1 → 2
 	#[test]
 	fn straight_line() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [1], [0]).into()),
 				(1, (1, [0], [2], [1]).into()),
@@ -348,18 +392,20 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+		let expected =
+			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 2 → 1 → 0
 	#[test]
 	fn straight_line_rev() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1], [], [0]).into()),
 				(1, (1, [2], [0], [1]).into()),
@@ -368,45 +414,52 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+		let expected =
+			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0 → 1
 	#[test]
 	fn short_line() {
 		#[rustfmt::skip]
-		let mut graph = Graph(
-			[(0, (0, [], [1], [0]).into()), (1, (1, [0], [], [1]).into())]
-				.into_iter()
-				.collect(),
+		let mut graph = Graph::with_nodes(
+			[
+				(0, (0, [], [1], [0]).into()),
+				(1, (1, [0], [], [1]).into())
+			]
+			.into_iter()
+			.collect(),
 		);
-		let expected = Graph([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
+		let expected = Graph::with_nodes([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 1 → 0
 	#[test]
 	fn short_line_rev() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[(0, (0, [1], [], [0]).into()), (1, (1, [], [0], [1]).into())]
 				.into_iter()
 				.collect(),
 		);
-		let expected = Graph([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
+		let expected = Graph::with_nodes([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	///   0
@@ -416,7 +469,7 @@ mod test {
 	///   3
 	#[test]
 	fn diamond() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [1, 2], [0]).into()),
 				(1, (1, [0], [3], [1]).into()),
@@ -430,8 +483,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	///   3
@@ -441,7 +495,7 @@ mod test {
 	///   0
 	#[test]
 	fn diamond_rev() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
@@ -455,8 +509,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 4 → 0
@@ -466,7 +521,7 @@ mod test {
 	/// 6   3
 	#[test]
 	fn diamond_on_stick() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [4], [1, 2], [0]).into()),
 				(1, (1, [0], [3], [1]).into()),
@@ -479,7 +534,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
 				(1, (1, [0], [3], [1]).into()),
@@ -492,8 +547,10 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		dbg!(&graph);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 6 → 3
@@ -503,7 +560,7 @@ mod test {
 	/// 4   0
 	#[test]
 	fn diamond_on_stick_rev() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
@@ -516,7 +573,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
@@ -529,8 +586,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0   1
@@ -542,7 +600,7 @@ mod test {
 	/// 4   5
 	#[test]
 	fn cross() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [2], [1]).into()),
@@ -554,11 +612,11 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [2], [1]).into()),
-				(2, (2, [0, 1], [4, 5], [2,3]).into()),
+				(2, (2, [0, 1], [4, 5], [2, 3]).into()),
 				(4, (4, [2], [], [4]).into()),
 				(5, (5, [2], [], [5]).into()),
 			]
@@ -568,8 +626,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 4   5
@@ -581,7 +640,7 @@ mod test {
 	/// 0   1
 	#[test]
 	fn cross_rev() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [2], [], [0]).into()),
 				(1, (1, [2], [], [1]).into()),
@@ -593,11 +652,11 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [2], [], [0]).into()),
 				(1, (1, [2], [], [1]).into()),
-				(2, (2, [4, 5], [0, 1], [2,3]).into()),
+				(2, (2, [4, 5], [0, 1], [2, 3]).into()),
 				(4, (4, [], [2], [4]).into()),
 				(5, (5, [], [2], [5]).into()),
 			]
@@ -607,8 +666,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0   1
@@ -620,7 +680,7 @@ mod test {
 	/// 4   5
 	#[test]
 	fn cross_split() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [2], [1]).into()),
@@ -631,7 +691,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [2], [1]).into()),
@@ -647,7 +707,7 @@ mod test {
 		expected.verify();
 		let node = graph.split_node(2, 3);
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 		assert_eq!(node, 3);
 	}
 
@@ -657,8 +717,8 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
-	fn cycle() {
-		let mut graph = Graph(
+	fn cycle_THIS() {
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [3], [1], [0]).into()),
 				(1, (1, [0], [2], [1]).into()),
@@ -668,7 +728,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
 				.into_iter()
 				.collect(),
@@ -676,8 +736,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	///   0
@@ -687,7 +748,7 @@ mod test {
 	///   2
 	#[test]
 	fn cycle_rev() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1], [3], [0]).into()),
 				(1, (1, [2], [0], [1]).into()),
@@ -697,7 +758,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
 				.into_iter()
 				.collect(),
@@ -705,8 +766,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0   1
@@ -716,7 +778,7 @@ mod test {
 	///   4
 	#[test]
 	fn v() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [3], [1]).into()),
@@ -727,7 +789,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [4], [0, 2]).into()),
 				(1, (1, [], [4], [1, 3]).into()),
@@ -739,14 +801,15 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0 → 1 → 2
 	#[test]
 	fn straight_line_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [1], [0]).into()),
 				(1, (1, [0], [2], [1]).into()),
@@ -755,18 +818,20 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+		let expected =
+			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(0, 1);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 2 → 1 → 0
 	#[test]
 	fn straight_line_rev_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1], [], [0]).into()),
 				(1, (1, [2], [0], [1]).into()),
@@ -775,12 +840,14 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph([(0, (0, [], [], [0,1,2]).into())].into_iter().collect());
+		let expected =
+			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(0, 1);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	///   0
@@ -790,7 +857,7 @@ mod test {
 	///   3
 	#[test]
 	fn diamond_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [1, 2], [0]).into()),
 				(1, (1, [0], [3], [1]).into()),
@@ -804,8 +871,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(0, 1);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	///   3
@@ -815,7 +883,7 @@ mod test {
 	///   0
 	#[test]
 	fn diamond_rev_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
@@ -829,8 +897,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(3, 1);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 4 → 0
@@ -840,7 +909,7 @@ mod test {
 	/// 6   3
 	#[test]
 	fn diamond_on_stick_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [4], [1, 2], [0]).into()),
 				(1, (1, [0], [3], [1]).into()),
@@ -853,7 +922,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
 				(1, (1, [0], [3], [1]).into()),
@@ -866,8 +935,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(5, 4);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 6 → 3
@@ -877,7 +947,7 @@ mod test {
 	/// 4   0
 	#[test]
 	fn diamond_on_stick_rev_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
@@ -890,7 +960,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0, 4, 5, 6]).into()),
 				(1, (1, [3], [0], [1]).into()),
@@ -903,8 +973,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(5, 6);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0   1
@@ -916,7 +987,7 @@ mod test {
 	/// 4   5
 	#[test]
 	fn cross_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [2], [1]).into()),
@@ -928,7 +999,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [2], [1]).into()),
@@ -942,8 +1013,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(2, 3);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 4   5
@@ -955,7 +1027,7 @@ mod test {
 	/// 0   1
 	#[test]
 	fn cross_rev_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [2], [], [0]).into()),
 				(1, (1, [2], [], [1]).into()),
@@ -967,7 +1039,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [2], [], [0]).into()),
 				(1, (1, [2], [], [1]).into()),
@@ -981,8 +1053,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(3, 2);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	///   0
@@ -992,7 +1065,7 @@ mod test {
 	///   2
 	#[test]
 	fn cycle_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [3], [1], [0]).into()),
 				(1, (1, [0], [2], [1]).into()),
@@ -1002,7 +1075,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
 				.into_iter()
 				.collect(),
@@ -1010,8 +1083,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	///   0
@@ -1021,7 +1095,7 @@ mod test {
 	///   2
 	#[test]
 	fn cycle_rev_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [1], [3], [0]).into()),
 				(1, (1, [2], [0], [1]).into()),
@@ -1031,7 +1105,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
 				.into_iter()
 				.collect(),
@@ -1039,8 +1113,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(2, 1);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0   1
@@ -1050,7 +1125,7 @@ mod test {
 	///   4
 	#[test]
 	fn v_hint() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [2], [0]).into()),
 				(1, (1, [], [3], [1]).into()),
@@ -1061,7 +1136,7 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected = Graph(
+		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [4], [0, 2]).into()),
 				(1, (1, [], [4], [1, 3]).into()),
@@ -1073,8 +1148,9 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint(2, 4);
+		graph.apply_merges();
 		graph.verify();
-		assert_eq!(graph, expected);
+		assert_eq!(graph.nodes, expected.nodes);
 	}
 
 	/// 0 → 1 → 2
@@ -1082,7 +1158,7 @@ mod test {
 	/// 3
 	#[test]
 	fn incremental_l() {
-		let mut graph = Graph(
+		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [], [1], [0]).into()),
 				(1, (1, [0], [2], [1]).into()),
@@ -1091,8 +1167,9 @@ mod test {
 			.into_iter()
 			.collect(),
 		);
-		let expected_1 = Graph([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
-		let expected_2 = Graph(
+		let expected_1 =
+			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+		let expected_2 = Graph::with_nodes(
 			[
 				(0, (0, [], [1, 3], [0]).into()),
 				(1, (1, [0], [], [1, 2]).into()),
@@ -1105,9 +1182,11 @@ mod test {
 		expected_1.verify();
 		expected_2.verify();
 		graph.compress();
-		assert_eq!(&graph, &expected_1);
+		graph.apply_merges();
+		assert_eq!(&graph.nodes, &expected_1.nodes);
 		graph.revert_and_update(&Graph::new(), 0, 3);
 		graph.compress();
-		assert_eq!(&graph, &expected_2);
+		graph.apply_merges();
+		assert_eq!(&graph.nodes, &expected_2.nodes);
 	}
 }
