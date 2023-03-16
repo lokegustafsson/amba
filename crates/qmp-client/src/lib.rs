@@ -23,6 +23,7 @@ pub struct QmpClient<S> {
 	stream: S,
 	buf_send: Vec<u8>,
 	buf_read: ByteQueue,
+	id: u64,
 }
 impl<S: Read + Write> QmpClient<S> {
 	pub fn new(stream: S) -> Self {
@@ -30,6 +31,7 @@ impl<S: Read + Write> QmpClient<S> {
 			stream,
 			buf_send: Vec::with_capacity(BUFSIZE),
 			buf_read: ByteQueue::with_capacity(BUFSIZE),
+			id: 1,
 		}
 	}
 
@@ -44,8 +46,8 @@ impl<S: Read + Write> QmpClient<S> {
 	pub fn blocking_receive(&mut self) -> Result<QmpResponse, QmpError> {
 		let next_line_len = loop {
 			// Read from the stream into our circular buffer
-			let mut writeable = self.buf_read.slice_to_write();
-			match self.stream.read(&mut writeable) {
+			let writeable = self.buf_read.slice_to_write();
+			match self.stream.read(writeable) {
 				Ok(0) => return Err(QmpError::EndOfFile),
 				Ok(len) => {
 					// If we read a newline, break with how much extra data we also got after the
@@ -73,6 +75,26 @@ impl<S: Read + Write> QmpClient<S> {
 			.buf_read
 			.consume_slices_skipping_end_bytes(next_line_len);
 		Ok(serde_json::from_reader(Read::chain(newline_a, newline_b)).unwrap())
+	}
+
+	pub fn blocking_request<F: FnMut(QmpEvent)>(
+		&mut self,
+		command: &QmpCommand,
+		mut event_handler: F,
+	) -> Result<QmpResponse, QmpError> {
+		self.blocking_send(&QmpRequest {
+			asynchronous: false,
+			command: command.get_command(),
+			arguments: command.get_arguments(),
+			id: self.id,
+		});
+		self.id += 1;
+		loop {
+			match self.blocking_receive()? {
+				QmpResponse::Event(event) => event_handler(event),
+				other => return Ok(other),
+			}
+		}
 	}
 }
 #[derive(Debug)]
@@ -134,12 +156,7 @@ pub enum QmpResponse {
 		error: QemuError,
 		id: u64,
 	},
-	Event {
-		event: String,
-		data: Map<String, Value>,
-		#[serde(deserialize_with = "de_qmp_systemtime")]
-		timestamp: SystemTime,
-	},
+	Event(QmpEvent),
 }
 #[derive(Deserialize, Debug)]
 pub struct QemuGreeting {
@@ -162,6 +179,13 @@ pub struct QemuError {
 	pub class: String,
 	pub desc: String,
 }
+#[derive(Deserialize, Debug)]
+pub struct QmpEvent {
+	pub event: String,
+	pub data: Map<String, Value>,
+	#[serde(deserialize_with = "de_qmp_systemtime")]
+	pub timestamp: SystemTime,
+}
 
 fn de_qmp_systemtime<'de, D: Deserializer<'de>>(deserializer: D) -> Result<SystemTime, D::Error> {
 	#[derive(Deserialize)]
@@ -173,4 +197,30 @@ fn de_qmp_systemtime<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Syste
 	Ok(SystemTime::UNIX_EPOCH
 		.checked_add(Duration::from_secs(repr.seconds) + Duration::from_micros(repr.microseconds))
 		.unwrap())
+}
+
+pub enum QmpCommand {
+	QmpCapabilities,
+	QueryStatus,
+	Screendump { filename: String },
+	Stop,
+	Cont,
+}
+impl QmpCommand {
+	fn get_command(&self) -> &'static str {
+		match self {
+			Self::QmpCapabilities => "qmp_capabilities",
+			Self::QueryStatus => "query-status",
+			Self::Screendump { .. } => "screendump",
+			Self::Stop => "stop",
+			Self::Cont => "cont",
+		}
+	}
+
+	fn get_arguments(&self) -> Option<Value> {
+		match self {
+			Self::Screendump { filename } => Some(serde_json::json!({ filename: filename })),
+			_ => None,
+		}
+	}
 }
