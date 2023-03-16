@@ -118,6 +118,7 @@ in
       include_dir = rustPackages."registry+https://github.com/rust-lang/crates.io-index".include_dir."0.7.3" { inherit profileName; };
       nix = rustPackages."registry+https://github.com/rust-lang/crates.io-index".nix."0.26.2" { inherit profileName; };
       qapi = rustPackages."registry+https://github.com/rust-lang/crates.io-index".qapi."0.11.0" { inherit profileName; };
+      rand = rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.8.5" { inherit profileName; };
       regex = rustPackages."registry+https://github.com/rust-lang/crates.io-index".regex."1.7.1" { inherit profileName; };
       reqwest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.11.14" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
