@@ -12,6 +12,10 @@ static const zydis::Decoder DECODER;
 
 namespace amba {
 
+std::function<llvm::raw_ostream *()> debug_stream;
+std::function<llvm::raw_ostream *()> info_stream;
+std::function<llvm::raw_ostream *()> warning_stream;
+
 // Get a pointer from an operand if it contains one (even through indexing operations)
 std::optional<target_phys_addr_t> readOperandAddress(
 	const CPUX86State &cpu_state,

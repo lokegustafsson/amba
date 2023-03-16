@@ -2,14 +2,20 @@
 
 #include <cpu/types.h>
 #include <s2e/S2EExecutionState.h>
+#include <llvm/Support/raw_ostream.h>
 
 #include <compare>
 #include <optional>
+#include <functional>
 
 #include "Numbers.h"
 #include "Zydis.h"
 
 namespace amba {
+
+extern std::function<llvm::raw_ostream *()> debug_stream;
+extern std::function<llvm::raw_ostream *()> info_stream;
+extern std::function<llvm::raw_ostream *()> warning_stream;
 
 using TranslationFunction = void (
 	s2e::ExecutionSignal *,
