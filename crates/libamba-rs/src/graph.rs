@@ -212,6 +212,14 @@ impl Graph {
 	/// requested id if it's not already in use. Returns the id of
 	/// the new node
 	pub fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
+
+		todo!("This doesn't work as a restoration mechanism at all");
+		// This allows a set that's gone from
+		// 0 → 1 → 2 → 3
+		// 0
+		// to
+		// 0(1, 3) → 2
+
 		if self.0.contains_key(&requested_id) {
 			return self.split_node(node, requested_id + 1);
 		}
