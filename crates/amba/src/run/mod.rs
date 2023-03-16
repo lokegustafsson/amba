@@ -11,7 +11,7 @@ use std::{
 	time::Duration,
 };
 
-use qmp_client::{QmpClient, QmpError, QmpRequest};
+use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
@@ -235,28 +235,28 @@ fn run_qmp(socket: &Path) {
 
 	let mut qmp = QmpClient::new(stream);
 
+	let event_handler = |event @ QmpEvent { .. }| {
+		tracing::info!(?event, "QMP");
+	};
+
 	let greeting = qmp.blocking_receive().expect("greeting");
 	tracing::info!(?greeting, "QMP");
-	qmp.blocking_send(&QmpRequest {
-		asynchronous: false,
-		command: "qmp_capabilities",
-		arguments: None::<String>,
-		id: 1,
-	});
-	let negotiated = qmp.blocking_receive().expect("negotiated");
+
+	let negotiated = qmp
+		.blocking_request(&QmpCommand::QmpCapabilities, event_handler)
+		.unwrap();
 	tracing::info!(?negotiated, "QMP");
 
-	qmp.blocking_send(&QmpRequest {
-		asynchronous: false,
-		command: "query-status",
-		arguments: None::<String>,
-		id: 2,
-	});
+	let status = qmp
+		.blocking_request(&QmpCommand::QueryStatus, event_handler)
+		.unwrap();
+	tracing::info!(?status, "QMP");
+
 	loop {
 		match qmp.blocking_receive() {
 			Ok(response) => tracing::info!(?response, "QMP"),
 			Err(QmpError::EndOfFile) => return,
-			Err(err) => todo!("{:?}", err),
+			Err(err) => unreachable!("{:?}", err),
 		}
 	}
 }
