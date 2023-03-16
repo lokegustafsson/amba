@@ -1,5 +1,7 @@
 use std::{default::Default, mem, collections::BTreeSet};
 
+use crate::small_set::SmallU64Set;
+
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::BTreeSet<T>;
 pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
@@ -8,9 +10,9 @@ pub(crate) type BlockId = u64;
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Block {
 	pub(crate) id: BlockId,
-	pub(crate) from: Set<BlockId>,
-	pub(crate) to: Set<BlockId>,
-	pub(crate) of: Set<BlockId>,
+	pub(crate) from: SmallU64Set,
+	pub(crate) to: SmallU64Set,
+	pub(crate) of: SmallU64Set,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -40,7 +42,7 @@ impl Graph {
 			})
 			.or_insert_with(|| {
 				modified = true;
-				let to = [to].into_iter().collect::<Set<_>>();
+				let to = [to].into_iter().collect::<SmallU64Set>();
 				Block {
 					id: from,
 					to: to.clone(),
@@ -55,7 +57,7 @@ impl Graph {
 			})
 			.or_insert_with(|| {
 				modified = true;
-				let from = [from].into_iter().collect::<Set<_>>();
+				let from = [from].into_iter().collect::<SmallU64Set>();
 				Block {
 					id: to,
 					to: Default::default(),
@@ -253,7 +255,7 @@ impl Graph {
 
 		// Swap the existing outgoing set with a set pointing
 		// solely to the new node
-		let mut to = [requested_id].into_iter().collect::<Set<_>>();
+		let mut to = [requested_id].into_iter().collect::<SmallU64Set>();
 		mem::swap(&mut self.0.get_mut(&node).unwrap().to, &mut to);
 
 		// Fix incoming sets of connected nodes
@@ -264,7 +266,7 @@ impl Graph {
 		}
 
 		// And create the new node
-		let from = [node].into_iter().collect::<Set<_>>();
+		let from = [node].into_iter().collect::<SmallU64Set>();
 		let block = Block {
 			id: requested_id,
 			to,
