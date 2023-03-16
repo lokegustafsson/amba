@@ -7,11 +7,9 @@ const OPTIMAL_SIZE: usize = {
 	let u64_size = mem::size_of::<u64>();
 	set_size / u64_size
 };
-const ACTUAL_SIZE: usize = 5;
+const ACTUAL_SIZE: usize = 6;
 
 /// A small size optimised u64 set
-// Hardcoding one two and three let's us fit three elements without
-// growing larger than a BTreeSet and use the enum discriminant as an index
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SmallU64Set {
 	Set(BTreeSet<u64>),
