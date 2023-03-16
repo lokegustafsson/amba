@@ -8,6 +8,7 @@ struct ControlFlowGraph;
 extern "C" {
 	ControlFlowGraph *rust_new_control_flow_graph();
 	void rust_free_control_flow_graph(ControlFlowGraph *ptr);
+	void rust_print_graph_size(ControlFlowGraph *ptr);
 	void rust_update_control_flow_graph(
 		ControlFlowGraph *ptr,
 		u64 from,

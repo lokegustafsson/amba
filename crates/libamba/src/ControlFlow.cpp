@@ -8,6 +8,7 @@ ControlFlow::ControlFlow()
 	{}
 
 ControlFlow::~ControlFlow() {
+	rust_print_graph_size(this->m_cfg);
 	rust_free_control_flow_graph(this->m_cfg);
 }
 
