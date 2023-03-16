@@ -63,6 +63,7 @@ dependencies = [
  "include_dir",
  "nix",
  "qapi",
+ "rand",
  "regex",
  "reqwest",
  "serde",

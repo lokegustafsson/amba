@@ -43,7 +43,7 @@ void AmbaPlugin::translateInstructionStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	*amba::debug_stream() << "Translating instruction at " << hexval(pc) << '\n';
+	//*amba::debug_stream() << "Translating instruction at " << hexval(pc) << '\n';
 
 	/*
 	const auto inst = amba::readInstruction(state, pc);

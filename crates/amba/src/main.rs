@@ -1,5 +1,7 @@
 use std::{env, path::PathBuf, process::ExitCode, time::Instant};
 
+use chrono::offset::Local;
+use rand::{distributions::Alphanumeric, Rng};
 use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 
 mod cmd;
@@ -76,7 +78,6 @@ fn main() -> ExitCode {
 
 	tracing::info!(debug_assertions = cfg!(debug_assertions));
 	tracing::info!(AMBA_DEPENDENCIES_DIR = ?dependencies_dir);
-	// tracing::info!(COMPILE_TIME_DEPENDENCIES_DIR = ?dependencies_dir);
 	tracing::info!(AMBA_BUILD_GUEST_IMAGES_SCRIPT);
 	tracing::info!(AMBA_DATA_DIR = ?data_dir);
 	tracing::info!(?args);
@@ -84,7 +85,22 @@ fn main() -> ExitCode {
 	let cmd = &mut cmd::Cmd::get();
 	let res = match args {
 		Args::Init(args) => init::init(cmd, data_dir, args),
-		Args::Run(args) => run::run(cmd, dependencies_dir, data_dir, args),
+		Args::Run(args) => {
+			let timestamp = Local::now().format("%Y-%m-%dT%H:%M:%S");
+			let mut rng = rand::thread_rng();
+			let random: String = (0..6).map(|_| rng.sample(Alphanumeric) as char).collect();
+
+			let session_dir = &data_dir.join(timestamp.to_string());
+			let temp_dir = &env::temp_dir().join(format!("amba-{timestamp}-{random}"));
+			run::run(
+				cmd,
+				dependencies_dir,
+				data_dir,
+				session_dir,
+				temp_dir,
+				args,
+			)
+		}
 	};
 	match res {
 		Ok(()) => ExitCode::SUCCESS,
