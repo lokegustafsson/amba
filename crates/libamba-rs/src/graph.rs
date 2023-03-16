@@ -1,4 +1,4 @@
-use std::{default::Default, mem};
+use std::{default::Default, mem, collections::BTreeSet};
 
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::HashSet<T>;
@@ -145,21 +145,23 @@ impl Graph {
 	/// Compress around given candidates. If a candidate gets
 	/// compressed its neighbours will be checked too, growing out
 	/// from there.
-	pub fn compress_with_hint_2(&mut self, mut queued: Vec<(u64, u64)>) {
-		while let Some((from, to)) = queued.pop() {
-			if self.0[&from].to.len() == 1
+	// The queue is a set so we can guarantee that there are no
+	// duplicates in the queue and HashSet doesn't have a pop
+	// function.
+	pub fn compress_with_hint_2(&mut self, mut queued: BTreeSet<(u64, u64)>) {
+		while let Some((from, to)) = queued.pop_first() {
+			if !(self.0[&from].to.len() == 1
 				&& self.0[&from].to.contains(&to)
 				&& self.0[&to].from.len() == 1
-				&& self.0[&to].from.contains(&from)
+				&& self.0[&to].from.contains(&from))
 			{
-				self.merge_nodes(from, to);
-				let this = from;
-				for &connection in self.0[&this].to.iter() {
-					queued.push((this, connection));
-				}
-				for &connection in self.0[&this].from.iter() {
-					queued.push((connection, this));
-				}
+				continue;
+			}
+			self.merge_nodes(from, to);
+			let this = from;
+			let node = &self.0[&this];
+			for &connection in node.to.iter().chain(node.from.iter()) {
+				queued.insert((connection, this));
 			}
 		}
 	}
