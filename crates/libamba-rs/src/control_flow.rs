@@ -24,7 +24,7 @@ impl ControlFlowGraph {
 			last: 0,
 			updates: 0,
 			rebuilds: 0,
-			spawned_at: std::time::Instant::now(),
+			spawned_at: Instant::now(),
 			rebuilding_time: Duration::new(0, 0),
 		}
 	}
