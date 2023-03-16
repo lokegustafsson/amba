@@ -3,6 +3,7 @@
 #include <s2e/Utils.h>
 
 // Our headers
+#include "Amba.h"
 #include "AmbaPlugin.h"
 #include "HeapLeak.h"
 
@@ -14,11 +15,15 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
-	{}
+{
+	auto self = this;
+	amba::debug_stream = [=](){ return &self->getDebugStream(); };
+	amba::info_stream = [=](){ return &self->getInfoStream(); };
+	amba::warning_stream = [=](){ return &self->getWarningsStream(); };
+}
 
 void AmbaPlugin::initialize() {
-	auto& debug = this->getDebugStream();
-	debug << "Begin initializing AmbaPlugin\n";
+	*amba::debug_stream() << "Begin initializing AmbaPlugin\n";
 
 	auto& core = *this->s2e()->getCorePlugin();
 
@@ -29,7 +34,7 @@ void AmbaPlugin::initialize() {
 			&AmbaPlugin::translateInstructionStart
 		));
 
-	debug << "Finished initializing AmbaPlugin\n";
+	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
 
 void AmbaPlugin::translateInstructionStart(
@@ -38,8 +43,7 @@ void AmbaPlugin::translateInstructionStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	auto& debug = this->getDebugStream();
-	debug << "Translating instruction at " << hexval(pc) << '\n';
+	*amba::debug_stream() << "Translating instruction at " << hexval(pc) << '\n';
 
 	/*
 	const auto inst = amba::readInstruction(state, pc);
