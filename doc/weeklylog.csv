@@ -97,30 +97,41 @@ Week,ID,Who,"TODO When","TODO What","DONE When","DONE What","Successor ID"
 "LP3LV8 2023-03-06 to 2023-03-12",,Loke,Monday,"Fixed Clippy (linting of rust code). It was previously broken due to stable-nightly-conflicts. Also enabled more linting rules.",,Done,
 "LP3LV8 2023-03-06 to 2023-03-12",,Samuel,,,Sunday,"Helped/coached Enaya with opaque pointers (dynamic linking prep)",89
 "LP3LV8 2023-03-06 to 2023-03-12",,Samuel,,,Sunday,"libamba-rs build and linking setup. When possible we want to program in rust. This enables writing of isolated modules in rust (in libamba)",
-====================,==,=====,Monday,=====,=====,=====,=====
+====================,==,=====,=====,=====,=====,=====,=====
 "LP3LV9 2023-03-13 to 2023-03-19",,Linus,Monday,"Create a pull-request of IPC and then close it. We found a more elegant solution to this problem which can be read more in the meeting notes (in doc/2023-03-13.md)",Tuesday,Done,81
 "LP3LV9 2023-03-13 to 2023-03-19",,"Clara, Albin",Monday,"Continuing working with egui implementation, will present a draft pull request on Tuesday. ",,In-progress,88
-"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"Document building the report in the README. Currently this requires entering dev-shell and running make (in the correct directory) which isn't stated anywhere.",,,
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"Document building the report in the README. Currently this requires entering dev-shell and running make (in the correct directory) which isn't stated anywhere.",Wednesday,Done,
 "LP3LV9 2023-03-13 to 2023-03-19",,,Monday,"""Schedule"" sending a report to Iulia ahead of every Monday meeting (given that there were changes). We want Iulia to be up to date with the current state of our report.",,,
 "LP3LV9 2023-03-13 to 2023-03-19",,Linus,Monday,"Verbose weekly log, meaning we need to state why we're doing a task (what is the problem, and the todo answers how we solve it or how we intend on solving it)",Tuesday,Done,
-"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"Add CI that runs `amba run` on a smoke test binary. This allows us to catch mistakes quicker.",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Disable untested libamba code by removing all calls to it. We originally merged libamba before S2E was runnable, we therefore had merged a bunch of broken untested code. This allows us to have a runnable master.",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"Debug libamba code. Libamba (bootleg valgrind reimplementation) is currently broken and needs to be debugged to figure out what's wrong. If this gets fixed then it might solve/reveal other problems.",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Loke/Linus,Monday,"(Debug Adapter Protocol) Amba code to run S2E in gdb. GDB will allow us to troubleshoot more effectively.",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,"Albin, Clara",Monday,"Continue work on a gui prototype. Set up egui-node-graph and get something runnable. This should be merged asap into amba.",,,88
-"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Merge linkable and callable libamba-rs. We don't want too long-lived branches and want the already finished part to be merged before work continues.",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Linus,Monday,"Create a directory in our git repo containing links to related-work-papers",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Linus,Monday,"Summarize a related-work-paper in the report",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Albin,Monday,"Rebase away pdfs in our repo (there are pdfs in our repo that invoke copyright infringement)",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Enaya,Monday,"Get help from Samuel with the `amba run`issue listed above.",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,Enaya,Monday,"Investigate how to re-run S2E with a modified input so that interaction between user and gui can work.",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,,Monday,"Construct the search tree by tracking forking on symbolic input within S2E. This tree might be relevant to present in the gui. [Waiting with this until Samuel is finished with his CFG task]",,,
-"LP3LV9 2023-03-13 to 2023-03-19",,,Monday,"User interface to specify how the program is supposed to be run and what input is symbolic [low priority]",,,
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"Add CI that runs `amba run` on a smoke test binary. This allows us to catch mistakes quicker.",Wednesday,"Done, require debug because of unknown crash of QEMU",
+"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Disable untested libamba code by removing all calls to it. We originally merged libamba before S2E was runnable, we therefore had merged a bunch of broken untested code. This allows us to have a runnable master.",Tuesday,Done,
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"Debug libamba code. Libamba (bootleg valgrind reimplementation) is currently broken and needs to be debugged to figure out what's wrong. If this gets fixed then it might solve/reveal other problems.",,In-progress,
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"(Debug Adapter Protocol) Amba code to run S2E in gdb. GDB will allow us to troubleshoot more effectively.",Wednesday,"Done, Added functionality to SIGSTOP QEMU. This allows attaching a profiler/debugger to QEMU (we want to use GDB for debugging purposes).",
+"LP3LV9 2023-03-13 to 2023-03-19",110,"Albin, Clara",Monday,"Continue work on a gui prototype. Set up egui-node-graph and get something runnable. This should be merged asap into amba.",,"In-progress, no PR yet, Got a compiling GUI setup, looked at example egui (GUI framework  we want to use). Tried to build the GUI with our nix setup.",88
+"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Merge linkable and callable libamba-rs. We don't want too long-lived branches and want the already finished part to be merged before work continues.",Wednesday,Done,
+"LP3LV9 2023-03-13 to 2023-03-19",,Linus,Monday,"Create a directory in our git repo containing links to related-work-papers",,In-progress,
+"LP3LV9 2023-03-13 to 2023-03-19",,Linus,Monday,"Summarize a related-work-paper in the report",,In-progress,
+"LP3LV9 2023-03-13 to 2023-03-19",,Albin,Monday,"Rebase away pdfs in our repo (there are pdfs in our repo that invoke copyright infringement)",,In-progress,
+"LP3LV9 2023-03-13 to 2023-03-19",,Enaya,Monday,"Get help from Samuel with the `amba run`issue listed above.",Monday,"Done, fix merged",
+"LP3LV9 2023-03-13 to 2023-03-19",116,Enaya,Monday,"Investigate how to re-run S2E with a modified input so that interaction between user and gui can work.",Wednesday,"In-progress, Tried Investigating how to re-run S2E with a modified input so that interaction. Noticed we might require QMP to talk to QEMU and currently we can't talk to QEMU. Set up so amba starts in QEMU as a server on a thread and connect QMP client to it and connect and request some info from QEMU (PR #42).",
+"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Construct the search tree by tracking forking on symbolic input within S2E. This tree might be relevant to present in the gui. [Waiting with this until Samuel is finished with his CFG task]",,"In-progress, Samuel just needs to hook to the `onStateFork` to construct the symbolic fork tree.",
+"LP3LV9 2023-03-13 to 2023-03-19",118,,Monday,"User interface to specify how the program is supposed to be run and what input is symbolic [low priority]",,,
 "LP3LV9 2023-03-13 to 2023-03-19",,Linus,Monday,"Transfer todos and dones into weeklylog.csv",Tuesday,Done,
-"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Merge control flow graph skeleton structure. ",,,
-====================,==,Samuel,=====,=====,=====,=====,=====
-,,,,,,,
-,,,,,,,
+"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Merge control flow graph skeleton structure. ",,Done,
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,,,Wednesday,"Write a ""disjoint set"" datastructure needed for graph algorithms Samuel is writing for the program graph.",
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Monday,"Documented building the report in the README.",,Done,
+"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Monday,"Continued work on control flow graph. Running an analysis takes quite a long time (6s without doing anything inside libamba)! We can reduce the control flow graph but takes ~800s to only reduce the control flow graph. Currently we can produce a control flow graph based on translation of basic blocks and try to reduce the graph.",,Done,
+"LP3LV9 2023-03-13 to 2023-03-19",,Enaya,,,,"Add QMP support, communication between QMP client on GUI side and QEMU server",116
+"LP3LV9 2023-03-13 to 2023-03-19",,Albin+Clara,Thursday,"Setup a hello world example GUI and merge to master.",,,110
+"LP3LV9 2023-03-13 to 2023-03-19",,Albin+Clara,Thursday,"Set up the event handler for GUI so we have a correct GUI ""server"" to work with.",,,110
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Thursday,"Fix impure-run for faster iteration (nix run inside a nix shell works though)",,,
+"LP3LV9 2023-03-13 to 2023-03-19",,Samuel,Thursday,"Merge control flow graph skeleton structure. So that we can produce todos from that and try to parallelize the work on control flow if possible.",,,
+"LP3LV9 2023-03-13 to 2023-03-19",129,Loke,Thursday,"Throw symbolic data in amba run. Take `demos/control-flow.c` from #14 and make the program symbolic over argc (maybe just over getchar()). Change make file to run `nix run . -- ...` to run the program in QEMU symbolicly.",,,
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Thursday,"generalize above task (so we can easily make some the program input symbolic).",,,"118, 129"
+"LP3LV9 2023-03-13 to 2023-03-19",,Loke,Thursday,"Fix QMP branch when it comes to code style and merge it in.",,,116
+"LP3LV9 2023-03-13 to 2023-03-19",,Enaya+Linus,Thursday,"Investigate what you can do with QMP. We want to use this for communication between GUI QMP client and QEMU server with our S2E plugin on.",,,
+"LP3LV9 2023-03-13 to 2023-03-19",,Enaya,Thursday,"Write about existing tools which is not complete yet in the report (Binary ninja, CGC binaries)",,,
+====================,==,=====,=====,=====,=====,=====,=====
 ,,,,,,,
 ,,,,,,,
 ,,,,,,,
