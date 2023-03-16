@@ -105,7 +105,11 @@ impl IntoIterator for SmallU64Set {
 
 impl FromIterator<u64> for SmallU64Set {
 	fn from_iter<T: IntoIterator<Item = u64>>(iter: T) -> Self {
-		SmallU64Set::Set(iter.into_iter().collect())
+		let mut s = SmallU64Set::new();
+		for i in iter.into_iter() {
+			s.insert(i);
+		}
+		s
 	}
 }
 
