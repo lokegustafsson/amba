@@ -4,7 +4,6 @@
 
 use std::{
 	ffi::{OsStr, OsString},
-	io,
 	os::unix::process::CommandExt,
 	path::Path,
 	process::{self, Command, ExitStatus},
@@ -12,7 +11,7 @@ use std::{
 	time::Duration,
 };
 
-use qapi::{qmp, Qmp};
+use qmp_client::{QmpClient, QmpError, QmpRequest};
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
@@ -234,25 +233,31 @@ fn run_qmp(socket: &Path) {
 		return;
 	};
 
-	let mut qmp = Qmp::from_stream(&stream);
+	let mut qmp = QmpClient::new(stream);
 
-	let info = qmp.handshake().expect("handshake failed");
-	tracing::info!(?info, "QMP info");
+	let greeting = qmp.blocking_receive().expect("greeting");
+	tracing::info!(?greeting, "QMP");
+	qmp.blocking_send(&QmpRequest {
+		asynchronous: false,
+		command: "qmp_capabilities",
+		arguments: None::<String>,
+		id: 1,
+	});
+	let negotiated = qmp.blocking_receive().expect("negotiated");
+	tracing::info!(?negotiated, "QMP");
 
-	let status = qmp.execute(&qmp::query_status {}).unwrap();
-	tracing::info!(?status, "VCPU status");
-
+	qmp.blocking_send(&QmpRequest {
+		asynchronous: false,
+		command: "query-status",
+		arguments: None::<String>,
+		id: 2,
+	});
 	loop {
-		tracing::info!("nop:ing");
-		match qmp.nop() {
-			Ok(()) => {}
+		match qmp.blocking_receive() {
+			Ok(response) => tracing::info!(?response, "QMP"),
+			Err(QmpError::EndOfFile) => return,
 			Err(err) => todo!("{:?}", err),
 		}
-		for event in qmp.events() {
-			tracing::trace!(?event, "Got event");
-		}
-
-		thread::sleep(Duration::from_micros(100));
 	}
 }
 
