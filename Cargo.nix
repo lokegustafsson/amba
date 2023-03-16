@@ -1556,6 +1556,9 @@ in
     version = "0.1.0";
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/libamba-rs");
+    devDependencies = {
+      proptest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".proptest."1.1.0" { inherit profileName; };
+    };
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".libc."0.2.139" = overridableMkRustCrate (profileName: rec {
