@@ -65,6 +65,10 @@ impl SmallU64Set {
 		}
 	}
 
+	pub fn is_empty(&self) -> bool {
+		self.len() == 0
+	}
+
 	pub fn contains(&self, val: &u64) -> bool {
 		match self {
 			SmallU64Set::Set(s) => s.contains(val),
