@@ -164,8 +164,10 @@ impl Graph {
 
 		// Take the union of both nodes' input and then remove
 		// the nodes themselves
-		let to_r = mem::take(&mut map.get_mut(&r).unwrap().to);
-		let from_r = mem::take(&mut map.get_mut(&r).unwrap().from);
+		let r_ = map.get_mut(&r).unwrap();
+		let to_r = mem::take(&mut r_.to);
+		let from_r = mem::take(&mut r_.from);
+		let of_r = mem::take(&mut r_.of);
 
 		let l_ref = map.get_mut(&l).unwrap();
 
@@ -180,6 +182,10 @@ impl Graph {
 		}
 		l_ref.from.remove(&l);
 		l_ref.from.remove(&r);
+
+		for node in of_r.into_iter() {
+			l_ref.of.insert(node);
+		}
 
 		// Restore loop if they were a loop beforehand
 		if are_loop {
