@@ -95,6 +95,9 @@ impl Graph {
 			.map(|(l, r)| (l.id, r.id))
 			.collect::<Set<_>>();
 
+		// Seems linear, but in practice, unless the entire
+		// world is one long straight line ends up never
+		// taking more than a single step.
 		let mut translation_map = Map::new();
 		fn translate(key: u64, map: &Map<u64, u64>) -> u64 {
 			match map.get(&key) {
