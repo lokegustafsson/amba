@@ -73,9 +73,13 @@ impl fmt::Display for ControlFlowGraph {
 		let now2 = Instant::now();
 		write!(
 			f,
-			"\nNodes: {} ({})\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
+			"\nNodes: {} ({})\nEdges: {} ({})\nConnections: Avg: {}, Max: {}\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
 			g.len(),
 			self.graph.len(),
+			g.0.values().map(|b| b.from.len()).sum::<usize>(),
+			self.graph.0.values().map(|b| b.from.len()).sum::<usize>(),
+			g.0.values().map(|b| b.from.len()).sum::<usize>() as f64 / g.len() as f64,
+			g.0.values().map(|b| b.from.len()).max().unwrap(),
 			self.updates,
 			self.rebuilds,
 			now - self.spawned_at,
