@@ -69,11 +69,15 @@ let
       echo 'Making libamba.so'
       make -sC crates/libamba libamba.so
 
-      echo 'Patchelfing libs2e-x86_64-*.so (1/2)'
-      patchelf --shrink-rpath --remove-needed libamba.so \
+      echo 'Patchelfing libs2e-x86_64-*.so (1/3)'
+      patchelf --remove-needed libamba.so \
         target/impure-amba-deps/share/libs2e/libs2e-x86_64-*.so
 
-      echo 'Patchelfing libs2e-x86_64-*.so (2/2)'
+      echo 'Patchelfing libs2e-x86_64-*.so (2/3)'
+      patchelf --shrink-rpath \
+        target/impure-amba-deps/share/libs2e/libs2e-x86_64-*.so
+
+      echo 'Patchelfing libs2e-x86_64-*.so (3/3)'
       patchelf --add-needed libamba.so \
         --add-rpath "$PWD""/crates/libamba" \
         target/impure-amba-deps/share/libs2e/libs2e-x86_64-*.so
