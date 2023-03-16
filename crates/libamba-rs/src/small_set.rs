@@ -1,83 +1,33 @@
 use std::{collections::BTreeSet, iter, mem};
 
-use arrayvec::ArrayVec;
+use smallvec::SmallVec;
 
 const OPTIMAL_SIZE: usize = {
 	let set_size = mem::size_of::<BTreeSet<u64>>();
 	let u64_size = mem::size_of::<u64>();
 	set_size / u64_size
 };
-const ACTUAL_SIZE: usize = 6;
+const ACTUAL_SIZE: usize = 5;
 
 /// A small size optimised u64 set
-#[derive(Debug, Clone)]
+// Hardcoding one two and three let's us fit three elements without
+// growing larger than a BTreeSet and use the enum discriminant as an index
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SmallU64Set {
 	Set(BTreeSet<u64>),
-	Vec(ArrayVec<u64, ACTUAL_SIZE>),
+	Vec(SmallVec<[u64; ACTUAL_SIZE]>),
 }
-
-impl Default for SmallU64Set {
-	fn default() -> Self {
-		Self::new()
-	}
-}
-
-impl IntoIterator for SmallU64Set {
-	type IntoIter = itertools::Either<
-		<BTreeSet<u64> as IntoIterator>::IntoIter,
-		<ArrayVec<u64, ACTUAL_SIZE> as IntoIterator>::IntoIter,
-	>;
-	type Item = u64;
-
-	fn into_iter(self) -> Self::IntoIter {
-		match self {
-			SmallU64Set::Set(s) => itertools::Either::Left(s.into_iter()),
-			SmallU64Set::Vec(v) => itertools::Either::Right(v.into_iter()),
-		}
-	}
-}
-
-impl FromIterator<u64> for SmallU64Set {
-	fn from_iter<T: IntoIterator<Item = u64>>(iter: T) -> Self {
-		let mut s = SmallU64Set::new();
-		for i in iter.into_iter() {
-			s.insert(i);
-		}
-		s
-	}
-}
-
-impl From<SmallU64Set> for BTreeSet<u64> {
-	fn from(val: SmallU64Set) -> Self {
-		match val {
-			SmallU64Set::Set(s) => s,
-			SmallU64Set::Vec(v) => v.into_iter().collect(),
-		}
-	}
-}
-
-#[cfg(test)]
-impl PartialEq for SmallU64Set {
-	fn eq(&self, other: &Self) -> bool {
-		let l: BTreeSet<_> = self.clone().into();
-		let r: BTreeSet<_> = other.clone().into();
-		l == r
-	}
-}
-
-#[cfg(test)]
-impl Eq for SmallU64Set {}
 
 impl SmallU64Set {
 	pub fn new() -> Self {
-		SmallU64Set::Vec(ArrayVec::new())
+		SmallU64Set::Vec(SmallVec::new())
 	}
 
 	pub fn insert(&mut self, val: u64) -> bool {
 		match self {
 			SmallU64Set::Set(s) => s.insert(val),
 			SmallU64Set::Vec(v) => {
-				let contains = vec_contains(v, val);
+				let contains = vec_contains(&v, val);
 				if contains {
 					return false;
 				}
@@ -101,7 +51,7 @@ impl SmallU64Set {
 				let val = *val;
 				match v.iter().position(|&x| x == val) {
 					Some(idx) => {
-						v.remove(idx); // Must upload sorting
+						v.swap_remove(idx);
 						true
 					}
 					None => false,
@@ -117,14 +67,10 @@ impl SmallU64Set {
 		}
 	}
 
-	pub fn is_empty(&self) -> bool {
-		self.len() == 0
-	}
-
 	pub fn contains(&self, val: &u64) -> bool {
 		match self {
 			SmallU64Set::Set(s) => s.contains(val),
-			SmallU64Set::Vec(v) => vec_contains(v, *val),
+			SmallU64Set::Vec(v) => vec_contains(&v, *val),
 		}
 	}
 
@@ -136,6 +82,44 @@ impl SmallU64Set {
 	}
 }
 
+impl Default for SmallU64Set {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
+impl IntoIterator for SmallU64Set {
+	type IntoIter = itertools::Either<
+		<BTreeSet<u64> as IntoIterator>::IntoIter,
+		<SmallVec<[u64; ACTUAL_SIZE]> as IntoIterator>::IntoIter,
+	>;
+	type Item = u64;
+
+	fn into_iter(self) -> Self::IntoIter {
+		match self {
+			SmallU64Set::Set(s) => itertools::Either::Left(s.into_iter()),
+			SmallU64Set::Vec(v) => itertools::Either::Right(v.into_iter()),
+		}
+	}
+}
+
+impl FromIterator<u64> for SmallU64Set {
+	fn from_iter<T: IntoIterator<Item = u64>>(iter: T) -> Self {
+		SmallU64Set::Set(iter.into_iter().collect())
+	}
+}
+
 fn vec_contains(slice: &[u64], val: u64) -> bool {
 	slice.iter().any(|&x| x == val)
+}
+
+#[cfg(test)]
+mod test {
+	use crate::small_set::*;
+
+	#[test]
+	fn print_optimal_size() {
+		println!("{OPTIMAL_SIZE}");
+		panic!()
+	}
 }
