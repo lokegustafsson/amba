@@ -999,4 +999,38 @@ mod test {
 		graph.verify();
 		assert_eq!(graph, expected);
 	}
+
+	/// 0 → 1 → 2
+	/// ↓
+	/// 3
+	#[test]
+	fn incremental_l() {
+		let mut graph = Graph(
+			[
+				(0, (0, [], [1]).into()),
+				(1, (1, [0], [2]).into()),
+				(2, (2, [1], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		let expected_1 = Graph([(0, (0, [], []).into())].into_iter().collect());
+		let expected_2 = Graph(
+			[
+				(0, (0, [], [1, 3]).into()),
+				(1, (1, [0], []).into()),
+				(3, (3, [0], []).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+		expected_1.verify();
+		expected_2.verify();
+		graph.compress();
+		assert_eq!(&graph, &expected_1);
+		graph.revert_and_update(0, 3);
+		graph.compress();
+		assert_eq!(&graph, &expected_2);
+	}
 }
