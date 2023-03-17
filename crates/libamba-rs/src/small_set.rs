@@ -120,14 +120,3 @@ impl FromIterator<u64> for SmallU64Set {
 fn vec_contains(slice: &[u64], val: u64) -> bool {
 	slice.iter().any(|&x| x == val)
 }
-
-#[cfg(test)]
-mod test {
-	use crate::small_set::*;
-
-	#[test]
-	fn print_optimal_size() {
-		println!("{OPTIMAL_SIZE}");
-		panic!()
-	}
-}
