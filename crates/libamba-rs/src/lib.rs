@@ -1,4 +1,5 @@
 pub mod control_flow;
+mod disjoint_sets;
 pub mod graph;
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
