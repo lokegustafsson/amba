@@ -1,3 +1,8 @@
 [workspace]
 members = [ "crates/*" ]
 exclude = [ "crates/libamba" ]
+
+[profile.test]
+opt-level = 3
+debug-assertions = true
+overflow-checks = true
