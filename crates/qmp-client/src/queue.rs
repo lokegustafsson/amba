@@ -132,6 +132,7 @@ mod test {
 		}
 		Ok(())
 	}
+
 	fn generator(size: usize, count: usize) -> impl Strategy<Value = Vec<Instruction>> {
 		let instruction = prop_oneof![
 			(0..=size).prop_map(|skip| Instruction::Read { skip }),
