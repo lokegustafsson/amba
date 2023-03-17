@@ -15,6 +15,7 @@ impl<S: Read + Write> Read for Mitm<S> {
 		len
 	}
 }
+
 impl<S: Read + Write> Write for Mitm<S> {
 	fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
 		tracing::debug!(buf_len = buf.len(), "attempt write");

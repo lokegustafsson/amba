@@ -5,6 +5,7 @@ pub struct ByteQueue {
 	start: usize,
 	end: usize,
 }
+
 impl ByteQueue {
 	pub fn with_capacity(capacity: usize) -> Self {
 		let capacity = capacity.next_power_of_two();

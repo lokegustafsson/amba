@@ -25,6 +25,7 @@ pub struct QmpClient<S> {
 	buf_read: ByteQueue,
 	id: u64,
 }
+
 impl<S: Read + Write> QmpClient<S> {
 	pub fn new(stream: S) -> Self {
 		Self {
@@ -97,6 +98,7 @@ impl<S: Read + Write> QmpClient<S> {
 		}
 	}
 }
+
 #[derive(Debug)]
 pub enum QmpError {
 	EndOfFile,
@@ -112,6 +114,7 @@ pub struct QmpRequest<T: Serialize> {
 	pub arguments: Option<T>,
 	pub id: u64,
 }
+
 impl<T: Serialize> Serialize for QmpRequest<T> {
 	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
 	where
@@ -158,27 +161,32 @@ pub enum QmpResponse {
 	},
 	Event(QmpEvent),
 }
+
 #[derive(Deserialize, Debug)]
 pub struct QemuGreeting {
 	pub version: QemuVersion,
 	pub capabilities: Vec<String>,
 }
+
 #[derive(Deserialize, Debug)]
 pub struct QemuVersion {
 	pub qemu: QemuVersionCode,
 	pub package: String,
 }
+
 #[derive(Deserialize, Debug)]
 pub struct QemuVersionCode {
 	pub major: u16,
 	pub minor: u16,
 	pub micro: u16,
 }
+
 #[derive(Deserialize, Debug)]
 pub struct QemuError {
 	pub class: String,
 	pub desc: String,
 }
+
 #[derive(Deserialize, Debug)]
 pub struct QmpEvent {
 	pub event: String,
@@ -206,6 +214,7 @@ pub enum QmpCommand {
 	Stop,
 	Cont,
 }
+
 impl QmpCommand {
 	fn get_command(&self) -> &'static str {
 		match self {
