@@ -134,6 +134,7 @@ mod test {
 		Merge(u64, u64),
 		Canonicalize(u64),
 	}
+
 	fn compare_behavior(instructions: Vec<Instruction>) -> Result<(), TestCaseError> {
 		let mut slow = Slow::default();
 		let mut fast = DisjointSets::default();
