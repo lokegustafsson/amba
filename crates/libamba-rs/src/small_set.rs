@@ -16,6 +16,55 @@ pub enum SmallU64Set {
 	Vec(ArrayVec<u64, ACTUAL_SIZE>),
 }
 
+impl Default for SmallU64Set {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
+impl IntoIterator for SmallU64Set {
+	type IntoIter = itertools::Either<
+		<BTreeSet<u64> as IntoIterator>::IntoIter,
+		<ArrayVec<u64, ACTUAL_SIZE> as IntoIterator>::IntoIter,
+	>;
+	type Item = u64;
+
+	fn into_iter(self) -> Self::IntoIter {
+		match self {
+			SmallU64Set::Set(s) => itertools::Either::Left(s.into_iter()),
+			SmallU64Set::Vec(v) => itertools::Either::Right(v.into_iter()),
+		}
+	}
+}
+
+impl FromIterator<u64> for SmallU64Set {
+	fn from_iter<T: IntoIterator<Item = u64>>(iter: T) -> Self {
+		let mut s = SmallU64Set::new();
+		for i in iter.into_iter() {
+			s.insert(i);
+		}
+		s
+	}
+}
+
+impl From<SmallU64Set> for BTreeSet<u64> {
+	fn from(val: SmallU64Set) -> Self {
+		match val {
+			SmallU64Set::Set(s) => s,
+			SmallU64Set::Vec(v) => v.into_iter().collect(),
+		}
+	}
+}
+
+#[cfg(test)]
+impl PartialEq for SmallU64Set {
+	fn eq(&self, other: &Self) -> bool {
+		let l: BTreeSet<_> = self.clone().into();
+		let r: BTreeSet<_> = other.clone().into();
+		l == r
+	}
+}
+
 impl SmallU64Set {
 	pub fn new() -> Self {
 		SmallU64Set::Vec(ArrayVec::new())
@@ -81,55 +130,6 @@ impl SmallU64Set {
 			SmallU64Set::Set(s) => itertools::Either::Left(s.iter()),
 			SmallU64Set::Vec(v) => itertools::Either::Right(v.iter()),
 		}
-	}
-}
-
-impl Default for SmallU64Set {
-	fn default() -> Self {
-		Self::new()
-	}
-}
-
-impl IntoIterator for SmallU64Set {
-	type IntoIter = itertools::Either<
-		<BTreeSet<u64> as IntoIterator>::IntoIter,
-		<ArrayVec<u64, ACTUAL_SIZE> as IntoIterator>::IntoIter,
-	>;
-	type Item = u64;
-
-	fn into_iter(self) -> Self::IntoIter {
-		match self {
-			SmallU64Set::Set(s) => itertools::Either::Left(s.into_iter()),
-			SmallU64Set::Vec(v) => itertools::Either::Right(v.into_iter()),
-		}
-	}
-}
-
-impl FromIterator<u64> for SmallU64Set {
-	fn from_iter<T: IntoIterator<Item = u64>>(iter: T) -> Self {
-		let mut s = SmallU64Set::new();
-		for i in iter.into_iter() {
-			s.insert(i);
-		}
-		s
-	}
-}
-
-impl From<SmallU64Set> for BTreeSet<u64> {
-	fn from(val: SmallU64Set) -> Self {
-		match val {
-			SmallU64Set::Set(s) => s,
-			SmallU64Set::Vec(v) => v.into_iter().collect(),
-		}
-	}
-}
-
-#[cfg(test)]
-impl PartialEq for SmallU64Set {
-	fn eq(&self, other: &Self) -> bool {
-		let l: BTreeSet<_> = self.clone().into();
-		let r: BTreeSet<_> = other.clone().into();
-		l == r
 	}
 }
 
