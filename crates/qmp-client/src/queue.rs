@@ -51,7 +51,7 @@ impl ByteQueue {
 	}
 
 	pub fn consume_slices_skipping_end_bytes(&mut self, skip_at_end: usize) -> (&[u8], &[u8]) {
-		assert!(self.end > skip_at_end);
+		assert!(self.end >= skip_at_end);
 		if self.start >= self.end - skip_at_end {
 			return (&[], &[]);
 		}
@@ -69,5 +69,105 @@ impl ByteQueue {
 		} else {
 			(&self.buf[start_idx..], &self.buf[..end_idx])
 		}
+	}
+}
+
+#[cfg(test)]
+mod test {
+	use std::{collections::VecDeque, mem};
+
+	use proptest::{
+		prelude::*,
+		test_runner::{Config, TestRunner},
+	};
+
+	use super::*;
+
+	fn queue_write_all(queue: &mut ByteQueue, mut data: &[u8]) {
+		loop {
+			let target = queue.slice_to_write();
+			if data.len() <= target.len() {
+				target[..data.len()].copy_from_slice(data);
+				mem::drop(target);
+				queue.commit_written(data.len());
+				return;
+			} else {
+				let (a, b) = data.split_at(target.len());
+				target.copy_from_slice(a);
+				data = b;
+				let written = target.len();
+				mem::drop(target);
+				queue.commit_written(written);
+			}
+		}
+	}
+
+	#[derive(Debug)]
+	enum Instruction {
+		Read { skip: usize },
+		Write { data: Vec<u8> },
+	}
+
+	fn compare_behavior(instructions: Vec<Instruction>) -> Result<(), TestCaseError> {
+		let mut slow = VecDeque::<u8>::new();
+		let mut fast = ByteQueue::with_capacity(16);
+		for val in instructions {
+			match val {
+				Instruction::Write { data } => {
+					slow.extend(&*data);
+					queue_write_all(&mut fast, &data);
+				}
+				Instruction::Read { skip } => {
+					let skip = skip.min(slow.len());
+					let a: Vec<u8> = slow.drain(0..(slow.len() - skip)).collect();
+					let b: Vec<u8> = {
+						let (x, y) = fast.consume_slices_skipping_end_bytes(skip);
+						Iterator::chain(x.iter(), y)
+					}
+					.copied()
+					.collect();
+					assert_eq!(a, b);
+				}
+			}
+		}
+		Ok(())
+	}
+	fn generator(size: usize, count: usize) -> impl Strategy<Value = Vec<Instruction>> {
+		let instruction = prop_oneof![
+			(0..=size).prop_map(|skip| Instruction::Read { skip }),
+			prop::collection::vec(0..=255u8, 0..=size).prop_map(|data| Instruction::Write { data }),
+		];
+		prop::collection::vec(instruction, 0..=count)
+	}
+
+	#[test]
+	fn compare_0_100() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner.run(&generator(0, 100), compare_behavior).unwrap();
+	}
+	#[test]
+	fn compare_1_100() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner.run(&generator(1, 100), compare_behavior).unwrap();
+	}
+	#[test]
+	fn compare_2_100() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner.run(&generator(2, 100), compare_behavior).unwrap();
+	}
+	#[test]
+	fn compare_5_100() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner.run(&generator(5, 100), compare_behavior).unwrap();
+	}
+	#[test]
+	fn compare_10_100() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner.run(&generator(10, 100), compare_behavior).unwrap();
+	}
+	#[test]
+	fn compare_1000_100() {
+		let mut runner = TestRunner::new(Config::with_cases(1_000));
+		runner.run(&generator(1000, 100), compare_behavior).unwrap();
 	}
 }
