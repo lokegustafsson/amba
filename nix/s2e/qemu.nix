@@ -138,8 +138,8 @@ let
     enableParallelBuilding = true;
     buildInputs = let p = pkgs; in [ p.pkg-config p.glib.dev p.pixman ];
 
-    CFLAGS = "-march=haswell -fno-omit-frame-pointer";
-    CXXFLAGS = "-march=haswell -fno-omit-frame-pointer";
+    CFLAGS = "-march=sandybridge -fno-omit-frame-pointer";
+    CXXFLAGS = "-march=sandybridge -fno-omit-frame-pointer";
 
     CPATH = (makeIncludePath [ pkgs.zlib.dev pkgs.libpng.dev ]);
     LIBRARY_PATH = lib.makeLibraryPath [ pkgs.zlib pkgs.libpng ];
