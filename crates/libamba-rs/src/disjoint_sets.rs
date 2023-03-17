@@ -60,9 +60,9 @@ impl DisjointSets {
 			if y < LIMIT {
 				along_the_way.push(x);
 			} else {
-				along_the_way.iter().for_each(|&prev| {
+				for prev in along_the_way {
 					self.parent_or_size.insert(prev, x);
-				});
+				}
 				return x;
 			}
 		}
