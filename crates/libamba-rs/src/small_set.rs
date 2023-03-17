@@ -25,7 +25,7 @@ impl SmallU64Set {
 		match self {
 			SmallU64Set::Set(s) => s.insert(val),
 			SmallU64Set::Vec(v) => {
-				let contains = vec_contains(&v, val);
+				let contains = vec_contains(v, val);
 				if contains {
 					return false;
 				}
@@ -74,7 +74,7 @@ impl SmallU64Set {
 	pub fn contains(&self, val: &u64) -> bool {
 		match self {
 			SmallU64Set::Set(s) => s.contains(val),
-			SmallU64Set::Vec(v) => vec_contains(&v, *val),
+			SmallU64Set::Vec(v) => vec_contains(v, *val),
 		}
 	}
 
