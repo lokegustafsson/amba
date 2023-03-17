@@ -7,9 +7,11 @@ use std::{
 	os::unix::process::CommandExt,
 	path::Path,
 	process::{self, Command, ExitStatus},
+	thread,
+	time::Duration,
 };
 
-use chrono::offset::Local;
+use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
@@ -24,9 +26,12 @@ pub fn run(
 	cmd: &mut Cmd,
 	dependencies_dir: &Path,
 	data_dir: &Path,
+	session_dir: &Path,
+	temp_dir: &Path,
 	RunArgs {
 		host_path_to_executable,
 		debugger,
+		qmp,
 	}: RunArgs,
 ) -> Result<(), ()> {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
@@ -37,7 +42,6 @@ pub fn run(
 		return Err(());
 	}
 
-	let session_dir = &data_dir.join(Local::now().format("%Y-%m-%dT%H:%M:%S").to_string());
 	if session_dir.exists() {
 		tracing::error!(
 			?session_dir,
@@ -45,7 +49,15 @@ pub fn run(
 		);
 		return Err(());
 	}
+	if temp_dir.exists() {
+		tracing::error!(
+			?session_dir,
+			"temp_dir already exists. How did this happen?!"
+		);
+		return Err(());
+	}
 	cmd.create_dir_all(session_dir);
+	cmd.create_dir_all(temp_dir);
 	// Populate the `session_dir`
 	{
 		let executable_name = host_path_to_executable.file_name().unwrap();
@@ -70,26 +82,38 @@ pub fn run(
 	let max_processes = 1;
 	let image = &data_dir.join("images/ubuntu-22.04-x86_64/image.raw.s2e");
 	let serial_out = &session_dir.join("serial.txt");
+	let qmp_socket = qmp.then(|| temp_dir.join("qmp.socket"));
 
-	let status = run_qemu(
-		cmd,
-		debugger,
-		qemu,
-		session_dir,
-		libs2e,
-		libs2e_dir,
-		s2e_config,
-		max_processes,
-		image,
-		serial_out,
-	);
-	if status.success() {
-		Ok(())
-	} else {
-		tracing::error!(?status, "qemu exited with error code");
-		Err(())
-	}
+	thread::scope(|s| {
+		let join_handle = s.spawn(|| {
+			let status = run_qemu(
+				cmd,
+				debugger,
+				qemu,
+				session_dir,
+				libs2e,
+				libs2e_dir,
+				s2e_config,
+				max_processes,
+				image,
+				serial_out,
+				qmp_socket.as_deref(),
+			);
+			if status.success() {
+				Ok(())
+			} else {
+				tracing::error!(?status, "qemu exited with error code");
+				Err(())
+			}
+		});
+		if let Some(qmp_socket) = &qmp_socket {
+			tracing::debug!(?qmp_socket, "Starting QMP server over");
+			run_qmp(qmp_socket);
+		}
+		join_handle.join().unwrap()
+	})
 }
+
 fn run_qemu(
 	cmd: &mut Cmd,
 	debugger: bool,
@@ -101,6 +125,7 @@ fn run_qemu(
 	max_processes: u16,
 	image: &Path,
 	serial_out: &Path,
+	qmp_socket: Option<&Path>,
 ) -> ExitStatus {
 	assert!(qemu.exists());
 	assert!(libs2e.exists());
@@ -143,6 +168,15 @@ fn run_qemu(
 	if max_processes > 1 {
 		command.arg("-nographic");
 	}
+	if let Some(qmp_socket) = qmp_socket {
+		command.arg("-qmp").arg({
+			let mut line = OsString::new();
+			line.push("unix:");
+			line.push(qmp_socket);
+			line.push(",server,nowait");
+			line
+		});
+	}
 	command
 		.arg("-drive")
 		.arg({
@@ -182,6 +216,51 @@ fn run_qemu(
 		]);
 	cmd.command_spawn_wait(&mut command)
 }
+
+fn run_qmp(socket: &Path) {
+	let stream = 'outer: {
+		let mut attempt = 0;
+		let result = loop {
+			attempt += 1;
+			match std::os::unix::net::UnixStream::connect(socket) {
+				Ok(stream) => break 'outer stream,
+				Err(err) if attempt > 10 => break err,
+				Err(_) => {}
+			}
+			thread::sleep(Duration::from_millis(10));
+		};
+		tracing::error!(?result, ?socket, "failed to connect to socket");
+		return;
+	};
+
+	let mut qmp = QmpClient::new(stream);
+
+	let event_handler = |event @ QmpEvent { .. }| {
+		tracing::info!(?event, "QMP");
+	};
+
+	let greeting = qmp.blocking_receive().expect("greeting");
+	tracing::info!(?greeting, "QMP");
+
+	let negotiated = qmp
+		.blocking_request(&QmpCommand::QmpCapabilities, event_handler)
+		.unwrap();
+	tracing::info!(?negotiated, "QMP");
+
+	let status = qmp
+		.blocking_request(&QmpCommand::QueryStatus, event_handler)
+		.unwrap();
+	tracing::info!(?status, "QMP");
+
+	loop {
+		match qmp.blocking_receive() {
+			Ok(response) => tracing::info!(?response, "QMP"),
+			Err(QmpError::EndOfFile) => return,
+			Err(err) => unreachable!("{:?}", err),
+		}
+	}
+}
+
 fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
 	let version_file = &data_dir.join("version.txt");
 	let version = version_file
