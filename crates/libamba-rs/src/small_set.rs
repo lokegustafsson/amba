@@ -125,6 +125,24 @@ impl FromIterator<u64> for SmallU64Set {
 	}
 }
 
+impl From<SmallU64Set> for BTreeSet<u64> {
+	fn from(val: SmallU64Set) -> Self {
+		match val {
+			SmallU64Set::Set(s) => s,
+			SmallU64Set::Vec(v) => v.into_iter().collect(),
+		}
+	}
+}
+
+#[cfg(test)]
+impl PartialEq for SmallU64Set {
+	fn eq(&self, other: &Self) -> bool {
+		let l: BTreeSet<_> = self.clone().into();
+		let r: BTreeSet<_> = other.clone().into();
+		l == r
+	}
+}
+
 fn vec_contains(slice: &[u64], val: u64) -> bool {
 	slice.iter().any(|&x| x == val)
 }
