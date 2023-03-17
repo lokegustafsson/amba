@@ -10,10 +10,10 @@ const OPTIMAL_SIZE: usize = {
 const ACTUAL_SIZE: usize = 6;
 
 /// A small size optimised u64 set
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub enum SmallU64Set {
 	Set(BTreeSet<u64>),
-	Vec(ArrayVec<u64, ACTUAL_SIZE>), // Invariant: Buffer must be sorted for equality to hold
+	Vec(ArrayVec<u64, ACTUAL_SIZE>),
 }
 
 impl SmallU64Set {
@@ -34,9 +34,7 @@ impl SmallU64Set {
 					let s = v.iter().copied().chain(iter::once(val)).collect();
 					*self = SmallU64Set::Set(s);
 				} else {
-					// Keep the buffer sorted to simplify equality
-					let idx = v.binary_search(&val).unwrap_err();
-					v.insert(idx, val);
+					v.push(val);
 				}
 
 				true
