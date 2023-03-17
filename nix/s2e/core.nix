@@ -89,7 +89,7 @@ let
     paths = [ pkgs.clang_14 pkgs.llvmPackages_14.llvm ];
   };
 
-  BUILD_ARCH = "haswell";
+  BUILD_ARCH = "sandybridge";
   INJECTED_CLANG_CC = "${clang_and_llvm}/bin/clang";
   INJECTED_CLANG_CXX = "${clang_and_llvm}/bin/clang++";
   INJECTED_RAPIDJSON_SRC = pkgs.fetchFromGitHub {
