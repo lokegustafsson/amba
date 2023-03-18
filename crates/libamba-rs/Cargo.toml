@@ -12,6 +12,7 @@ crate-type = [ "staticlib", "rlib" ]
 [dependencies]
 arrayvec = "0.7"
 itertools = "0.10"
+ipc = { path = "../ipc" }
 
 [dev-dependencies]
 proptest = "1"
