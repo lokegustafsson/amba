@@ -34,7 +34,6 @@ impl ControlFlowGraph {
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
-		return true;
 
 		// Only edit the compressed graph if this was a new link
 		if modified {
