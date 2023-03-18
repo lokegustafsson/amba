@@ -5,9 +5,11 @@ pub mod small_set;
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
-	use std::sync::Mutex;
+	use std::{os::unix::net::UnixStream, sync::Mutex};
 
 	use crate::control_flow::ControlFlowGraph;
+
+	type Ipc = ipc::Ipc<&'static std::os::unix::net::UnixStream>;
 
 	/// Create a newly allocated `ControlFlowGraph` and return an
 	/// owning raw pointer. This pointer may only be freed with
@@ -45,6 +47,28 @@ mod ffi {
 		let mutex = &*ptr;
 		let cfg = mutex.lock().unwrap();
 		println!("{cfg}");
+	}
+
+	/// Initialize `Ipc` and return an owning raw pointer. If initialization
+	/// fails, a null pointer is returned.
+	#[no_mangle]
+	pub extern "C" fn rust_ipc_new() -> *mut Ipc {
+		match UnixStream::connect("amba-ipc.socket") {
+			Ok(stream) => {
+				let stream = Box::leak(Box::new(stream));
+				Box::leak(Box::new(Ipc::new(&*stream)))
+			}
+			Err(err) => {
+				println!("libamba failed to connect to IPC socket: {err:?}");
+				std::ptr::null_mut()
+			}
+		}
+	}
+
+	#[no_mangle]
+	pub unsafe extern "C" fn rust_ipc_send_graph(ipc: &mut Ipc, graph: &mut ControlFlowGraph) {
+		ipc.blocking_send(&ipc::IpcMessage::Ping)
+			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 	}
 
 	#[no_mangle]

@@ -17,6 +17,7 @@ dirs = "4"
 include_dir = "0.7"
 nix = "0.26"
 qmp-client = { path = "../qmp-client" }
+ipc = { path = "../ipc" }
 rand = "0.8"
 regex = "1"
 reqwest = { version = "0.11", default-features = false, features = ["blocking", "cookies", "brotli", "rustls-tls", "rustls-tls-webpki-roots"] }

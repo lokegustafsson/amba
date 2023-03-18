@@ -1,8 +1,9 @@
 use std::{
-	io::{self, Read, Write},
+	io::{self, BufReader, BufWriter, Read, Write},
 	time::{Duration, SystemTime},
 };
 
+use read_until::ReadExt;
 use serde::{
 	de::Deserializer,
 	ser::{SerializeStruct, Serializer},
@@ -10,72 +11,34 @@ use serde::{
 };
 use serde_json::{Map, Value};
 
-use crate::queue::ByteQueue;
-
-mod queue;
-
-const BUFSIZE: usize = 8192;
+mod read_until;
 
 /// A QMP (QEMU Machine Protocol) client communicating over the provided stream.
 /// The stream does not need to be buffered as the `QmpClient` buffers
 /// internally.
-pub struct QmpClient<S> {
-	stream: S,
-	buf_send: Vec<u8>,
-	buf_read: ByteQueue,
+pub struct QmpClient<S: Copy + Read + Write> {
+	stream_tx: BufWriter<S>,
+	stream_rx: BufReader<S>,
 	id: u64,
 }
 
-impl<S: Read + Write> QmpClient<S> {
+impl<S: Copy + Read + Write> QmpClient<S> {
 	pub fn new(stream: S) -> Self {
 		Self {
-			stream,
-			buf_send: Vec::with_capacity(BUFSIZE),
-			buf_read: ByteQueue::with_capacity(BUFSIZE),
+			stream_tx: BufWriter::new(stream),
+			stream_rx: BufReader::new(stream),
 			id: 1,
 		}
 	}
 
 	pub fn blocking_send<T: Serialize>(&mut self, request: &QmpRequest<T>) {
-		serde_json::to_writer(&mut self.buf_send, request).unwrap();
-		self.buf_send.push(b'\n');
-		self.stream.write_all(&self.buf_send).unwrap();
-		self.stream.flush().unwrap();
-		self.buf_send.clear();
+		serde_json::to_writer(&mut self.stream_tx, request).unwrap();
+		self.stream_tx.write_all(b"\n").unwrap();
+		self.stream_tx.flush().unwrap();
 	}
 
 	pub fn blocking_receive(&mut self) -> Result<QmpResponse, QmpError> {
-		let next_line_len = loop {
-			// Read from the stream into our circular buffer
-			let writeable = self.buf_read.slice_to_write();
-			match self.stream.read(writeable) {
-				Ok(0) => return Err(QmpError::EndOfFile),
-				Ok(len) => {
-					// If we read a newline, break with how much extra data we also got after the
-					// newline.
-					let this_line_len = writeable[..len]
-						.iter()
-						.enumerate()
-						.find_map(|(i, &ch)| (ch == b'\n').then_some(i + 1));
-					self.buf_read.commit_written(len);
-					match this_line_len {
-						Some(this_line_len) => break len - this_line_len,
-						None => {}
-					}
-				}
-				Err(err) => {
-					return if err.kind() == io::ErrorKind::Interrupted {
-						Err(QmpError::Interrupted)
-					} else {
-						Err(QmpError::Io(err))
-					}
-				}
-			}
-		};
-		let (newline_a, newline_b) = self
-			.buf_read
-			.consume_slices_skipping_end_bytes(next_line_len);
-		Ok(serde_json::from_reader(Read::chain(newline_a, newline_b)).unwrap())
+		Ok(serde_json::from_reader(self.stream_rx.take_until(b'\n')).unwrap())
 	}
 
 	pub fn blocking_request<F: FnMut(QmpEvent)>(

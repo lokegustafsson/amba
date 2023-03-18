@@ -4,13 +4,18 @@
 
 use std::{
 	ffi::{OsStr, OsString},
-	os::unix::process::CommandExt,
+	net::Shutdown,
+	os::unix::{
+		net::{UnixListener, UnixStream},
+		process::CommandExt,
+	},
 	path::Path,
 	process::{self, Command, ExitStatus},
 	thread,
 	time::Duration,
 };
 
+use ipc::{Ipc, IpcError};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
@@ -84,13 +89,28 @@ pub fn run(
 	let serial_out = &session_dir.join("serial.txt");
 	let qmp_socket = qmp.then(|| temp_dir.join("qmp.socket"));
 
-	thread::scope(|s| {
-		let join_handle = s.spawn(|| {
+	let ipc_socket = temp_dir.join("amba-ipc.socket");
+	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
+
+	let res = thread::scope(|s| {
+		let ipc = s.spawn(|| {
+			let stream = ipc_listener.accept().unwrap().0;
+			let mut ipc = Ipc::new(&stream);
+			loop {
+				match ipc.blocking_receive() {
+					Ok(msg) => tracing::info!(?msg),
+					Err(IpcError::EndOfFile) => break,
+					Err(other) => panic!("ipc error: {other:?}"),
+				}
+			}
+			stream.shutdown(Shutdown::Both).unwrap();
+		});
+		let qemu = s.spawn(|| {
 			let status = run_qemu(
 				cmd,
 				debugger,
 				qemu,
-				session_dir,
+				temp_dir,
 				libs2e,
 				libs2e_dir,
 				s2e_config,
@@ -110,15 +130,18 @@ pub fn run(
 			tracing::debug!(?qmp_socket, "Starting QMP server over");
 			run_qmp(qmp_socket);
 		}
-		join_handle.join().unwrap()
-	})
+		ipc.join().unwrap();
+		qemu.join().unwrap()
+	});
+	cmd.remove(ipc_socket);
+	res
 }
 
 fn run_qemu(
 	cmd: &mut Cmd,
 	debugger: bool,
 	qemu: &Path,
-	session_dir: &Path,
+	temp_dir: &Path,
 	libs2e: &Path,
 	libs2e_dir: &Path,
 	s2e_config: &Path,
@@ -134,7 +157,7 @@ fn run_qemu(
 
 	let mut command = Command::new(qemu);
 	command
-		.current_dir(session_dir)
+		.current_dir(temp_dir)
 		.env("LD_PRELOAD", libs2e)
 		.env("S2E_CONFIG", s2e_config)
 		.env("S2E_SHARED_DIR", libs2e_dir)
@@ -222,7 +245,7 @@ fn run_qmp(socket: &Path) {
 		let mut attempt = 0;
 		let result = loop {
 			attempt += 1;
-			match std::os::unix::net::UnixStream::connect(socket) {
+			match UnixStream::connect(socket) {
 				Ok(stream) => break 'outer stream,
 				Err(err) if attempt > 10 => break err,
 				Err(_) => {}
@@ -233,7 +256,7 @@ fn run_qmp(socket: &Path) {
 		return;
 	};
 
-	let mut qmp = QmpClient::new(stream);
+	let mut qmp = QmpClient::new(&stream);
 
 	let event_handler = |event @ QmpEvent { .. }| {
 		tracing::info!(?event, "QMP");
