@@ -11,6 +11,7 @@ crate-type = [ "staticlib", "rlib" ]
 
 [dependencies]
 arrayvec = "0.7"
+smallvec = { version = "1.8", default-features = false, features = [ "union" ] }
 itertools = "0.10"
 
 [dev-dependencies]

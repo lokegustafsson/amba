@@ -1135,6 +1135,7 @@ dependencies = [
  "proptest",
  "arrayvec",
  "itertools 0.10.5",
+ "smallvec",
 ]
 
 [[package]]
