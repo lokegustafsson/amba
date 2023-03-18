@@ -325,13 +325,6 @@ fn translate(key: u64, map: &mut Map<u64, u64>) -> u64 {
 	}
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct ControlFlowGraph {
-	graph: Graph,
-	compressed_graph: Graph,
-	last: BlockId,
-}
-
 impl<const N: usize, const M: usize, const O: usize>
 	From<(BlockId, [BlockId; N], [BlockId; M], [BlockId; O])> for Block
 {
