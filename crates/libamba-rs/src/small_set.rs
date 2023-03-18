@@ -65,6 +65,9 @@ impl PartialEq for SmallU64Set {
 	}
 }
 
+#[cfg(test)]
+impl Eq for SmallU64Set {}
+
 impl SmallU64Set {
 	pub fn new() -> Self {
 		SmallU64Set::Vec(ArrayVec::new())
