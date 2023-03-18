@@ -5,7 +5,7 @@ use std::{
 
 use crate::graph::{BlockId, Graph};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
 	pub(crate) graph: Graph,
 	pub(crate) compressed_graph: Graph,
