@@ -7,7 +7,7 @@ pub(crate) type Set<T> = std::collections::BTreeSet<T>;
 pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
 pub(crate) type BlockId = u64;
 
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default)]
 pub struct Block {
 	pub(crate) id: BlockId,
 	pub(crate) from: SmallU64Set,
@@ -15,7 +15,7 @@ pub struct Block {
 	pub(crate) of: SmallU64Set,
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default)]
 pub struct Graph {
 	pub(crate) nodes: Map<u64, Block>,
 	pub(crate) merges: Map<u64, u64>,
