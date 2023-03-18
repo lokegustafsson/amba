@@ -1,6 +1,6 @@
 use std::{collections::BTreeSet, iter, mem};
 
-use smallvec::SmallVec;
+use arrayvec::ArrayVec;
 
 const OPTIMAL_SIZE: usize = {
 	let set_size = mem::size_of::<BTreeSet<u64>>();
@@ -13,12 +13,12 @@ const ACTUAL_SIZE: usize = 6;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SmallU64Set {
 	Set(BTreeSet<u64>),
-	Vec(SmallVec<[u64; ACTUAL_SIZE]>),
+	Vec(ArrayVec<u64, ACTUAL_SIZE>),
 }
 
 impl SmallU64Set {
 	pub fn new() -> Self {
-		SmallU64Set::Vec(SmallVec::new())
+		SmallU64Set::Vec(ArrayVec::new())
 	}
 
 	pub fn insert(&mut self, val: u64) -> bool {
@@ -89,7 +89,7 @@ impl Default for SmallU64Set {
 impl IntoIterator for SmallU64Set {
 	type IntoIter = itertools::Either<
 		<BTreeSet<u64> as IntoIterator>::IntoIter,
-		<SmallVec<[u64; ACTUAL_SIZE]> as IntoIterator>::IntoIter,
+		<ArrayVec<u64, ACTUAL_SIZE> as IntoIterator>::IntoIter,
 	>;
 	type Item = u64;
 
