@@ -93,9 +93,11 @@ dependencies = [
  "nix 0.26.2",
  "qmp-client",
  "rand",
+ "recipe",
  "regex",
  "reqwest",
  "serde",
+ "serde_json",
  "tar",
  "tera",
  "tracing",
@@ -375,6 +377,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "69cce20737498f97b993470a6e536b8523f0af7892a4f928cceb1ac5e52ebe7e"
 dependencies = [
  "generic-array",
+]
+
+[[package]]
+name = "bootstrap"
+version = "0.1.0"
+dependencies = [
+ "nix 0.26.2",
+ "recipe",
 ]
 
 [[package]]
@@ -2650,6 +2660,14 @@ name = "raw-window-handle"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4f851a03551ceefd30132e447f07f96cb7011d6b658374f3aed847333adb5559"
+
+[[package]]
+name = "recipe"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "redox_syscall"

@@ -7,7 +7,6 @@ use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 mod cmd;
 mod init;
 mod run;
-mod util;
 
 /// The executable component of amba that runs QEMU+S2E+libamba as a subprocess
 ///
@@ -37,10 +36,12 @@ pub struct InitArgs {
 /// Run QEMU+S2E+libamba
 #[derive(clap::Args, Debug)]
 pub struct RunArgs {
-	/// The executable to analyze. Will be copied into the guest VM.
-	host_path_to_executable: PathBuf,
+	/// Path to a recipe file specifying the run
+	recipe_path: PathBuf,
+	/// Start QEMU in a paused state, to attach a debugger or profiler
 	#[arg(short, long)]
 	debugger: bool,
+	/// Connect to QEMU:s QMP server
 	#[arg(short, long)]
 	qmp: bool,
 }

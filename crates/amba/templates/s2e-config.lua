@@ -55,10 +55,7 @@ pluginsConfig.BaseInstructions = {
 add_plugin("HostFiles")
 pluginsConfig.HostFiles = {
     baseDirs = {
-        "{{ project_dir }}",
-        {% if use_seeds == true %}
-        "{{ seeds_dir }}",
-        {% endif %}
+        "{{ host_files_dir }}",
     },
     allowWrite = true,
 }
