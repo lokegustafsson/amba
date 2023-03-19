@@ -74,16 +74,17 @@ impl ControlFlowGraph {
 				&& self.compressed_graph.nodes.contains_key(&from)
 			{
 				self.compressed_graph.update(from, to);
+				self.compressed_graph.compress_with_hint(from, to);
 			} else {
 				// but if either link is gone, we construct a new graph.
 				// TODO: Figure out how to split nodes
 				// and only compress new things.
 				self.compressed_graph = self.graph.clone();
 				self.rebuilds += 1;
+				let now = Instant::now();
+				self.compressed_graph.compress();
+				self.rebuilding_time += Instant::now() - now;
 			}
-			let now = Instant::now();
-			self.compressed_graph.compress();
-			self.rebuilding_time += Instant::now() - now;
 		}
 
 		modified
