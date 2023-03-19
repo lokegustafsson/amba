@@ -35,6 +35,9 @@ impl ControlFlowGraph {
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
 
+		// Disabled for smoke test
+		return modified;
+
 		// Only edit the compressed graph if this was a new link
 		if modified {
 			// If both links exist we can just add this one link
