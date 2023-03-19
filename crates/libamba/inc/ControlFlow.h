@@ -25,6 +25,7 @@ class ControlFlow {
 
 	amba::ExecutionFunction onBlockStart;
 	amba::SymbolicExecutionFunction onStateFork;
+	amba::StateMergeFunction onStateMerge;
   protected:
 	u64 m_last;
 	ControlFlowGraph *m_cfg;
