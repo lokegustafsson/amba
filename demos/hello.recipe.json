@@ -2,7 +2,7 @@
 	"files": {
 		"hello": "./hello",
 		"input.txt": {
-			"content": "a",
+			"seed": "a",
 			"symbolic": [
 				[
 					0,

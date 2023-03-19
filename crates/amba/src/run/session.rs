@@ -66,13 +66,14 @@ impl S2EConfig {
 	/// configuration.
 	pub fn new(cmd: &mut Cmd, session_dir: &Path, recipe_path: &Path, recipe: &Recipe) -> Self {
 		let host_files_dir = session_dir.join("hostfiles");
+		cmd.create_dir_all(&host_files_dir);
 		for (guest_path, source) in &recipe.files {
 			if let FileSource::Host(host_path) | FileSource::SymbolicHost { host_path, .. } = source
 			{
 				let guest_path = Path::new(guest_path);
 				assert!(guest_path.is_relative());
 				cmd.copy(
-					recipe_path.join(host_path),
+					recipe_path.parent().unwrap().join(host_path),
 					host_files_dir.join(guest_path),
 				);
 			}
@@ -129,7 +130,7 @@ impl S2EConfig {
 		);
 		cmd.symlink(
 			dependencies_dir.join("bin/bootstrap"),
-			session_dir.join("bootstrap.sh"),
+			self.host_files_dir.join("bootstrap.sh"),
 		);
 
 		tracing::debug!(TEMPLATE_DIR = ?TEMPLATE_DIR.path(), "Using templates from");
