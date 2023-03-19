@@ -146,49 +146,33 @@ impl Graph {
 		}
 	}
 
-	/// Version of the compression function that will only compress around an update.
-	/// Returns true if graph changed.
-	pub fn compress_with_hint(&mut self, from: u64, to: u64) -> bool {
-		if !self.nodes[&from].to.contains(&to) || !self.nodes[&to].from.contains(&from) {
-			return false;
-		}
-		let mut this = from.min(to);
-		self.merge_nodes(from, to);
-		if self.nodes[&this].from.len() == 1 {
-			let from = *self.nodes[&this].from.iter().next().unwrap();
-			if self.compress_with_hint(from, this) {
-				this = from;
-			}
-		}
-		if self.nodes[&this].to.len() == 1 {
-			let to = *self.nodes[&this].to.iter().next().unwrap();
-			self.compress_with_hint(this, to);
-		}
-		true
-	}
-
 	/// Compress around given candidates. If a candidate gets
 	/// compressed its neighbours will be checked too, growing out
 	/// from there.
-	// The queue is a set so we can guarantee that there are no
-	// duplicates in the queue and HashSet doesn't have a pop
-	// function.
-	pub fn compress_with_hint_2(&mut self, mut queued: BTreeSet<(u64, u64)>) {
-		while let Some((from, to)) = queued.pop_first() {
-			if !(self.nodes[&from].to.len() == 1
-				&& self.nodes[&from].to.contains(&to)
-				&& self.nodes[&to].from.len() == 1
-				&& self.nodes[&to].from.contains(&from))
-			{
-				continue;
-			}
-			self.merge_nodes(from, to);
-			let this = from;
-			let node = &self.nodes[&this];
-			for &connection in node.to.iter().chain(node.from.iter()) {
-				queued.insert((connection, this));
+	pub fn compress_with_hint(&mut self, from: u64, to: u64) {
+		// The queue is a set so we can guarantee that there are no
+		// duplicates in the queue and HashSet doesn't have a pop
+		// function.
+		fn compress_with_hint_2(graph: &mut Graph, mut queued: BTreeSet<(u64, u64)>) {
+			while let Some((mut from, mut to)) = queued.pop_first() {
+				from = translate(from, &mut graph.merges);
+				to = translate(to, &mut graph.merges);
+				(from, to) = (from.min(to), from.max(to));
+
+				if !graph.are_mergable_link(from, to)
+				{
+					eprintln!("Skipping {from} → {to}");
+					continue;
+				}
+				let this = graph.merge_nodes(from, to);
+				let node = &graph.nodes[&this];
+				for &connection in node.to.iter().chain(node.from.iter()) {
+					queued.insert((connection, this));
+				}
 			}
 		}
+
+		compress_with_hint_2(self, [(from, to)].into_iter().collect());
 	}
 
 	fn are_mergable_link(&mut self, mut l: u64, mut r: u64) -> bool {
