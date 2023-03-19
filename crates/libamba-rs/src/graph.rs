@@ -159,9 +159,8 @@ impl Graph {
 				to = translate(to, &mut graph.merges);
 				(from, to) = (from.min(to), from.max(to));
 
-				if !graph.are_mergable_link(from, to)
-				{
 					eprintln!("Skipping {from} → {to}");
+				if !graph.are_mergable_link(from, to) {
 					continue;
 				}
 				let this = graph.merge_nodes(from, to);
@@ -187,8 +186,7 @@ impl Graph {
 			let to_link = self.nodes[&x].to.get_any();
 			let from_link = self.nodes[&y].from.get_any();
 
-			translate(to_link, &mut self.merges) == y
-			&& translate(from_link, &mut self.merges) == x
+			translate(to_link, &mut self.merges) == y && translate(from_link, &mut self.merges) == x
 		};
 
 		f(l, r) || f(r, l)
