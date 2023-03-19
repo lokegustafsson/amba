@@ -43,4 +43,18 @@ void ControlFlow::onStateFork(
 	}
 }
 
+void ControlFlow::onStateMerge(
+	s2e::S2EExecutionState *destination_state,
+	s2e::S2EExecutionState *source_state
+) {
+	const auto dest_id = destination_state->getID();
+	const auto src_id = source_state->getID();
+
+	rust_update_control_flow_graph(
+		this->m_cfg,
+		(u64) src_id,
+		(u64) dest_id
+	);
+}
+
 } // namespace control_flow
