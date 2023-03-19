@@ -191,6 +191,25 @@ impl Graph {
 		}
 	}
 
+	fn are_mergable_link(&mut self, mut l: u64, mut r: u64) -> bool {
+		l = translate(l, &mut self.merges);
+		r = translate(r, &mut self.merges);
+
+		let mut f = |x, y| {
+			if self.nodes[&x].to.len() != 1 || self.nodes[&y].from.len() != 1 {
+				return false;
+			}
+
+			let to_link = self.nodes[&x].to.get_any();
+			let from_link = self.nodes[&y].from.get_any();
+
+			translate(to_link, &mut self.merges) == y
+			&& translate(from_link, &mut self.merges) == x
+		};
+
+		f(l, r) || f(r, l)
+	}
+
 	fn are_loop(&mut self, l: u64, r: u64) -> bool {
 		if l == r {
 			return true;
