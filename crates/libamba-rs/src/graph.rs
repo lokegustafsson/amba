@@ -703,7 +703,7 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
-	fn cycle_THIS() {
+	fn cycle() {
 		let mut graph = Graph::with_nodes(
 			[
 				(0, (0, [3], [1], [0]).into()),
