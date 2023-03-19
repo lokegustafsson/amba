@@ -38,9 +38,7 @@ mod ffi {
 	}
 
 	#[no_mangle]
-	pub unsafe extern "C" fn rust_print_graph_size(
-		ptr: *mut ControlFlowGraph,
-	) {
+	pub unsafe extern "C" fn rust_print_graph_size(ptr: *mut ControlFlowGraph) {
 		let cfg = &*ptr;
 		println!("{cfg}");
 	}
