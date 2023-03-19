@@ -31,6 +31,7 @@ class AmbaPlugin : public Plugin {
   protected:
 	heap_leak::HeapLeak m_heap_leak;
 	control_flow::ControlFlow m_assembly_graph;
+	control_flow::ControlFlow m_symbolic_graph;
 };
 
 } // namespace plugins
