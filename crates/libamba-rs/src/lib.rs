@@ -1,6 +1,7 @@
 pub mod control_flow;
 mod disjoint_sets;
 pub mod graph;
+pub mod small_set;
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
