@@ -73,7 +73,7 @@ impl SmallU64Set {
 		SmallU64Set::Vec(ArrayVec::new())
 	}
 
-	// Returns an arbirtray element in the set. Panics if the set is empty
+	// Returns an arbitrary element in the set. Panics if the set is empty
 	pub fn get_any(&self) -> u64 {
 		match self {
 			SmallU64Set::Set(s) => *s.iter().next().unwrap(),
