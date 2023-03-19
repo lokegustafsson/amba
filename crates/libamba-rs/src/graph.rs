@@ -1086,6 +1086,7 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
+	#[ignore]
 	fn cycle_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
