@@ -27,3 +27,6 @@ get-libamba-symbols:
 		| rg -v 'GLIBC|CXXABI|GCC' \
 		| c++filt \
 		| printf "\nDynamic symbols required by libamba:\n\n$$(cat -)"
+
+compile_flags.txt:
+	make -C crates/libamba ../../compile_flags.txt
