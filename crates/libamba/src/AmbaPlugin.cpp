@@ -46,10 +46,15 @@ void AmbaPlugin::initialize() {
 			this->m_symbolic_graph,
 			&control_flow::ControlFlow::onStateFork
 		));
+	core.onStateMerge
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onStateMerge
+		));
+
 	(void) core.onStateForkDecide;
 	(void) core.onStateKill;
 	(void) core.onStateSwitch;
-	(void) core.onStateMerge;
 
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
