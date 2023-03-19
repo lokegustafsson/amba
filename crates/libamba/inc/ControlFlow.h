@@ -24,6 +24,7 @@ class ControlFlow {
 	~ControlFlow();
 
 	amba::ExecutionFunction onBlockStart;
+	amba::SymbolicExecutionFunction onStateFork;
   protected:
 	u64 m_last;
 	ControlFlowGraph *m_cfg;

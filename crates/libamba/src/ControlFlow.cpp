@@ -23,4 +23,11 @@ void ControlFlow::onBlockStart(
 	);
 	this->m_last = pc;
 }
+
+void ControlFlow::onStateFork(
+	s2e::S2EExecutionState *state,
+	const std::vector<s2e::S2EExecutionState *> &,
+	const std::vector<klee::ref<klee::Expr>> &
+) {}
+
 } // namespace control_flow
