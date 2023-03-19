@@ -159,7 +159,6 @@ impl Graph {
 				to = translate(to, &mut graph.merges);
 				(from, to) = (from.min(to), from.max(to));
 
-					eprintln!("Skipping {from} → {to}");
 				if !graph.are_mergable_link(from, to) {
 					continue;
 				}
