@@ -1574,10 +1574,6 @@ in
     devDependencies = {
       proptest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".proptest."1.1.0" { inherit profileName; };
     };
-    dependencies = {
-      arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
-      itertools = rustPackages."registry+https://github.com/rust-lang/crates.io-index".itertools."0.10.5" { inherit profileName; };
-    };
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".libc."0.2.139" = overridableMkRustCrate (profileName: rec {
