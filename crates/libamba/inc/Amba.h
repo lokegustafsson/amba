@@ -29,6 +29,10 @@ using SymbolicExecutionFunction = void (
 	const std::vector<s2e::S2EExecutionState *> &,
 	const std::vector<klee::ref<klee::Expr>> &
 );
+using StateMergeFunction = void (
+	s2e::S2EExecutionState *dest,
+	s2e::S2EExecutionState *source
+);
 
 struct AddressLengthPair {
 	target_phys_addr_t adr;
