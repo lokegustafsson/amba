@@ -1158,7 +1158,6 @@ mod test {
 	/// ↓
 	/// 3
 	#[test]
-	#[ignore]
 	fn incremental_l() {
 		let mut graph = Graph::with_nodes(
 			[
