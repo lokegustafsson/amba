@@ -342,6 +342,30 @@ impl<const N: usize, const M: usize, const O: usize>
 mod test {
 	use crate::graph::*;
 
+	impl PartialEq for Block {
+		fn eq(&self, other: &Self) -> bool {
+			// Deconstructed so that it will cause a
+			// compilation error if we add a field and
+			// forget to update this
+			let Block {
+				id: l_id,
+				from: l_from,
+				to: l_to,
+				of: l_of,
+			} = self;
+			let Block {
+				id: r_id,
+				from: r_from,
+				to: r_to,
+				of: r_of,
+			} = other;
+
+			l_id == r_id && l_from == r_from && l_to == r_to && l_of == r_of
+		}
+	}
+
+	impl Eq for Block {}
+
 	/// 0 → 1 → 2
 	#[test]
 	fn straight_line() {
