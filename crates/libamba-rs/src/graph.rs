@@ -149,7 +149,9 @@ impl Graph {
 	/// Compress around given candidates. If a candidate gets
 	/// compressed its neighbours will be checked too, growing out
 	/// from there.
-	pub fn compress_with_hint(&mut self, from: u64, to: u64) {
+	pub fn compress_with_hint(&mut self, mut from: u64, mut to: u64) {
+		from = translate(from, &mut self.merges);
+		to = translate(to, &mut self.merges);
 		// The queue is a set so we can guarantee that there are no
 		// duplicates in the queue and HashSet doesn't have a pop
 		// function.
@@ -170,7 +172,15 @@ impl Graph {
 			}
 		}
 
-		compress_with_hint_2(self, [(from, to)].into_iter().collect());
+		let mut candidates = [(from, to)].into_iter().collect::<BTreeSet<_>>();
+		for pair in self.get(from).unwrap().from.iter().map(|&f| (f, from)) {
+			candidates.insert(pair);
+		}
+		for pair in self.get(to).unwrap().to.iter().map(|&t| (to, t)) {
+			candidates.insert(pair);
+		}
+
+		compress_with_hint_2(self, candidates);
 	}
 
 	fn are_mergable_link(&mut self, mut l: u64, mut r: u64) -> bool {
