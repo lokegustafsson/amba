@@ -211,13 +211,13 @@ impl Graph {
 		there && back_again
 	}
 
-	pub fn merge_nodes(&mut self, l: u64, r: u64) {
+	/// Returns the id of the merged node
+	pub fn merge_nodes(&mut self, l: u64, r: u64) -> u64 {
 		if l > r {
-			self.merge_nodes(r, l);
-			return;
+			return self.merge_nodes(r, l);
 		}
 		if l == r {
-			return;
+			return l;
 		}
 
 		assert!(self.nodes.contains_key(&l));
@@ -272,6 +272,8 @@ impl Graph {
 
 		// Remove the right node from the graph
 		map.remove(&r);
+
+		l
 	}
 
 	/// Split `node` into two nodes, with the new node using the
