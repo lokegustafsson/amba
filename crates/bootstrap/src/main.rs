@@ -27,9 +27,10 @@ use recipe::{FileSource, Recipe};
 const RECIPE_PATH: &str = "./recipe.json";
 
 fn main() {
-	// tracing log every action? especially commands?
+	println!("bootstrap (rust musl binary) started");
 
-	let recipe = Recipe::deserialize_from(fs::read_to_string(RECIPE_PATH).unwrap().as_bytes());
+	let recipe = Recipe::deserialize_from(fs::read_to_string(RECIPE_PATH).unwrap().as_bytes())
+		.expect("deserializing Recipe");
 	if true {
 		todo!("recipe loaded, but the bootstrap executable is a work-in-progress");
 	}

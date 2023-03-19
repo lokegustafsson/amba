@@ -14,8 +14,15 @@ pub struct Recipe {
 	environment: Environment,
 }
 impl Recipe {
-	pub fn deserialize_from(bytes: &[u8]) -> Self {
-		let mut ret: Self = serde_json::from_slice(bytes).unwrap();
+	pub fn deserialize_from(bytes: &[u8]) -> Result<Self, RecipeError> {
+		let string = std::str::from_utf8(bytes)?;
+		let mut ret: Self = match serde_json::from_str(string) {
+			Ok(ret) => ret,
+			Err(recipe_err) => match serde_json::from_str::<'_, serde_json::Value>(string) {
+				Ok(_) => return Err(RecipeError::NotRecipe(recipe_err)),
+				Err(json_err) => return Err(RecipeError::NotRecipe(json_err)),
+			},
+		};
 		for file in ret.files.values_mut() {
 			match file {
 				FileSource::Host(_) => {}
@@ -35,10 +42,20 @@ impl Recipe {
 				EnvVarSource::Symbolic { symbolic, .. } => SymbolicRange::normalize(symbolic),
 			}
 		}
-		ret
+		Ok(ret)
 	}
 }
-impl SymbolicRange {}
+#[derive(Debug)]
+pub enum RecipeError {
+	NotUtf8(std::str::Utf8Error),
+	NotJson(serde_json::Error),
+	NotRecipe(serde_json::Error),
+}
+impl From<std::str::Utf8Error> for RecipeError {
+	fn from(inner: std::str::Utf8Error) -> Self {
+		Self::NotUtf8(inner)
+	}
+}
 
 #[derive(Serialize, Deserialize)]
 #[serde(untagged)]

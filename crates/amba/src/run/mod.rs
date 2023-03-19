@@ -12,7 +12,7 @@ use std::{
 };
 
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
-use recipe::Recipe;
+use recipe::{Recipe, RecipeError};
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
@@ -61,7 +61,23 @@ pub fn run(
 	cmd.create_dir_all(temp_dir);
 	// Populate the `session_dir`
 	{
-		let recipe = &Recipe::deserialize_from(&cmd.read(&recipe_path));
+		let recipe = &match Recipe::deserialize_from(&cmd.read(&recipe_path)) {
+			Ok(recipe) => recipe,
+			Err(err) => {
+				match err {
+					RecipeError::NotRecipe(err) => {
+						tracing::error!(?recipe_path, ?err, "Not a valid Recipe")
+					}
+					RecipeError::NotJson(err) => {
+						tracing::error!(?recipe_path, ?err, "Not a valid JSON")
+					}
+					RecipeError::NotUtf8(err) => {
+						tracing::error!(?recipe_path, ?err, "Not valid UTF8")
+					}
+				}
+				return Err(());
+			}
+		};
 		S2EConfig::new(cmd, session_dir, &recipe_path, recipe).save_to(
 			cmd,
 			dependencies_dir,
