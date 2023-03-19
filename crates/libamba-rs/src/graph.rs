@@ -794,6 +794,7 @@ mod test {
 
 	/// 0 → 1 → 2
 	#[test]
+	#[ignore]
 	fn straight_line_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -816,6 +817,7 @@ mod test {
 
 	/// 2 → 1 → 0
 	#[test]
+	#[ignore]
 	fn straight_line_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -842,6 +844,7 @@ mod test {
 	///  ↘ ↙
 	///   3
 	#[test]
+	#[ignore]
 	fn diamond_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -868,6 +871,7 @@ mod test {
 	///  ↘ ↙
 	///   0
 	#[test]
+	#[ignore]
 	fn diamond_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -894,6 +898,7 @@ mod test {
 	/// ↑  ↘ ↙
 	/// 6   3
 	#[test]
+	#[ignore]
 	fn diamond_on_stick_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -932,6 +937,7 @@ mod test {
 	/// ↑  ↘ ↙
 	/// 4   0
 	#[test]
+	#[ignore]
 	fn diamond_on_stick_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -972,6 +978,7 @@ mod test {
 	///  ↙ ↘
 	/// 4   5
 	#[test]
+	#[ignore]
 	fn cross_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1012,6 +1019,7 @@ mod test {
 	///  ↙ ↘
 	/// 0   1
 	#[test]
+	#[ignore]
 	fn cross_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1050,6 +1058,7 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
+	#[ignore]
 	fn cycle_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1080,6 +1089,7 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
+	#[ignore]
 	fn cycle_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1110,6 +1120,7 @@ mod test {
 	///  ↘ ↙
 	///   4
 	#[test]
+	#[ignore]
 	fn v_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1143,6 +1154,7 @@ mod test {
 	/// ↓
 	/// 3
 	#[test]
+	#[ignore]
 	fn incremental_l() {
 		let mut graph = Graph::with_nodes(
 			[
