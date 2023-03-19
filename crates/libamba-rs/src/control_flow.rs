@@ -12,7 +12,7 @@ pub struct ControlFlowGraph {
 	pub(crate) last: BlockId,
 	pub(crate) updates: usize,
 	pub(crate) rebuilds: usize,
-	pub(crate) spawned_at: Instant,
+	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
 }
 
@@ -24,7 +24,7 @@ impl ControlFlowGraph {
 			last: 0,
 			updates: 0,
 			rebuilds: 0,
-			spawned_at: Instant::now(),
+			created_at: Instant::now(),
 			rebuilding_time: Duration::new(0, 0),
 		}
 	}
@@ -84,7 +84,7 @@ impl fmt::Display for ControlFlowGraph {
 			g.nodes.values().map(|b| b.from.len()).max().unwrap(),
 			self.updates,
 			self.rebuilds,
-			now - self.spawned_at,
+			now - self.created_at,
 			now2 - now,
 		)
 	}
