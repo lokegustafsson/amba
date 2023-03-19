@@ -50,15 +50,3 @@ jobs:
       - name: nix run test-amba
         run: |
           nix run -L --accept-flake-config .#test-amba
-
-  test-cargo:
-    name: Run cargo tests
-    runs-on: [self-hosted, nixos, X64]
-    steps:
-      - uses: actions/checkout@v3
-      - name: cargo test
-        run: |
-          nix develop --command cargo test \
-            $(ls crates \
-            | rg -v '^(libamba|s2e-rs)$' \
-            | rg '[^\s]+' -or '-p $0')

@@ -1,0 +1,36 @@
+# NOTE: Our CI runs on a persistent nix-enabled self hosted server.
+# NOTE: Talk to Loke before/when doing significant changes to the CI workload.
+
+name: self-hosted-cargo-ci
+
+on:
+  push:
+    paths:
+      - '.github/workflows/**'
+      - 'crates/**'
+      - '!crates/libamba/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'rustfmt.toml'
+
+jobs:
+  cargo-fmt:
+    name: Run cargo fmt
+    runs-on: [self-hosted, nixos, X64]
+    steps:
+      - uses: actions/checkout@v3
+      - name: cargo fmt
+        run: |
+          nix develop -L --accept-flake-config --command cargo fmt --check
+
+  cargo-test:
+    name: Run cargo tests
+    runs-on: [self-hosted, nixos, X64, performant]
+    steps:
+      - uses: actions/checkout@v3
+      - name: cargo test
+        run: |
+          nix develop -L --accept-flake-config --command cargo test \
+            $(ls crates \
+            | rg -v '^(libamba|s2e-rs)$' \
+            | rg '[^\s]+' -or '-p $0')
