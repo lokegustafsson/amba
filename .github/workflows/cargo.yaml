@@ -30,7 +30,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: cargo test
         run: |
-          nix develop -L --accept-flake-config --command cargo test \
-            $(ls crates \
-            | rg -v '^(libamba|s2e-rs)$' \
-            | rg '[^\s]+' -or '-p $0')
+          PACKAGES=$(ls crates | rg -v '^(libamba|s2e-rs)$' | rg '[^\s]+' -or '-p $0')
+          echo PACKAGES=$PACKAGES
+          nix develop -L --accept-flake-config --command cargo test $PACKAGES
