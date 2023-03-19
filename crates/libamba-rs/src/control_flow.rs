@@ -16,6 +16,35 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilding_time: Duration,
 }
 
+impl Default for ControlFlowGraph {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
+impl fmt::Display for ControlFlowGraph {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let now = Instant::now();
+		let mut g = self.graph.clone();
+		g.compress();
+		let now2 = Instant::now();
+		write!(
+			f,
+			"\nNodes: {} ({})\nEdges: {} ({})\nConnections: Avg: {}, Max: {}\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
+			g.len(),
+			self.graph.len(),
+			g.nodes.values().map(|b| b.from.len()).sum::<usize>(),
+			self.graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
+			g.nodes.values().map(|b| b.from.len()).sum::<usize>() as f64 / g.len() as f64,
+			g.nodes.values().map(|b| b.from.len()).max().unwrap(),
+			self.updates,
+			self.rebuilds,
+			now - self.created_at,
+			now2 - now,
+		)
+	}
+}
+
 impl ControlFlowGraph {
 	pub fn new() -> Self {
 		ControlFlowGraph {
@@ -58,35 +87,6 @@ impl ControlFlowGraph {
 		}
 
 		modified
-	}
-}
-
-impl Default for ControlFlowGraph {
-	fn default() -> Self {
-		Self::new()
-	}
-}
-
-impl fmt::Display for ControlFlowGraph {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		let now = Instant::now();
-		let mut g = self.graph.clone();
-		g.compress();
-		let now2 = Instant::now();
-		write!(
-			f,
-			"\nNodes: {} ({})\nEdges: {} ({})\nConnections: Avg: {}, Max: {}\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
-			g.len(),
-			self.graph.len(),
-			g.nodes.values().map(|b| b.from.len()).sum::<usize>(),
-			self.graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
-			g.nodes.values().map(|b| b.from.len()).sum::<usize>() as f64 / g.len() as f64,
-			g.nodes.values().map(|b| b.from.len()).max().unwrap(),
-			self.updates,
-			self.rebuilds,
-			now - self.created_at,
-			now2 - now,
-		)
 	}
 }
 
