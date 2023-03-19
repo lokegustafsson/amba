@@ -41,6 +41,11 @@ void AmbaPlugin::initialize() {
 			*this,
 			&AmbaPlugin::translateBlockStart
 		));
+	core.onStateFork
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onStateFork
+		));
 
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
