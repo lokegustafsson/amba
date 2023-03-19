@@ -36,7 +36,7 @@ impl fmt::Display for ControlFlowGraph {
 			g.nodes.values().map(|b| b.from.len()).sum::<usize>(),
 			self.graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
 			g.nodes.values().map(|b| b.from.len()).sum::<usize>() as f64 / g.len() as f64,
-			g.nodes.values().map(|b| b.from.len()).max().unwrap(),
+			g.nodes.values().map(|b| b.from.len()).max().unwrap_or_default(),
 			self.updates,
 			self.rebuilds,
 			now - self.created_at,
