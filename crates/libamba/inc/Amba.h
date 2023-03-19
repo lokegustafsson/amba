@@ -24,6 +24,11 @@ using TranslationFunction = void (
 	u64 p
 );
 using ExecutionFunction = void (s2e::S2EExecutionState *state, u64 pc);
+using SymbolicExecutionFunction = void (
+	s2e::S2EExecutionState *state,
+	const std::vector<s2e::S2EExecutionState *> &,
+	const std::vector<klee::ref<klee::Expr>> &
+);
 
 struct AddressLengthPair {
 	target_phys_addr_t adr;
