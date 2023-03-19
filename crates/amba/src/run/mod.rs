@@ -12,6 +12,7 @@ use std::{
 };
 
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
+use recipe::Recipe;
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
@@ -29,7 +30,7 @@ pub fn run(
 	session_dir: &Path,
 	temp_dir: &Path,
 	RunArgs {
-		host_path_to_executable,
+		recipe_path,
 		debugger,
 		qmp,
 	}: RunArgs,
@@ -60,12 +61,12 @@ pub fn run(
 	cmd.create_dir_all(temp_dir);
 	// Populate the `session_dir`
 	{
-		let executable_name = host_path_to_executable.file_name().unwrap();
-		cmd.copy(
-			&host_path_to_executable,
-			session_dir.join(executable_name),
+		let recipe = &Recipe::deserialize_from(&cmd.read(&recipe_path));
+		S2EConfig::new(cmd, session_dir, &recipe_path, recipe).save_to(
+			cmd,
+			dependencies_dir,
+			session_dir,
 		);
-		S2EConfig::new(session_dir, executable_name).save_to(cmd, dependencies_dir, session_dir);
 	}
 
 	// supporting single- vs multi-path
