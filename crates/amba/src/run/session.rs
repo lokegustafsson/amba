@@ -59,7 +59,7 @@ const TEMPLATE_DIR: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/templates")
 const BOOTSTRAP_SH_CONTENT: &str = "
 ./s2ecmd get bootstrap.elf
 chmod +x ./bootstrap.elf
-./bootstrap.elf 2>&1
+RUST_BACKTRACE=1 ./bootstrap.elf 2>&1
 ";
 
 const CUSTOM_LUA_STRING: &str = r#"
