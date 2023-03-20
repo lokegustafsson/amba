@@ -690,47 +690,6 @@ mod test {
 		assert_eq!(graph.nodes, expected.nodes);
 	}
 
-	/// 0   1
-	///  ↘ ↙
-	///   2
-	///   ↓
-	///   3
-	///  ↙ ↘
-	/// 4   5
-	#[test]
-	#[ignore = "this test is broken"]
-	fn cross_split() {
-		let mut graph = Graph::with_nodes(
-			[
-				(0, (0, [], [2], [0]).into()),
-				(1, (1, [], [2], [1]).into()),
-				(2, (2, [0, 1], [4, 5], [2, 3]).into()),
-				(4, (4, [2], [], [4]).into()),
-				(5, (5, [2], [], [5]).into()),
-			]
-			.into_iter()
-			.collect(),
-		);
-		let expected = Graph::with_nodes(
-			[
-				(0, (0, [], [2], [0]).into()),
-				(1, (1, [], [2], [1]).into()),
-				(2, (2, [0, 1], [3], [2]).into()),
-				(3, (3, [2], [4, 5], [3]).into()),
-				(4, (4, [3], [], [4]).into()),
-				(5, (5, [3], [], [5]).into()),
-			]
-			.into_iter()
-			.collect(),
-		);
-		graph.verify();
-		expected.verify();
-		let node = graph.split_node(2, 3);
-		graph.verify();
-		assert_eq!(graph.nodes, expected.nodes);
-		assert_eq!(node, 3);
-	}
-
 	///   0
 	///  ↙ ↖
 	/// 1   3
@@ -1114,7 +1073,6 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
-	#[ignore]
 	fn cycle_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
