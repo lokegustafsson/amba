@@ -187,7 +187,11 @@ impl Graph {
 				}
 				let this = graph.merge_nodes(from, to);
 				let node = &graph.nodes[&this];
-				for &connection in node.to.iter().chain(node.from.iter()) {
+
+				let tos = node.to.iter().filter(|&&n| n != this);
+				let froms = node.from.iter().filter(|&&n| n != this);
+
+				for &connection in tos.chain(froms) {
 					queued.insert((connection, this));
 				}
 			}
