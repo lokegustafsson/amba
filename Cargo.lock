@@ -385,6 +385,8 @@ version = "0.1.0"
 dependencies = [
  "nix 0.26.2",
  "recipe",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]

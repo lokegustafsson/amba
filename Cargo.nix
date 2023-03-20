@@ -551,6 +551,8 @@ in
     dependencies = {
       nix = rustPackages."registry+https://github.com/rust-lang/crates.io-index".nix."0.26.2" { inherit profileName; };
       recipe = rustPackages."unknown".recipe."0.1.0" { inherit profileName; };
+      tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
+      tracing_subscriber = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-subscriber."0.3.16" { inherit profileName; };
     };
   });
   
