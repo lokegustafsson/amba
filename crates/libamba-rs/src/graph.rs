@@ -79,11 +79,12 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let to = [to].into_iter().collect::<SmallU64Set>();
+				let of = [from].into_iter().collect::<SmallU64Set>();
 				Block {
 					id: from,
-					to: to.clone(),
+					to,
 					from: Default::default(),
-					of: to,
+					of,
 				}
 			});
 		self.nodes
@@ -94,11 +95,12 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let from = [from].into_iter().collect::<SmallU64Set>();
+				let of = [to].into_iter().collect::<SmallU64Set>();
 				Block {
 					id: to,
 					to: Default::default(),
-					from: from.clone(),
-					of: from,
+					from,
+					of,
 				}
 			});
 
