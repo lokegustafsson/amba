@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 type GuestPath = String;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Recipe {
 	pub files: BTreeMap<GuestPath, FileSource>,
 	pub executable_path: String,
@@ -57,7 +57,7 @@ impl From<std::str::Utf8Error> for RecipeError {
 	}
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 pub enum FileSource {
 	Host(String),
@@ -73,7 +73,7 @@ pub enum FileSource {
 	},
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 enum ArgumentSource {
 	Concrete(String),
@@ -84,14 +84,14 @@ enum ArgumentSource {
 	},
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 struct Environment {
 	inherit: bool,
 	remove: Vec<String>,
 	add: Vec<EnvVarSource>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 enum EnvVarSource {
 	Concrete(String),
@@ -103,7 +103,7 @@ enum EnvVarSource {
 	},
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 pub enum SymbolicRange {
 	Index(u64),
@@ -142,11 +142,11 @@ impl SymbolicRange {
 		self.range()[0]
 	}
 
-	pub fn len(&self) -> Option<u64> {
+	pub fn len(&self) -> u64 {
 		match self {
-			Self::Index(_) => Some(1),
-			Self::Begin(_, ()) => None,
-			Self::Range(a, b) => Some(b - a),
+			Self::Index(_) => 1,
+			Self::Begin(_, ()) => u64::MAX,
+			Self::Range(a, b) => b - a,
 		}
 	}
 }
