@@ -74,14 +74,15 @@ impl ControlFlowGraph {
 			if self.compressed_graph.nodes.contains_key(&to)
 				&& self.compressed_graph.nodes.contains_key(&from)
 			{
-				self.compressed_graph.update(from, to);
 				// self.compressed_graph.compress_with_hint(from, to);
+				self.compressed_graph.update(from, to);
 			} else {
 				// but if either link is gone, we construct a new graph.
 				// TODO: Figure out how to split nodes
 				// and only compress new things.
 				// self.compressed_graph = self.graph.clone();
-				self.compressed_graph.revert_and_update(&self.graph, from, to);
+				self.compressed_graph
+					.revert_and_update(&self.graph, from, to);
 			}
 			self.rebuilds += 1;
 			// self.compressed_graph.compress();
