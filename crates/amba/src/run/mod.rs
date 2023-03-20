@@ -216,14 +216,7 @@ fn run_qemu(
 			"256M",
 			"-enable-kvm",
 			"-serial",
-		])
-		.arg({
-			let mut line = OsString::new();
-			line.push("file:");
-			line.push(serial_out);
-			line
-		})
-		.args([
+			"file:/dev/stdout",
 			"-net",
 			"none",
 			"-net",
