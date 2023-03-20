@@ -50,6 +50,7 @@
               p.clang-tools_14
               p.ctags
               p.gdb
+              p.nixfmt
               p.gnumake
               p.mold
               p.rust-bin.nightly.latest.rustfmt
