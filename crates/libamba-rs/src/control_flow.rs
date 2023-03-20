@@ -61,6 +61,7 @@ impl ControlFlowGraph {
 	/// Insert a node connection. Returns true if the connection
 	/// is new.
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
+		let now = Instant::now();
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
 
@@ -81,12 +82,11 @@ impl ControlFlowGraph {
 				// and only compress new things.
 				self.compressed_graph = self.graph.clone();
 				self.rebuilds += 1;
-				let now = Instant::now();
 				self.compressed_graph.compress();
-				self.rebuilding_time += Instant::now() - now;
 			}
 		}
 
+		self.rebuilding_time += Instant::now() - now;
 		modified
 	}
 }
