@@ -21,7 +21,7 @@ use std::{
 	process::{Command, Stdio},
 };
 
-use recipe::{FileSource, Recipe};
+use recipe::{FileSource, Recipe, SymbolicRange};
 use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
 const RECIPE_PATH: &str = "recipe.json";
@@ -81,27 +81,7 @@ fn main() {
 			| FileSource::SymbolicHost { symbolic, .. } => {
 				let tmp_guest_path = &Path::new("/tmp").join(guest_path);
 				fs::rename(guest_path, tmp_guest_path).unwrap();
-
-				let total_len = fs::metadata(tmp_guest_path).unwrap().len();
-				let symbolic: String = symbolic
-					.iter()
-					.map(|range| {
-						format!(
-							"{}-{}",
-							range.start(),
-							range.len().unwrap_or(total_len - range.start())
-						)
-					})
-					.collect::<Vec<String>>()
-					.join(" ");
-				Command::new("./s2ecmd")
-					.env("S2E_SYMFILE_RANGES", &symbolic)
-					.args(["symbfile", "1"])
-					.arg(tmp_guest_path)
-					.spawn()
-					.unwrap()
-					.wait()
-					.unwrap();
+				symbfile(tmp_guest_path, symbolic);
 			}
 		};
 	}
@@ -143,4 +123,27 @@ fn run_capture(cmd: &[&str]) -> String {
 	let output = Command::new(cmd[0]).args(&cmd[1..]).output().unwrap();
 	assert!(output.status.success());
 	String::from_utf8(output.stdout).unwrap()
+}
+fn symbfile(path: &Path, symbolic: &[SymbolicRange]) {
+	let total_len = fs::metadata(path).unwrap().len();
+	let symbolic: String = symbolic
+		.iter()
+		.map(|range| {
+			format!(
+				"{}-{}",
+				range.start(),
+				range.len().unwrap_or(total_len - range.start())
+			)
+		})
+		.collect::<Vec<String>>()
+		.join(" ");
+	tracing::trace!(?path, ?symbolic, "Running ./s2ecmd symfile with");
+	Command::new("./s2ecmd")
+		.env("S2E_SYMFILE_RANGES", &symbolic)
+		.args(["symbfile", "1"])
+		.arg(path)
+		.spawn()
+		.unwrap()
+		.wait()
+		.unwrap();
 }
