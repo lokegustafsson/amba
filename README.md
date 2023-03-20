@@ -41,7 +41,7 @@ The project plan and report (both in Swedish for Chalmers-related regulatory
 reasons) reside in the directories `doc/plan` and `doc/report`. They can be
 built by entering the devshell using `nix develop`, navigating to their
 respective directories and running `make`. For those who have not already
-installed AMBA dependencies, the nix script `nix run '.#report'` will build both
+installed AMBA dependencies, the nix script `nix run '.#documents'` will build both
 documents quicker than installing the devshell.
 
 ## License
