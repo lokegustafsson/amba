@@ -90,7 +90,7 @@ let
       crate
     else
       pkgs.writeShellScriptBin cratename ''
-        LD_LIBRARY_PATH="${libPath}" ${crate}/bin/${cratename}
+        LD_LIBRARY_PATH="${libPath}" ${crate}/bin/${cratename} "$@"
       '');
 in {
   inherit rustPkgs;
