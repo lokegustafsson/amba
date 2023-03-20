@@ -73,14 +73,18 @@ impl S2EConfig {
 		let host_files_dir = session_dir.join("hostfiles");
 		cmd.create_dir_all(&host_files_dir);
 		for (guest_path, source) in &recipe.files {
-			if let FileSource::Host(host_path) | FileSource::SymbolicHost { host_path, .. } = source
-			{
-				let guest_path = Path::new(guest_path);
-				assert!(guest_path.is_relative());
-				cmd.copy(
-					recipe_path.parent().unwrap().join(host_path),
-					host_files_dir.join(guest_path),
-				);
+			let guest_path = Path::new(guest_path);
+			assert!(guest_path.is_relative());
+			match source {
+				FileSource::Host(host_path) | FileSource::SymbolicHost { host_path, .. } => {
+					cmd.copy(
+						recipe_path.parent().unwrap().join(host_path),
+						host_files_dir.join(guest_path),
+					);
+				}
+				FileSource::SymbolicContent { seed, .. } => {
+					cmd.write(host_files_dir.join(guest_path), seed)
+				}
 			}
 		}
 		cmd.write(

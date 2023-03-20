@@ -14,7 +14,7 @@
 compile_error!("bootstrap supports only 'x86_64-unknown-linux-musl'",);
 
 use std::{
-	fs::{self, File},
+	fs::{self, File, Permissions},
 	io,
 	os::unix::{fs::PermissionsExt, process::CommandExt},
 	path::Path,
@@ -80,17 +80,21 @@ fn main() {
 			FileSource::SymbolicContent { symbolic, .. }
 			| FileSource::SymbolicHost { symbolic, .. } => {
 				let tmp_guest_path = &Path::new("/tmp").join(guest_path);
-				fs::rename(guest_path, tmp_guest_path).unwrap();
+				fs::copy(guest_path, tmp_guest_path).unwrap();
 				symbfile(tmp_guest_path, symbolic);
 			}
 		};
 	}
 
-	fs::metadata(&recipe.executable_path)
-		.unwrap()
-		.permissions()
-		.set_mode(0o555);
-	tracing::info!("running executable to analyze");
+	fs::set_permissions(
+		&recipe.executable_path,
+		Permissions::from_mode(0o544),
+	)
+	.unwrap();
+	tracing::info!(
+		recipe.executable_path,
+		"running executable to analyze"
+	);
 
 	let mut child = Command::new(&recipe.executable_path)
 		.arg0(recipe.arg0.unwrap_or(recipe.executable_path))
@@ -128,11 +132,12 @@ fn symbfile(path: &Path, symbolic: &[SymbolicRange]) {
 	let total_len = fs::metadata(path).unwrap().len();
 	let symbolic: String = symbolic
 		.iter()
+		.filter(|range| range.start() < total_len)
 		.map(|range| {
 			format!(
 				"{}-{}",
 				range.start(),
-				range.len().unwrap_or(total_len - range.start())
+				range.len().min(total_len - range.start())
 			)
 		})
 		.collect::<Vec<String>>()
