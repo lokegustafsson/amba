@@ -1182,10 +1182,12 @@ mod test {
 		graph.verify();
 		expected_1.verify();
 		expected_2.verify();
+
+		let raw = graph.clone();
 		graph.compress();
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_1.nodes);
-		graph.revert_and_update(&Graph::new(), 0, 3);
+		graph.revert_and_update(&raw, 0, 3);
 		graph.compress();
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_2.nodes);
