@@ -35,7 +35,15 @@ let
     workspace-binaries = {
       amba = {
         rpath = p: [ ];
-        run_time_ld_library_path = p: [ ];
+        run_time_ld_library_path = p: [
+          p.fontconfig
+          p.freetype
+          p.libGL
+          p.xorg.libX11
+          p.xorg.libXcursor
+          p.xorg.libXrandr
+          p.xorg.libXi
+        ];
       };
     };
     extra-overrides = { mkNativeDep, mkEnvDep, mkOverride, p }: [
@@ -45,8 +53,14 @@ let
       } // libamba.s2e-include-paths))
       (mkNativeDep "s2e" [ p.clang_14 ])
 
+      # GUI
+      (mkNativeDep "expat-sys" [ p.cmake ])
+      (mkNativeDep "freetype-sys" [ p.cmake p.freetype p.pkg-config ])
+      (mkNativeDep "servo-fontconfig-sys" [ p.pkg-config p.fontconfig ])
+
       (mkEnvDep "amba" {
-        inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
+        inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR
+          AMBA_BUILD_GUEST_IMAGES_SCRIPT;
       })
     ];
   };
@@ -87,6 +101,6 @@ let
     '';
   };
 in {
-  inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT amba-deps rust
-    impure-amba;
+  inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT
+    amba-deps rust impure-amba;
 }
