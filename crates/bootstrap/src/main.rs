@@ -21,11 +21,10 @@ use std::{
 	process::{Command, Stdio},
 };
 
-use nix::unistd;
 use recipe::{FileSource, Recipe};
 use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
-const RECIPE_PATH: &str = "./recipe.json";
+const RECIPE_PATH: &str = "recipe.json";
 
 fn main() {
 	tracing::subscriber::set_global_default(
@@ -43,22 +42,34 @@ fn main() {
 
 	tracing::info!("started within guest");
 
-	let recipe = Recipe::deserialize_from(fs::read_to_string(RECIPE_PATH).unwrap().as_bytes())
-		.expect("deserializing Recipe");
-	if true {
-		todo!("recipe loaded, but the bootstrap executable is a work-in-progress");
+	assert!(Path::new("./s2ecmd").exists());
+	assert_eq!(nix::unistd::gethostname().unwrap(), "s2e");
+
+	if !run_capture(&["mount"]).contains("/tmp type tmpfs") {
+		run(&[
+			"sudo",
+			"mount",
+			"-t",
+			"tmpfs",
+			"-osize=10m",
+			"tmpfs",
+			"/tmp",
+		]);
+		let mount_output = run_capture(&["mount"]);
+		assert!(
+			mount_output.contains("/tmp type tmpfs"),
+			"expected /tmp on tmpfs in mount output:\n{mount_output}"
+		);
 	}
 
-	assert!(Path::new("./s2ecmd").exists());
-	assert_eq!(unistd::gethostname().unwrap(), "s2e??");
-	assert!(run_capture(&["mount"]).contains("/tmp type tmpfs"));
-
-
+	nix::sys::resource::setrlimit(nix::sys::resource::Resource::RLIMIT_CORE, 0, 0).unwrap();
 	run(&["sudo", "sysctl", "-w", "debug.exception-trace=0"]);
-	run(&["ulimit", "-c", "0"]);
 	run(&["sudo", "swapoff", "-a"]);
 	run(&["sudo", "modprobe", "s2e"]);
+	run(&["./s2ecmd", "get", RECIPE_PATH]);
 
+	let recipe = Recipe::deserialize_from(fs::read_to_string(RECIPE_PATH).unwrap().as_bytes())
+		.expect("deserializing Recipe");
 
 	for (guest_path, source) in &recipe.files {
 		run(&["./s2ecmd", "get", guest_path]);
@@ -120,6 +131,7 @@ fn main() {
 }
 
 fn run(cmd: &[&str]) {
+	tracing::trace!(?cmd, "running");
 	Command::new(cmd[0])
 		.args(&cmd[1..])
 		.spawn()
