@@ -56,6 +56,11 @@ pub struct Args {
 
 const LIBRARY_LUA: &str = include_str!("../../data/library.lua");
 const TEMPLATE_DIR: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/templates");
+const BOOTSTRAP_SH_CONTENT: &str = "
+./s2ecmd get bootstrap.elf
+chmod +x ./bootstrap.elf
+./bootstrap.elf 2>&1
+";
 
 const CUSTOM_LUA_STRING: &str = r#"
 add_plugin("AmbaPlugin")
@@ -130,7 +135,11 @@ impl S2EConfig {
 		);
 		cmd.symlink(
 			dependencies_dir.join("bin/bootstrap"),
+			self.host_files_dir.join("bootstrap.elf"),
+		);
+		cmd.write(
 			self.host_files_dir.join("bootstrap.sh"),
+			BOOTSTRAP_SH_CONTENT,
 		);
 
 		tracing::debug!(TEMPLATE_DIR = ?TEMPLATE_DIR.path(), "Using templates from");
