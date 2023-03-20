@@ -23,11 +23,25 @@ use std::{
 
 use nix::unistd;
 use recipe::{FileSource, Recipe};
+use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
 const RECIPE_PATH: &str = "./recipe.json";
 
 fn main() {
-	println!("bootstrap (rust musl binary) started");
+	tracing::subscriber::set_global_default(
+		Targets::new()
+			//.with_target("h2", tracing::Level::INFO)
+			.with_default(tracing::Level::TRACE)
+			.with_subscriber(
+				tracing_subscriber::FmtSubscriber::builder()
+					.with_max_level(tracing::Level::TRACE)
+					.without_time()
+					.finish(),
+			),
+	)
+	.expect("enabling global logger");
+
+	tracing::info!("started within guest");
 
 	let recipe = Recipe::deserialize_from(fs::read_to_string(RECIPE_PATH).unwrap().as_bytes())
 		.expect("deserializing Recipe");
@@ -39,10 +53,12 @@ fn main() {
 	assert_eq!(unistd::gethostname().unwrap(), "s2e??");
 	assert!(run_capture(&["mount"]).contains("/tmp type tmpfs"));
 
+
 	run(&["sudo", "sysctl", "-w", "debug.exception-trace=0"]);
 	run(&["ulimit", "-c", "0"]);
 	run(&["sudo", "swapoff", "-a"]);
 	run(&["sudo", "modprobe", "s2e"]);
+
 
 	for (guest_path, source) in &recipe.files {
 		run(&["./s2ecmd", "get", guest_path]);
@@ -83,6 +99,8 @@ fn main() {
 		.unwrap()
 		.permissions()
 		.set_mode(0o555);
+	tracing::info!("running executable to analyze");
+
 	let mut child = Command::new(&recipe.executable_path)
 		.arg0(recipe.arg0.unwrap_or(recipe.executable_path))
 		.stdin(Stdio::piped())
@@ -98,7 +116,7 @@ fn main() {
 	.unwrap();
 
 	let status = child.wait().unwrap();
-	println!("analyzed program status: {status:?}");
+	tracing::info!("analyzed program status: {status:?}");
 }
 
 fn run(cmd: &[&str]) {
