@@ -124,8 +124,8 @@ impl Graph {
 
 		for node in nodes.iter() {
 			self.merges.remove(node);
-			self.nodes
-				.insert(*node, source.nodes.get(node).unwrap().clone());
+			let value = source.nodes.get(node).unwrap().clone();
+			self.nodes.insert(*node, value);
 		}
 
 		self.update(from, to)
