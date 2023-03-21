@@ -111,14 +111,21 @@ impl Graph {
 	pub fn revert_and_update(&mut self, source: &Graph, from: u64, to: u64) -> bool {
 		let mut nodes = SmallU64Set::new();
 
+		// `self` and `source` *should* contain all the same
+		// keys except in the case where this is the operation
+		// where we're adding the keys to `self`
 		if source.nodes.contains_key(&from) {
-			for node in self.get(from).unwrap().of.iter().copied() {
-				nodes.insert(node);
+			if let Some(block) = self.get(from) {
+				for node in block.of.iter().copied() {
+					nodes.insert(node);
+				}
 			}
 		}
 		if source.nodes.contains_key(&to) {
-			for node in self.get(to).unwrap().of.iter().copied() {
-				nodes.insert(node);
+			if let Some(block) = self.get(to) {
+				for node in block.of.iter().copied() {
+					nodes.insert(node);
+				}
 			}
 		}
 
