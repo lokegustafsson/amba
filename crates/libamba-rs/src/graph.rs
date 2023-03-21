@@ -5,11 +5,10 @@ use crate::small_set::SmallU64Set;
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::BTreeSet<T>;
 pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
-pub(crate) type BlockId = u64;
 
 #[derive(Debug, Clone, Default)]
 pub struct Block {
-	pub(crate) id: BlockId,
+	pub(crate) id: u64,
 	pub(crate) from: SmallU64Set,
 	pub(crate) to: SmallU64Set,
 	pub(crate) of: SmallU64Set,
@@ -357,10 +356,10 @@ fn translate(key: u64, map: &mut Map<u64, u64>) -> u64 {
 	}
 }
 
-impl<const N: usize, const M: usize, const O: usize>
-	From<(BlockId, [BlockId; N], [BlockId; M], [BlockId; O])> for Block
+impl<const N: usize, const M: usize, const O: usize> From<(u64, [u64; N], [u64; M], [u64; O])>
+	for Block
 {
-	fn from((id, f, t, o): (BlockId, [BlockId; N], [BlockId; M], [BlockId; O])) -> Self {
+	fn from((id, f, t, o): (u64, [u64; N], [u64; M], [u64; O])) -> Self {
 		Block {
 			id,
 			from: f.into_iter().collect(),
