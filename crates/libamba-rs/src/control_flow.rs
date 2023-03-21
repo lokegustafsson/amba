@@ -25,22 +25,19 @@ impl Default for ControlFlowGraph {
 impl fmt::Display for ControlFlowGraph {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		let now = Instant::now();
-		let mut g = self.graph.clone();
-		g.compress();
-		let now2 = Instant::now();
 		write!(
 			f,
 			"\nNodes: {} ({})\nEdges: {} ({})\nConnections: Avg: {}, Max: {}\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
-			g.len(),
+			self.compressed_graph.len(),
 			self.graph.len(),
-			g.nodes.values().map(|b| b.from.len()).sum::<usize>(),
+			self.compressed_graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
 			self.graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
-			g.nodes.values().map(|b| b.from.len()).sum::<usize>() as f64 / g.len() as f64,
-			g.nodes.values().map(|b| b.from.len()).max().unwrap_or_default(),
+			self.compressed_graph.nodes.values().map(|b| b.from.len()).sum::<usize>() as f64 / self.compressed_graph.len() as f64,
+			self.compressed_graph.nodes.values().map(|b| b.from.len()).max().unwrap_or_default(),
 			self.updates,
 			self.rebuilds,
 			now - self.created_at,
-			now2 - now,
+			self.rebuilding_time,
 		)
 	}
 }
