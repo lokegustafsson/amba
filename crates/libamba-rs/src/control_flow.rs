@@ -29,10 +29,28 @@ impl fmt::Display for ControlFlowGraph {
 			"\nNodes: {} ({})\nEdges: {} ({})\nConnections: Avg: {}, Max: {}\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
 			self.compressed_graph.len(),
 			self.graph.len(),
-			self.compressed_graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
-			self.graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
-			self.compressed_graph.nodes.values().map(|b| b.from.len()).sum::<usize>() as f64 / self.compressed_graph.len() as f64,
-			self.compressed_graph.nodes.values().map(|b| b.from.len()).max().unwrap_or_default(),
+			self.compressed_graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.sum::<usize>(),
+			self.graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.sum::<usize>(),
+			self.compressed_graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.sum::<usize>() as f64
+				/ self.compressed_graph.len() as f64,
+			self.compressed_graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.max()
+				.unwrap_or_default(),
 			self.updates,
 			self.rebuilds,
 			now - self.created_at,
