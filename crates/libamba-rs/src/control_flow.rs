@@ -26,7 +26,15 @@ impl fmt::Display for ControlFlowGraph {
 		let now = Instant::now();
 		write!(
 			f,
-			"\nNodes: {} ({})\nEdges: {} ({})\nConnections: Avg: {}, Max: {}\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
+			concat!(
+				"\nNodes: {} ({})\n",
+				"Edges: {} ({})\n",
+				"Connections: Avg: {}, Max: {}\n",
+				"Updates: {}\n",
+				"Rebuilds: {}\n",
+				"Lifetime: {:?}\n",
+				"Time spent rebuilding: {:?}"
+			),
 			self.compressed_graph.len(),
 			self.graph.len(),
 			self.compressed_graph
