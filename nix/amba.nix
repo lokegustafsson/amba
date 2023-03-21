@@ -39,10 +39,16 @@ let
           p.fontconfig
           p.freetype
           p.libGL
-          p.xorg.libX11
+
+          # https://github.com/emilk/egui/discussions/1587#discussioncomment-2698797
+          # WINIT_UNIX_BACKEND=wayland
+          p.wayland
+
+          # WINIT_UNIX_BACKEND=x11
           p.xorg.libXcursor
           p.xorg.libXrandr
           p.xorg.libXi
+          p.xorg.libX11
         ];
       };
     };
