@@ -19,6 +19,8 @@ use std::{
 	os::unix::{fs::PermissionsExt, process::CommandExt},
 	path::Path,
 	process::{Command, Stdio},
+	thread,
+	time::Duration,
 };
 
 use recipe::{FileSource, Recipe, SymbolicRange};
@@ -95,6 +97,12 @@ fn main() {
 		recipe.executable_path,
 		"running executable to analyze"
 	);
+
+	// Sleeping a little allows the system to become idle and the kernel to do some
+	// bookkeeping before we launch the executable, leading to state forks. This
+	// causes the state to fork with less work to do, which beneficial for
+	// performance.
+	thread::sleep(Duration::from_millis(50));
 
 	let mut child = Command::new(&recipe.executable_path)
 		.arg0(recipe.arg0.unwrap_or(recipe.executable_path))

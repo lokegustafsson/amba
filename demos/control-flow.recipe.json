@@ -1,0 +1,34 @@
+{
+	"files": {
+		"control-flow": "./control-flow",
+		"input.txt": {
+			"seed": "a",
+			"symbolic": [
+				[
+					0,
+					null
+				]
+			]
+		}
+	},
+	"executable_path": "./control-flow",
+	"stdin_path": "/tmp/input.txt",
+	"arg0": null,
+	"arguments": [],
+	"environment": {
+		"inherit": true,
+		"remove": [],
+		"add": [
+			"A=B",
+			{
+				"key": "FOO",
+				"value": "VALUE",
+				"symbolic": [
+					0,
+					1,
+					2
+				]
+			}
+		]
+	}
+}
