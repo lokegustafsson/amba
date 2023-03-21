@@ -3,13 +3,12 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use crate::graph::{BlockId, Graph};
+use crate::graph::Graph;
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
 	pub(crate) graph: Graph,
 	pub(crate) compressed_graph: Graph,
-	pub(crate) last: BlockId,
 	pub(crate) updates: usize,
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
@@ -47,7 +46,6 @@ impl ControlFlowGraph {
 		ControlFlowGraph {
 			graph: Graph::default(),
 			compressed_graph: Graph::default(),
-			last: 0,
 			updates: 0,
 			rebuilds: 0,
 			created_at: Instant::now(),
