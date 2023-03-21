@@ -14,6 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    nixgl.url = "github:guibou/nixGL";
   };
 
   # Cache settings
@@ -24,7 +25,7 @@
   };
 
   outputs =
-    { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay, cargo2nix }:
+    { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay, cargo2nix, nixgl }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -32,6 +33,7 @@
           overlays = [
             cargo2nix.overlays.default
             (final: prev: { stable = nixpkgs-stable.legacyPackages.${system}; })
+            nixgl.overlay
           ];
         };
         lib = nixpkgs.lib;
