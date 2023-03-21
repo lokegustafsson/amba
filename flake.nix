@@ -79,6 +79,7 @@
           inherit (libamba) libamba;
           inherit (amba) amba-deps impure-amba;
           inherit (s2e) s2e s2e-src build-guest-images guest-images-src;
+          inherit (test) control-flow;
           inherit (amba) amba amba-wrapped;
           default = amba.amba-wrapped;
         };

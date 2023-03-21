@@ -1,2 +1,6 @@
 overrun
 overrun.S
+control-flow
+control-flow.S
+hello
+hello.S
