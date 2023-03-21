@@ -1,5 +1,7 @@
 group_64_project_report.pdf: \
   main.tex \
+  cover.tex \
+  titlepage.tex \
   begreppslista.tex \
   inledning.tex \
   bakgrund.tex \
