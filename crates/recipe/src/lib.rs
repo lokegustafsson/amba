@@ -10,7 +10,9 @@ pub struct Recipe {
 	pub executable_path: String,
 	pub stdin_path: String,
 	pub arg0: Option<String>,
+	#[serde(default)]
 	arguments: Vec<ArgumentSource>,
+	#[serde(default)]
 	environment: Environment,
 }
 impl Recipe {
@@ -64,11 +66,13 @@ pub enum FileSource {
 	/// Symbolic files are fixed-length, containing arbitrary bytes
 	SymbolicContent {
 		seed: String,
+		#[serde(default)]
 		symbolic: Vec<SymbolicRange>,
 	},
 	/// Symbolic files are fixed-length, containing arbitrary bytes
 	SymbolicHost {
 		host_path: String,
+		#[serde(default)]
 		symbolic: Vec<SymbolicRange>,
 	},
 }
@@ -80,6 +84,7 @@ enum ArgumentSource {
 	/// Symbolic arguments are fixed-length, containing bytes 1-255
 	Symbolic {
 		seed: String,
+		#[serde(default)]
 		symbolic: Vec<SymbolicRange>,
 	},
 }
@@ -87,8 +92,19 @@ enum ArgumentSource {
 #[derive(Serialize, Deserialize, Debug)]
 struct Environment {
 	inherit: bool,
+	#[serde(default)]
 	remove: Vec<String>,
+	#[serde(default)]
 	add: Vec<EnvVarSource>,
+}
+impl Default for Environment {
+	fn default() -> Self {
+		Self {
+			inherit: true,
+			remove: Vec::new(),
+			add: Vec::new(),
+		}
+	}
 }
 
 #[derive(Serialize, Deserialize, Debug)]
