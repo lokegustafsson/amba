@@ -19,6 +19,7 @@ mod util;
 enum Args {
 	Init(InitArgs),
 	Run(RunArgs),
+	Gui(GuiArgs),
 }
 
 /// Initialize `$AMBA_DATA_DIR`
@@ -43,6 +44,9 @@ pub struct RunArgs {
 	#[arg(short, long)]
 	qmp: bool,
 }
+
+#[derive(clap::Args, Debug)]
+pub struct GuiArgs {}
 
 /// The nix store path of the script that builds guest images.
 const AMBA_BUILD_GUEST_IMAGES_SCRIPT: &str = env!("AMBA_BUILD_GUEST_IMAGES_SCRIPT");
@@ -101,6 +105,7 @@ fn main() -> ExitCode {
 				args,
 			)
 		}
+		Args::Gui(_) => Ok(amba_gui::main()),
 	};
 	match res {
 		Ok(()) => ExitCode::SUCCESS,
