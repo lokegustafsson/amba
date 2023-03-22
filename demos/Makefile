@@ -1,4 +1,4 @@
-CC = musl-gcc
+CC ?= gcc
 CFLAGS ?= \
 	-Wall \
 	-Wextra \
@@ -7,8 +7,8 @@ CFLAGS ?= \
 	-O0 \
 	-g \
 	-fno-stack-protector \
-	-static \
-	-U _FORTIFY_SOURCE
+	-U _FORTIFY_SOURCE \
+	$$(APPEND_CFLAGS)
 
 overrun: overrun.c
 run_overrun: overrun
