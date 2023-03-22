@@ -4,6 +4,7 @@ group_64_project_report.pdf: \
   titlepage.tex \
   begreppslista.tex \
   inledning.tex \
+  tidigarearbete.tex \
   bakgrund.tex \
   syfte.tex \
   binaranalys.tex \
