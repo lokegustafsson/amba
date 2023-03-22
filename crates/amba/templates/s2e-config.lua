@@ -30,7 +30,7 @@ plugins = {}
 pluginsConfig = {}
 
 -- Include various convenient functions
-dofile('library.lua')
+dofile("{{ library_lua_path }}")
 
 -------------------------------------------------------------------------------
 -- This plugin contains the core custom instructions.
