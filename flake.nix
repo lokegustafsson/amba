@@ -59,7 +59,6 @@
               p.nixfmt
               p.gnumake
               p.mold
-              p.musl
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.clippy
               p.rust-bin.stable.latest.default
