@@ -32,24 +32,38 @@ let
 
   rust = import ./rust.nix {
     inherit lib pkgs;
-    workspace-binaries = {
-      amba = {
-        rpath = p: [ ];
-        run_time_ld_library_path = p: [ ];
-      };
-    };
-    extra-overrides = { mkNativeDep, mkEnvDep, mkOverride, p }: [
+    extra-overrides = { mkNativeDep, mkEnvDep, mkRpath, mkOverride, p }: [
       (mkEnvDep "s2e" ({
         # For autocxx to run
         LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
       } // libamba.s2e-include-paths))
       (mkNativeDep "s2e" [ p.clang_14 ])
 
+      # GUI
+      (mkNativeDep "expat-sys" [ p.cmake ])
+      (mkNativeDep "freetype-sys" [ p.cmake p.freetype p.pkg-config ])
+      (mkNativeDep "servo-fontconfig-sys" [ p.pkg-config p.fontconfig ])
+
       (mkEnvDep "amba" {
-        inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
+        inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR
+          AMBA_BUILD_GUEST_IMAGES_SCRIPT;
       })
+      (mkRpath "amba" [
+        p.fontconfig
+        p.freetype
+        p.libGL
+        p.wayland
+        p.xorg.libX11
+        p.xorg.libXcursor
+        p.xorg.libXi
+        p.xorg.libXrandr
+      ])
     ];
   };
+
+  amba-wrapped = pkgs.writeShellScriptBin "amba-wrapped" ''
+    ${pkgs.nixgl.nixGLIntel}/bin/nixGLIntel ${rust.amba}/bin/amba "$@"
+  '';
 
   impure-amba = pkgs.writeShellApplication {
     name = "impure-amba";
@@ -83,10 +97,11 @@ let
         target/impure-amba-deps/share/libs2e/libs2e-x86_64-*.so
 
       echo 'Running amba'
-      RUN_TIME_AMBA_DEPENDENCIES_DIR="$PWD""/target/impure-amba-deps" ${rust.packages.amba}/bin/amba "$@"
+      RUN_TIME_AMBA_DEPENDENCIES_DIR="$PWD""/target/impure-amba-deps" ${rust.amba}/bin/amba "$@"
     '';
   };
 in {
-  inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT amba-deps rust
-    impure-amba;
+  inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT
+    amba-deps impure-amba amba-wrapped;
+  inherit (rust) amba workspaceShell;
 }

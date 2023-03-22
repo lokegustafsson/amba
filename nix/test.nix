@@ -14,9 +14,9 @@ let
     name = "test-amba";
     text = ''
       # Amba skips unnecessary download internally
-      ${amba.rust.packages.amba}/bin/amba init --download
+      ${amba.amba}/bin/amba init --download
       # Run musl hello world
-      ${amba.rust.packages.amba}/bin/amba run ${hello}/bin/hello
+      ${amba.amba}/bin/amba run ${hello}/bin/hello
     '';
   };
 in { inherit test-amba; }

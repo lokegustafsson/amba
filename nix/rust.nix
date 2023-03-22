@@ -1,4 +1,4 @@
-{ lib, pkgs, workspace-binaries, extra-overrides }:
+{ lib, pkgs, extra-overrides }:
 let
   rustPkgs = pkgs.rustBuilder.makePackageSet {
     rustVersion = "latest";
@@ -29,19 +29,13 @@ let
           p.rustBuilder.rustLib.makeOverride {
             name = cratename;
             overrideAttrs = drv: {
-              preFixup = let libPath = lib.makeLibraryPath libs;
+              postFixup = let libPath = lib.makeLibraryPath libs;
               in ''
-                patchelf --set-rpath "${libPath}" $out/bin/${cratename}
+                patchelf --add-rpath "${libPath}" $out/bin/${cratename}
+                patchelf --add-rpath "${libPath}" $bin/bin/${cratename}
               '';
             };
           };
-        mkLdLibraryPath = cratename: libs:
-          mkNativeDep cratename [
-            (p.rustBuilder.overrides.patches.propagateEnv cratename [{
-              name = "LD_LIBRARY_PATH";
-              value = lib.makeLibraryPath libs;
-            }])
-          ];
         mkOverride = cratename: overrideAttrs:
           p.rustBuilder.rustLib.makeOverride {
             name = cratename;
@@ -65,34 +59,8 @@ let
               ++ [ "--cap-lints" "warn" ];
           };
         })
-      ] ++ (extra-overrides { inherit mkNativeDep mkEnvDep mkOverride p; })
-      ++ (builtins.concatLists (builtins.attrValues (builtins.mapAttrs
-        (cratename:
-          { rpath, run_time_ld_library_path }: [
-            (p.rustBuilder.rustLib.makeOverride {
-              name = cratename;
-              overrideAttrs = drv: {
-                preFixup = let libPath = lib.makeLibraryPath (rpath p);
-                in ''
-                  patchelf --set-rpath "${libPath}" $out/bin/${cratename}
-                '';
-              };
-            })
-            (mkLdLibraryPath cratename (run_time_ld_library_path p))
-          ]) workspace-binaries)));
+      ] ++ (extra-overrides { inherit mkNativeDep mkEnvDep mkRpath mkOverride p; });
   };
-  wrapIfHasLdLibraryPath = cratename:
-    { rpath, run_time_ld_library_path }:
-    let
-      crate = rustPkgs.workspace.${cratename} { };
-      libPath = lib.makeLibraryPath (run_time_ld_library_path pkgs);
-    in (if libPath == "" then
-      crate
-    else
-      pkgs.writeShellScriptBin cratename ''
-        LD_LIBRARY_PATH="${libPath}" ${crate}/bin/${cratename}
-      '');
-in {
-  inherit rustPkgs;
-  packages = builtins.mapAttrs wrapIfHasLdLibraryPath workspace-binaries;
+in (builtins.mapAttrs (crate: f: f { }) rustPkgs.workspace) // {
+  inherit (rustPkgs) workspaceShell;
 }
