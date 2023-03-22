@@ -6,7 +6,7 @@ let
     # underlying problem
     use-mold = false;
     pkgs = pkgs.pkgsCross.musl64;
-    extra-overrides = { mkNativeDep, mkEnvDep, mkOverride, p }: [ ];
+    extra-overrides = { mkNativeDep, mkEnvDep, mkRpath, mkOverride, p }: [ ];
   };
   amba-deps = pkgs.stdenvNoCC.mkDerivation {
     name = "amba-deps";
