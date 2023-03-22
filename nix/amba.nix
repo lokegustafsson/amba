@@ -61,6 +61,10 @@ let
     ];
   };
 
+  amba-wrapped = pkgs.writeShellScriptBin "amba-wrapped" ''
+    ${pkgs.nixgl.nixGLIntel}/bin/nixGLIntel ${rust.amba}/bin/amba "$@"
+  '';
+
   impure-amba = pkgs.writeShellApplication {
     name = "impure-amba";
     runtimeInputs = let p = pkgs; in [ p.rsync p.patchelf p.gnumake ];
@@ -98,5 +102,6 @@ let
   };
 in {
   inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT
-    amba-deps rust impure-amba;
+    amba-deps impure-amba amba-wrapped;
+  inherit (rust) amba workspaceShell;
 }

@@ -48,7 +48,7 @@
         test = import ./nix/test.nix { inherit lib pkgs amba; };
       in {
         devShells = {
-          default = amba.rust.workspaceShell ({
+          default = amba.workspaceShell ({
             packages = let p = pkgs;
             in [
               cargo2nix.outputs.packages.${system}.cargo2nix
@@ -79,8 +79,8 @@
           inherit (libamba) libamba;
           inherit (amba) amba-deps impure-amba;
           inherit (s2e) s2e s2e-src build-guest-images guest-images-src;
-          inherit (amba.rust) amba;
-          default = amba.rust.amba;
+          inherit (amba) amba amba-wrapped;
+          default = amba.amba-wrapped;
         };
         apps = {
           s2e-env = {
