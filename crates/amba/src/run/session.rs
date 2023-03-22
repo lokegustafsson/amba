@@ -16,6 +16,7 @@ use crate::cmd::Cmd;
 /// The templates are kept as close to the upstream S2E templates as possible.
 #[derive(Serialize)]
 pub struct S2EConfig {
+	library_lua_path: PathBuf,
 	creation_time: &'static str,
 	project_dir: PathBuf,
 	use_seeds: bool,
@@ -67,6 +68,7 @@ impl S2EConfig {
 		let executable_file_name = crate::util::os_str_to_escaped_ascii(executable_file_name);
 
 		Self {
+			library_lua_path: session_dir.join("library.lua"),
 			creation_time: "CREATION_TIME",
 			project_dir: session_dir.to_owned(),
 			use_seeds: false,
@@ -101,7 +103,7 @@ impl S2EConfig {
 
 	pub fn save_to(&self, cmd: &mut Cmd, dependencies_dir: &Path, session_dir: &Path) {
 		assert!(session_dir.exists());
-		cmd.write(session_dir.join("library.lua"), LIBRARY_LUA);
+		cmd.write(&self.library_lua_path, LIBRARY_LUA);
 		cmd.symlink(
 			format!(
 				"{}/bin/guest-tools64",
