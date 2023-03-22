@@ -564,7 +564,6 @@ mod test {
 		graph.verify();
 		expected.verify();
 		graph.compress();
-		dbg!(&graph);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
