@@ -89,7 +89,7 @@ pub fn run(
 	let serial_out = &session_dir.join("serial.txt");
 	let qmp_socket = qmp.then(|| temp_dir.join("qmp.socket"));
 
-	let ipc_socket = temp_dir.join("amba-ipc.socket");
+	let ipc_socket = &temp_dir.join("amba-ipc.socket");
 	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
 
 	let res = thread::scope(|s| {
@@ -130,8 +130,13 @@ pub fn run(
 			tracing::debug!(?qmp_socket, "Starting QMP server over");
 			run_qmp(qmp_socket);
 		}
+		let ret = qemu.join().unwrap();
+		match UnixStream::connect(ipc_socket) {
+			Ok(conn) => conn.shutdown(Shutdown::Both).unwrap(),
+			Err(_) => {}
+		}
 		ipc.join().unwrap();
-		qemu.join().unwrap()
+		ret
 	});
 	cmd.remove(ipc_socket);
 	res
