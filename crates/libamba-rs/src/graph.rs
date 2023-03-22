@@ -5,11 +5,10 @@ use crate::small_set::SmallU64Set;
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::BTreeSet<T>;
 pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
-pub(crate) type BlockId = u64;
 
 #[derive(Debug, Clone, Default)]
 pub struct Block {
-	pub(crate) id: BlockId,
+	pub(crate) id: u64,
 	pub(crate) from: SmallU64Set,
 	pub(crate) to: SmallU64Set,
 	pub(crate) of: SmallU64Set,
@@ -79,11 +78,12 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let to = [to].into_iter().collect::<SmallU64Set>();
+				let of = [from].into_iter().collect::<SmallU64Set>();
 				Block {
 					id: from,
-					to: to.clone(),
+					to,
 					from: Default::default(),
-					of: to,
+					of,
 				}
 			});
 		self.nodes
@@ -94,11 +94,12 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let from = [from].into_iter().collect::<SmallU64Set>();
+				let of = [to].into_iter().collect::<SmallU64Set>();
 				Block {
 					id: to,
 					to: Default::default(),
-					from: from.clone(),
-					of: from,
+					from,
+					of,
 				}
 			});
 
@@ -107,7 +108,33 @@ impl Graph {
 
 	/// Revert compression of nodes and then update their connections
 	pub fn revert_and_update(&mut self, source: &Graph, from: u64, to: u64) -> bool {
-		todo!()
+		let mut nodes = SmallU64Set::new();
+
+		// `self` and `source` *should* contain all the same
+		// keys except in the case where this is the operation
+		// where we're adding the keys to `self`
+		if source.nodes.contains_key(&from) {
+			if let Some(block) = self.get(from) {
+				for node in block.of.iter().copied() {
+					nodes.insert(node);
+				}
+			}
+		}
+		if source.nodes.contains_key(&to) {
+			if let Some(block) = self.get(to) {
+				for node in block.of.iter().copied() {
+					nodes.insert(node);
+				}
+			}
+		}
+
+		for node in nodes.iter() {
+			self.merges.remove(node);
+			let value = source.nodes.get(node).unwrap().clone();
+			self.nodes.insert(*node, value);
+		}
+
+		self.update(from, to)
 	}
 
 	/// Compresses graph by merging every node pair that always go
@@ -146,49 +173,63 @@ impl Graph {
 		}
 	}
 
-	/// Version of the compression function that will only compress around an update.
-	/// Returns true if graph changed.
-	pub fn compress_with_hint(&mut self, from: u64, to: u64) -> bool {
-		if !self.nodes[&from].to.contains(&to) || !self.nodes[&to].from.contains(&from) {
-			return false;
-		}
-		let mut this = from.min(to);
-		self.merge_nodes(from, to);
-		if self.nodes[&this].from.len() == 1 {
-			let from = *self.nodes[&this].from.iter().next().unwrap();
-			if self.compress_with_hint(from, this) {
-				this = from;
-			}
-		}
-		if self.nodes[&this].to.len() == 1 {
-			let to = *self.nodes[&this].to.iter().next().unwrap();
-			self.compress_with_hint(this, to);
-		}
-		true
-	}
-
 	/// Compress around given candidates. If a candidate gets
 	/// compressed its neighbours will be checked too, growing out
 	/// from there.
-	// The queue is a set so we can guarantee that there are no
-	// duplicates in the queue and HashSet doesn't have a pop
-	// function.
-	pub fn compress_with_hint_2(&mut self, mut queued: BTreeSet<(u64, u64)>) {
-		while let Some((from, to)) = queued.pop_first() {
-			if !(self.nodes[&from].to.len() == 1
-				&& self.nodes[&from].to.contains(&to)
-				&& self.nodes[&to].from.len() == 1
-				&& self.nodes[&to].from.contains(&from))
-			{
-				continue;
-			}
-			self.merge_nodes(from, to);
-			let this = from;
-			let node = &self.nodes[&this];
-			for &connection in node.to.iter().chain(node.from.iter()) {
-				queued.insert((connection, this));
+	pub fn compress_with_hint(&mut self, mut from: u64, mut to: u64) {
+		from = translate(from, &mut self.merges);
+		to = translate(to, &mut self.merges);
+		// The queue is a set so we can guarantee that there are no
+		// duplicates in the queue and HashSet doesn't have a pop
+		// function.
+		fn compress_with_hint_2(graph: &mut Graph, mut queued: BTreeSet<(u64, u64)>) {
+			while let Some((mut from, mut to)) = queued.pop_first() {
+				from = translate(from, &mut graph.merges);
+				to = translate(to, &mut graph.merges);
+				(from, to) = (from.min(to), from.max(to));
+
+				if !graph.are_mergable_link(from, to) {
+					continue;
+				}
+				let this = graph.merge_nodes(from, to);
+				let node = &graph.nodes[&this];
+
+				let tos = node.to.iter().filter(|&&n| n != this);
+				let froms = node.from.iter().filter(|&&n| n != this);
+
+				for &connection in tos.chain(froms) {
+					queued.insert((connection, this));
+				}
 			}
 		}
+
+		let mut candidates = [(from, to)].into_iter().collect::<BTreeSet<_>>();
+		for pair in self.get(from).unwrap().from.iter().map(|&f| (f, from)) {
+			candidates.insert(pair);
+		}
+		for pair in self.get(to).unwrap().to.iter().map(|&t| (to, t)) {
+			candidates.insert(pair);
+		}
+
+		compress_with_hint_2(self, candidates);
+	}
+
+	fn are_mergable_link(&mut self, mut l: u64, mut r: u64) -> bool {
+		l = translate(l, &mut self.merges);
+		r = translate(r, &mut self.merges);
+
+		let mut f = |x, y| {
+			if self.nodes[&x].to.len() != 1 || self.nodes[&y].from.len() != 1 {
+				return false;
+			}
+
+			let to_link = self.nodes[&x].to.get_any();
+			let from_link = self.nodes[&y].from.get_any();
+
+			translate(to_link, &mut self.merges) == y && translate(from_link, &mut self.merges) == x
+		};
+
+		f(l, r) || f(r, l)
 	}
 
 	fn are_loop(&mut self, l: u64, r: u64) -> bool {
@@ -211,13 +252,13 @@ impl Graph {
 		there && back_again
 	}
 
-	pub fn merge_nodes(&mut self, l: u64, r: u64) {
+	/// Returns the id of the merged node
+	pub fn merge_nodes(&mut self, l: u64, r: u64) -> u64 {
 		if l > r {
-			self.merge_nodes(r, l);
-			return;
+			return self.merge_nodes(r, l);
 		}
 		if l == r {
-			return;
+			return l;
 		}
 
 		assert!(self.nodes.contains_key(&l));
@@ -272,18 +313,8 @@ impl Graph {
 
 		// Remove the right node from the graph
 		map.remove(&r);
-	}
 
-	/// Split `node` into two nodes, with the new node using the
-	/// requested id if it's not already in use. Returns the id of
-	/// the new node
-	pub fn split_node(&mut self, node: u64, requested_id: u64) -> u64 {
-		todo!("This doesn't work as a restoration mechanism at all");
-		// This allows a set that's gone from
-		// 0 → 1 → 2 → 3
-		// 0
-		// to
-		// 0(1, 3) → 2
+		l
 	}
 
 	/// Verify that all node pairs have matching to and from
@@ -325,10 +356,10 @@ fn translate(key: u64, map: &mut Map<u64, u64>) -> u64 {
 	}
 }
 
-impl<const N: usize, const M: usize, const O: usize>
-	From<(BlockId, [BlockId; N], [BlockId; M], [BlockId; O])> for Block
+impl<const N: usize, const M: usize, const O: usize> From<(u64, [u64; N], [u64; M], [u64; O])>
+	for Block
 {
-	fn from((id, f, t, o): (BlockId, [BlockId; N], [BlockId; M], [BlockId; O])) -> Self {
+	fn from((id, f, t, o): (u64, [u64; N], [u64; M], [u64; O])) -> Self {
 		Block {
 			id,
 			from: f.into_iter().collect(),
@@ -657,47 +688,6 @@ mod test {
 		assert_eq!(graph.nodes, expected.nodes);
 	}
 
-	/// 0   1
-	///  ↘ ↙
-	///   2
-	///   ↓
-	///   3
-	///  ↙ ↘
-	/// 4   5
-	#[test]
-	#[ignore = "this test is broken"]
-	fn cross_split() {
-		let mut graph = Graph::with_nodes(
-			[
-				(0, (0, [], [2], [0]).into()),
-				(1, (1, [], [2], [1]).into()),
-				(2, (2, [0, 1], [4, 5], [2, 3]).into()),
-				(4, (4, [2], [], [4]).into()),
-				(5, (5, [2], [], [5]).into()),
-			]
-			.into_iter()
-			.collect(),
-		);
-		let expected = Graph::with_nodes(
-			[
-				(0, (0, [], [2], [0]).into()),
-				(1, (1, [], [2], [1]).into()),
-				(2, (2, [0, 1], [3], [2]).into()),
-				(3, (3, [2], [4, 5], [3]).into()),
-				(4, (4, [3], [], [4]).into()),
-				(5, (5, [3], [], [5]).into()),
-			]
-			.into_iter()
-			.collect(),
-		);
-		graph.verify();
-		expected.verify();
-		let node = graph.split_node(2, 3);
-		graph.verify();
-		assert_eq!(graph.nodes, expected.nodes);
-		assert_eq!(node, 3);
-	}
-
 	///   0
 	///  ↙ ↖
 	/// 1   3
@@ -795,7 +785,6 @@ mod test {
 
 	/// 0 → 1 → 2
 	#[test]
-	#[ignore]
 	fn straight_line_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -818,7 +807,6 @@ mod test {
 
 	/// 2 → 1 → 0
 	#[test]
-	#[ignore]
 	fn straight_line_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -845,7 +833,6 @@ mod test {
 	///  ↘ ↙
 	///   3
 	#[test]
-	#[ignore]
 	fn diamond_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -872,7 +859,6 @@ mod test {
 	///  ↘ ↙
 	///   0
 	#[test]
-	#[ignore]
 	fn diamond_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -899,7 +885,6 @@ mod test {
 	/// ↑  ↘ ↙
 	/// 6   3
 	#[test]
-	#[ignore]
 	fn diamond_on_stick_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -938,7 +923,6 @@ mod test {
 	/// ↑  ↘ ↙
 	/// 4   0
 	#[test]
-	#[ignore]
 	fn diamond_on_stick_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -955,10 +939,10 @@ mod test {
 		);
 		let expected = Graph::with_nodes(
 			[
-				(0, (0, [1, 2], [], [0, 4, 5, 6]).into()),
+				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
 				(2, (2, [3], [0], [2]).into()),
-				(3, (3, [], [1, 2], [3]).into()),
+				(3, (3, [], [1, 2], [3, 4, 5, 6]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -979,7 +963,6 @@ mod test {
 	///  ↙ ↘
 	/// 4   5
 	#[test]
-	#[ignore]
 	fn cross_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1020,7 +1003,6 @@ mod test {
 	///  ↙ ↘
 	/// 0   1
 	#[test]
-	#[ignore]
 	fn cross_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1059,7 +1041,6 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
-	#[ignore]
 	fn cycle_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1090,7 +1071,6 @@ mod test {
 	///  ↘ ↗
 	///   2
 	#[test]
-	#[ignore]
 	fn cycle_rev_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1121,7 +1101,6 @@ mod test {
 	///  ↘ ↙
 	///   4
 	#[test]
-	#[ignore]
 	fn v_hint() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1137,8 +1116,9 @@ mod test {
 		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [4], [0, 2]).into()),
-				(1, (1, [], [4], [1, 3]).into()),
-				(4, (4, [0, 1], [], [4]).into()),
+				(1, (1, [], [3], [1]).into()),
+				(3, (3, [1], [4], [3]).into()),
+				(4, (4, [0, 3], [], [4]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -1155,7 +1135,6 @@ mod test {
 	/// ↓
 	/// 3
 	#[test]
-	#[ignore]
 	fn incremental_l() {
 		let mut graph = Graph::with_nodes(
 			[
@@ -1180,10 +1159,12 @@ mod test {
 		graph.verify();
 		expected_1.verify();
 		expected_2.verify();
+
+		let raw = graph.clone();
 		graph.compress();
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_1.nodes);
-		graph.revert_and_update(&Graph::new(), 0, 3);
+		graph.revert_and_update(&raw, 0, 3);
 		graph.compress();
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_2.nodes);

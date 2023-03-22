@@ -3,13 +3,12 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use crate::graph::{BlockId, Graph};
+use crate::graph::Graph;
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
 	pub(crate) graph: Graph,
 	pub(crate) compressed_graph: Graph,
-	pub(crate) last: BlockId,
 	pub(crate) updates: usize,
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
@@ -25,22 +24,45 @@ impl Default for ControlFlowGraph {
 impl fmt::Display for ControlFlowGraph {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		let now = Instant::now();
-		let mut g = self.graph.clone();
-		g.compress();
-		let now2 = Instant::now();
 		write!(
 			f,
-			"\nNodes: {} ({})\nEdges: {} ({})\nConnections: Avg: {}, Max: {}\nUpdates: {}\nRebuilds: {}\nLifetime: {:?}\nTime spent rebuilding: {:?}",
-			g.len(),
+			concat!(
+				"\nNodes: {} ({})\n",
+				"Edges: {} ({})\n",
+				"Connections: Avg: {}, Max: {}\n",
+				"Updates: {}\n",
+				"Rebuilds: {}\n",
+				"Lifetime: {:?}\n",
+				"Time spent rebuilding: {:?}"
+			),
+			self.compressed_graph.len(),
 			self.graph.len(),
-			g.nodes.values().map(|b| b.from.len()).sum::<usize>(),
-			self.graph.nodes.values().map(|b| b.from.len()).sum::<usize>(),
-			g.nodes.values().map(|b| b.from.len()).sum::<usize>() as f64 / g.len() as f64,
-			g.nodes.values().map(|b| b.from.len()).max().unwrap_or_default(),
+			self.compressed_graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.sum::<usize>(),
+			self.graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.sum::<usize>(),
+			self.compressed_graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.sum::<usize>() as f64
+				/ self.compressed_graph.len() as f64,
+			self.compressed_graph
+				.nodes
+				.values()
+				.map(|b| b.from.len())
+				.max()
+				.unwrap_or_default(),
 			self.updates,
 			self.rebuilds,
 			now - self.created_at,
-			now2 - now,
+			self.rebuilding_time,
 		)
 	}
 }
@@ -50,7 +72,6 @@ impl ControlFlowGraph {
 		ControlFlowGraph {
 			graph: Graph::default(),
 			compressed_graph: Graph::default(),
-			last: 0,
 			updates: 0,
 			rebuilds: 0,
 			created_at: Instant::now(),
@@ -61,6 +82,7 @@ impl ControlFlowGraph {
 	/// Insert a node connection. Returns true if the connection
 	/// is new.
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
+		let now = Instant::now();
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
 
@@ -69,23 +91,14 @@ impl ControlFlowGraph {
 
 		// Only edit the compressed graph if this was a new link
 		if modified {
-			// If both links exist we can just add this one link
-			if self.compressed_graph.nodes.contains_key(&to)
-				&& self.compressed_graph.nodes.contains_key(&from)
-			{
-				self.compressed_graph.update(from, to);
-			} else {
-				// but if either link is gone, we construct a new graph.
-				// TODO: Figure out how to split nodes
-				// and only compress new things.
-				self.compressed_graph = self.graph.clone();
-				self.rebuilds += 1;
-			}
-			let now = Instant::now();
-			self.compressed_graph.compress();
-			self.rebuilding_time += Instant::now() - now;
+			self.compressed_graph
+				.revert_and_update(&self.graph, from, to);
+
+			self.rebuilds += 1;
+			self.compressed_graph.compress_with_hint(from, to);
 		}
 
+		self.rebuilding_time += Instant::now() - now;
 		modified
 	}
 }
