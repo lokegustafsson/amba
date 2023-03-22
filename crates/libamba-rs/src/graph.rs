@@ -371,6 +371,11 @@ impl<const N: usize, const M: usize, const O: usize> From<(u64, [u64; N], [u64; 
 
 #[cfg(test)]
 mod test {
+	use proptest::{
+		prelude::*,
+		test_runner::{Config, TestRunner},
+	};
+
 	use crate::graph::*;
 
 	impl PartialEq for Block {
@@ -396,6 +401,38 @@ mod test {
 	}
 
 	impl Eq for Block {}
+
+	fn compare_behaviour(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
+		let mut fast = Graph::new();
+		let mut slow = Graph::new();
+		for (from, to) in instructions.into_iter() {
+			slow.update(from, to);
+			fast.revert_and_update(&slow, from, to);
+			fast.compress_with_hint(from, to);
+
+			let mut fast_ = fast.clone();
+			fast_.apply_merges();
+
+			let mut clone = slow.clone();
+			clone.compress();
+			clone.apply_merges();
+
+			assert_eq!(&fast_.nodes, &clone.nodes);
+		}
+
+		Ok(())
+	}
+
+	fn generator(max_id: u64, instruction_count: usize) -> impl Strategy<Value = Vec<(u64, u64)>> {
+		let node_pair = (0..max_id, 0..max_id);
+		prop::collection::vec(node_pair, instruction_count)
+	}
+
+	#[test]
+	fn compare_10_20() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner.run(&generator(10, 20), compare_behaviour).unwrap();
+	}
 
 	/// 0 → 1 → 2
 	#[test]
