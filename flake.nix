@@ -14,7 +14,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
-    nixgl.url = "github:guibou/nixGL";
+    nixgl = {
+      url = "github:guibou/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   # Cache settings
@@ -24,8 +28,8 @@
       [ "nix.u3836.se:t7H/bFWi14aBFYPE5A00eEQawd7Ssl/fXbq/2C+Bsrs=" ];
   };
 
-  outputs =
-    { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay, cargo2nix, nixgl }:
+  outputs = { self, nixpkgs, nixpkgs-stable, flake-utils, rust-overlay
+    , cargo2nix, nixgl }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -44,7 +48,7 @@
         test = import ./nix/test.nix { inherit lib pkgs amba; };
       in {
         devShells = {
-          default = amba.rust.rustPkgs.workspaceShell ({
+          default = amba.rust.workspaceShell ({
             packages = let p = pkgs;
             in [
               cargo2nix.outputs.packages.${system}.cargo2nix
@@ -71,11 +75,12 @@
           } // libamba.all-include-paths);
         };
 
-        packages = amba.rust.packages // {
+        packages = {
           inherit (libamba) libamba;
           inherit (amba) amba-deps impure-amba;
           inherit (s2e) s2e s2e-src build-guest-images guest-images-src;
-          default = amba.rust.packages.amba;
+          inherit (amba.rust) amba;
+          default = amba.rust.amba;
         };
         apps = {
           s2e-env = {
