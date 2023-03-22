@@ -1,0 +1,11 @@
+{
+	"files": {
+		"control-flow": "./control-flow",
+		"input.txt": {
+			"seed": "a",
+			"symbolic": [0]
+		}
+	},
+	"executable_path": "./control-flow",
+	"stdin_path": "/tmp/input.txt"
+}

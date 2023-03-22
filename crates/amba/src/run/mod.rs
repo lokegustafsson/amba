@@ -17,6 +17,7 @@ use std::{
 
 use ipc::{Ipc, IpcError};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
+use recipe::{Recipe, RecipeError};
 
 use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
 
@@ -34,7 +35,7 @@ pub fn run(
 	session_dir: &Path,
 	temp_dir: &Path,
 	RunArgs {
-		host_path_to_executable,
+		recipe_path,
 		debugger,
 		qmp,
 	}: RunArgs,
@@ -65,12 +66,28 @@ pub fn run(
 	cmd.create_dir_all(temp_dir);
 	// Populate the `session_dir`
 	{
-		let executable_name = host_path_to_executable.file_name().unwrap();
-		cmd.copy(
-			&host_path_to_executable,
-			session_dir.join(executable_name),
+		let recipe = &match Recipe::deserialize_from(&cmd.read(&recipe_path)) {
+			Ok(recipe) => recipe,
+			Err(err) => {
+				match err {
+					RecipeError::NotRecipe(err) => {
+						tracing::error!(?recipe_path, ?err, "Not a valid Recipe")
+					}
+					RecipeError::NotJson(err) => {
+						tracing::error!(?recipe_path, ?err, "Not a valid JSON")
+					}
+					RecipeError::NotUtf8(err) => {
+						tracing::error!(?recipe_path, ?err, "Not valid UTF8")
+					}
+				}
+				return Err(());
+			}
+		};
+		S2EConfig::new(cmd, session_dir, &recipe_path, recipe).save_to(
+			cmd,
+			dependencies_dir,
+			session_dir,
 		);
-		S2EConfig::new(session_dir, executable_name).save_to(cmd, dependencies_dir, session_dir);
 	}
 
 	// supporting single- vs multi-path
@@ -227,14 +244,7 @@ fn run_qemu(
 			"256M",
 			"-enable-kvm",
 			"-serial",
-		])
-		.arg({
-			let mut line = OsString::new();
-			line.push("file:");
-			line.push(serial_out);
-			line
-		})
-		.args([
+			"file:/dev/stdout",
 			"-net",
 			"none",
 			"-net",

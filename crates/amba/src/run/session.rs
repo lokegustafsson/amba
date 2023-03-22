@@ -2,11 +2,11 @@
 
 use std::{
 	error::Error,
-	ffi::OsStr,
 	path::{Path, PathBuf},
 };
 
 use include_dir::{include_dir, Dir};
+use recipe::{FileSource, Recipe};
 use serde::Serialize;
 use tera::{Context, Tera};
 
@@ -19,6 +19,7 @@ pub struct S2EConfig {
 	library_lua_path: PathBuf,
 	creation_time: &'static str,
 	project_dir: PathBuf,
+	host_files_dir: PathBuf,
 	use_seeds: bool,
 	project_name: &'static str,
 	modules: Vec<[String; 1]>,
@@ -56,6 +57,11 @@ pub struct Args {
 
 const LIBRARY_LUA: &str = include_str!("../../data/library.lua");
 const TEMPLATE_DIR: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/templates");
+const BOOTSTRAP_SH_CONTENT: &str = "
+./s2ecmd get bootstrap.elf
+chmod +x ./bootstrap.elf
+RUST_BACKTRACE=1 ./bootstrap.elf 2>&1
+";
 
 const CUSTOM_LUA_STRING: &str = r#"
 add_plugin("AmbaPlugin")
@@ -64,17 +70,38 @@ add_plugin("AmbaPlugin")
 impl S2EConfig {
 	/// Default template parameters. Update this to change the S2E run time
 	/// configuration.
-	pub fn new(session_dir: &Path, executable_file_name: &OsStr) -> Self {
-		let executable_file_name = crate::util::os_str_to_escaped_ascii(executable_file_name);
+	pub fn new(cmd: &mut Cmd, session_dir: &Path, recipe_path: &Path, recipe: &Recipe) -> Self {
+		let host_files_dir = session_dir.join("hostfiles");
+		cmd.create_dir_all(&host_files_dir);
+		for (guest_path, source) in &recipe.files {
+			let guest_path = Path::new(guest_path);
+			assert!(guest_path.is_relative());
+			match source {
+				FileSource::Host(host_path) | FileSource::SymbolicHost { host_path, .. } => {
+					cmd.copy(
+						recipe_path.parent().unwrap().join(host_path),
+						host_files_dir.join(guest_path),
+					);
+				}
+				FileSource::SymbolicContent { seed, .. } => {
+					cmd.write(host_files_dir.join(guest_path), seed)
+				}
+			}
+		}
+		cmd.write(
+			host_files_dir.join("recipe.json"),
+			&serde_json::to_vec(recipe).unwrap(),
+		);
 
 		Self {
 			library_lua_path: session_dir.join("library.lua"),
 			creation_time: "CREATION_TIME",
 			project_dir: session_dir.to_owned(),
+			host_files_dir,
 			use_seeds: false,
 			project_name: "PROJECT_NAME",
-			modules: vec![[executable_file_name.clone()]],
-			processes: vec![executable_file_name.clone()],
+			modules: vec![[recipe.executable_path.clone()]],
+			processes: vec![recipe.executable_path.clone()],
 			use_cupa: true,
 			target_lua_template: "s2e-config.linux.lua",
 			custom_lua_string: CUSTOM_LUA_STRING,
@@ -83,8 +110,8 @@ impl S2EConfig {
 			target_bootstrap_template: "bootstrap.linux.sh",
 			target: Target {
 				arch: "x86_64",
-				name: executable_file_name.clone(),
-				names: vec![executable_file_name],
+				name: recipe.executable_path.clone(),
+				names: vec![recipe.executable_path.clone()],
 				args: Args {
 					symbolic_file_names: vec![],
 					resolved_args: vec![],
@@ -105,24 +132,25 @@ impl S2EConfig {
 		assert!(session_dir.exists());
 		cmd.write(&self.library_lua_path, LIBRARY_LUA);
 		cmd.symlink(
-			format!(
-				"{}/bin/guest-tools64",
-				dependencies_dir.to_str().unwrap()
-			),
+			dependencies_dir.join("bin/guest-tools64"),
 			session_dir.join("guest-tools64"),
 		);
 		cmd.symlink(
-			format!(
-				"{}/bin/guest-tools32",
-				dependencies_dir.to_str().unwrap()
-			),
+			dependencies_dir.join("bin/guest-tools32"),
 			session_dir.join("guest-tools32"),
+		);
+		cmd.symlink(
+			dependencies_dir.join("bin/bootstrap"),
+			self.host_files_dir.join("bootstrap.elf"),
+		);
+		cmd.write(
+			self.host_files_dir.join("bootstrap.sh"),
+			BOOTSTRAP_SH_CONTENT,
 		);
 
 		tracing::debug!(TEMPLATE_DIR = ?TEMPLATE_DIR.path(), "Using templates from");
 		let mut renderer = Renderer::new(cmd, session_dir, self);
 		renderer.render("s2e-config.lua");
-		renderer.render("bootstrap.sh");
 	}
 }
 

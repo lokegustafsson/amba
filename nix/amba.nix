@@ -1,5 +1,13 @@
 { lib, pkgs, s2e, libamba }:
 let
+  bootstrap = import ./rust.nix {
+    inherit lib;
+    # Using mold breaks the build, and disabling mold is easier than fixing the
+    # underlying problem
+    use-mold = false;
+    pkgs = pkgs.pkgsCross.musl64;
+    extra-overrides = { mkNativeDep, mkEnvDep, mkRpath, mkOverride, p }: [ ];
+  };
   amba-deps = pkgs.stdenvNoCC.mkDerivation {
     name = "amba-deps";
     phases = [ "installPhase" "fixupPhase" ];
@@ -9,6 +17,7 @@ let
       rsync -a ${s2e.s2e}/share/libs2e/* $out/share/libs2e/
       rsync -a ${s2e.s2e}/bin/guest-tools* $out/bin/
       rsync -a ${s2e.s2e}/bin/qemu-system-* $out/bin/
+      cp ${bootstrap.bootstrap}/bin/bootstrap $out/bin/
     '';
     fixupPhase = ''
       chmod -R u+w $out/share/libs2e/*

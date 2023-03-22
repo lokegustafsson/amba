@@ -51,8 +51,8 @@
           default = amba.workspaceShell ({
             packages = let p = pkgs;
             in [
-              cargo2nix.outputs.packages.${system}.cargo2nix
               amba.impure-amba
+              cargo2nix.outputs.packages.${system}.cargo2nix
               p.clang-tools_14
               p.ctags
               p.gdb
@@ -79,6 +79,7 @@
           inherit (libamba) libamba;
           inherit (amba) amba-deps impure-amba;
           inherit (s2e) s2e s2e-src build-guest-images guest-images-src;
+          inherit (test) control-flow;
           inherit (amba) amba amba-wrapped;
           default = amba.amba-wrapped;
         };

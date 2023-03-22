@@ -8,6 +8,8 @@ args@{
     "amba-gui/default"
     "ipc/default"
     "qmp-client/default"
+    "recipe/default"
+    "bootstrap/default"
     "libamba-rs/default"
     "mitm-debug-stream/default"
     "s2e/default"
@@ -48,6 +50,8 @@ in
     amba-gui = rustPackages.unknown.amba-gui."0.1.0";
     ipc = rustPackages.unknown.ipc."0.1.0";
     qmp-client = rustPackages.unknown.qmp-client."0.1.0";
+    recipe = rustPackages.unknown.recipe."0.1.0";
+    bootstrap = rustPackages.unknown.bootstrap."0.1.0";
     libamba-rs = rustPackages.unknown.libamba-rs."0.1.0";
     mitm-debug-stream = rustPackages.unknown.mitm-debug-stream."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
@@ -178,9 +182,11 @@ in
       nix = rustPackages."registry+https://github.com/rust-lang/crates.io-index".nix."0.26.2" { inherit profileName; };
       qmp_client = rustPackages."unknown".qmp-client."0.1.0" { inherit profileName; };
       rand = rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.8.5" { inherit profileName; };
+      recipe = rustPackages."unknown".recipe."0.1.0" { inherit profileName; };
       regex = rustPackages."registry+https://github.com/rust-lang/crates.io-index".regex."1.7.1" { inherit profileName; };
       reqwest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.11.14" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
+      serde_json = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde_json."1.0.92" { inherit profileName; };
       tar = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tar."0.4.38" { inherit profileName; };
       tera = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tera."1.17.1" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
@@ -547,6 +553,19 @@ in
     src = fetchCratesIo { inherit name version; sha256 = "69cce20737498f97b993470a6e536b8523f0af7892a4f928cceb1ac5e52ebe7e"; };
     dependencies = {
       generic_array = rustPackages."registry+https://github.com/rust-lang/crates.io-index".generic-array."0.14.6" { inherit profileName; };
+    };
+  });
+  
+  "unknown".bootstrap."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "bootstrap";
+    version = "0.1.0";
+    registry = "unknown";
+    src = fetchCrateLocal (workspaceSrc + "/crates/bootstrap");
+    dependencies = {
+      nix = rustPackages."registry+https://github.com/rust-lang/crates.io-index".nix."0.26.2" { inherit profileName; };
+      recipe = rustPackages."unknown".recipe."0.1.0" { inherit profileName; };
+      tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
+      tracing_subscriber = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-subscriber."0.3.16" { inherit profileName; };
     };
   });
   
@@ -3684,6 +3703,17 @@ in
     version = "0.5.1";
     registry = "registry+https://github.com/rust-lang/crates.io-index";
     src = fetchCratesIo { inherit name version; sha256 = "4f851a03551ceefd30132e447f07f96cb7011d6b658374f3aed847333adb5559"; };
+  });
+  
+  "unknown".recipe."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "recipe";
+    version = "0.1.0";
+    registry = "unknown";
+    src = fetchCrateLocal (workspaceSrc + "/crates/recipe");
+    dependencies = {
+      serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
+      serde_json = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde_json."1.0.92" { inherit profileName; };
+    };
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".redox_syscall."0.2.16" = overridableMkRustCrate (profileName: rec {

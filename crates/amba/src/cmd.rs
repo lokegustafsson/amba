@@ -99,7 +99,7 @@ impl Cmd {
 		let file = file.as_ref();
 		let target = target.as_ref();
 		tracing::debug!(?file, ?target, "copy_file");
-		fs::write(target, fs::read(file).unwrap()).unwrap();
+		fs::copy(file, target).unwrap();
 	}
 
 	#[cfg(target_family = "unix")]
