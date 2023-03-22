@@ -66,7 +66,7 @@ mod ffi {
 	}
 
 	#[no_mangle]
-	pub unsafe extern "C" fn rust_ipc_send_graph(ipc: &mut Ipc, graph: &mut ControlFlowGraph) {
+	pub extern "C" fn rust_ipc_send_graph(ipc: &mut Ipc, graph: &mut ControlFlowGraph) {
 		ipc.blocking_send(&ipc::IpcMessage::Ping)
 			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 	}
