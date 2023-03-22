@@ -16,7 +16,8 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_control_flow(control_flow::ControlFlow {})
+	, m_assembly_graph(control_flow::ControlFlow {})
+	, m_symbolic_graph(control_flow::ControlFlow {})
 {
 	auto self = this;
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
@@ -40,6 +41,20 @@ void AmbaPlugin::initialize() {
 			*this,
 			&AmbaPlugin::translateBlockStart
 		));
+	core.onStateFork
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onStateFork
+		));
+	core.onStateMerge
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onStateMerge
+		));
+
+	(void) core.onStateForkDecide;
+	(void) core.onStateKill;
+	(void) core.onStateSwitch;
 
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
@@ -80,7 +95,7 @@ void AmbaPlugin::translateBlockStart(
 	u64 pc
 ) {
 	signal->connect(sigc::mem_fun(
-		this->m_control_flow,
+		this->m_assembly_graph,
 		&control_flow::ControlFlow::onBlockStart
 	));
 }
