@@ -192,14 +192,10 @@ in
     version = "0.1.0";
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/amba-gui");
-    features = builtins.concatLists [
-      (lib.optional (rootFeatures' ? "amba-gui/serde") "serde")
-    ];
     dependencies = {
       anyhow = rustPackages."registry+https://github.com/rust-lang/crates.io-index".anyhow."1.0.70" { inherit profileName; };
       eframe = rustPackages."registry+https://github.com/rust-lang/crates.io-index".eframe."0.19.0" { inherit profileName; };
       egui_node_graph = rustPackages."registry+https://github.com/rust-lang/crates.io-index".egui_node_graph."0.4.0" { inherit profileName; };
-      ${ if rootFeatures' ? "amba-gui/serde" then "serde" else null } = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
     };
   });
   

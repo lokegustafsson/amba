@@ -111,7 +111,6 @@ dependencies = [
  "anyhow",
  "eframe",
  "egui_node_graph",
- "serde",
 ]
 
 [[package]]
