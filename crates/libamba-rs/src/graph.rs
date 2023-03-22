@@ -1205,4 +1205,29 @@ mod test {
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_2.nodes);
 	}
+
+	#[test]
+	fn incremental_generated_1() {
+		let mut slow = Graph::new();
+		let mut fast = Graph::new();
+
+		let mut cycle = |from, to| {
+			slow.update(from, to);
+			fast.revert_and_update(&slow, from, to);
+			fast.compress_with_hint(from, to);
+
+			let mut fast_ = fast.clone();
+			fast_.apply_merges();
+
+			let mut clone = slow.clone();
+			clone.compress();
+			clone.apply_merges();
+
+			assert_eq!(fast_.nodes, clone.nodes);
+		};
+
+		cycle(9, 8);
+		cycle(0, 9);
+		cycle(1, 8);
+	}
 }
