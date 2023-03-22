@@ -12,6 +12,8 @@ on:
       - 'Cargo.toml'
       - 'Cargo.lock'
       - 'rustfmt.toml'
+      - 'flake.nix'
+      - 'nix/**'
 
 jobs:
   cargo-fmt:
