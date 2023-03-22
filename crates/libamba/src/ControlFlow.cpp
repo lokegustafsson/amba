@@ -23,4 +23,38 @@ void ControlFlow::onBlockStart(
 	);
 	this->m_last = pc;
 }
+
+void ControlFlow::onStateFork(
+	s2e::S2EExecutionState *old_state,
+	const std::vector<s2e::S2EExecutionState *> &new_states,
+	const std::vector<klee::ref<klee::Expr>> &conditions
+) {
+	const auto old_id = old_state->getID();
+
+	for (auto &new_state : new_states) {
+		const auto new_id = new_state->getID();
+
+		// TODO: Investigate thread safety:
+		rust_update_control_flow_graph(
+			this->m_cfg,
+			(u64) old_id,
+			(u64) new_id
+		);
+	}
+}
+
+void ControlFlow::onStateMerge(
+	s2e::S2EExecutionState *destination_state,
+	s2e::S2EExecutionState *source_state
+) {
+	const auto dest_id = destination_state->getID();
+	const auto src_id = source_state->getID();
+
+	rust_update_control_flow_graph(
+		this->m_cfg,
+		(u64) src_id,
+		(u64) dest_id
+	);
+}
+
 } // namespace control_flow
