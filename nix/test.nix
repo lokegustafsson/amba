@@ -9,7 +9,7 @@ let
       mkdir -p $out/
       cp hello hello.recipe.json $out/
     '';
-    CFLAGS = "-static";
+    APPEND_CFLAGS = "-static";
   };
   control-flow = pkgs.stdenv.mkDerivation {
     name = "control-flow";
@@ -20,7 +20,7 @@ let
       mkdir -p $out/
       cp control-flow control-flow.recipe.json $out/
     '';
-    CFLAGS = "-static";
+    APPEND_CFLAGS = "-static";
   };
   test-amba = pkgs.writeShellApplication {
     name = "test-amba";

@@ -8,7 +8,7 @@ CFLAGS ?= \
 	-g \
 	-fno-stack-protector \
 	-U _FORTIFY_SOURCE \
-	$$(APPEND_CFLAGS)
+	${APPEND_CFLAGS}
 
 overrun: overrun.c
 run_overrun: overrun
