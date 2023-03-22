@@ -34,6 +34,7 @@ int d(int val, int cond) {
 }
 
 int main(int argc, char **argv) {
-	const int val = a(0, getchar());
+	const int input = getchar();
+	const int val = a(0, input);
 	printf("%d\n", val);
 }

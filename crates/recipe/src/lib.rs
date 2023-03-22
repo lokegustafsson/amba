@@ -15,6 +15,7 @@ pub struct Recipe {
 	#[serde(default)]
 	environment: Environment,
 }
+
 impl Recipe {
 	pub fn deserialize_from(bytes: &[u8]) -> Result<Self, RecipeError> {
 		let string = std::str::from_utf8(bytes)?;
@@ -47,12 +48,14 @@ impl Recipe {
 		Ok(ret)
 	}
 }
+
 #[derive(Debug)]
 pub enum RecipeError {
 	NotUtf8(std::str::Utf8Error),
 	NotJson(serde_json::Error),
 	NotRecipe(serde_json::Error),
 }
+
 impl From<std::str::Utf8Error> for RecipeError {
 	fn from(inner: std::str::Utf8Error) -> Self {
 		Self::NotUtf8(inner)
@@ -97,6 +100,7 @@ struct Environment {
 	#[serde(default)]
 	add: Vec<EnvVarSource>,
 }
+
 impl Default for Environment {
 	fn default() -> Self {
 		Self {

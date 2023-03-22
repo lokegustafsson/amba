@@ -1,11 +1,13 @@
-CC ?= gcc
+CC = musl-gcc
 CFLAGS ?= \
 	-Wall \
 	-Wextra \
 	-Wno-unused-parameter \
+	-Wconversion \
 	-O0 \
 	-g \
 	-fno-stack-protector \
+	-static \
 	-U _FORTIFY_SOURCE
 
 overrun: overrun.c
@@ -16,12 +18,10 @@ overrun.S: overrun
 	objdump -S overrun > overrun.S
 
 hello: hello.c
-	musl-gcc -static $(CFLAGS) $^ -o $@
 hello.S: hello
 	objdump -S hello > hello.S
 
 control-flow: control-flow.c
-	musl-gcc -static $(CFLAGS) $^ -o $@
 run_control-flow: control-flow
 	printf '\x00' | ./control-flow
 	printf '\x01' | ./control-flow
