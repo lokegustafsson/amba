@@ -51,14 +51,15 @@
           default = amba.workspaceShell ({
             packages = let p = pkgs;
             in [
-              cargo2nix.outputs.packages.${system}.cargo2nix
               amba.impure-amba
+              cargo2nix.outputs.packages.${system}.cargo2nix
               p.clang-tools_14
               p.ctags
               p.gdb
               p.nixfmt
               p.gnumake
               p.mold
+              p.musl
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.clippy
               p.rust-bin.stable.latest.default

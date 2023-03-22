@@ -45,7 +45,7 @@ let
         [
           (p.rustBuilder.rustLib.makeOverride {
             overrideArgs = old: {
-              rustcLinkFlags = old.rustcLinkFlags or [ ] ++ [
+              rustcLinkFlags = (old.rustcLinkFlags or [ ]) ++ [
                 "-C"
                 "linker=${pkgs.clang}/bin/clang"
                 "-C"
@@ -59,7 +59,7 @@ let
           (p.rustBuilder.rustLib.makeOverride {
             registry = "registry+https://github.com/rust-lang/crates.io-index";
             overrideArgs = old: {
-              rustcLinkFlags = old.rustcLinkFlags or [ ]
+              rustcLinkFlags = (old.rustcLinkFlags or [ ])
                 ++ [ "--cap-lints" "warn" ];
             };
           })

@@ -2,6 +2,8 @@
 let
   bootstrap = import ./rust.nix {
     inherit lib;
+    # Using mold breaks the build, and disabling mold is easier than fixing the
+    # underlying problem
     use-mold = false;
     pkgs = pkgs.pkgsCross.musl64;
     extra-overrides = { mkNativeDep, mkEnvDep, mkOverride, p }: [ ];
