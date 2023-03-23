@@ -838,7 +838,7 @@ mod test {
 			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(0, 1);
+		graph.compress_with_hint([0, 1].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -860,7 +860,7 @@ mod test {
 			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(0, 1);
+		graph.compress_with_hint([0, 1].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -886,7 +886,7 @@ mod test {
 		let expected = graph.clone();
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(0, 1);
+		graph.compress_with_hint([0, 1].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -912,7 +912,7 @@ mod test {
 		let expected = graph.clone();
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(3, 1);
+		graph.compress_with_hint([3, 1].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -950,7 +950,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(5, 4);
+		graph.compress_with_hint([5, 4].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -988,7 +988,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(5, 6);
+		graph.compress_with_hint([5, 6].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1028,7 +1028,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(2, 3);
+		graph.compress_with_hint([2, 3].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1068,7 +1068,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(3, 2);
+		graph.compress_with_hint([3, 2].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1098,7 +1098,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress();
+		graph.compress_with_hint([0].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1128,7 +1128,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(2, 1);
+		graph.compress_with_hint([2, 1].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1164,7 +1164,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint(2, 4);
+		graph.compress_with_hint([2, 4].into_iter().collect());
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
