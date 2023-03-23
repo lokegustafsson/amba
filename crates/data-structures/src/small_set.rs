@@ -2,11 +2,6 @@ use std::{collections::BTreeSet, iter, mem};
 
 use arrayvec::ArrayVec;
 
-const OPTIMAL_SIZE: usize = {
-	let set_size = mem::size_of::<BTreeSet<u64>>();
-	let u64_size = mem::size_of::<u64>();
-	set_size / u64_size
-};
 const ACTUAL_SIZE: usize = 6;
 
 /// A small size optimised u64 set
