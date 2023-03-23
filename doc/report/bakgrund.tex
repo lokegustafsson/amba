@@ -119,8 +119,12 @@ hela spektrummet.
 För att klargöra distinktionen mellan manuell och automatiska metoder för
 binäranalys används följande use cases:
 
-\begin{lstlisting}[label={list:first}, language=Python, caption=Use case
-manuella metoder]
+\begin{lstlisting}[
+    label={list:first},
+    language=Python,
+    caption=Use case manuella metoder,
+    frame=single
+    ]
 # Givet sträng-input från stdin
 s = input()
 if sha256(s) = "välkänd hash":
@@ -142,8 +146,12 @@ representationer och hade i det ovan exemplet krävt att det går att hitta
 inversen till en given SHA-256 hash vilket idag är omöjligt och leder därmed
 till att alla paths inte undersöks.
 
-\begin{lstlisting}[label={list:first}, language=Python, caption=Use case
-manuella metoder]
+\begin{lstlisting}[
+    label={list:first},
+    language=Python,
+    caption=Use case manuella metoder,
+    frame=single
+    ]
 # Givet sträng-input från stdin
 s = input()
 if s == "secret":
