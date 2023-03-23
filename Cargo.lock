@@ -917,6 +917,7 @@ version = "0.1.0"
 dependencies = [
  "arrayvec 0.7.2",
  "itertools 0.10.5",
+ "proptest",
 ]
 
 [[package]]
@@ -1850,7 +1851,6 @@ version = "0.1.0"
 dependencies = [
  "data-structures",
  "ipc",
- "proptest",
 ]
 
 [[package]]
@@ -3265,6 +3265,14 @@ checksum = "633c1a546cee861a1a6d0dc69ebeca693bf4296661ba7852b9d21d159e0506df"
 dependencies = [
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "test_and_bench"
+version = "0.1.0"
+dependencies = [
+ "libamba-rs",
+ "rand",
 ]
 
 [[package]]
