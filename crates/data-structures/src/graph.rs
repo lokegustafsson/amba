@@ -20,6 +20,10 @@ pub struct Graph {
 	pub merges: Map<u64, u64>,
 }
 
+#[repr(C)]
+#[derive(Debug, Clone, Default)]
+pub struct Metadata {}
+
 impl Graph {
 	pub fn new() -> Self {
 		Default::default()
