@@ -191,9 +191,30 @@ impl Graph {
 		for pair in self.get(from).unwrap().from.iter().map(|&f| (f, from)) {
 			candidates.insert(pair);
 		}
+		for pair in self.get(from).unwrap().to.iter().map(|&t| (from, t)) {
+			candidates.insert(pair);
+		}
 		for pair in self.get(to).unwrap().to.iter().map(|&t| (to, t)) {
 			candidates.insert(pair);
 		}
+		for pair in self.get(to).unwrap().from.iter().map(|&f| (f, to)) {
+			candidates.insert(pair);
+		}
+
+		self.compress_with_hint_2(candidates);
+	}
+
+	pub fn compress_with_hint_set(&mut self, nodes: SmallU64Set) {
+		let queued = nodes
+			.into_iter()
+			.flat_map(|n| {
+				let node = self.nodes.get(&n).unwrap();
+				let tos = node.to.iter().copied().map(move |t| (n, t));
+				let froms = node.from.iter().copied().map(move |f| (f, n));
+
+				tos.chain(froms)
+			})
+			.collect();
 
 		self.compress_with_hint_2(queued);
 	}
@@ -1205,8 +1226,8 @@ mod test {
 		graph.compress();
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_1.nodes);
-		graph.revert_and_update(&raw, 0, 3);
-		graph.compress();
+		let revert = graph.revert_and_update(&raw, 0, 3);
+		graph.compress_with_hint_set(revert);
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_2.nodes);
 	}
@@ -1218,8 +1239,8 @@ mod test {
 
 		let mut cycle = |from, to| {
 			slow.update(from, to);
-			fast.revert_and_update(&slow, from, to);
-			fast.compress_with_hint(from, to);
+			let reverted = fast.revert_and_update(&slow, from, to);
+			fast.compress_with_hint_set(reverted);
 
 			let mut fast_ = fast.clone();
 			fast_.apply_merges();
