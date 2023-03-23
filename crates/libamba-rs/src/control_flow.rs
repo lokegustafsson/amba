@@ -95,7 +95,7 @@ impl ControlFlowGraph {
 				.revert_and_update(&self.graph, from, to);
 
 			self.rebuilds += 1;
-			self.compressed_graph.compress_with_hint_set(reverted);
+			self.compressed_graph.compress_with_hint(reverted);
 		}
 
 		self.rebuilding_time += Instant::now() - now;

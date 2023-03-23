@@ -181,7 +181,7 @@ impl Graph {
 	/// Compress around given candidates. If a candidate gets
 	/// compressed its neighbours will be checked too, growing out
 	/// from there.
-	pub fn compress_with_hint_set(&mut self, nodes: SmallU64Set) {
+	pub fn compress_with_hint(&mut self, nodes: SmallU64Set) {
 		fn inner(graph: &mut Graph, mut queued: BTreeSet<(u64, u64)>) {
 			while let Some((mut from, mut to)) = queued.pop_first() {
 				from = translate(from, &mut graph.merges);
@@ -411,7 +411,7 @@ mod test {
 		for (from, to) in instructions.into_iter() {
 			slow.update(from, to);
 			let reverted = fast.revert_and_update(&slow, from, to);
-			fast.compress_with_hint_set(reverted);
+			fast.compress_with_hint(reverted);
 
 			let mut fast_ = fast.clone();
 			fast_.apply_merges();
@@ -1204,7 +1204,7 @@ mod test {
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_1.nodes);
 		let revert = graph.revert_and_update(&raw, 0, 3);
-		graph.compress_with_hint_set(revert);
+		graph.compress_with_hint(revert);
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_2.nodes);
 	}
@@ -1217,7 +1217,7 @@ mod test {
 		let mut cycle = |from, to| {
 			slow.update(from, to);
 			let reverted = fast.revert_and_update(&slow, from, to);
-			fast.compress_with_hint_set(reverted);
+			fast.compress_with_hint(reverted);
 
 			let mut fast_ = fast.clone();
 			fast_.apply_merges();
