@@ -106,8 +106,9 @@ impl Graph {
 		modified
 	}
 
-	/// Revert compression of nodes and then update their connections
-	pub fn revert_and_update(&mut self, source: &Graph, from: u64, to: u64) -> bool {
+	/// Revert compression of nodes and then update their connections.
+	/// Returns the reverted nodes
+	pub fn revert_and_update(&mut self, source: &Graph, from: u64, to: u64) -> SmallU64Set {
 		let mut nodes = SmallU64Set::new();
 
 		// `self` and `source` *should* contain all the same
@@ -134,7 +135,11 @@ impl Graph {
 			self.nodes.insert(*node, value);
 		}
 
-		self.update(from, to)
+		self.update(from, to);
+
+		nodes.insert(from);
+		nodes.insert(to);
+		nodes
 	}
 
 	/// Compresses graph by merging every node pair that always go
