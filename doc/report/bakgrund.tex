@@ -165,10 +165,10 @@ metoder eftersom det är tidskrävande att manuellt välja slumpvalda värden p�
 för att hitta den korrekta branchen. Istället lämpar concolic testing, dvs en
 automatisk metod, sig väl i detta fallet eftersom concolic testing väljer olika
 konkreta värden samtidigt som den tillämpar symbolisk exekvering med symboliska
-värden som följer den givna branchen, t.ex. om s = "hej" vilket motsvarar att
-programmet väljer else-branchen och printar("you lost"). Detta upprepas med nya
-exekveringsvägar och till slut hittas vilken input som ger print("you
-won")-branchen. 
+värden som följer den givna branchen, t.ex. om \lstinline{s == "hej"} vilket
+motsvarar att programmet väljer else-branchen och printar \lstinline{"you lost"}. Detta
+upprepas med nya exekveringsvägar och till slut hittas vilken input som ger
+\lstinline{print("you won")}-branchen. 
 
 
 \subsubsection{Statisk och dynamisk binäranalys}
@@ -178,31 +178,38 @@ analysen genomförs delar metoderna i två grupper: statisk och dynamisk analys
 
 Statisk analys syftar på analys som går att göra utan att exekvera programmet
 som analyseras. Exempel på statisk binäranalys är metod 1-2, alltså att
-disassembla binären och/eller visualisera kod.
+disassembla binären och/eller visualisera kod \cite{dynamic_bin_analysis}.
 
-Dynamisk analys går ut på att analysera ett program under exekvering. Exempel
-på dynamisk binäranalys är metod 3-6. I alla fall krävs någon typ av injektion
-av kod eller data i programmet utan att ändra på dess beteeende i syfte att
-kunna extrahera viktig information under programmets körning. Många avancerade
-dynamiska metoder som t.ex. concolic testing kräver symbolisk exekvering. Det
-går ut på att tilldela symboliska värden till variabler och se hur dessa
-påverkar programhopp och förgreningar och vad för möjliga värden som denna
-symbol kan inneha under exekvering. I fallet med concolic testing används denna
-information för att, med hjälp av en SMT-solver ta fram konkreta värden som
-leder till att programmet kör till en program-distination som består av ett
-oväntad krasch.
+Dynamisk analys går ut på att analysera ett program under exekvering
+\cite{dynamic_bin_analysis}. Exempel på dynamisk binäranalys är metod 3-6. I
+alla fall krävs någon typ av injektion av kod eller data i programmet i syfte
+att kunna extrahera viktig information under programmets körning
+\cite{dynamic_bin_analysis}. Många avancerade dynamiska metoder som t.ex.
+concolic testing kräver symbolisk exekvering. Det går ut på att tilldela
+symboliska värden till variabler och se hur dessa påverkar programhopp och
+förgreningar och vad för möjliga värden som denna symbol kan inneha under
+exekvering. I fallet med concolic testing används denna information för att,
+med hjälp av en SMT-solver ta fram konkreta värden som leder till att
+programmet kör till en program-distination som består av ett krasch.
 
 \subsubsection{Existerande verktyg}
 Det kan finnas flera metoder för analys av binärprogram och det finns ganska
-många verktyg idag som stödjer ett eller flera av dessa metoder. Det är inte
-möjligt att lista och gå igenom alla tillgängliga binäranalysverktyg men de
-mest populära exemplen är Ghidra\cite{ghidra_website} och
-Angr\cite{angr_github}.
+många verktyg idag som stödjer ett eller flera av dessa metoder. Det finns
+många tillgängliga binäranalysverktyg men några populära binäranalysverktyg är
+Ghidra\cite{ghidra_website} och Angr\cite{angr_web}.
+
+% Sure I am referencing to the Ghidra website, but this is done by others as
+% well because Ghidra has no report afaik. An example report that uses ghidra
+% https://rp.os3.nl/2019-2020/p49/report.pdf
+
+% Vidare har angr t.ex. sagt att "om man använder angr som en komponent i sin
+% projekt ska man helst citera en viss rapport", men vi beskriver bara med
+% några ord vad angr är och använder den till inget.
 
 Ghidra är en \emph{reverse engingeering} ramverk utvecklat av USA:s NSA
 (National Security Agency) och kan disassembla en binär till pseudo-C-kod.
-Ghidra har också en debugger och funktionsgraf som ska underlätta binär
-debugging genom att integrera med andra funktioner i Ghidra och funktionsgrafen
+Ghidra har också en debugger och funktionsgraf. Debuggern ska underlätta binär
+debugging genom att integrera med andra funktioner i Ghidra. Funktionsgrafen
 låter användaren se hur programmet är uppbyggt visuellt och hur olika
 funktioner interagerar med varandra. Funktionaliteter kan utökas eller andra
 funktioner utvecklas genom plugins till Ghidra\cite{ghidra_use_cases}. Ghidra
