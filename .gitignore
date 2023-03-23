@@ -26,6 +26,8 @@
 **/*.blg
 **/*.tdo
 **/*.toc
+**/*.bcf
+**/*.run.xml
 
 # Built PDFs
 !doc/pdf/**
