@@ -1,14 +1,7 @@
-pub fn add(left: usize, right: usize) -> usize {
-	left + right
-}
+pub mod disjoint_sets;
+pub mod graph;
+pub mod small_set;
 
-#[cfg(test)]
-mod tests {
-	use super::*;
-
-	#[test]
-	fn it_works() {
-		let result = add(2, 2);
-		assert_eq!(result, 4);
-	}
-}
+pub use graph::Graph;
+pub use disjoint_sets::DisjointSets;
+pub use small_set::SmallU64Set;
