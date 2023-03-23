@@ -182,27 +182,6 @@ impl Graph {
 		// The queue is a set so we can guarantee that there are no
 		// duplicates in the queue and HashSet doesn't have a pop
 		// function.
-		fn compress_with_hint_2(graph: &mut Graph, mut queued: BTreeSet<(u64, u64)>) {
-			while let Some((mut from, mut to)) = queued.pop_first() {
-				from = translate(from, &mut graph.merges);
-				to = translate(to, &mut graph.merges);
-				(from, to) = (from.min(to), from.max(to));
-
-				if !graph.are_mergable_link(from, to) {
-					continue;
-				}
-				let this = graph.merge_nodes(from, to);
-				let node = &graph.nodes[&this];
-
-				let tos = node.to.iter().filter(|&&n| n != this);
-				let froms = node.from.iter().filter(|&&n| n != this);
-
-				for &connection in tos.chain(froms) {
-					queued.insert((connection, this));
-				}
-			}
-		}
-
 		let mut candidates = [(from, to)].into_iter().collect::<BTreeSet<_>>();
 		for pair in self.get(from).unwrap().from.iter().map(|&f| (f, from)) {
 			candidates.insert(pair);
@@ -211,7 +190,28 @@ impl Graph {
 			candidates.insert(pair);
 		}
 
-		compress_with_hint_2(self, candidates);
+		self.compress_with_hint_2(queued);
+	}
+
+	fn compress_with_hint_2(&mut self, mut queued: BTreeSet<(u64, u64)>) {
+		while let Some((mut from, mut to)) = queued.pop_first() {
+			from = translate(from, &mut self.merges);
+			to = translate(to, &mut self.merges);
+			(from, to) = (from.min(to), from.max(to));
+
+			if !self.are_mergable_link(from, to) {
+				continue;
+			}
+			let this = self.merge_nodes(from, to);
+			let node = &self.nodes[&this];
+
+			let tos = node.to.iter().filter(|&&n| n != this);
+			let froms = node.from.iter().filter(|&&n| n != this);
+
+			for &connection in tos.chain(froms) {
+				queued.insert((connection, this));
+			}
+		}
 	}
 
 	fn are_mergable_link(&mut self, mut l: u64, mut r: u64) -> bool {
