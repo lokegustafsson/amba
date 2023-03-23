@@ -91,11 +91,12 @@ impl ControlFlowGraph {
 
 		// Only edit the compressed graph if this was a new link
 		if modified {
-			self.compressed_graph
+			let reverted = self
+				.compressed_graph
 				.revert_and_update(&self.graph, from, to);
 
 			self.rebuilds += 1;
-			self.compressed_graph.compress_with_hint(from, to);
+			self.compressed_graph.compress_with_hint(reverted);
 		}
 
 		self.rebuilding_time += Instant::now() - now;
