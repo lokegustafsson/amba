@@ -433,8 +433,8 @@ mod test {
 		let mut slow = Graph::new();
 		for (from, to) in instructions.into_iter() {
 			slow.update(from, to);
-			fast.revert_and_update(&slow, from, to);
-			fast.compress_with_hint(from, to);
+			let reverted = fast.revert_and_update(&slow, from, to);
+			fast.compress_with_hint_set(reverted);
 
 			let mut fast_ = fast.clone();
 			fast_.apply_merges();
