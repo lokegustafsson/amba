@@ -10,6 +10,7 @@ args@{
     "qmp-client/default"
     "recipe/default"
     "bootstrap/default"
+    "data-structures/default"
     "libamba-rs/default"
     "mitm-debug-stream/default"
     "s2e/default"
@@ -52,6 +53,7 @@ in
     qmp-client = rustPackages.unknown.qmp-client."0.1.0";
     recipe = rustPackages.unknown.recipe."0.1.0";
     bootstrap = rustPackages.unknown.bootstrap."0.1.0";
+    data-structures = rustPackages.unknown.data-structures."0.1.0";
     libamba-rs = rustPackages.unknown.libamba-rs."0.1.0";
     mitm-debug-stream = rustPackages.unknown.mitm-debug-stream."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
@@ -1247,6 +1249,17 @@ in
       darling_core = rustPackages."registry+https://github.com/rust-lang/crates.io-index".darling_core."0.13.4" { inherit profileName; };
       quote = rustPackages."registry+https://github.com/rust-lang/crates.io-index".quote."1.0.23" { inherit profileName; };
       syn = rustPackages."registry+https://github.com/rust-lang/crates.io-index".syn."1.0.107" { inherit profileName; };
+    };
+  });
+  
+  "unknown".data-structures."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "data-structures";
+    version = "0.1.0";
+    registry = "unknown";
+    src = fetchCrateLocal (workspaceSrc + "/crates/data-structures");
+    dependencies = {
+      arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
+      itertools = rustPackages."registry+https://github.com/rust-lang/crates.io-index".itertools."0.10.5" { inherit profileName; };
     };
   });
   
@@ -2492,9 +2505,8 @@ in
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/libamba-rs");
     dependencies = {
-      arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
+      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
-      itertools = rustPackages."registry+https://github.com/rust-lang/crates.io-index".itertools."0.10.5" { inherit profileName; };
     };
     devDependencies = {
       proptest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".proptest."1.1.0" { inherit profileName; };

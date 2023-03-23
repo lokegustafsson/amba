@@ -3,7 +3,7 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use crate::graph::Graph;
+use data_structures::Graph;
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {

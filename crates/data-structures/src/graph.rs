@@ -8,16 +8,16 @@ pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
 
 #[derive(Debug, Clone, Default)]
 pub struct Block {
-	pub(crate) id: u64,
-	pub(crate) from: SmallU64Set,
-	pub(crate) to: SmallU64Set,
-	pub(crate) of: SmallU64Set,
+	pub id: u64,
+	pub from: SmallU64Set,
+	pub to: SmallU64Set,
+	pub of: SmallU64Set,
 }
 
 #[derive(Debug, Clone, Default)]
 pub struct Graph {
-	pub(crate) nodes: Map<u64, Block>,
-	pub(crate) merges: Map<u64, u64>,
+	pub nodes: Map<u64, Block>,
+	pub merges: Map<u64, u64>,
 }
 
 impl Graph {
