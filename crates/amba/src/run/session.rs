@@ -17,6 +17,7 @@ use crate::cmd::Cmd;
 #[derive(Serialize)]
 pub struct S2EConfig {
 	library_lua_path: PathBuf,
+	executable_path: String,
 	creation_time: &'static str,
 	project_dir: PathBuf,
 	host_files_dir: PathBuf,
@@ -63,9 +64,7 @@ chmod +x ./bootstrap.elf
 RUST_BACKTRACE=1 ./bootstrap.elf 2>&1
 ";
 
-const CUSTOM_LUA_STRING: &str = r#"
-add_plugin("AmbaPlugin")
-"#;
+const CUSTOM_LUA_STRING: &str = r#""#;
 
 impl S2EConfig {
 	/// Default template parameters. Update this to change the S2E run time
@@ -95,6 +94,7 @@ impl S2EConfig {
 
 		Self {
 			library_lua_path: session_dir.join("library.lua"),
+			executable_path: recipe.executable_path.clone(),
 			creation_time: "CREATION_TIME",
 			project_dir: session_dir.to_owned(),
 			host_files_dir,
