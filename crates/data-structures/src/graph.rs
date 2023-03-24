@@ -321,6 +321,13 @@ impl Graph {
 		l
 	}
 
+	/// Returns a new graph of strongly connected components using
+	/// Kosaraju's algorithm. Works in linear time.
+	/// [Wikipedia](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+	pub fn to_strongly_connected_components(&self) -> Self {
+		todo!()
+	}
+
 	/// Verify that all node pairs have matching to and from
 	#[cfg(test)]
 	fn verify(&self) {
