@@ -127,9 +127,12 @@ void AmbaPlugin::translateBlockStart(
 	if (!this->m_module_pid) { return; }
 
 	auto mod = this->m_modules->getModule(state);
+	uint64_t native_addr = 0;
+	bool ok = mod ? mod->ToNativeBase(pc, native_addr) : false;
 	*amba::debug_stream()
 		<< "Translating instruction at " << hexval(pc)
-		<< (mod ? " in " + mod->Name : "")
+		<< (mod ? " in " + mod->Name + " (" + mod->Path + ")" : "")
+		<< (ok ? ", native addr " + hexval(native_addr).str() : "")
 		<< '\n';
 
 	signal->connect(sigc::mem_fun(
@@ -145,7 +148,7 @@ void AmbaPlugin::onModuleLoad(
 	if (module.Path != this->m_module_path) { return; }
 
 	this->m_module_pid = module.Pid;
-	*amba::debug_stream() << "Loaded our module\n";
+	*amba::debug_stream() << "Loaded module " << this->m_module_path << '\n';
 	for (const auto& section: module.Sections) {
 		*amba::debug_stream()
 			<< "Found section (" << section.name << ")"
@@ -173,7 +176,9 @@ void AmbaPlugin::onProcessUnload(
 	if (pid != this->m_module_pid) { return; }
 
 	this->m_module_pid = 0;
-	*amba::debug_stream() << "Our module exited with code " << std::to_string(return_code) << '\n';
+	*amba::debug_stream()
+		<< "Module " << this->m_module_path << " exited with code "
+		<< std::to_string(return_code) << '\n';
 }
 
 } // namespace plugins
