@@ -19,7 +19,7 @@ use ipc::{Ipc, IpcError};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 use recipe::{Recipe, RecipeError};
 
-use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs};
+use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs, SessionDirs};
 
 mod session;
 
@@ -32,12 +32,14 @@ pub fn run(
 	cmd: &mut Cmd,
 	dependencies_dir: &Path,
 	data_dir: &Path,
-	session_dir: &Path,
-	temp_dir: &Path,
+	SessionDirs {
+		persistent: session_dir,
+		temporary: temp_dir,
+	}: SessionDirs,
 	RunArgs {
 		recipe_path,
-		debugger,
-		qmp,
+		debugger: sigstop_qemu_on_fork,
+		no_gui: _,
 	}: RunArgs,
 ) -> Result<(), ()> {
 	if !data_dir_has_been_initialized(cmd, data_dir) {
@@ -62,8 +64,8 @@ pub fn run(
 		);
 		return Err(());
 	}
-	cmd.create_dir_all(session_dir);
-	cmd.create_dir_all(temp_dir);
+	cmd.create_dir_all(&session_dir);
+	cmd.create_dir_all(&temp_dir);
 	// Populate the `session_dir`
 	{
 		let recipe = &match Recipe::deserialize_from(&cmd.read(&recipe_path)) {
@@ -83,34 +85,19 @@ pub fn run(
 				return Err(());
 			}
 		};
-		S2EConfig::new(cmd, session_dir, &recipe_path, recipe).save_to(
+		S2EConfig::new(cmd, &session_dir, &recipe_path, recipe).save_to(
 			cmd,
 			dependencies_dir,
-			session_dir,
+			&session_dir,
 		);
 	}
 
-	// supporting single- vs multi-path
-	let s2e_mode = match true {
-		true => "s2e",
-		false => "s2e_sp",
-	};
-	let arch = "x86_64";
-
-	let qemu = &dependencies_dir.join(format!("bin/qemu-system-{arch}"));
-	let libs2e_dir = &dependencies_dir.join("share/libs2e");
-	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
-	let s2e_config = &session_dir.join("s2e-config.lua");
-	let max_processes = 1;
-	let image = &data_dir.join("images/ubuntu-22.04-x86_64/image.raw.s2e");
-	let serial_out = &session_dir.join("serial.txt");
-	let qmp_socket = qmp.then(|| temp_dir.join("qmp.socket"));
-
 	let ipc_socket = &temp_dir.join("amba-ipc.socket");
-	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
+	let qmp_socket = &temp_dir.join("qmp.socket");
 
 	let res = thread::scope(|s| {
 		let ipc = s.spawn(|| {
+			let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
 			let stream = ipc_listener.accept().unwrap().0;
 			let mut ipc = Ipc::new(&stream);
 			loop {
@@ -123,27 +110,17 @@ pub fn run(
 			stream.shutdown(Shutdown::Both).unwrap();
 		});
 		let qemu = s.spawn(|| {
-			let status = run_qemu(
+			run_qemu(
 				cmd,
-				debugger,
-				qemu,
-				temp_dir,
-				libs2e,
-				libs2e_dir,
-				s2e_config,
-				max_processes,
-				image,
-				serial_out,
-				qmp_socket.as_deref(),
-			);
-			if status.success() {
-				Ok(())
-			} else {
-				tracing::error!(?status, "qemu exited with error code");
-				Err(())
-			}
+				dependencies_dir,
+				&session_dir,
+				data_dir,
+				&temp_dir,
+				sigstop_qemu_on_fork,
+				qmp_socket,
+			)
 		});
-		if let Some(qmp_socket) = &qmp_socket {
+		{
 			tracing::debug!(?qmp_socket, "Starting QMP server over");
 			run_qmp(qmp_socket);
 		}
@@ -161,7 +138,52 @@ pub fn run(
 
 fn run_qemu(
 	cmd: &mut Cmd,
-	debugger: bool,
+	dependencies_dir: &Path,
+	session_dir: &Path,
+	data_dir: &Path,
+	temp_dir: &Path,
+	sigstop_qemu_on_fork: bool,
+	qmp_socket: &Path,
+) -> Result<(), ()> {
+	// supporting single- vs multi-path
+	let s2e_mode = match true {
+		true => "s2e",
+		false => "s2e_sp",
+	};
+	let arch = "x86_64";
+
+	let qemu = &dependencies_dir.join(format!("bin/qemu-system-{arch}"));
+	let libs2e_dir = &dependencies_dir.join("share/libs2e");
+	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
+	let s2e_config = &session_dir.join("s2e-config.lua");
+	let max_processes = 1;
+	let image = &data_dir.join("images/ubuntu-22.04-x86_64/image.raw.s2e");
+	let serial_out = &session_dir.join("serial.txt");
+
+	let status = run_qemu_inner(
+		cmd,
+		sigstop_qemu_on_fork,
+		qemu,
+		temp_dir,
+		libs2e,
+		libs2e_dir,
+		s2e_config,
+		max_processes,
+		image,
+		serial_out,
+		qmp_socket,
+	);
+	match status.success() {
+		true => Ok(()),
+		false => {
+			tracing::error!(?status, "qemu exited with error code");
+			Err(())
+		}
+	}
+}
+fn run_qemu_inner(
+	cmd: &mut Cmd,
+	sigstop_qemu_on_fork: bool,
 	qemu: &Path,
 	temp_dir: &Path,
 	libs2e: &Path,
@@ -170,7 +192,7 @@ fn run_qemu(
 	max_processes: u16,
 	image: &Path,
 	serial_out: &Path,
-	qmp_socket: Option<&Path>,
+	qmp_socket: &Path,
 ) -> ExitStatus {
 	assert!(qemu.exists());
 	assert!(libs2e.exists());
@@ -186,7 +208,7 @@ fn run_qemu(
 		.env("S2E_MAX_PROCESSES", max_processes.to_string())
 		.env("S2E_UNBUFFERED_STREAM", "1");
 
-	if debugger {
+	if sigstop_qemu_on_fork {
 		// Before exec, and hence actually starting QEMU, the child process sends
 		// SIGSTOP to itself. We can then start debugging by attaching to the QEMU pid
 		// and sending SIGCONT
@@ -213,16 +235,15 @@ fn run_qemu(
 	if max_processes > 1 {
 		command.arg("-nographic");
 	}
-	if let Some(qmp_socket) = qmp_socket {
-		command.arg("-qmp").arg({
+	command
+		.arg("-qmp")
+		.arg({
 			let mut line = OsString::new();
 			line.push("unix:");
 			line.push(qmp_socket);
 			line.push(",server,nowait");
 			line
-		});
-	}
-	command
+		})
 		.arg("-drive")
 		.arg({
 			let mut line = OsString::new();

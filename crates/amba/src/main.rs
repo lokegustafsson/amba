@@ -1,10 +1,16 @@
-use std::{env, path::PathBuf, process::ExitCode, time::Instant};
+use std::{
+	env,
+	path::{Path, PathBuf},
+	process::ExitCode,
+	time::Instant,
+};
 
 use chrono::offset::Local;
 use rand::{distributions::Alphanumeric, Rng};
 use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 
 mod cmd;
+mod gui;
 mod init;
 mod run;
 
@@ -18,7 +24,6 @@ mod run;
 enum Args {
 	Init(InitArgs),
 	Run(RunArgs),
-	Gui(GuiArgs),
 }
 
 /// Initialize `$AMBA_DATA_DIR`
@@ -39,15 +44,12 @@ pub struct RunArgs {
 	/// Path to a recipe file specifying the run
 	recipe_path: PathBuf,
 	/// Start QEMU in a paused state, to attach a debugger or profiler
-	#[arg(short, long)]
+	#[arg(long)]
 	debugger: bool,
-	/// Connect to QEMU:s QMP server
-	#[arg(short, long)]
-	qmp: bool,
+	/// Do not open the graphical user interface
+	#[arg(long)]
+	no_gui: bool,
 }
-
-#[derive(clap::Args, Debug)]
-pub struct GuiArgs {}
 
 /// The nix store path of the script that builds guest images.
 const AMBA_BUILD_GUEST_IMAGES_SCRIPT: &str = env!("AMBA_BUILD_GUEST_IMAGES_SCRIPT");
@@ -90,27 +92,33 @@ fn main() -> ExitCode {
 	let cmd = &mut cmd::Cmd::get();
 	let res = match args {
 		Args::Init(args) => init::init(cmd, data_dir, args),
-		Args::Run(args) => {
-			let timestamp = Local::now().format("%Y-%m-%dT%H:%M:%S");
-			let mut rng = rand::thread_rng();
-			let random: String = (0..6).map(|_| rng.sample(Alphanumeric) as char).collect();
-
-			let session_dir = &data_dir.join(timestamp.to_string());
-			let temp_dir = &env::temp_dir().join(format!("amba-{timestamp}-{random}"));
-			run::run(
-				cmd,
-				dependencies_dir,
-				data_dir,
-				session_dir,
-				temp_dir,
-				args,
-			)
-		}
-		Args::Gui(_) => Ok(amba_gui::main()),
+		Args::Run(args) => run::run(
+			cmd,
+			dependencies_dir,
+			data_dir,
+			SessionDirs::new(data_dir),
+			args,
+		),
 	};
 	match res {
 		Ok(()) => ExitCode::SUCCESS,
 		Err(()) => ExitCode::FAILURE,
+	}
+}
+pub struct SessionDirs {
+	persistent: PathBuf,
+	temporary: PathBuf,
+}
+impl SessionDirs {
+	pub fn new(data_dir: &Path) -> Self {
+		let timestamp = Local::now().format("%Y-%m-%dT%H:%M:%S");
+		let mut rng = rand::thread_rng();
+		let random: String = (0..6).map(|_| rng.sample(Alphanumeric) as char).collect();
+
+		Self {
+			persistent: data_dir.join(timestamp.to_string()),
+			temporary: env::temp_dir().join(format!("amba-{timestamp}-{random}")),
+		}
 	}
 }
 
