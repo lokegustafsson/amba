@@ -40,9 +40,7 @@ impl Cmd {
 		ctrlc::set_handler(ctrlc_handler).unwrap();
 		static mut SELF: Cmd = Cmd { _no_construct: () };
 		// SAFETY: `Cmd` is zero sized.
-		unsafe {
-			&mut SELF
-		}
+		unsafe { &mut SELF }
 	}
 
 	pub fn command_spawn_wait(&mut self, command: &mut Command) -> ExitStatus {

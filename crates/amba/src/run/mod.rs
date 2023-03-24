@@ -273,7 +273,14 @@ fn run_qmp(socket: &Path) {
 
 	loop {
 		match qmp.blocking_receive() {
-			Ok(response) => tracing::info!(?response, "QMP"),
+			Ok(response) => {
+				tracing::info!(?response, "QMP");
+				if let qmp_client::QmpResponse::Event(QmpEvent { event, .. }) = response {
+					if event == "SHUTDOWN" {
+						return;
+					}
+				}
+			}
 			Err(QmpError::EndOfFile) => return,
 			Err(err) => unreachable!("{:?}", err),
 		}
