@@ -13,7 +13,7 @@ chrono = "0.4"
 clap = { version = "4", features = ["derive"] }
 ctrlc = "3"
 dirs = "4"
-eframe = "0.21"
+eframe = { version = "0.21", default-features = false, features = ["default_fonts", "glow"] }
 include_dir = "0.7"
 ipc = { path = "../ipc" }
 nix = "0.26"
