@@ -22,7 +22,7 @@ s2e/libs2e/include
 -I
 s2e/libs2ecore/include
 -I
-s2e/libs2eplugins/include
+s2e/libs2eplugins/src
 -I
 s2e/libtcg/include
 -I
