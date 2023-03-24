@@ -35,6 +35,15 @@ void AmbaPlugin::initialize() {
 	m_modules = this->s2e()->getPlugin<ModuleMap>();
 	OSMonitor *monitor = static_cast<OSMonitor *>(this->s2e()->getPlugin("OSMonitor"));
 
+	auto ok = true;
+	this->m_module_path =  s2e()->getConfig()->getString(getConfigKey() + ".module_path", "", &ok);
+	if (!ok || m_module_path == "") {
+		*amba::debug_stream() << "NO module_path PROVIDED IN THE LUA CONFIG! Cannot continue.\n";
+		return;
+	} else {
+		*amba::debug_stream() << "Using module_path: " << this->m_module_path << '\n';
+	}
+
 	// Set up event callbacks
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
@@ -133,7 +142,7 @@ void AmbaPlugin::onModuleLoad(
 	S2EExecutionState *state,
 	const ModuleDescriptor &module
 ) {
-	if (module.Path != "./hello") { return; }
+	if (module.Path != this->m_module_path) { return; }
 
 	this->m_module_pid = module.Pid;
 	*amba::debug_stream() << "Loaded our module\n";
@@ -150,7 +159,7 @@ void AmbaPlugin::onModuleUnload(
 	S2EExecutionState *state,
 	const ModuleDescriptor &module
 ) {
-	if (module.Path == "./hello") {
+	if (module.Path == this->m_module_path) {
 		this->m_module_pid = 0;
 	}
 }

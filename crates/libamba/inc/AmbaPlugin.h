@@ -36,6 +36,7 @@ class AmbaPlugin : public Plugin {
 
   protected:
 	ModuleMap *m_modules;
+	std::string m_module_path;
 	u64 m_module_pid;
 
 	heap_leak::HeapLeak m_heap_leak;
