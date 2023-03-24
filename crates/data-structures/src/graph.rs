@@ -18,6 +18,7 @@ pub struct Node {
 pub struct Graph {
 	pub nodes: Map<u64, Node>,
 	pub merges: Map<u64, u64>,
+	pub metadata: Vec<Metadata>,
 }
 
 #[repr(C)]
@@ -30,9 +31,11 @@ impl Graph {
 	}
 
 	pub fn with_nodes(nodes: Map<u64, Node>) -> Self {
+		let max = nodes.keys().max().copied().unwrap_or_default() as usize;
 		Graph {
 			nodes,
 			merges: Map::new(),
+			metadata: vec![Default::default(); max],
 		}
 	}
 
@@ -68,6 +71,15 @@ impl Graph {
 				.collect();
 		}
 		self.merges = Map::new();
+	}
+
+	fn extend_metadata(&mut self) {
+		let new_slots =
+			self.nodes.keys().max().copied().unwrap_or_default() as usize - self.len();
+		self.metadata.reserve(new_slots);
+		for _ in 0..new_slots {
+			self.metadata.push(Default::default());
+		}
 	}
 
 	/// Insert a node connection. Returns true if the connection
@@ -106,6 +118,8 @@ impl Graph {
 					of,
 				}
 			});
+
+		self.extend_metadata();
 
 		modified
 	}
