@@ -7,10 +7,11 @@ LIBS := \
 	-idirafter $(S2E_PATH)/libq/include \
 	-idirafter $(S2E_PATH)/libs2e/include \
 	-idirafter $(S2E_PATH)/libs2ecore/include \
-	-idirafter $(S2E_PATH)/libs2eplugins/include \
+	-idirafter $(S2E_PATH)/libs2eplugins/src \
 	-idirafter $(S2E_PATH)/libtcg/include \
 	-idirafter $(S2E_PATH)/libvmi/include \
 	-idirafter $(S2E_PATH)/tools/lib/X8664BitcodeLibrary \
+	-idirafter $(LUA_PATH) \
 	-idirafter $(BOOST_PATH) \
 	-idirafter $(GLIBC_PATH) \
 	-idirafter $(LLVM_PATH) \
@@ -104,6 +105,7 @@ tags: inc/* src/*
 	| sed "s|GLIBC_PATH|${GLIBC_PATH}|" \
 	| sed "s|ZYDIS_PATH|${ZYDIS_PATH}/include|" \
 	| sed "s|ZYCORE_PATH|${ZYCORE_PATH}/include|" \
+	| sed "s|LUA_PATH|$(LUA_PATH)|" \
 	> $@
 
 compile_flags.txt: ../../compile_flags.txt
