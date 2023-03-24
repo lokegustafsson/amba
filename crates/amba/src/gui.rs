@@ -1,45 +1,20 @@
 use std::{
-	path::{Path, PathBuf},
 	sync::{mpsc, Arc, Mutex},
 	thread,
 };
 
 use eframe::{egui::Context, App, CreationContext, Frame};
-use recipe::Recipe;
 
-use crate::{cmd::Cmd, run, RunArgs, SessionDirs};
+use crate::{cmd::Cmd, run, SessionConfig};
 
-pub enum GuiConfig {
-	RunRecipe(Recipe),
-}
-
-pub fn run_gui(
-	config: GuiConfig,
-	cmd: &'static mut Cmd,
-	dependencies_dir: PathBuf,
-	data_dir: PathBuf,
-	args: RunArgs,
-) -> Result<(), ()> {
-	// Currently, the GUI requires an already created recipe.
-	let recipe = match config {
-		GuiConfig::RunRecipe(r) => r,
-	};
-
+pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 	eframe::run_native(
 		"amba",
 		eframe::NativeOptions {
 			default_theme: eframe::Theme::Light,
 			..Default::default()
 		},
-		Box::new(move |cc| {
-			Box::new(Gui::new(
-				cc,
-				cmd,
-				dependencies_dir,
-				data_dir,
-				args,
-			))
-		}),
+		Box::new(move |cc| Box::new(Gui::new(cc, cmd, config))),
 	)
 	.map_err(|error| tracing::error!(?error, "GUI"))
 }
@@ -59,30 +34,22 @@ struct Gui {
 }
 
 impl Gui {
-	fn new(
-		cc: &CreationContext<'_>,
-		cmd: &'static mut Cmd,
-		dependencies_dir: PathBuf,
-		data_dir: PathBuf,
-		args: RunArgs,
-	) -> Self {
+	fn new(cc: &CreationContext<'_>, cmd: &'static mut Cmd, config: SessionConfig) -> Self {
 		let (processing_tx, processing_rx) = mpsc::channel();
 		let model = Arc::new(Mutex::new(Model::new()));
 
-		let processing = thread::Builder::new()
-			.name("amba-processing".to_owned())
+		thread::Builder::new()
+			.name("amba-controller".to_owned())
 			.spawn({
 				let gui_context = cc.egui_ctx.clone();
 				let model = Arc::clone(&model);
-        let dependencies_dir = dependencies_dir.to_owned();
-        let data_dir = data_dir.to_owned();
 				move || {
-					(Processing {
+					(Controller {
 						rx: processing_rx,
 						model,
 						gui_context,
 					})
-					.run(cmd, &dependencies_dir, &data_dir, args)
+					.run(cmd, &config)
 				}
 			})
 			.unwrap();
@@ -95,29 +62,17 @@ impl Gui {
 }
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, frame: &mut Frame) {
-		todo!()
+		// Totally empty GUI for now
 	}
 }
 
-struct Processing {
+struct Controller {
 	rx: mpsc::Receiver<()>,
 	model: Arc<Mutex<Model>>,
 	gui_context: Context,
 }
-impl Processing {
-	fn run(
-		self,
-		cmd: &mut Cmd,
-		dependencies_dir: &Path,
-		data_dir: &Path,
-		args: RunArgs,
-	) -> Result<(), ()> {
-		run::run(
-			cmd,
-			dependencies_dir,
-			data_dir,
-			SessionDirs::new(data_dir),
-			args,
-		)
+impl Controller {
+	fn run(self, cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+		run::run(cmd, config)
 	}
 }

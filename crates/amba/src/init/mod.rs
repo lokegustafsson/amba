@@ -2,7 +2,7 @@
 
 use std::{path::Path, process::Command};
 
-use crate::{cmd::Cmd, InitArgs};
+use crate::{cmd::Cmd, BaseConfig, InitArgs};
 
 mod build;
 mod download;
@@ -11,7 +11,7 @@ mod download;
 /// QEMU+S2E+libamba.
 pub fn init(
 	cmd: &mut Cmd,
-	data_dir: &Path,
+	config: &BaseConfig,
 	InitArgs { force, download }: InitArgs,
 ) -> Result<(), ()> {
 	// Choose strategy.
@@ -21,7 +21,7 @@ pub fn init(
 	};
 	// Already up to date?
 	let new_version = initializer.version();
-	let version_file = &data_dir.join("version.txt");
+	let version_file = &config.data_dir.join("version.txt");
 	{
 		let old_version = version_file
 			.exists()
@@ -36,8 +36,8 @@ pub fn init(
 	// Remove artifacts from old or unfinished builds.
 	{
 		version_file.exists().then(|| cmd.remove(version_file));
-		let images = &data_dir.join("images");
-		let images_build = &data_dir.join("images-build");
+		let images = &config.data_dir.join("images");
+		let images_build = &config.data_dir.join("images-build");
 		if images.exists() {
 			remove_images(cmd, images);
 		}
@@ -47,14 +47,17 @@ pub fn init(
 	}
 
 	// Perform initialization, assert success.
-	initializer.init(cmd, data_dir)?;
-	assert!(data_dir
+	initializer.init(cmd, &config.data_dir)?;
+	assert!(config
+		.data_dir
 		.join("images/ubuntu-22.04-x86_64/image.json")
 		.exists());
-	assert!(data_dir
+	assert!(config
+		.data_dir
 		.join("images/ubuntu-22.04-x86_64/image.raw.s2e")
 		.exists());
-	assert!(data_dir
+	assert!(config
+		.data_dir
 		.join("images/ubuntu-22.04-x86_64/image.raw.s2e.ready")
 		.exists());
 

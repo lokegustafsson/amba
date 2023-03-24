@@ -31,13 +31,18 @@ pub struct Cmd {
 	_no_construct: (),
 }
 impl Cmd {
-	pub fn get() -> Self {
+	#[allow(unsafe_code)]
+	pub fn get() -> &'static mut Self {
 		static ACQUIRED: AtomicBool = AtomicBool::new(false);
 		ACQUIRED
 			.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
 			.expect("Cmd::get() can only be called once");
 		ctrlc::set_handler(ctrlc_handler).unwrap();
-		Self { _no_construct: () }
+		static mut SELF: Cmd = Cmd { _no_construct: () };
+		// SAFETY: `Cmd` is zero sized.
+		unsafe {
+			&mut SELF
+		}
 	}
 
 	pub fn command_spawn_wait(&mut self, command: &mut Command) -> ExitStatus {

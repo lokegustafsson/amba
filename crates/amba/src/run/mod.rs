@@ -17,9 +17,8 @@ use std::{
 
 use ipc::{Ipc, IpcError};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
-use recipe::{Recipe, RecipeError};
 
-use crate::{cmd::Cmd, run::session::S2EConfig, RunArgs, SessionDirs};
+use crate::{cmd::Cmd, run::session::S2EConfig, SessionConfig};
 
 mod session;
 
@@ -28,72 +27,48 @@ mod session;
 /// but in rust code.
 ///
 /// TODO: support more guests than just `ubuntu-22.04-x86_64`
-pub fn run(
-	cmd: &mut Cmd,
-	dependencies_dir: &Path,
-	data_dir: &Path,
-	SessionDirs {
-		persistent: session_dir,
-		temporary: temp_dir,
-	}: SessionDirs,
-	RunArgs {
-		recipe_path,
-		debugger: sigstop_qemu_on_fork,
-		no_gui: _,
-	}: RunArgs,
-) -> Result<(), ()> {
-	if !data_dir_has_been_initialized(cmd, data_dir) {
+pub fn run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+	if !data_dir_has_been_initialized(cmd, &config.base.data_dir) {
 		tracing::error!(
-			?data_dir,
+			?config.base.data_dir,
 			"AMBA_DATA_DIR has not been initialized"
 		);
 		return Err(());
 	}
 
-	if session_dir.exists() {
+	if config.session_dir.exists() {
 		tracing::error!(
-			?session_dir,
+			?config.session_dir,
 			"session_dir already exists, are multiple amba instances running concurrently?"
 		);
 		return Err(());
 	}
-	if temp_dir.exists() {
+	if config.temp_dir.exists() {
 		tracing::error!(
-			?session_dir,
+			?config.temp_dir,
 			"temp_dir already exists. How did this happen?!"
 		);
 		return Err(());
 	}
-	cmd.create_dir_all(&session_dir);
-	cmd.create_dir_all(&temp_dir);
+	cmd.create_dir_all(&config.session_dir);
+	cmd.create_dir_all(&config.temp_dir);
 	// Populate the `session_dir`
 	{
-		let recipe = &match Recipe::deserialize_from(&cmd.read(&recipe_path)) {
-			Ok(recipe) => recipe,
-			Err(err) => {
-				match err {
-					RecipeError::NotRecipe(err) => {
-						tracing::error!(?recipe_path, ?err, "Not a valid Recipe")
-					}
-					RecipeError::NotJson(err) => {
-						tracing::error!(?recipe_path, ?err, "Not a valid JSON")
-					}
-					RecipeError::NotUtf8(err) => {
-						tracing::error!(?recipe_path, ?err, "Not valid UTF8")
-					}
-				}
-				return Err(());
-			}
-		};
-		S2EConfig::new(cmd, &session_dir, &recipe_path, recipe).save_to(
+		S2EConfig::new(
 			cmd,
-			dependencies_dir,
-			&session_dir,
+			&config.session_dir,
+			&config.recipe_path,
+			&config.recipe,
+		)
+		.save_to(
+			cmd,
+			&config.base.dependencies_dir,
+			&config.session_dir,
 		);
 	}
 
-	let ipc_socket = &temp_dir.join("amba-ipc.socket");
-	let qmp_socket = &temp_dir.join("qmp.socket");
+	let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
+	let qmp_socket = &config.temp_dir.join("qmp.socket");
 
 	let res = thread::scope(|s| {
 		let ipc = s.spawn(|| {
@@ -109,17 +84,7 @@ pub fn run(
 			}
 			stream.shutdown(Shutdown::Both).unwrap();
 		});
-		let qemu = s.spawn(|| {
-			run_qemu(
-				cmd,
-				dependencies_dir,
-				&session_dir,
-				data_dir,
-				&temp_dir,
-				sigstop_qemu_on_fork,
-				qmp_socket,
-			)
-		});
+		let qemu = s.spawn(|| run_qemu(cmd, config, qmp_socket));
 		{
 			tracing::debug!(?qmp_socket, "Starting QMP server over");
 			run_qmp(qmp_socket);
@@ -136,15 +101,7 @@ pub fn run(
 	res
 }
 
-fn run_qemu(
-	cmd: &mut Cmd,
-	dependencies_dir: &Path,
-	session_dir: &Path,
-	data_dir: &Path,
-	temp_dir: &Path,
-	sigstop_qemu_on_fork: bool,
-	qmp_socket: &Path,
-) -> Result<(), ()> {
+fn run_qemu(cmd: &mut Cmd, config: &SessionConfig, qmp_socket: &Path) -> Result<(), ()> {
 	// supporting single- vs multi-path
 	let s2e_mode = match true {
 		true => "s2e",
@@ -152,25 +109,29 @@ fn run_qemu(
 	};
 	let arch = "x86_64";
 
-	let qemu = &dependencies_dir.join(format!("bin/qemu-system-{arch}"));
-	let libs2e_dir = &dependencies_dir.join("share/libs2e");
+	let qemu = &config
+		.base
+		.dependencies_dir
+		.join(format!("bin/qemu-system-{arch}"));
+	let libs2e_dir = &config.base.dependencies_dir.join("share/libs2e");
 	let libs2e = &libs2e_dir.join(format!("libs2e-{arch}-{s2e_mode}.so"));
-	let s2e_config = &session_dir.join("s2e-config.lua");
+	let s2e_config = &config.session_dir.join("s2e-config.lua");
 	let max_processes = 1;
-	let image = &data_dir.join("images/ubuntu-22.04-x86_64/image.raw.s2e");
-	let serial_out = &session_dir.join("serial.txt");
+	let image = &config
+		.base
+		.data_dir
+		.join("images/ubuntu-22.04-x86_64/image.raw.s2e");
 
 	let status = run_qemu_inner(
 		cmd,
-		sigstop_qemu_on_fork,
+		config.sigstop_before_qemu_exec,
 		qemu,
-		temp_dir,
+		&config.temp_dir,
 		libs2e,
 		libs2e_dir,
 		s2e_config,
 		max_processes,
 		image,
-		serial_out,
 		qmp_socket,
 	);
 	match status.success() {
@@ -191,7 +152,6 @@ fn run_qemu_inner(
 	s2e_config: &Path,
 	max_processes: u16,
 	image: &Path,
-	serial_out: &Path,
 	qmp_socket: &Path,
 ) -> ExitStatus {
 	assert!(qemu.exists());

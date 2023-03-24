@@ -1,13 +1,11 @@
-use std::{
-	env,
-	path::{Path, PathBuf},
-	process::ExitCode,
-	time::Instant,
-};
+use std::{env, path::PathBuf, process::ExitCode, time::Instant};
 
 use chrono::offset::Local;
 use rand::{distributions::Alphanumeric, Rng};
+use recipe::{Recipe, RecipeError};
 use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
+
+use crate::cmd::Cmd;
 
 mod cmd;
 mod gui;
@@ -74,51 +72,100 @@ fn main() -> ExitCode {
 
 	let args: Args = clap::Parser::parse();
 
-	let data_dir = &match env::var_os("AMBA_DATA_DIR") {
-		Some(dir) => PathBuf::from(dir),
-		None => dirs::data_dir().unwrap().join("amba"),
-	};
-	let dependencies_dir = &match env::var_os("RUN_TIME_AMBA_DEPENDENCIES_DIR") {
-		Some(dir) => PathBuf::from(dir),
-		None => PathBuf::from(env!("COMPILE_TIME_AMBA_DEPENDENCIES_DIR")),
-	};
+	let base = Box::leak(Box::new(BaseConfig {
+		data_dir: match env::var_os("AMBA_DATA_DIR") {
+			Some(dir) => PathBuf::from(dir),
+			None => dirs::data_dir().unwrap().join("amba"),
+		},
+		dependencies_dir: match env::var_os("RUN_TIME_AMBA_DEPENDENCIES_DIR") {
+			Some(dir) => PathBuf::from(dir),
+			None => PathBuf::from(env!("COMPILE_TIME_AMBA_DEPENDENCIES_DIR")),
+		},
+	}));
 
 	tracing::info!(debug_assertions = cfg!(debug_assertions));
-	tracing::info!(AMBA_DEPENDENCIES_DIR = ?dependencies_dir);
+	tracing::info!(AMBA_DEPENDENCIES_DIR = ?base.dependencies_dir);
 	tracing::info!(AMBA_BUILD_GUEST_IMAGES_SCRIPT);
-	tracing::info!(AMBA_DATA_DIR = ?data_dir);
+	tracing::info!(AMBA_DATA_DIR = ?base.data_dir);
 	tracing::info!(?args);
 
-	let cmd = &mut cmd::Cmd::get();
+	let cmd = Cmd::get();
 	let res = match args {
-		Args::Init(args) => init::init(cmd, data_dir, args),
-		Args::Run(args) => run::run(
-			cmd,
-			dependencies_dir,
-			data_dir,
-			SessionDirs::new(data_dir),
-			args,
-		),
+		Args::Init(args) => init::init(cmd, base, args),
+		Args::Run(args) => {
+			if args.no_gui {
+				SessionConfig::new(cmd, base, &args).and_then(|config| run::run(cmd, &config))
+			} else {
+				SessionConfig::new(cmd, base, &args).and_then(|config| gui::run_gui(cmd, config))
+			}
+		}
 	};
 	match res {
 		Ok(()) => ExitCode::SUCCESS,
 		Err(()) => ExitCode::FAILURE,
 	}
 }
-pub struct SessionDirs {
-	persistent: PathBuf,
-	temporary: PathBuf,
+
+pub struct BaseConfig {
+	dependencies_dir: PathBuf,
+	data_dir: PathBuf,
 }
-impl SessionDirs {
-	pub fn new(data_dir: &Path) -> Self {
+
+pub struct SessionConfig {
+	base: &'static BaseConfig,
+	session_dir: PathBuf,
+	temp_dir: PathBuf,
+	recipe_path: PathBuf,
+	recipe: Recipe,
+	sigstop_before_qemu_exec: bool,
+	no_gui: bool,
+}
+
+impl SessionConfig {
+	pub fn new(cmd: &mut Cmd, base: &'static BaseConfig, run_args: &RunArgs) -> Result<Self, ()> {
 		let timestamp = Local::now().format("%Y-%m-%dT%H:%M:%S");
 		let mut rng = rand::thread_rng();
 		let random: String = (0..6).map(|_| rng.sample(Alphanumeric) as char).collect();
 
-		Self {
-			persistent: data_dir.join(timestamp.to_string()),
-			temporary: env::temp_dir().join(format!("amba-{timestamp}-{random}")),
-		}
+		let recipe_path = run_args.recipe_path.clone();
+		let recipe = match Recipe::deserialize_from(&cmd.read(&recipe_path)) {
+			Ok(recipe) => recipe,
+			Err(err) => {
+				match err {
+					RecipeError::NotSemanticRecipe(err) => {
+						tracing::error!(
+							?recipe_path,
+							?err,
+							"Not a semantically valid Recipe"
+						)
+					}
+					RecipeError::NotSyntacticRecipe(err) => {
+						tracing::error!(
+							?recipe_path,
+							?err,
+							"Not a syntactically valid Recipe"
+						)
+					}
+					RecipeError::NotJson(err) => {
+						tracing::error!(?recipe_path, ?err, "Not a valid JSON")
+					}
+					RecipeError::NotUtf8(err) => {
+						tracing::error!(?recipe_path, ?err, "Not valid UTF8")
+					}
+				}
+				return Err(());
+			}
+		};
+
+		Ok(Self {
+			base,
+			session_dir: base.data_dir.join(timestamp.to_string()),
+			temp_dir: env::temp_dir().join(format!("amba-{timestamp}-{random}")),
+			recipe_path,
+			recipe,
+			sigstop_before_qemu_exec: run_args.debugger,
+			no_gui: run_args.no_gui,
+		})
 	}
 }
 
