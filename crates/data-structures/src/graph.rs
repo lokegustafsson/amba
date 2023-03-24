@@ -74,8 +74,8 @@ impl Graph {
 	}
 
 	fn extend_metadata(&mut self) {
-		let new_slots =
-			self.nodes.keys().max().copied().unwrap_or_default() as usize - self.len();
+		let new_slots = (self.nodes.keys().max().copied().unwrap_or_default() as usize)
+			.saturating_sub(self.len());
 		self.metadata.reserve(new_slots);
 		for _ in 0..new_slots {
 			self.metadata.push(Default::default());
