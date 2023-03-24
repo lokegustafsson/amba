@@ -1241,4 +1241,39 @@ mod test {
 		cycle(0, 9);
 		cycle(1, 8);
 	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
+	#[test]
+	fn strongly_connected_graph_1() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [1, 2], [0, 1, 4]).into()),
+				(1, (1, [0], [2], [2, 3, 7]).into()),
+				(2, (2, [0, 1], [], [5, 6]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components();
+
+		assert_eq!(result.nodes, expected.nodes);
+	}
 }
