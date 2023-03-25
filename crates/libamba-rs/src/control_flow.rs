@@ -86,9 +86,6 @@ impl ControlFlowGraph {
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
 
-		// Disabled for smoke test. When removing this, also reenable test1 below.
-		// return modified;
-
 		// Only edit the compressed graph if this was a new link
 		if modified {
 			let reverted = self
@@ -109,7 +106,6 @@ mod test {
 	use crate::control_flow::*;
 
 	#[test]
-	#[ignore] // Reenable along with removing the short-circuit in ControlFlowGraph::update
 	fn test1() {
 		let mut cfg = ControlFlowGraph::new();
 		// 0 → 1
