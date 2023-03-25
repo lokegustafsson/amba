@@ -17,7 +17,6 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
-	, m_module_pid(0)
 	, m_heap_leak(heap_leak::HeapLeak {})
 	, m_assembly_graph(control_flow::ControlFlow {})
 	, m_symbolic_graph(control_flow::ControlFlow {})
@@ -32,19 +31,25 @@ void AmbaPlugin::initialize() {
 	*amba::debug_stream() << "Begin initializing AmbaPlugin\n";
 
 	auto& core = *this->s2e()->getCorePlugin();
-	m_modules = this->s2e()->getPlugin<ModuleMap>();
+	this->m_modules = this->s2e()->getPlugin<ModuleMap>();
 	OSMonitor *monitor = static_cast<OSMonitor *>(this->s2e()->getPlugin("OSMonitor"));
 
-	auto ok = true;
-	this->m_module_path =  s2e()->getConfig()->getString(getConfigKey() + ".module_path", "", &ok);
-	if (!ok || m_module_path == "") {
-		*amba::debug_stream() << "NO module_path PROVIDED IN THE LUA CONFIG! Cannot continue.\n";
-		return;
+	bool ok;
+	this->m_module_path = this->s2e()->getConfig()->getString(
+		this->getConfigKey() + ".module_path", "", &ok);
+	if (!ok || this->m_module_path.empty()) {
+	  *amba::debug_stream()
+			<< "NO `module_path` PROVIDED IN THE LUA CONFIG!"
+			<< "Cannot continue.\n";
+	  return;
 	} else {
-		*amba::debug_stream() << "Using module_path: " << this->m_module_path << '\n';
+	  *amba::debug_stream()
+			<< "Using module_path: "
+			<< this->m_module_path
+			<< '\n';
 	}
 
-	// Set up event callbacks
+        // Set up event callbacks
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -124,10 +129,12 @@ void AmbaPlugin::translateBlockStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	if (!this->m_module_pid) { return; }
+	if (!this->m_module_pid) {
+		return;
+	}
 
 	auto mod = this->m_modules->getModule(state);
-	uint64_t native_addr = 0;
+	u64 native_addr = 0;
 	bool ok = mod ? mod->ToNativeBase(pc, native_addr) : false;
 	*amba::debug_stream()
 		<< "Translating instruction at " << hexval(pc)
@@ -145,7 +152,9 @@ void AmbaPlugin::onModuleLoad(
 	S2EExecutionState *state,
 	const ModuleDescriptor &module
 ) {
-	if (module.Path != this->m_module_path) { return; }
+	if (module.Path != this->m_module_path) {
+		return;
+	}
 
 	this->m_module_pid = module.Pid;
 	*amba::debug_stream() << "Loaded module " << this->m_module_path << '\n';
@@ -169,11 +178,13 @@ void AmbaPlugin::onModuleUnload(
 
 void AmbaPlugin::onProcessUnload(
 	S2EExecutionState *state,
-	uint64_t cr3,
-	uint64_t pid,
-	uint64_t return_code
+	const u64 cr3,
+	const u64 pid,
+	const u64 return_code
 ) {
-	if (pid != this->m_module_pid) { return; }
+	if (pid != this->m_module_pid) {
+		return;
+	}
 
 	this->m_module_pid = 0;
 	*amba::debug_stream()
