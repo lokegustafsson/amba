@@ -37,7 +37,7 @@ class AmbaPlugin : public Plugin {
 
 
   protected:
-	ModuleMap *m_modules;
+	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;
 

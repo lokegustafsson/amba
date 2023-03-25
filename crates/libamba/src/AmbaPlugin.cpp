@@ -30,24 +30,29 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 void AmbaPlugin::initialize() {
 	*amba::debug_stream() << "Begin initializing AmbaPlugin\n";
 
-	auto& core = *this->s2e()->getCorePlugin();
-	this->m_modules = this->s2e()->getPlugin<ModuleMap>();
-	OSMonitor *monitor = static_cast<OSMonitor *>(this->s2e()->getPlugin("OSMonitor"));
+	auto s2e = this->s2e();
+	auto& core = *s2e->getCorePlugin();
+	this->m_modules = s2e->getPlugin<ModuleMap>();
+	OSMonitor *monitor = static_cast<OSMonitor *>(s2e->getPlugin("OSMonitor"));
 
 	bool ok;
-	this->m_module_path = this->s2e()->getConfig()->getString(
-		this->getConfigKey() + ".module_path", "", &ok);
+	this->m_module_path = s2e
+		->getConfig()
+		->getString(
+			this->getConfigKey() + ".module_path",
+			"",
+			&ok
+		);
 	if (!ok || this->m_module_path.empty()) {
-	  *amba::debug_stream()
-			<< "NO `module_path` PROVIDED IN THE LUA CONFIG!"
+		*amba::debug_stream()
+			<< "NO `module_path` PROVIDED IN THE LUA CONFIG! "
 			<< "Cannot continue.\n";
-	  return;
-	} else {
-	  *amba::debug_stream()
-			<< "Using module_path: "
-			<< this->m_module_path
-			<< '\n';
+		return;
 	}
+	*amba::debug_stream()
+		<< "Using module_path: "
+		<< this->m_module_path
+		<< '\n';
 
         // Set up event callbacks
 	core.onTranslateInstructionStart
@@ -158,7 +163,7 @@ void AmbaPlugin::onModuleLoad(
 
 	this->m_module_pid = module.Pid;
 	*amba::debug_stream() << "Loaded module " << this->m_module_path << '\n';
-	for (const auto& section: module.Sections) {
+	for (const auto& section : module.Sections) {
 		*amba::debug_stream()
 			<< "Found section (" << section.name << ")"
 			<< " at " << hexval(section.nativeLoadBase)
@@ -188,8 +193,11 @@ void AmbaPlugin::onProcessUnload(
 
 	this->m_module_pid = 0;
 	*amba::debug_stream()
-		<< "Module " << this->m_module_path << " exited with code "
-		<< std::to_string(return_code) << '\n';
+		<< "Module "
+		<< this->m_module_path
+		<< " exited with code "
+		<< std::to_string(return_code)
+		<< '\n';
 }
 
 } // namespace plugins
