@@ -60,6 +60,7 @@ fn main() -> ExitCode {
 				"tokio_util::codec::framed_impl",
 				tracing::Level::DEBUG,
 			)
+			.with_target("eframe::native::run", tracing::Level::DEBUG)
 			.with_default(tracing::Level::TRACE)
 			.with_subscriber(
 				tracing_subscriber::FmtSubscriber::builder()

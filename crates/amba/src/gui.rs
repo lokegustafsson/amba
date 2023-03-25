@@ -66,7 +66,12 @@ impl App for Gui {
 	}
 
 	fn on_exit(&mut self, _: Option<&eframe::glow::Context>) {
-		self.controller_tx.send(ControllerMsg::Shutdown).unwrap();
+		match self.controller_tx.send(ControllerMsg::Shutdown) {
+			Ok(()) => tracing::info!("gui telling controller to exit"),
+			Err(mpsc::SendError(ControllerMsg::Shutdown)) => {
+				tracing::warn!("controller already exited")
+			}
+		}
 	}
 }
 

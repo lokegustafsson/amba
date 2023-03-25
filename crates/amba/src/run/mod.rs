@@ -11,7 +11,7 @@ use std::{
 	},
 	path::Path,
 	process::{self, Command, ExitStatus},
-	thread,
+	thread::{self, ScopedJoinHandle},
 	time::Duration,
 };
 
@@ -28,6 +28,52 @@ mod session;
 ///
 /// TODO: support more guests than just `ubuntu-22.04-x86_64`
 pub fn run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+	prepare_run(cmd, config)?;
+
+	let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
+	let qmp_socket = &config.temp_dir.join("qmp.socket");
+
+	let res = thread::scope(|s| {
+		let ipc = s.spawn(|| run_ipc(ipc_socket));
+		let qemu = s.spawn(|| run_qemu(cmd, config, qmp_socket));
+		let qmp = s.spawn(|| run_qmp(qmp_socket));
+		shutdown_controller(ipc_socket, ipc, qemu, qmp)
+	});
+	cmd.try_remove(ipc_socket);
+	cmd.try_remove(qmp_socket);
+	res
+}
+fn run_ipc(ipc_socket: &Path) -> Result<(), ()> {
+	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
+	let stream = ipc_listener.accept().unwrap().0;
+	let mut ipc = Ipc::new(&stream);
+	loop {
+		match ipc.blocking_receive() {
+			Ok(msg) => tracing::info!(?msg),
+			Err(IpcError::EndOfFile) => break,
+			Err(other) => panic!("ipc error: {other:?}"),
+		}
+	}
+	stream.shutdown(Shutdown::Both).unwrap();
+	Ok(())
+}
+fn shutdown_controller(
+	ipc_socket: &Path,
+	ipc: ScopedJoinHandle<'_, Result<(), ()>>,
+	qemu: ScopedJoinHandle<'_, Result<(), ()>>,
+	qmp: ScopedJoinHandle<'_, Result<(), ()>>,
+) -> Result<(), ()> {
+	qmp.join().unwrap()?;
+	qemu.join().unwrap()?;
+	match UnixStream::connect(ipc_socket) {
+		Ok(conn) => conn.shutdown(Shutdown::Both).unwrap(),
+		Err(_) => {}
+	}
+	ipc.join().unwrap()?;
+	Ok(())
+}
+
+pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	if !data_dir_has_been_initialized(cmd, &config.base.data_dir) {
 		tracing::error!(
 			?config.base.data_dir,
@@ -52,53 +98,21 @@ pub fn run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	}
 	cmd.create_dir_all(&config.session_dir);
 	cmd.create_dir_all(&config.temp_dir);
+
 	// Populate the `session_dir`
-	{
-		S2EConfig::new(
-			cmd,
-			&config.session_dir,
-			&config.recipe_path,
-			&config.recipe,
-		)
-		.save_to(
-			cmd,
-			&config.base.dependencies_dir,
-			&config.session_dir,
-		);
-	}
+	S2EConfig::new(
+		cmd,
+		&config.session_dir,
+		&config.recipe_path,
+		&config.recipe,
+	)
+	.save_to(
+		cmd,
+		&config.base.dependencies_dir,
+		&config.session_dir,
+	);
 
-	let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
-	let qmp_socket = &config.temp_dir.join("qmp.socket");
-
-	let res = thread::scope(|s| {
-		let ipc = s.spawn(|| {
-			let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
-			let stream = ipc_listener.accept().unwrap().0;
-			let mut ipc = Ipc::new(&stream);
-			loop {
-				match ipc.blocking_receive() {
-					Ok(msg) => tracing::info!(?msg),
-					Err(IpcError::EndOfFile) => break,
-					Err(other) => panic!("ipc error: {other:?}"),
-				}
-			}
-			stream.shutdown(Shutdown::Both).unwrap();
-		});
-		let qemu = s.spawn(|| run_qemu(cmd, config, qmp_socket));
-		{
-			tracing::debug!(?qmp_socket, "Starting QMP server over");
-			run_qmp(qmp_socket);
-		}
-		let ret = qemu.join().unwrap();
-		match UnixStream::connect(ipc_socket) {
-			Ok(conn) => conn.shutdown(Shutdown::Both).unwrap(),
-			Err(_) => {}
-		}
-		ipc.join().unwrap();
-		ret
-	});
-	cmd.remove(ipc_socket);
-	res
+	Ok(())
 }
 
 fn run_qemu(cmd: &mut Cmd, config: &SessionConfig, qmp_socket: &Path) -> Result<(), ()> {
@@ -236,7 +250,7 @@ fn run_qemu_inner(
 	cmd.command_spawn_wait(&mut command)
 }
 
-fn run_qmp(socket: &Path) {
+fn run_qmp(socket: &Path) -> Result<(), ()> {
 	let stream = 'outer: {
 		let mut attempt = 0;
 		let result = loop {
@@ -249,7 +263,7 @@ fn run_qmp(socket: &Path) {
 			thread::sleep(Duration::from_millis(10));
 		};
 		tracing::error!(?result, ?socket, "failed to connect to socket");
-		return;
+		return Err(());
 	};
 
 	let mut qmp = QmpClient::new(&stream);
@@ -277,11 +291,11 @@ fn run_qmp(socket: &Path) {
 				tracing::info!(?response, "QMP");
 				if let qmp_client::QmpResponse::Event(QmpEvent { event, .. }) = response {
 					if event == "SHUTDOWN" {
-						return;
+						return Ok(());
 					}
 				}
 			}
-			Err(QmpError::EndOfFile) => return,
+			Err(QmpError::EndOfFile) => return Err(()),
 			Err(err) => unreachable!("{:?}", err),
 		}
 	}

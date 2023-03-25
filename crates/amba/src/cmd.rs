@@ -92,6 +92,12 @@ impl Cmd {
 		fs::read(file).unwrap()
 	}
 
+	pub fn try_remove(&mut self, file: impl AsRef<Path>) {
+		let file = file.as_ref();
+		tracing::debug!(?file, "try_remove_file");
+		let _ = fs::remove_file(file);
+	}
+
 	pub fn remove(&mut self, file: impl AsRef<Path>) {
 		let file = file.as_ref();
 		tracing::debug!(?file, "remove_file");
