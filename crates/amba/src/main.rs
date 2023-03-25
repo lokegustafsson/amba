@@ -1,11 +1,17 @@
-use std::{env, path::PathBuf, process::ExitCode, time::Instant};
+use std::{
+	env,
+	path::PathBuf,
+	process::ExitCode,
+	sync::{mpsc, Arc, Mutex},
+	time::Instant,
+};
 
 use chrono::offset::Local;
 use rand::{distributions::Alphanumeric, Rng};
 use recipe::{Recipe, RecipeError};
 use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 
-use crate::cmd::Cmd;
+use crate::{cmd::Cmd, gui::Model};
 
 mod cmd;
 mod gui;
@@ -95,7 +101,15 @@ fn main() -> ExitCode {
 		Args::Init(args) => init::init(cmd, base, args),
 		Args::Run(args) => {
 			if args.no_gui {
-				SessionConfig::new(cmd, base, &args).and_then(|config| run::run(cmd, &config))
+				let (_, rx) = mpsc::channel();
+				SessionConfig::new(cmd, base, &args).and_then(|config| {
+					(run::Controller {
+						rx,
+						model: Arc::new(Mutex::new(Model::new())),
+						gui_context: None,
+					})
+					.run(cmd, &config)
+				})
 			} else {
 				SessionConfig::new(cmd, base, &args).and_then(|config| gui::run_gui(cmd, config))
 			}
@@ -119,7 +133,6 @@ pub struct SessionConfig {
 	recipe_path: PathBuf,
 	recipe: Recipe,
 	sigstop_before_qemu_exec: bool,
-	no_gui: bool,
 }
 
 impl SessionConfig {
@@ -165,7 +178,6 @@ impl SessionConfig {
 			recipe_path,
 			recipe,
 			sigstop_before_qemu_exec: run_args.debugger,
-			no_gui: run_args.no_gui,
 		})
 	}
 }

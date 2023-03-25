@@ -5,7 +5,11 @@ use std::{
 
 use eframe::{egui::Context, App, CreationContext, Frame};
 
-use crate::{cmd::Cmd, run, SessionConfig};
+use crate::{
+	cmd::Cmd,
+	run::{Controller, ControllerMsg},
+	SessionConfig,
+};
 
 pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 	eframe::run_native(
@@ -19,10 +23,10 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 	.map_err(|error| tracing::error!(?error, "GUI"))
 }
 
-struct Model {}
+pub struct Model {}
 
 impl Model {
-	fn new() -> Self {
+	pub fn new() -> Self {
 		Self {}
 	}
 }
@@ -38,10 +42,10 @@ impl Gui {
 		let (controller_tx, controller_rx) = mpsc::channel();
 		let model = Arc::new(Mutex::new(Model::new()));
 
-		let controller = thread::Builder::new()
+		thread::Builder::new()
 			.name("amba-controller".to_owned())
 			.spawn({
-				let gui_context = cc.egui_ctx.clone();
+				let gui_context = Some(cc.egui_ctx.clone());
 				let model = Arc::clone(&model);
 				move || {
 					(Controller {
@@ -60,6 +64,7 @@ impl Gui {
 		}
 	}
 }
+
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, frame: &mut Frame) {
 		// Totally empty GUI for now
@@ -72,19 +77,5 @@ impl App for Gui {
 				tracing::warn!("controller already exited")
 			}
 		}
-	}
-}
-
-pub enum ControllerMsg {
-	Shutdown,
-}
-struct Controller {
-	rx: mpsc::Receiver<ControllerMsg>,
-	model: Arc<Mutex<Model>>,
-	gui_context: Context,
-}
-impl Controller {
-	fn run(self, cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
-		run::run(cmd, config)
 	}
 }

@@ -11,52 +11,51 @@ use std::{
 	},
 	path::Path,
 	process::{self, Command, ExitStatus},
+	sync::{mpsc, Arc, Mutex},
 	thread::{self, ScopedJoinHandle},
 	time::Duration,
 };
 
+use eframe::egui::Context;
 use ipc::{Ipc, IpcError};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
-use crate::{cmd::Cmd, run::session::S2EConfig, SessionConfig};
+use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
 
 mod session;
 
-/// Launch QEMU+S2E. That is, we do the equivalent of
-/// <https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh>
-/// but in rust code.
-///
-/// TODO: support more guests than just `ubuntu-22.04-x86_64`
-pub fn run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
-	prepare_run(cmd, config)?;
-
-	let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
-	let qmp_socket = &config.temp_dir.join("qmp.socket");
-
-	let res = thread::scope(|s| {
-		let ipc = s.spawn(|| run_ipc(ipc_socket));
-		let qemu = s.spawn(|| run_qemu(cmd, config, qmp_socket));
-		let qmp = s.spawn(|| run_qmp(qmp_socket));
-		shutdown_controller(ipc_socket, ipc, qemu, qmp)
-	});
-	cmd.try_remove(ipc_socket);
-	cmd.try_remove(qmp_socket);
-	res
+pub enum ControllerMsg {
+	Shutdown,
 }
-fn run_ipc(ipc_socket: &Path) -> Result<(), ()> {
-	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
-	let stream = ipc_listener.accept().unwrap().0;
-	let mut ipc = Ipc::new(&stream);
-	loop {
-		match ipc.blocking_receive() {
-			Ok(msg) => tracing::info!(?msg),
-			Err(IpcError::EndOfFile) => break,
-			Err(other) => panic!("ipc error: {other:?}"),
-		}
+pub struct Controller {
+	pub rx: mpsc::Receiver<ControllerMsg>,
+	pub model: Arc<Mutex<Model>>,
+	pub gui_context: Option<Context>,
+}
+impl Controller {
+	/// Launch QEMU+S2E. That is, we do the equivalent of
+	/// <https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh>
+	/// but in rust code.
+	///
+	/// TODO: support more guests than just `ubuntu-22.04-x86_64`
+	pub fn run(self, cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+		prepare_run(cmd, config)?;
+
+		let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
+		let qmp_socket = &config.temp_dir.join("qmp.socket");
+
+		let res = thread::scope(|s| {
+			let ipc = s.spawn(|| run_ipc(ipc_socket));
+			let qemu = s.spawn(|| run_qemu(cmd, config, qmp_socket));
+			let qmp = s.spawn(|| run_qmp(qmp_socket));
+			shutdown_controller(ipc_socket, ipc, qemu, qmp)
+		});
+		cmd.try_remove(ipc_socket);
+		cmd.try_remove(qmp_socket);
+		res
 	}
-	stream.shutdown(Shutdown::Both).unwrap();
-	Ok(())
 }
+
 fn shutdown_controller(
 	ipc_socket: &Path,
 	ipc: ScopedJoinHandle<'_, Result<(), ()>>,
@@ -73,7 +72,19 @@ fn shutdown_controller(
 	Ok(())
 }
 
-pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+	fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
+		let version_file = &data_dir.join("version.txt");
+		let version = version_file
+			.exists()
+			.then(|| String::from_utf8(cmd.read(version_file)).unwrap());
+		let initialized = version.is_some() && !version.unwrap().is_empty();
+		if !initialized {
+			tracing::error!("$AMBA_DATA_DIR/version.txt is missing or empty");
+		}
+		initialized
+	}
+
 	if !data_dir_has_been_initialized(cmd, &config.base.data_dir) {
 		tracing::error!(
 			?config.base.data_dir,
@@ -112,6 +123,21 @@ pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 		&config.session_dir,
 	);
 
+	Ok(())
+}
+
+fn run_ipc(ipc_socket: &Path) -> Result<(), ()> {
+	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
+	let stream = ipc_listener.accept().unwrap().0;
+	let mut ipc = Ipc::new(&stream);
+	loop {
+		match ipc.blocking_receive() {
+			Ok(msg) => tracing::info!(?msg),
+			Err(IpcError::EndOfFile) => break,
+			Err(other) => panic!("ipc error: {other:?}"),
+		}
+	}
+	stream.shutdown(Shutdown::Both).unwrap();
 	Ok(())
 }
 
@@ -156,6 +182,7 @@ fn run_qemu(cmd: &mut Cmd, config: &SessionConfig, qmp_socket: &Path) -> Result<
 		}
 	}
 }
+
 fn run_qemu_inner(
 	cmd: &mut Cmd,
 	sigstop_qemu_on_fork: bool,
@@ -299,16 +326,4 @@ fn run_qmp(socket: &Path) -> Result<(), ()> {
 			Err(err) => unreachable!("{:?}", err),
 		}
 	}
-}
-
-fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
-	let version_file = &data_dir.join("version.txt");
-	let version = version_file
-		.exists()
-		.then(|| String::from_utf8(cmd.read(version_file)).unwrap());
-	let initialized = version.is_some() && !version.unwrap().is_empty();
-	if !initialized {
-		tracing::error!("$AMBA_DATA_DIR/version.txt is missing or empty");
-	}
-	initialized
 }
