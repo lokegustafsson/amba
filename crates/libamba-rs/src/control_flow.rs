@@ -87,7 +87,7 @@ impl ControlFlowGraph {
 		self.updates += 1;
 
 		// Disabled for smoke test. When removing this, also reenable test1 below.
-		return modified;
+		// return modified;
 
 		// Only edit the compressed graph if this was a new link
 		if modified {
