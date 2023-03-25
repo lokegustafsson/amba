@@ -321,6 +321,12 @@ impl Graph {
 		l
 	}
 
+	fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
+		self.nodes
+			.values()
+			.flat_map(|n| n.to.iter().map(|&m| (n.id, m)))
+	}
+
 	/// Returns a new graph of strongly connected components using
 	/// Kosaraju's algorithm. Works in linear time.
 	/// [Wikipedia](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
