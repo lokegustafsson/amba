@@ -28,24 +28,24 @@ impl Model {
 }
 
 struct Gui {
-	processing_tx: mpsc::Sender<()>,
+	controller_tx: mpsc::Sender<ControllerMsg>,
 	/// Asynchronously computed model, displayed by the GUI somehow
 	model: Arc<Mutex<Model>>,
 }
 
 impl Gui {
 	fn new(cc: &CreationContext<'_>, cmd: &'static mut Cmd, config: SessionConfig) -> Self {
-		let (processing_tx, processing_rx) = mpsc::channel();
+		let (controller_tx, controller_rx) = mpsc::channel();
 		let model = Arc::new(Mutex::new(Model::new()));
 
-		thread::Builder::new()
+		let controller = thread::Builder::new()
 			.name("amba-controller".to_owned())
 			.spawn({
 				let gui_context = cc.egui_ctx.clone();
 				let model = Arc::clone(&model);
 				move || {
 					(Controller {
-						rx: processing_rx,
+						rx: controller_rx,
 						model,
 						gui_context,
 					})
@@ -55,7 +55,7 @@ impl Gui {
 			.unwrap();
 
 		Self {
-			processing_tx,
+			controller_tx,
 			model,
 		}
 	}
@@ -64,10 +64,17 @@ impl App for Gui {
 	fn update(&mut self, ctx: &Context, frame: &mut Frame) {
 		// Totally empty GUI for now
 	}
+
+	fn on_exit(&mut self, _: Option<&eframe::glow::Context>) {
+		self.controller_tx.send(ControllerMsg::Shutdown).unwrap();
+	}
 }
 
+pub enum ControllerMsg {
+	Shutdown,
+}
 struct Controller {
-	rx: mpsc::Receiver<()>,
+	rx: mpsc::Receiver<ControllerMsg>,
 	model: Arc<Mutex<Model>>,
 	gui_context: Context,
 }
