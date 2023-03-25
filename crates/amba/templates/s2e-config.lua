@@ -490,4 +490,12 @@ function onStateForkDecide(state)
 end
 --]]
 
+-------------------------------------------------------------------------------
+-- Enable AmbaPlugin
+add_plugin("AmbaPlugin")
+pluginsConfig.AmbaPlugin = {
+	-- The relative path to our binary on the guest
+	module_path = "{{ executable_path }}",
+}
+
 {{ custom_lua_string }}

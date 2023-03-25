@@ -1,6 +1,8 @@
 // 3rd party library headers
 #include <s2e/S2E.h>
 #include <s2e/Utils.h>
+#include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
+#include <s2e/Plugins/OSMonitors/OSMonitor.h>
 
 // Our headers
 #include "Amba.h"
@@ -11,7 +13,7 @@
 namespace s2e {
 namespace plugins {
 
-S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", );
+S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
@@ -28,9 +30,31 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 void AmbaPlugin::initialize() {
 	*amba::debug_stream() << "Begin initializing AmbaPlugin\n";
 
-	auto& core = *this->s2e()->getCorePlugin();
+	auto s2e = this->s2e();
+	auto& core = *s2e->getCorePlugin();
+	this->m_modules = s2e->getPlugin<ModuleMap>();
+	OSMonitor *monitor = static_cast<OSMonitor *>(s2e->getPlugin("OSMonitor"));
 
-	// Set up event callbacks
+	bool ok;
+	this->m_module_path = s2e
+		->getConfig()
+		->getString(
+			this->getConfigKey() + ".module_path",
+			"",
+			&ok
+		);
+	if (!ok || this->m_module_path.empty()) {
+		*amba::debug_stream()
+			<< "NO `module_path` PROVIDED IN THE LUA CONFIG! "
+			<< "Cannot continue.\n";
+		return;
+	}
+	*amba::debug_stream()
+		<< "Using module_path: "
+		<< this->m_module_path
+		<< '\n';
+
+        // Set up event callbacks
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -50,6 +74,22 @@ void AmbaPlugin::initialize() {
 		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
 			&control_flow::ControlFlow::onStateMerge
+		));
+
+	monitor->onModuleLoad
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onModuleLoad
+		));
+	monitor->onModuleUnload
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onModuleUnload
+		));
+	monitor->onProcessUnload
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onProcessUnload
 		));
 
 	(void) core.onStateForkDecide;
@@ -94,10 +134,70 @@ void AmbaPlugin::translateBlockStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
+	if (!this->m_module_pid) {
+		return;
+	}
+
+	auto mod = this->m_modules->getModule(state);
+	u64 native_addr = 0;
+	bool ok = mod ? mod->ToNativeBase(pc, native_addr) : false;
+	*amba::debug_stream()
+		<< "Translating instruction at " << hexval(pc)
+		<< (mod ? " in " + mod->Name + " (" + mod->Path + ")" : "")
+		<< (ok ? ", native addr " + hexval(native_addr).str() : "")
+		<< '\n';
+
 	signal->connect(sigc::mem_fun(
 		this->m_assembly_graph,
 		&control_flow::ControlFlow::onBlockStart
 	));
+}
+
+void AmbaPlugin::onModuleLoad(
+	S2EExecutionState *state,
+	const ModuleDescriptor &module
+) {
+	if (module.Path != this->m_module_path) {
+		return;
+	}
+
+	this->m_module_pid = module.Pid;
+	*amba::debug_stream() << "Loaded module " << this->m_module_path << '\n';
+	for (const auto& section : module.Sections) {
+		*amba::debug_stream()
+			<< "Found section (" << section.name << ")"
+			<< " at " << hexval(section.nativeLoadBase)
+			<< " with size " << std::to_string(section.size)
+			<< '\n';
+	};
+}
+
+void AmbaPlugin::onModuleUnload(
+	S2EExecutionState *state,
+	const ModuleDescriptor &module
+) {
+	if (module.Path == this->m_module_path) {
+		this->m_module_pid = 0;
+	}
+}
+
+void AmbaPlugin::onProcessUnload(
+	S2EExecutionState *state,
+	const u64 cr3,
+	const u64 pid,
+	const u64 return_code
+) {
+	if (pid != this->m_module_pid) {
+		return;
+	}
+
+	this->m_module_pid = 0;
+	*amba::debug_stream()
+		<< "Module "
+		<< this->m_module_path
+		<< " exited with code "
+		<< std::to_string(return_code)
+		<< '\n';
 }
 
 } // namespace plugins

@@ -26,7 +26,7 @@ get-libamba-symbols:
 		| rg ' U ([^\s]+)' -or '$$1' \
 		| rg -v 'GLIBC|CXXABI|GCC' \
 		| c++filt \
-		| printf "\nDynamic symbols required by libamba:\n\n$$(cat -)"
+		| printf "\nDynamic symbols required by libamba:\n\n$$(cat -)\n"
 
 demo-control-flow:
 	nix build '.#control-flow'
