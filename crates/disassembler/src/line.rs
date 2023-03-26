@@ -50,11 +50,11 @@ pub fn addr2line(
 	addr: u64,
 ) -> Result<(String, u32, u32), ()> {
 	let mut locs = context.find_frames(addr).unwrap();
-	println!("addr {:#x} belongs to:", addr);
+	tracing::debug!("addr {:#x} belongs to:", addr);
 	match locs.next().unwrap() {
 		Some(frame) => {
 			let location = frame.location.unwrap();
-			println!(
+			tracing::debug!(
 				"** Function Frame **\nfunction: {:?}\ndw_die_offset: {:?}\nlocation: {}:{}:{}",
 				frame.function.unwrap().demangle().unwrap(),
 				frame.dw_die_offset.unwrap(),
@@ -115,9 +115,6 @@ mod test {
 
 		let mut context = Context::new(binary_filepath).unwrap();
 		let line = context.get_line(addr).unwrap();
-
-		println!("source code corresponding to addr {addr:#X}:");
-		println!("{}", line.as_ref().unwrap());
 
 		assert_eq!(
 			line.unwrap(),
