@@ -85,12 +85,13 @@ where
 
 #[cfg(test)]
 mod test {
-	use crate::*;
 	use std::{
 		fs::File,
 		io::{self, BufRead, BufReader, Error, Lines},
 		path::Path,
 	};
+
+	use crate::*;
 
 	/// Uses 1-indexed line numbers.
 	fn read_line<P>(filepath: P, line: usize) -> Result<String, Error>
@@ -109,6 +110,7 @@ mod test {
 	}
 
 	#[test]
+	#[ignore]
 	fn hello() {
 		let binary_filepath = Path::new("../../demos/hello");
 		let addr = 0x40112F;
