@@ -328,10 +328,79 @@ impl Graph {
 	}
 
 	/// Returns a new graph of strongly connected components using
-	/// Kosaraju's algorithm. Works in linear time.
-	/// [Wikipedia](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+	/// Tarjan's strongly connected components algorith
+	/// [Wikipedia](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
 	pub fn to_strongly_connected_components(&self) -> Self {
-		todo!()
+		#[derive(Copy, Clone, PartialEq, Eq, Default)]
+		struct Translation {
+			index: u64,
+			low_link: u64,
+			on_stack: bool,
+		}
+
+		#[derive(Clone, Default)]
+		struct State {
+			stack: Vec<u64>,
+			translation: Map<u64, Translation>,
+			index: u64,
+			out: Graph,
+		}
+
+		let mut state = State::default();
+
+		fn strong_connect(graph: &Graph, state: &mut State, v: u64) {
+			state.translation.insert(
+				v,
+				Translation {
+					index: state.index,
+					low_link: state.index,
+					on_stack: true,
+				},
+			);
+			state.index += 1;
+			state.stack.push(v);
+
+			for &w in graph.nodes.get(&v).unwrap().to.iter() {
+				match state.translation.get(&w) {
+					None => {
+						strong_connect(graph, state, w);
+						let w_low = state.translation[&w].low_link;
+						let v_ref = &mut state.translation.get_mut(&v).unwrap().low_link;
+						*v_ref = (*v_ref).min(w_low);
+					}
+					Some(Translation {on_stack, ..}) if *on_stack => {
+						let w_idx = state.translation[&w].index;
+						let v_ref = &mut state.translation.get_mut(&v).unwrap().low_link;
+						*v_ref = (*v_ref).min(w_idx);
+					}
+					_ => {}
+				}
+			}
+
+			let v_ref = state.translation[&v];
+			if v_ref.index == v_ref.low_link {
+				let mut new_node = Block {
+					id: v,
+					..Default::default()
+				};
+				while let Some(w) = state.stack.pop() {
+					state.translation.get_mut(&w).unwrap().on_stack = false;
+					new_node.of.insert(w);
+					if v == w {
+						break;
+					}
+				}
+				state.out.nodes.insert(v, new_node);
+			}
+		}
+
+		for node in self.nodes.values() {
+			if !state.translation.contains_key(&node.id) {
+				strong_connect(self, &mut state, node.id);
+			}
+		}
+
+		state.out
 	}
 
 	/// Verify that all node pairs have matching to and from
