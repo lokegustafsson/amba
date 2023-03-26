@@ -1,7 +1,7 @@
 use std::{
 	collections::HashMap,
-	fs::{self, File},
-	io::{self, BufRead, BufReader, Error, Lines},
+	fmt, fs,
+	io::{BufRead, Error},
 	path::{Path, PathBuf},
 	rc::Rc,
 };
@@ -34,32 +34,15 @@ impl Context {
 		match addr2line(&self.addr2line_context, addr) {
 			Ok((file_name, line, _)) => {
 				let filepath = Path::new(&file_name);
-				match self.files.get(&filepath.to_owned()) {
-					Some(file) => file.lines().nth(line as usize - 1),
-					None => {
-						let contents = fs::read(filepath).unwrap();
-						let x = contents.lines().nth(line as usize - 1);
-						self.files.insert(filepath.to_owned(), contents);
-						x
-					}
-				}
+				self.files
+					.entry(filepath.to_owned())
+					.or_insert_with(|| fs::read(filepath).unwrap())
+					.lines()
+					.nth(line as usize - 1)
 			}
 			Err(_) => None,
 		}
 	}
-}
-
-pub fn main() -> Result<(), ()> {
-	let binary_filepath = Path::new("../../demos/hello");
-	let addr = 0x40112F;
-
-	let mut context = Context::new(binary_filepath).unwrap();
-	let line = context.get_line(addr).unwrap();
-
-	println!("source code corresponding to addr {addr:#X}:");
-	println!("{}", line.unwrap());
-
-	Ok(())
 }
 
 pub fn addr2line(
@@ -89,33 +72,56 @@ pub fn addr2line(
 	}
 }
 
-/// Uses 1-indexed line numbers.
-fn read_line<P>(filepath: P, line: usize) -> Result<String, Error>
-where
-	P: AsRef<Path>,
-{
-	match read_lines(filepath) {
-		Ok(mut lines) => lines.nth(line - 1).unwrap(),
-		Err(e) => Err(e),
-	}
-}
-
-fn read_lines<P>(filename: P) -> io::Result<Lines<BufReader<File>>>
-where
-	P: AsRef<Path>,
-{
-	let file = File::open(filename)?;
-	Ok(BufReader::new(file).lines())
-}
-
 fn create_addr2line_context<P>(
 	filepath: P,
 ) -> addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>
 where
-	P: AsRef<Path>,
-	P: std::fmt::Debug,
+	P: AsRef<Path> + fmt::Debug,
 {
 	let contents = fs::read(&filepath).expect(&format!("Could not read file {:?}", filepath));
 	let parsed = read::File::parse(&*contents).unwrap();
 	addr2line::Context::new(&parsed).unwrap()
+}
+
+#[cfg(test)]
+mod test {
+	use crate::*;
+	use std::{
+		fs::File,
+		io::{self, BufRead, BufReader, Error, Lines},
+		path::Path,
+	};
+
+	/// Uses 1-indexed line numbers.
+	fn read_line<P>(filepath: P, line: usize) -> Result<String, Error>
+	where
+		P: AsRef<Path>,
+	{
+		read_lines(filepath).map(|mut ls| ls.nth(line - 1).unwrap())?
+	}
+
+	fn read_lines<P>(filename: P) -> io::Result<Lines<BufReader<File>>>
+	where
+		P: AsRef<Path>,
+	{
+		let file = File::open(filename)?;
+		Ok(BufReader::new(file).lines())
+	}
+
+	#[test]
+	fn hello() {
+		let binary_filepath = Path::new("../../demos/hello");
+		let addr = 0x40112F;
+
+		let mut context = Context::new(binary_filepath).unwrap();
+		let line = context.get_line(addr).unwrap();
+
+		println!("source code corresponding to addr {addr:#X}:");
+		println!("{}", line.as_ref().unwrap());
+
+		assert_eq!(
+			line.unwrap(),
+			read_line("../../demos/hello.c", 4).unwrap()
+		)
+	}
 }
