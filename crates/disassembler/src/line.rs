@@ -88,7 +88,7 @@ impl Context {
 		Ok(res)
 	}
 
-	/// Get the `Ok(Some(filepath, line, column))` corresponding to an address. If no location
+	/// Get the `Ok(Some((filepath, line, column))` corresponding to an address. If no location
 	/// information for the `addr` is found, `Ok(None)` is returned. Other errors from addr2line is
 	/// otherwise propagated and wrapped in our `Error`.
 	pub fn addr2loc(&self, addr: u64) -> Result<Option<(String, u32, u32)>, Error> {
