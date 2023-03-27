@@ -77,28 +77,28 @@ impl Context {
 pub fn addr2line(
 	context: &addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>,
 	addr: u64,
-) -> Result<(String, u32, u32), ()> {
+) -> Result<Option<(String, u32, u32)>, Error> {
 	let mut locs = context.find_frames(addr).unwrap();
 	tracing::debug!("addr {:#x} belongs to:", addr);
-	match locs.next().unwrap() {
-		Some(frame) => {
-			let location = frame.location.unwrap();
-			tracing::debug!(
-				"** Function Frame **\nfunction: {:?}\ndw_die_offset: {:?}\nlocation: {}:{}:{}",
-				frame.function.unwrap().demangle().unwrap(),
-				frame.dw_die_offset.unwrap(),
-				location.file.unwrap(),
-				location.line.unwrap(),
-				location.column.unwrap()
-			);
-			Ok((
-				location.file.unwrap().to_owned(),
-				location.line.unwrap(),
-				location.column.unwrap(),
-			))
-		}
-		None => Err(()),
-	}
+
+	let frame = locs.next()?.and_then(|frame| {
+		let location = frame.location?;
+		tracing::debug!(
+			"** Function Frame **\nfunction: {:?}\ndw_die_offset: {:?}\nlocation: {}:{}:{}",
+			frame.function?.demangle().unwrap(),
+			frame.dw_die_offset?,
+			location.file?,
+			location.line?,
+			location.column?,
+		);
+		Some((
+			location.file?.to_owned(),
+			location.line?,
+			location.column?,
+		))
+	});
+
+	Ok(frame)
 }
 
 fn create_addr2line_context<P>(
