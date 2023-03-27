@@ -28,6 +28,18 @@ impl fmt::Display for Error {
 
 impl error::Error for Error {}
 
+impl From<addr2line::gimli::read::Error> for Error {
+	fn from(value: addr2line::gimli::read::Error) -> Self {
+		Self::GimliError(value)
+	}
+}
+
+impl From<std::io::Error> for Error {
+	fn from(value: std::io::Error) -> Self {
+		Self::IoError(value)
+	}
+}
+
 /// For caching source files loaded into memory. So that source code lines can be fetched without
 /// rereading the source code files.
 pub struct Context {
