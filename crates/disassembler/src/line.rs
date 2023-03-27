@@ -93,31 +93,18 @@ impl Context {
 	/// otherwise propagated and wrapped in our `Error`.
 	pub fn addr2loc(&self, addr: u64) -> Result<Option<(String, u32, u32)>, Error> {
 		let mut locs = self.addr2line_context.find_frames(addr)?;
-		tracing::debug!("addr {:#x} belongs to:", addr);
-
 		let frame = locs.next()?.and_then(|frame| {
 			let location = frame.location?;
-			tracing::debug!(
-				"** Function Frame **\nfunction: {:?}\ndw_die_offset: {:?}\nlocation: {}:{}:{}",
-				frame.function?.demangle().unwrap(),
-				frame.dw_die_offset?,
-				location.file?,
-				location.line?,
-				location.column?,
-			);
 			Some((
 				location.file?.to_owned(),
 				location.line?,
 				location.column?,
 			))
 		});
-
 		Ok(frame)
 	}
 
-	fn create_addr2line_context<P>(
-		filepath: P,
-	) -> Result<Addr2LineContext, Error>
+	fn create_addr2line_context<P>(filepath: P) -> Result<Addr2LineContext, Error>
 	where
 		P: AsRef<Path> + fmt::Debug,
 	{
