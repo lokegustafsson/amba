@@ -287,7 +287,7 @@ fn run_qmp(socket: &Path) -> Result<(), ()> {
 				Err(err) if attempt > 10 => break err,
 				Err(_) => {}
 			}
-			thread::sleep(Duration::from_millis(10));
+			thread::sleep(Duration::from_millis(50));
 		};
 		tracing::error!(?result, ?socket, "failed to connect to socket");
 		return Err(());
