@@ -11,28 +11,27 @@ use addr2line::{
 	object::read,
 };
 
+type Addr2LineContext = addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>;
+
+#[allow(clippy::enum_variant_names)]
 #[derive(Debug)]
 pub enum Error {
-	GimliError(addr2line::gimli::read::Error),
 	IoError(std::io::Error),
+	GimliError(addr2line::gimli::Error),
+	ObjectReadError(read::Error),
 }
 
 impl fmt::Display for Error {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
-			Error::GimliError(e) => write!(f, "{e}"),
 			Error::IoError(e) => write!(f, "{e}"),
+			Error::GimliError(e) => write!(f, "{e}"),
+			Error::ObjectReadError(e) => write!(f, "{e}"),
 		}
 	}
 }
 
 impl error::Error for Error {}
-
-impl From<addr2line::gimli::read::Error> for Error {
-	fn from(value: addr2line::gimli::read::Error) -> Self {
-		Self::GimliError(value)
-	}
-}
 
 impl From<std::io::Error> for Error {
 	fn from(value: std::io::Error) -> Self {
@@ -40,11 +39,23 @@ impl From<std::io::Error> for Error {
 	}
 }
 
+impl From<addr2line::gimli::Error> for Error {
+	fn from(value: addr2line::gimli::Error) -> Self {
+		Self::GimliError(value)
+	}
+}
+
+impl From<read::Error> for Error {
+	fn from(value: read::Error) -> Self {
+		Self::ObjectReadError(value)
+	}
+}
+
 /// For caching source files loaded into memory. So that source code lines can be fetched without
 /// rereading the source code files.
 pub struct Context {
 	files: HashMap<PathBuf, Vec<u8>>, // Cached source files that have already been opened.
-	addr2line_context: addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>,
+	addr2line_context: Addr2LineContext,
 }
 
 impl Context {
@@ -52,64 +63,68 @@ impl Context {
 	pub fn new(filepath: &Path) -> Result<Self, Error> {
 		Ok(Self {
 			files: HashMap::new(),
-			addr2line_context: create_addr2line_context(filepath),
+			addr2line_context: Context::create_addr2line_context(filepath)?,
 		})
 	}
 
 	/// Returns the line of source code corresponding to `addr`, if location information for `addr`
-	/// doesn't exist, None is returned. If the source code cannot be found based on the location
-	/// information for `addr`, Some(Err()) is returned. Otherwise Some(Ok(String)) is returned.
-	pub fn get_line(&mut self, addr: u64) -> Option<Result<String, Error>> {
-		match addr2line(&self.addr2line_context, addr) {
-			Ok((file_name, line, _)) => {
+	/// exist, Ok(Some(String)) is returned, if location information doesn't exist in debug
+	/// information, Ok(None) is returned, otherwise any errors are propagated as our `Error` enum.
+	pub fn get_source_line(&mut self, addr: u64) -> Result<Option<String>, Error> {
+		let res = match self.addr2loc(addr)? {
+			Some((file_name, line, _)) => {
 				let filepath = Path::new(&file_name);
-				self.files
-					.entry(filepath.to_owned())
-					.or_insert_with(|| fs::read(filepath).unwrap())
-					.lines()
-					.nth(line as usize - 1)
+				let file = if let Some(file) = self.files.get(filepath) {
+					file
+				} else {
+					self.files
+						.insert(filepath.to_path_buf(), fs::read(filepath)?);
+					self.files.get(filepath).unwrap()
+				};
+				file.lines().nth(line as usize - 1).transpose()?
 			}
-			Err(_) => None,
-		}
+			None => None,
+		};
+		Ok(res)
 	}
-}
 
-pub fn addr2line(
-	context: &addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>,
-	addr: u64,
-) -> Result<Option<(String, u32, u32)>, Error> {
-	let mut locs = context.find_frames(addr).unwrap();
-	tracing::debug!("addr {:#x} belongs to:", addr);
+	/// Get the `Ok(Some(filepath, line, column))` corresponding to an address. If no location
+	/// information for the `addr` is found, `Ok(None)` is returned. Other errors from addr2line is
+	/// otherwise propagated and wrapped in our `Error`.
+	pub fn addr2loc(&self, addr: u64) -> Result<Option<(String, u32, u32)>, Error> {
+		let mut locs = self.addr2line_context.find_frames(addr)?;
+		tracing::debug!("addr {:#x} belongs to:", addr);
 
-	let frame = locs.next()?.and_then(|frame| {
-		let location = frame.location?;
-		tracing::debug!(
-			"** Function Frame **\nfunction: {:?}\ndw_die_offset: {:?}\nlocation: {}:{}:{}",
-			frame.function?.demangle().unwrap(),
-			frame.dw_die_offset?,
-			location.file?,
-			location.line?,
-			location.column?,
-		);
-		Some((
-			location.file?.to_owned(),
-			location.line?,
-			location.column?,
-		))
-	});
+		let frame = locs.next()?.and_then(|frame| {
+			let location = frame.location?;
+			tracing::debug!(
+				"** Function Frame **\nfunction: {:?}\ndw_die_offset: {:?}\nlocation: {}:{}:{}",
+				frame.function?.demangle().unwrap(),
+				frame.dw_die_offset?,
+				location.file?,
+				location.line?,
+				location.column?,
+			);
+			Some((
+				location.file?.to_owned(),
+				location.line?,
+				location.column?,
+			))
+		});
 
-	Ok(frame)
-}
+		Ok(frame)
+	}
 
-fn create_addr2line_context<P>(
-	filepath: P,
-) -> addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>
-where
-	P: AsRef<Path> + fmt::Debug,
-{
-	let contents = fs::read(&filepath).expect(&format!("Could not read file {:?}", filepath));
-	let parsed = read::File::parse(&*contents).unwrap();
-	addr2line::Context::new(&parsed).unwrap()
+	fn create_addr2line_context<P>(
+		filepath: P,
+	) -> Result<Addr2LineContext, Error>
+	where
+		P: AsRef<Path> + fmt::Debug,
+	{
+		let contents = fs::read(&filepath)?;
+		let parsed = read::File::parse(&*contents)?;
+		Ok(addr2line::Context::new(&parsed)?)
+	}
 }
 
 #[cfg(test)]
@@ -140,12 +155,14 @@ mod test {
 
 	#[test]
 	#[ignore]
+	// NOTE: Ignored because uses realtive paths and the compiled binary can have different
+	// addresses. So it will not always pass...
 	fn hello() {
 		let binary_filepath = Path::new("../../demos/hello");
-		let addr = 0x40112F;
+		let addr = 0x401180;
 
 		let mut context = Context::new(binary_filepath).unwrap();
-		let line = context.get_line(addr).unwrap();
+		let line = context.get_source_line(addr).unwrap();
 
 		assert_eq!(
 			line.unwrap(),
