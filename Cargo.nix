@@ -6,10 +6,10 @@ args@{
   rootFeatures ? [
     "amba/default"
     "ipc/default"
+    "data-structures/default"
     "qmp-client/default"
     "recipe/default"
     "bootstrap/default"
-    "data-structures/default"
     "disassembler/default"
     "libamba-rs/default"
     "mitm-debug-stream/default"
@@ -49,10 +49,10 @@ in
   workspace = {
     amba = rustPackages.unknown.amba."0.1.0";
     ipc = rustPackages.unknown.ipc."0.1.0";
+    data-structures = rustPackages.unknown.data-structures."0.1.0";
     qmp-client = rustPackages.unknown.qmp-client."0.1.0";
     recipe = rustPackages.unknown.recipe."0.1.0";
     bootstrap = rustPackages.unknown.bootstrap."0.1.0";
-    data-structures = rustPackages.unknown.data-structures."0.1.0";
     disassembler = rustPackages.unknown.disassembler."0.1.0";
     libamba-rs = rustPackages.unknown.libamba-rs."0.1.0";
     mitm-debug-stream = rustPackages.unknown.mitm-debug-stream."0.1.0";
@@ -299,8 +299,12 @@ in
     src = fetchCratesIo { inherit name version; sha256 = "8da52d66c7071e2e3fa2a1e5c6d088fec47b593032b254f5e980de8ea54454d6"; };
     features = builtins.concatLists [
       [ "default" ]
+      [ "serde" ]
       [ "std" ]
     ];
+    dependencies = {
+      serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
+    };
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".async-compression."0.3.15" = overridableMkRustCrate (profileName: rec {
@@ -1192,6 +1196,7 @@ in
     dependencies = {
       arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
       itertools = rustPackages."registry+https://github.com/rust-lang/crates.io-index".itertools."0.10.5" { inherit profileName; };
+      serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
     };
     devDependencies = {
       proptest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".proptest."1.1.0" { inherit profileName; };
@@ -2255,6 +2260,7 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/ipc");
     dependencies = {
       bincode = rustPackages."registry+https://github.com/rust-lang/crates.io-index".bincode."1.3.3" { inherit profileName; };
+      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };

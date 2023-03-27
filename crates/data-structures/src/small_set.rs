@@ -1,11 +1,12 @@
 use std::{collections::BTreeSet, iter, mem};
+use serde::{Serialize, Deserialize};
 
 use arrayvec::ArrayVec;
 
 const SMALL_SIZE: usize = 6;
 
 /// A small size optimised u64 set
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum SmallU64Set {
 	Set(BTreeSet<u64>),
 	Vec(ArrayVec<u64, SMALL_SIZE>),

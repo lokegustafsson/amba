@@ -75,6 +75,11 @@ void AmbaPlugin::initialize() {
 			this->m_symbolic_graph,
 			&control_flow::ControlFlow::onStateMerge
 		));
+	core.onTimer
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onTimer
+		));
 
 	monitor->onModuleLoad
 		.connect(sigc::mem_fun(

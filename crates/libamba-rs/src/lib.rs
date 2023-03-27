@@ -2,7 +2,7 @@ pub mod control_flow;
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
-	use std::{os::unix::net::UnixStream, sync::Mutex};
+	use std::{os::unix::net::UnixStream, sync::Mutex, borrow::Cow};
 
 	use crate::control_flow::ControlFlowGraph;
 
@@ -68,7 +68,7 @@ mod ffi {
 	) {
 		let mut ipc = (&*ipc).lock().unwrap();
 		let graph = (&*graph).lock().unwrap();
-		ipc.blocking_send(&ipc::IpcMessage::Ping)
+		ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot(Cow::Borrowed(&graph.graph)))
 			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 	}
 

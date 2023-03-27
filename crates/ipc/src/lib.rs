@@ -1,6 +1,7 @@
 use std::{
 	io::{self, BufReader, BufWriter, Read, Write},
 	mem,
+  borrow::Cow,
 	net::Shutdown,
 	os::unix::net::UnixStream,
 };
@@ -32,7 +33,7 @@ impl Drop for IpcTx<'_> {
 }
 
 impl IpcTx<'_> {
-	pub fn blocking_send(&mut self, msg: &IpcMessage) -> Result<(), IpcError> {
+	pub fn blocking_send(&mut self, msg: &IpcMessage<'_>) -> Result<(), IpcError> {
 		let size = bincode::serialized_size(msg).unwrap();
 		self.tx.write_all(&size.to_le_bytes())?;
 		bincode::serialize_into(&mut self.tx, msg)?;
@@ -55,7 +56,7 @@ impl Drop for IpcRx<'_> {
 }
 
 impl IpcRx<'_> {
-	pub fn blocking_receive(&mut self) -> Result<IpcMessage, IpcError> {
+	pub fn blocking_receive(&mut self) -> Result<IpcMessage<'static>, IpcError> {
 		let size = {
 			let mut size = [0u8; mem::size_of::<u64>()];
 			self.rx.read_exact(&mut size)?;
@@ -67,8 +68,9 @@ impl IpcRx<'_> {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum IpcMessage {
+pub enum IpcMessage<'a> {
 	Ping,
+  GraphSnapshot(Cow<'a, data_structures::Graph>),
 }
 
 #[derive(Debug)]
