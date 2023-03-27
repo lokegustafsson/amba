@@ -17,7 +17,7 @@ use std::{
 };
 
 use eframe::egui::Context;
-use ipc::{Ipc, IpcError};
+use ipc::IpcError;
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
@@ -138,9 +138,9 @@ fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 fn run_ipc(ipc_socket: &Path) -> Result<(), ()> {
 	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
 	let stream = ipc_listener.accept().unwrap().0;
-	let mut ipc = Ipc::new(&stream);
+	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
 	loop {
-		match ipc.blocking_receive() {
+		match ipc_rx.blocking_receive() {
 			Ok(msg) => tracing::info!(?msg),
 			Err(IpcError::EndOfFile) => break,
 			Err(other) => panic!("ipc error: {other:?}"),

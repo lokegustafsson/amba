@@ -6,8 +6,6 @@ mod ffi {
 
 	use crate::control_flow::ControlFlowGraph;
 
-	type Ipc = ipc::Ipc<&'static std::os::unix::net::UnixStream>;
-
 	/// Create a newly allocated `ControlFlowGraph` and return an
 	/// owning raw pointer. This pointer may only be freed with
 	/// the `rust_free_control_flow_graph` function.
@@ -49,11 +47,12 @@ mod ffi {
 	/// Initialize `Ipc` and return an owning raw pointer. If initialization
 	/// fails, a null pointer is returned.
 	#[no_mangle]
-	pub extern "C" fn rust_ipc_new() -> *mut Ipc {
+	pub extern "C" fn rust_ipc_new() -> *mut Mutex<ipc::IpcTx<'static>> {
 		match UnixStream::connect("amba-ipc.socket") {
 			Ok(stream) => {
 				let stream = Box::leak(Box::new(stream));
-				Box::leak(Box::new(Ipc::new(&*stream)))
+				let (tx, _rx) = ipc::new_wrapping(&*stream);
+				Box::leak(Box::new(Mutex::new(tx)))
 			}
 			Err(err) => {
 				println!("libamba failed to connect to IPC socket: {err:?}");
@@ -63,7 +62,12 @@ mod ffi {
 	}
 
 	#[no_mangle]
-	pub extern "C" fn rust_ipc_send_graph(ipc: &mut Ipc, graph: &mut ControlFlowGraph) {
+	pub unsafe extern "C" fn rust_ipc_send_graph(
+		ipc: *mut Mutex<ipc::IpcTx<'static>>,
+		graph: *mut Mutex<ControlFlowGraph>,
+	) {
+		let mut ipc = (&*ipc).lock().unwrap();
+		let graph = (&*graph).lock().unwrap();
 		ipc.blocking_send(&ipc::IpcMessage::Ping)
 			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 	}
