@@ -44,20 +44,20 @@ impl Context {
 	/// exist, Ok(Some(String)) is returned, if location information doesn't exist in debug
 	/// information, Ok(None) is returned, otherwise any errors are propagated as our `Error` enum.
 	pub fn get_source_line(&mut self, addr: u64) -> Result<Option<String>, Error> {
-		let res = match self.addr2loc(addr)? {
-			Some((file_name, line, _)) => {
-				let filepath = Path::new(&file_name);
-				let file = if let Some(file) = self.files.get(filepath) {
-					file
-				} else {
-					self.files
-						.insert(filepath.to_path_buf(), fs::read(filepath)?);
-					self.files.get(filepath).unwrap()
-				};
-				file.lines().nth(line as usize - 1).transpose()?
-			}
-			None => None,
+		let line_info = self.addr2loc(addr)?;
+		let Some((file_name, line, _)) = line_info else { return Ok(None); };
+
+		let filepath = Path::new(&file_name);
+		let file = if let Some(file) = self.files.get(filepath) {
+			file
+		} else {
+			let path = filepath.to_path_buf();
+			let data = fs::read(filepath)?;
+
+			self.files.entry(path).or_insert(data)
 		};
+		let res = file.lines().nth(line as usize - 1).transpose()?;
+
 		Ok(res)
 	}
 
