@@ -1,3 +1,3 @@
 mod line;
 
-pub use line::Context;
+pub use line::{Context, Error};
