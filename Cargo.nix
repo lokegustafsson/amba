@@ -1348,6 +1348,7 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/disassembler");
     dependencies = {
       addr2line = rustPackages."registry+https://github.com/rust-lang/crates.io-index".addr2line."0.19.0" { inherit profileName; };
+      thiserror = rustPackages."registry+https://github.com/rust-lang/crates.io-index".thiserror."1.0.38" { inherit profileName; };
     };
   });
   

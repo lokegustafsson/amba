@@ -1,6 +1,6 @@
 use std::{
 	collections::HashMap,
-	error, fmt, fs,
+	fmt, fs,
 	io::BufRead,
 	path::{Path, PathBuf},
 	rc::Rc,
@@ -10,45 +10,18 @@ use addr2line::{
 	gimli::{EndianReader, RunTimeEndian},
 	object::read,
 };
+use thiserror::Error;
 
 type Addr2LineContext = addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>;
 
-#[allow(clippy::enum_variant_names)]
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum Error {
-	IoError(std::io::Error),
-	GimliError(addr2line::gimli::Error),
-	ObjectReadError(read::Error),
-}
-
-impl fmt::Display for Error {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		match self {
-			Error::IoError(e) => write!(f, "{e}"),
-			Error::GimliError(e) => write!(f, "{e}"),
-			Error::ObjectReadError(e) => write!(f, "{e}"),
-		}
-	}
-}
-
-impl error::Error for Error {}
-
-impl From<std::io::Error> for Error {
-	fn from(value: std::io::Error) -> Self {
-		Self::IoError(value)
-	}
-}
-
-impl From<addr2line::gimli::Error> for Error {
-	fn from(value: addr2line::gimli::Error) -> Self {
-		Self::GimliError(value)
-	}
-}
-
-impl From<read::Error> for Error {
-	fn from(value: read::Error) -> Self {
-		Self::ObjectReadError(value)
-	}
+	#[error("{0}")]
+	Io(#[from] std::io::Error),
+	#[error("{0}")]
+	Gimli(#[from] addr2line::gimli::Error),
+	#[error("{0}")]
+	ObjectRead(#[from] read::Error),
 }
 
 /// For caching source files loaded into memory. So that source code lines can be fetched without
