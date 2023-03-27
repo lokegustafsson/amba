@@ -127,6 +127,6 @@ mod test {
 		assert_eq!(
 			line.unwrap(),
 			read_line("../../demos/hello.c", 4).unwrap()
-		)
+		);
 	}
 }
