@@ -72,6 +72,7 @@ fn main() -> ExitCode {
 				tracing_subscriber::FmtSubscriber::builder()
 					.with_max_level(tracing::Level::TRACE)
 					.with_timer(UptimeHourMinuteSeconds::default())
+					.with_thread_names(true)
 					.finish(),
 			),
 	)

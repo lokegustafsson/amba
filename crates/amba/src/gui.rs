@@ -43,7 +43,7 @@ impl Gui {
 		let model = Arc::new(Mutex::new(Model::new()));
 
 		thread::Builder::new()
-			.name("amba-controller".to_owned())
+			.name("controller".to_owned())
 			.spawn({
 				let gui_context = Some(cc.egui_ctx.clone());
 				let model = Arc::clone(&model);

@@ -45,9 +45,18 @@ impl Controller {
 		let qmp_socket = &config.temp_dir.join("qmp.socket");
 
 		let res = thread::scope(|s| {
-			let ipc = s.spawn(|| run_ipc(ipc_socket));
-			let qemu = s.spawn(|| run_qemu(cmd, config, qmp_socket));
-			let qmp = s.spawn(|| run_qmp(qmp_socket));
+			let ipc = thread::Builder::new()
+				.name("ipc".to_owned())
+				.spawn_scoped(s, || run_ipc(ipc_socket))
+				.unwrap();
+			let qemu = thread::Builder::new()
+				.name("qemu".to_owned())
+				.spawn_scoped(s, || run_qemu(cmd, config, qmp_socket))
+				.unwrap();
+			let qmp = thread::Builder::new()
+				.name("qmp".to_owned())
+				.spawn_scoped(s, || run_qmp(qmp_socket))
+				.unwrap();
 			shutdown_controller(ipc_socket, ipc, qemu, qmp)
 		});
 		cmd.try_remove(ipc_socket);
