@@ -1,7 +1,7 @@
 use std::{
 	collections::HashMap,
-	fmt, fs,
-	io::{BufRead, Error},
+	error, fmt, fs,
+	io::BufRead,
 	path::{Path, PathBuf},
 	rc::Rc,
 };
@@ -10,6 +10,23 @@ use addr2line::{
 	gimli::{EndianReader, RunTimeEndian},
 	object::read,
 };
+
+#[derive(Debug)]
+pub enum Error {
+	GimliError(addr2line::gimli::read::Error),
+	IoError(std::io::Error),
+}
+
+impl fmt::Display for Error {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		match self {
+			Error::GimliError(e) => write!(f, "{e}"),
+			Error::IoError(e) => write!(f, "{e}"),
+		}
+	}
+}
+
+impl error::Error for Error {}
 
 /// For caching source files loaded into memory. So that source code lines can be fetched without
 /// rereading the source code files.
