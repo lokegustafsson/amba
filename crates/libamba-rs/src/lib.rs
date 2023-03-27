@@ -2,7 +2,7 @@ pub mod control_flow;
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
-	use std::{os::unix::net::UnixStream, sync::Mutex, borrow::Cow};
+	use std::{borrow::Cow, os::unix::net::UnixStream, sync::Mutex};
 
 	use crate::control_flow::ControlFlowGraph;
 
@@ -52,6 +52,7 @@ mod ffi {
 			Ok(stream) => {
 				let stream = Box::leak(Box::new(stream));
 				let (tx, _rx) = ipc::new_wrapping(&*stream);
+				println!("\nDEBUGIPC libamba connected to amba-ipc.socket\n");
 				Box::leak(Box::new(Mutex::new(tx)))
 			}
 			Err(err) => {
@@ -66,10 +67,14 @@ mod ffi {
 		ipc: *mut Mutex<ipc::IpcTx<'static>>,
 		graph: *mut Mutex<ControlFlowGraph>,
 	) {
+		println!("DEBUGIPC sending graph");
 		let mut ipc = (&*ipc).lock().unwrap();
 		let graph = (&*graph).lock().unwrap();
-		ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot(Cow::Borrowed(&graph.graph)))
-			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+		ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot(Cow::Borrowed(
+			&graph.graph,
+		)))
+		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+		println!("DEBUGIPC sent graph");
 	}
 
 	#[no_mangle]

@@ -140,12 +140,14 @@ fn run_ipc(ipc_socket: &Path) -> Result<(), ()> {
 	let stream = ipc_listener.accept().unwrap().0;
 	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
 	loop {
+		tracing::info!("DEBUGIPC listening for IPC");
 		match ipc_rx.blocking_receive() {
 			Ok(msg) => tracing::info!(?msg),
 			Err(IpcError::EndOfFile) => break,
 			Err(other) => panic!("ipc error: {other:?}"),
 		}
 	}
+	tracing::info!("DEBUGIPC finished listening for IPC");
 	stream.shutdown(Shutdown::Both).unwrap();
 	Ok(())
 }

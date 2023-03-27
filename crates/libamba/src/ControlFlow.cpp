@@ -58,6 +58,7 @@ void ControlFlow::onStateMerge(
 }
 
 void ControlFlow::onTimer() {
+	std::cerr << "\n\n\nDEBUGIPC control flow ontimer\n\n\n";
 	rust_ipc_send_graph(this->m_ipc, this->m_cfg);
 }
 

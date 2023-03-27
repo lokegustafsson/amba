@@ -1,5 +1,6 @@
 use std::{collections::BTreeSet, default::Default, mem};
-use serde::{Serialize, Deserialize};
+
+use serde::{Deserialize, Serialize};
 
 use crate::small_set::SmallU64Set;
 

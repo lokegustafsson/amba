@@ -1,7 +1,7 @@
 use std::{collections::BTreeSet, iter, mem};
-use serde::{Serialize, Deserialize};
 
 use arrayvec::ArrayVec;
+use serde::{Deserialize, Serialize};
 
 const SMALL_SIZE: usize = 6;
 
