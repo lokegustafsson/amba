@@ -166,10 +166,49 @@ för att hitta den korrekta branchen. Istället lämpar concolic testing, dvs en
 automatisk metod, sig väl i detta fallet eftersom concolic testing väljer olika
 konkreta värden samtidigt som den tillämpar symbolisk exekvering med symboliska
 värden som följer den givna branchen, t.ex. om \lstinline{s == "hej"} vilket
-motsvarar att programmet väljer else-branchen och printar \lstinline{"you lost"}. Detta
-upprepas med nya exekveringsvägar och till slut hittas vilken input som ger
+motsvarar att programmet väljer else-branchen och printar \lstinline{"you lost"}. 
+Detta upprepas med nya exekveringsvägar och till slut hittas vilken input som ger
 \lstinline{print("you won")}-branchen. 
 
+\subsubsection{Symbolisk Exekvering}
+Att exekvera ett program symboliskt innebär att representera värden utefter 
+programflödet som symboliska restriktioner, vilka kan lösas av automatiserade 
+teoremlösare (\emph{SMT solver}). En symbolisk körning representerar flera konkreta 
+körningar eftersom de (symboliska) värden som används representerar grupper av 
+konkreta värden vilka har gemensamt hur de påverkar programmets flöde. 
+
+Vägar i programmets kontrollflöde utforskas med symboliska uttryck för de 
+begränsningar som finns på programmets variablar - vilka egenskaper de måste uppnå 
+för att just denna väg ska kunna följas. Eftersom de symboliska värdena har kapacitet 
+att representera grupperingar av konkreta värden istället för enskilda sådana, 
+utförs en generaliserad testning av programmet, som ger insikt i hur programmet 
+beteer sig givet en grupp av parametrar som alla på grund av någon eller några 
+gemensamma egenskaper, orsakar gemensamma beteenden i programmet. 
+
+En symbolisk exekveringsmotor arbetar genom att först representera programmets input 
+som symboliska variablar, vilka vid starten inte har några begränsningar, och när 
+programflödet når en förgrening som baseras på någon av de symboliska variablerna, 
+så väljer motorn en gren och tillsätter den grenens restriktioner på den symboliska 
+variabeln för alla vägar som fortsätter utefter förgreningen. Operationer på värden 
+under körningens väg översätts till symboliska operationer på motsvarande symboliska 
+variabler. \cite{klee} När körning utefter grenen är slutförd så kan motorn börja om 
+vid förgreningen och utforska andra alternativ med samma metodik. De tillståndsvillkor 
+som en viss väg visas ha byggs därför successivt upp genom att motorn utökar de 
+symboliska variablerna till villkorliga uttryck allt eftersom vägen följs. 
+
+De fel som hittas genom symbolisk exekvering är tillförlitliga då metoden ej ger falskt 
+positiva resultat. Huruvida villkorsblock av program är nårbara kan evalueras med 
+säkerhet eftersom de krav som måste uppfyllas för att följa vägen dit dokumenteras under 
+den symboliska körningen, och resulterar i fullständiga symboliska representationer 
+som en automatiserad teoremlösare (SMT solver) kan appliceras på. 
+
+Symbolisk exekvering är användbart för att resonera kring hur programmet beter sig 
+beroende på grupperingar av input. För program där få värden tar gemensamma vägar blir 
+fördelen över att istället använda dynamisk testning av konkret data dock låg. 
+
+Eftersom symbolisk exekvering kan leda till \emph{path explosion} är det inte effektivt 
+att alltid undersöka alla förgreningar i ett program. Exempel på metoder för att undvika 
+path explosion är \emph{state-merging} och \emph{heuristics}. 
 
 \subsubsection{Statisk och dynamisk binäranalys}
 En annan typ av kategorisering av olika analysmetoder som fokuserar på hur
@@ -185,7 +224,7 @@ Dynamisk analys går ut på att analysera ett program under exekvering
 alla fall krävs någon typ av injektion av kod eller data i programmet i syfte
 att kunna extrahera viktig information under programmets körning
 \cite{dynamic_bin_analysis}. Många avancerade dynamiska metoder som t.ex.
-concolic testing kräver symbolisk exekvering. Det går ut på att tilldela
+concolic testing kräver symbolisk exekvering som går ut på att tilldela
 symboliska värden till variabler och se hur dessa påverkar programhopp och
 förgreningar och vad för möjliga värden som denna symbol kan inneha under
 exekvering. I fallet med concolic testing används denna information för att,
@@ -206,7 +245,7 @@ Ghidra\cite{ghidra_website} och Angr\cite{angr_web}.
 % projekt ska man helst citera en viss rapport", men vi beskriver bara med
 % några ord vad angr är och använder den till inget.
 
-Ghidra är en \emph{reverse engingeering} ramverk utvecklat av USA:s NSA
+Ghidra är ett \emph{reverse engingeering} ramverk utvecklat av USA:s NSA
 (National Security Agency) och kan disassembla en binär till pseudo-C-kod.
 Ghidra har också en debugger och funktionsgraf. Debuggern ska underlätta binär
 debugging genom att integrera med andra funktioner i Ghidra. Funktionsgrafen
