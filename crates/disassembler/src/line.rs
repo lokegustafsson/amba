@@ -54,7 +54,7 @@ impl FileLineCache {
 			// Strip `"\r\n"` or `"\n"` suffixes if present.
 			line_content
 				.strip_suffix("\r\n")
-				.or_else(|| Some(line_content.strip_suffix("\n").unwrap_or(line_content)))
+				.or_else(|| Some(line_content.strip_suffix('\n').unwrap_or(line_content)))
 		})();
 
 		Ok(ret)
@@ -118,8 +118,8 @@ impl Context {
 	}
 
 	/// Returns source code line information for a virtual adress range in binary if the sources
-	/// exist. an item in the resulting `Vec` is (start_virt_addr, size_in_bytes,
-	/// addr2line::Location, &line_of_source_code).
+	/// exist. an item in the resulting `Vec` is `(start_virt_addr, size_in_bytes,
+	/// addr2line::Location, &line_of_source_code)`.
 	pub fn get_source_lines(
 		&self,
 		probe_low: u64,
