@@ -976,8 +976,6 @@ version = "0.1.0"
 dependencies = [
  "addr2line",
  "elsa",
- "gimli",
- "object",
  "thiserror",
 ]
 
@@ -1398,7 +1396,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "221996f774192f0f718773def8201c4ae31f02616a54ccfc2d358bb0e5cefdec"
 dependencies = [
  "fallible-iterator",
- "indexmap",
  "stable_deref_trait",
 ]
 
