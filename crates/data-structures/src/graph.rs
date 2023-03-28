@@ -403,6 +403,83 @@ impl Graph {
 		state.out
 	}
 
+	/// [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+	pub fn to_strongly_connected_components_2(&self) -> Self {
+		let mut l = Vec::new(); // Backwards compared to wikipedia
+		let mut visited = Set::new();
+		let mut assigned = Set::new();
+		let mut acc = Map::new();
+
+		fn visit(graph: &Graph, visited: &mut Set<u64>, l: &mut Vec<u64>, u: u64) {
+			if !visited.insert(u) {
+				return;
+			}
+			for &v in graph.nodes.get(&u).unwrap().to.iter() {
+				visit(graph, visited, l, v);
+			}
+			l.push(u);
+		}
+		fn assign(
+			graph: &Graph,
+			acc: &mut Map<u64, Block>,
+			assigned: &mut Set<u64>,
+			u: u64,
+			root: u64,
+		) {
+			if !assigned.insert(u) {
+				return;
+			}
+			let u_ref = graph.nodes.get(&u).unwrap();
+			let node = acc
+				.entry(root)
+				.and_modify(|Block { to, from, of, id }| {
+					of.union(&u_ref.of);
+					to.union(&u_ref.to);
+					from.union(&u_ref.from);
+					*id = (*id).min(u);
+				})
+				.or_insert_with(|| u_ref.clone());
+			// Because borrow checker
+			let from = node.from.clone();
+			for &v in from.iter() {
+				assign(graph, acc, assigned, v, root);
+			}
+		}
+
+		for &u in self.nodes.keys() {
+			visit(self, &mut visited, &mut l, u);
+		}
+		for u in l.into_iter().rev() {
+			assign(self, &mut acc, &mut assigned, u, u);
+		}
+
+		dbg!(&acc);
+
+		let out = acc
+			.iter()
+			.map(|(_, Block { id, from, to, of })| {
+				let id = *id;
+				let from = from
+					.iter()
+					.copied()
+					.filter(|&x| x != id && acc.values().any(|y| x == y.id))
+					.collect();
+				let to = to
+					.iter()
+					.copied()
+					.filter(|&x| x != id && acc.values().any(|y| x == y.id))
+					.collect();
+				let of = of.clone();
+				(id, Block { id, from, to, of })
+			})
+			.collect();
+
+		Graph {
+			nodes: out,
+			..Default::default()
+		}
+	}
+
 	/// Verify that all node pairs have matching to and from
 	#[cfg(test)]
 	fn verify(&self) {
