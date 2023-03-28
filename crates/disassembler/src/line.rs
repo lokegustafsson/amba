@@ -1,6 +1,5 @@
 use std::{
-	collections::HashMap,
-	fmt, fs, io,
+	fmt, fs, io, iter,
 	path::{Path, PathBuf},
 	rc::Rc,
 };
@@ -9,6 +8,7 @@ use addr2line::{
 	gimli::{EndianReader, RunTimeEndian},
 	object::read,
 };
+use elsa::FrozenMap;
 use thiserror::Error;
 
 type Addr2LineContext = addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>;
@@ -21,19 +21,21 @@ pub enum Error {
 	Gimli(#[from] addr2line::gimli::Error),
 	#[error("{0}")]
 	ObjectRead(#[from] read::Error),
-	#[error("{0}")]
-	Custom(&'static str),
+	#[error("Stripped? Missing debug data: {0}")]
+	MissingDebugData(&'static str),
+	#[error("Partially stripped? A weird subset of debug data is missing")]
+	WeirdDebugData,
 }
 
 #[derive(Default)]
 pub struct FileLineCache {
 	/// (line_starts, Cached source files that have already been opened).
-	files: HashMap<PathBuf, (Vec<usize>, String)>,
+	files: FrozenMap<PathBuf, Box<(Vec<usize>, String)>>,
 }
 
 impl FileLineCache {
 	pub fn get<'a>(
-		&'a mut self,
+		&'a self,
 		filepath: &Path,
 		linenumber: u32,
 	) -> Result<Option<&'a str>, io::Error> {
@@ -44,25 +46,40 @@ impl FileLineCache {
 			let next_line = line_start_indices
 				.get(linenumber as usize)
 				.map_or(content.len(), |&idx| idx);
-			Some(&content[this_line..next_line])
+			let ret = &content[this_line..next_line];
+			Some(
+				if ret.len() >= 2 && &ret[(ret.len() - 2)..] == "\r\n" {
+					&ret[..(ret.len() - 2)]
+				} else if ret.len() >= 1 && &ret[(ret.len() - 1)..] == "\n" {
+					&ret[..(ret.len() - 1)]
+				} else {
+					ret
+				},
+			)
 		})();
 
 		Ok(ret)
 	}
 
-	fn populate(&mut self, filepath: &Path) -> Result<(), io::Error> {
-		if self.files.contains_key(filepath) {
+	fn populate(&self, filepath: &Path) -> Result<(), io::Error> {
+		if self.files.get(filepath).is_some() {
 			return Ok(());
 		}
 		let content = fs::read_to_string(filepath)?;
-		let mut line_start_indices = Vec::new();
-		let mut current_index = 0;
-		for line in content.lines() {
-			line_start_indices.push(current_index);
-			current_index += line.len();
-		}
-		self.files
-			.insert(filepath.to_owned(), (line_start_indices, content));
+		let line_start_indices = Iterator::chain(
+			iter::once(0),
+			content
+				.as_bytes()
+				.iter()
+				.copied()
+				.enumerate()
+				.filter_map(|(i, ch)| (ch == b'\n').then_some(i + 1)),
+		)
+		.collect();
+		self.files.insert(
+			filepath.to_owned(),
+			Box::new((line_start_indices, content)),
+		);
 		Ok(())
 	}
 }
@@ -86,7 +103,7 @@ impl Context {
 	/// Returns the line of source code corresponding to `addr`, if location information for `addr`
 	/// exist, Ok(Some(String)) is returned, if location information doesn't exist in debug
 	/// information, Ok(None) is returned, otherwise any errors are propagated as our `Error` enum.
-	pub fn get_source_line(&mut self, addr: u64) -> Result<Option<&str>, Error> {
+	pub fn get_source_line(&self, addr: u64) -> Result<Option<&str>, Error> {
 		let line_info = self.addr2loc(addr)?;
 		let Some((file_name, line, _)) = line_info else { return Ok(None); };
 
@@ -96,43 +113,43 @@ impl Context {
 	}
 
 	pub fn get_source_lines(
-		&mut self,
+		&self,
 		probe_low: u64,
 		probe_high: u64,
-	) -> Result<Vec<(u64, u64, addr2line::Location<'_>, String)>, Error> {
+	) -> Result<Vec<(u64, u64, addr2line::Location<'_>, &str)>, Error> {
 		let mut loc_range_iter = self
 			.addr2line_context
 			.find_location_range(probe_low, probe_high)?
 			.peekable();
 
 		if let Some((_, _, loc)) = loc_range_iter.peek() {
-			if loc.file.is_none() {
-				return Err(Error::Custom(
-					"Debug data has no source file reference. Stripped?",
-				));
+			match (loc.file, loc.line) {
+				(None, _) => {
+					return Err(Error::MissingDebugData("source file reference"));
+				}
+				(_, None) => {
+					return Err(Error::MissingDebugData("source line reference"));
+				}
+				(Some(file), Some(line)) => {
+					self.cache.get(file.as_ref(), line)?;
+				}
 			}
-			if loc.line.is_none() {
-				return Err(Error::Custom(
-					"Debug data has no source code line reference.",
-				));
-			}
-			self.cache
-				.get(loc.file.unwrap().as_ref(), loc.line.unwrap())?;
 		}
 
 		let mut res = Vec::new();
 		for (start_addr, size, loc) in loc_range_iter {
-			let item = self
-				.cache
-				.get(loc.file.unwrap().as_ref(), loc.line.unwrap())?;
+			let item = self.cache.get(
+				loc.file.ok_or(Error::WeirdDebugData)?.as_ref(),
+				loc.line.ok_or(Error::WeirdDebugData)?,
+			)?;
 			if let Some(line) = item {
-				res.push((start_addr, size, loc, line.to_owned()));
+				res.push((start_addr, size, loc, line));
 			}
 		}
 		Ok(res)
 	}
 
-	/// Get the `Ok(Some((filepath, line, column))` corresponding to an address. If no location
+	/// Get the `Ok(Some((filepath, line, column)))` corresponding to an address. If no location
 	/// information for the `addr` is found, `Ok(None)` is returned. Other errors from addr2line is
 	/// otherwise propagated and wrapped in our `Error`.
 	pub fn addr2loc(&self, probe: u64) -> Result<Option<(String, u32, u32)>, Error> {
@@ -186,34 +203,31 @@ mod test {
 
 	#[test]
 	#[ignore]
-	// NOTE: Ignored because uses realtive paths and the compiled binary can have different
+	// NOTE: Ignored because uses relative paths and the compiled binary can have different
 	// addresses. So it will not always pass...
 	fn hello() {
 		let binary_filepath = Path::new("../../demos/hello");
-		let addr = 0x401180;
+		let addr = 0x401134;
 
-		let mut context = Context::new(binary_filepath).unwrap();
-		let line = context.get_source_line(addr).unwrap();
+		let context = Context::new(binary_filepath).unwrap();
+		let line = context.get_source_line(addr).unwrap().unwrap().to_owned();
 
-		assert_eq!(
-			line.unwrap(),
-			read_line("../../demos/hello.c", 4).unwrap()
-		);
+		assert_eq!(line, read_line("../../demos/hello.c", 4).unwrap());
 	}
 
 	#[test]
 	#[ignore]
 	fn locs() {
 		let binary_filepath = Path::new("../../demos/hello");
-		let low = 0x401180;
-		let high = 0x401190;
-		let mut context = Context::new(binary_filepath).unwrap();
-		let res = context.get_source_lines(low, high).unwrap();
-		let mut res2 = Vec::new();
-		res2 = res
-			.iter()
-			.map(|(start, size, _, line)| (start, size, line.clone()))
+		let low = 0x401126;
+		let high = 0x40113F;
+		let context = Context::new(binary_filepath).unwrap();
+		let res: Vec<_> = context
+			.get_source_lines(low, high)
+			.unwrap()
+			.into_iter()
+			.map(|(start, size, _, line)| (start, size, line))
 			.collect();
-		dbg!(res2);
+		dbg!(res);
 	}
 }

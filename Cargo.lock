@@ -975,6 +975,7 @@ name = "disassembler"
 version = "0.1.0"
 dependencies = [
  "addr2line",
+ "elsa",
  "gimli",
  "object",
  "thiserror",
@@ -1096,6 +1097,15 @@ name = "either"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
+
+[[package]]
+name = "elsa"
+version = "1.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f74077c3c3aedb99a2683919698285596662518ea13e5eedcf8bdd43b0d0453b"
+dependencies = [
+ "stable_deref_trait",
+]
 
 [[package]]
 name = "emath"
@@ -1388,6 +1398,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "221996f774192f0f718773def8201c4ae31f02616a54ccfc2d358bb0e5cefdec"
 dependencies = [
  "fallible-iterator",
+ "indexmap",
  "stable_deref_trait",
 ]
 
