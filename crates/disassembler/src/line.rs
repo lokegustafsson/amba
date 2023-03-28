@@ -29,11 +29,15 @@ pub enum Error {
 
 #[derive(Default)]
 pub struct FileLineCache {
-	/// (line_starts, Cached source files that have already been opened).
+	/// Maps filepaths to vector of line start indices in the file and the file content itself.
 	files: FrozenMap<PathBuf, Box<(Vec<usize>, String)>>,
 }
 
 impl FileLineCache {
+	/// Gets a reference to the line at `linenumber` in `filepath`. Caches the content of
+	/// `filepath` for future calls to `get`. Returns Ok(None) if the file is read but the line at
+	/// `linenumber` doesn't exist. Any `std::io::Error` is propagated if the file couldn't be
+	/// read.
 	pub fn get<'a>(
 		&'a self,
 		filepath: &Path,
@@ -61,12 +65,15 @@ impl FileLineCache {
 		Ok(ret)
 	}
 
+	/// Caches the content of file at `filepath` if not already cached. `std::io::Error` is
+	/// propagated if file couldn't be read.
 	fn populate(&self, filepath: &Path) -> Result<(), io::Error> {
 		if self.files.get(filepath).is_some() {
 			return Ok(());
 		}
 		let content = fs::read_to_string(filepath)?;
 		let line_start_indices = Iterator::chain(
+			// zero out line number 0, so we can use use 1-indexed linenumbers.
 			iter::once(0),
 			content
 				.as_bytes()
@@ -92,7 +99,7 @@ pub struct Context {
 }
 
 impl Context {
-	// filepath to the binary.
+	/// `filepath` is the path to the binary.
 	pub fn new(filepath: &Path) -> Result<Self, Error> {
 		Ok(Self {
 			cache: FileLineCache::default(),
@@ -101,7 +108,7 @@ impl Context {
 	}
 
 	/// Returns the line of source code corresponding to `addr`, if location information for `addr`
-	/// exist, Ok(Some(String)) is returned, if location information doesn't exist in debug
+	/// exist, Ok(Some(&str)) is returned, if location information doesn't exist in debug
 	/// information, Ok(None) is returned, otherwise any errors are propagated as our `Error` enum.
 	pub fn get_source_line(&self, addr: u64) -> Result<Option<&str>, Error> {
 		let line_info = self.addr2loc(addr)?;
@@ -112,6 +119,9 @@ impl Context {
 		Ok(res)
 	}
 
+	/// Returns source code line information for a virtual adress range in binary if the sources
+	/// exist. an item in the resulting `Vec` is (start_virt_addr, size_in_bytes,
+	/// addr2line::Location, &line_of_source_code).
 	pub fn get_source_lines(
 		&self,
 		probe_low: u64,
