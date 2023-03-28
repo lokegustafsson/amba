@@ -50,16 +50,11 @@ impl FileLineCache {
 			let next_line = line_start_indices
 				.get(linenumber as usize)
 				.map_or(content.len(), |&idx| idx);
-			let ret = &content[this_line..next_line];
-			Some(
-				if ret.len() >= 2 && &ret[(ret.len() - 2)..] == "\r\n" {
-					&ret[..(ret.len() - 2)]
-				} else if ret.len() >= 1 && &ret[(ret.len() - 1)..] == "\n" {
-					&ret[..(ret.len() - 1)]
-				} else {
-					ret
-				},
-			)
+			let line_content = &content[this_line..next_line];
+			// Strip `"\r\n"` or `"\n"` suffixes if present.
+			line_content
+				.strip_suffix("\r\n")
+				.or_else(|| Some(line_content.strip_suffix("\n").unwrap_or(line_content)))
 		})();
 
 		Ok(ret)
@@ -73,13 +68,16 @@ impl FileLineCache {
 		}
 		let content = fs::read_to_string(filepath)?;
 		let line_start_indices = Iterator::chain(
-			// zero out line number 0, so we can use use 1-indexed linenumbers.
+			// zero out line number 0, so we can index with 1-indexed linenumbers.
 			iter::once(0),
+			// chain it with the line start indices for content
 			content
 				.as_bytes()
 				.iter()
 				.copied()
 				.enumerate()
+				// allow newline characters to be included in this line instead of being part of
+				// next line.
 				.filter_map(|(i, ch)| (ch == b'\n').then_some(i + 1)),
 		)
 		.collect();
@@ -146,7 +144,7 @@ impl Context {
 			}
 		}
 
-		let mut res = Vec::new();
+		let mut res = Vec::with_capacity(loc_range_iter.size_hint().0);
 		for (start_addr, size, loc) in loc_range_iter {
 			let item = self.cache.get(
 				loc.file.ok_or(Error::WeirdDebugData)?.as_ref(),
@@ -167,7 +165,7 @@ impl Context {
 		let frame = locs.next()?.and_then(|frame| {
 			let location = frame.location?;
 			Some((
-				location.file?.to_owned(),
+				location.file.unwrap().to_owned(),
 				location.line?,
 				location.column?,
 			))
@@ -188,9 +186,11 @@ impl Context {
 #[cfg(test)]
 mod test {
 	use std::{
+		env, fs,
 		fs::File,
 		io::{self, BufRead, BufReader, Error, Lines},
-		path::Path,
+		path::{Path, PathBuf},
+		process::Command,
 	};
 
 	use crate::*;
@@ -211,33 +211,61 @@ mod test {
 		Ok(BufReader::new(file).lines())
 	}
 
-	#[test]
-	#[ignore]
-	// NOTE: Ignored because uses relative paths and the compiled binary can have different
-	// addresses. So it will not always pass...
-	fn hello() {
-		let binary_filepath = Path::new("../../demos/hello");
-		let addr = 0x401134;
+	fn create_hello_prog() -> (PathBuf, PathBuf) {
+		const HELLO_PROG: &str = r#"
+		#include <stdio.h>
 
-		let context = Context::new(binary_filepath).unwrap();
-		let line = context.get_source_line(addr).unwrap().unwrap().to_owned();
+		int main() {
+			puts("Hello world");
+		}
+		"#;
 
-		assert_eq!(line, read_line("../../demos/hello.c", 4).unwrap());
+		let out_dir = env::var("OUT_DIR").unwrap();
+		let dest_src_path = Path::new(&out_dir).join("hello.c");
+		let dest_bin_path = Path::new(&out_dir).join("hello");
+		fs::write(&dest_src_path, HELLO_PROG).unwrap();
+		Command::new("gcc")
+			.args(&[&dest_src_path.to_string_lossy(), "-gdwarf", "-O0", "-o"])
+			.arg(&dest_bin_path)
+			.stdout(std::process::Stdio::null())
+			.stderr(std::process::Stdio::null())
+			.status()
+			.unwrap();
+		(dest_src_path, dest_bin_path)
 	}
 
 	#[test]
-	#[ignore]
-	fn locs() {
-		let binary_filepath = Path::new("../../demos/hello");
+	fn hello_loc() {
+		let (source_filepath, binary_filepath) = create_hello_prog();
+		const ADDR: u64 = 0x401134;
+
+		let context = Context::new(&binary_filepath).unwrap();
+		let line = context.get_source_line(ADDR).unwrap().unwrap().to_owned();
+
+		assert_eq!(line, read_line(source_filepath, 5).unwrap());
+	}
+
+	#[test]
+	fn hello_locs() {
+		let (source_filepath, binary_filepath) = create_hello_prog();
 		let low = 0x401126;
 		let high = 0x40113F;
-		let context = Context::new(binary_filepath).unwrap();
+		let context = Context::new(&binary_filepath).unwrap();
 		let res: Vec<_> = context
 			.get_source_lines(low, high)
 			.unwrap()
 			.into_iter()
 			.map(|(start, size, _, line)| (start, size, line))
 			.collect();
-		dbg!(res);
+
+		let line_4 = &read_line(&source_filepath, 4).unwrap();
+		let line_5 = &read_line(&source_filepath, 5).unwrap();
+		let line_6 = &read_line(&source_filepath, 6).unwrap();
+		let expected: Vec<(u64, u64, &str)> = vec![
+			(0x401126, 4, line_4),
+			(0x40112A, 20, line_5),
+			(0x40113E, 2, line_6),
+		];
+		assert_eq!(res, expected);
 	}
 }
