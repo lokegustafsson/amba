@@ -368,7 +368,7 @@ impl Graph {
 						let v_ref = &mut state.translation.get_mut(&v).unwrap().low_link;
 						*v_ref = (*v_ref).min(w_low);
 					}
-					Some(Translation {on_stack, ..}) if *on_stack => {
+					Some(Translation { on_stack, .. }) if *on_stack => {
 						let w_idx = state.translation[&w].index;
 						let v_ref = &mut state.translation.get_mut(&v).unwrap().low_link;
 						*v_ref = (*v_ref).min(w_idx);
