@@ -29,7 +29,7 @@ let
       # Amba skips unnecessary download internally
       ${amba.amba}/bin/amba init --download
       # Run musl hello world
-      ${amba.amba}/bin/amba run ${hello}/hello.recipe.json --no-gui
+      time ${amba.amba}/bin/amba run ${hello}/hello.recipe.json --no-gui
     '';
   };
 in { inherit control-flow test-amba; }
