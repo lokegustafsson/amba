@@ -7,4 +7,6 @@ edition = "2021"
 
 [dependencies]
 addr2line = "0.19"
+gimli = "0.27"
+object = "0.30"
 thiserror = "1.0"
