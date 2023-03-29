@@ -1,9 +1,14 @@
 use std::{
+	collections::BTreeMap,
 	fmt,
 	time::{Duration, Instant},
 };
 
 use data_structures::Graph;
+
+#[repr(C)]
+#[derive(Debug, Clone, Default)]
+pub struct Metadata {}
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
@@ -13,6 +18,8 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
+	pub(crate) metadata: Vec<Metadata>,
+	pub(crate) meta_mapping: BTreeMap<u64, usize>,
 }
 
 impl Default for ControlFlowGraph {
@@ -76,6 +83,8 @@ impl ControlFlowGraph {
 			rebuilds: 0,
 			created_at: Instant::now(),
 			rebuilding_time: Duration::new(0, 0),
+			metadata: Vec::new(),
+			meta_mapping: BTreeMap::new(),
 		}
 	}
 
