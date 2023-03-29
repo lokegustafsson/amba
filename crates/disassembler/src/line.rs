@@ -132,10 +132,10 @@ impl Context {
 		if let Some((_, _, loc)) = loc_range_iter.peek() {
 			match (loc.file, loc.line) {
 				(None, _) => {
-					return Err(Error::MissingDebugData("source file reference"));
+					return Err(Error::MissingDebugData("Source file reference"));
 				}
 				(_, None) => {
-					return Err(Error::MissingDebugData("source line reference"));
+					return Err(Error::MissingDebugData("Source line reference"));
 				}
 				(Some(file), Some(line)) => {
 					self.cache.get(file.as_ref(), line)?;
