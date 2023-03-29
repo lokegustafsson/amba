@@ -54,7 +54,8 @@ impl FileLineCache {
 			// Strip `"\r\n"` or `"\n"` suffixes if present.
 			line_content
 				.strip_suffix("\r\n")
-				.or_else(|| Some(line_content.strip_suffix('\n').unwrap_or(line_content)))
+				.or_else(|| line_content.strip_suffix('\n'))
+				.or(Some(line_content))
 		})();
 
 		Ok(ret)
@@ -72,13 +73,11 @@ impl FileLineCache {
 			iter::once(0),
 			// chain it with the line start indices for content
 			content
-				.as_bytes()
-				.iter()
-				.copied()
+				.bytes()
 				.enumerate()
-				// allow newline characters to be included in this line instead of being part of
-				// next line.
-				.filter_map(|(i, ch)| (ch == b'\n').then_some(i + 1)),
+				// allow newline and line feed characters to be included in this line instead of
+				// being part of next line.
+				.filter_map(|(i, ch)| (ch == b'\n' || ch == b'\r').then_some(i + 1)),
 		)
 		.collect();
 		self.files.insert(
