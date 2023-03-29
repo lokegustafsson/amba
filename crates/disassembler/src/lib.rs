@@ -1,3 +1,3 @@
 mod line;
 
-pub use line::{Context, Error};
+pub use line::{Addr2Line, Error};

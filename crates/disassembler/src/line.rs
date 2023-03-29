@@ -11,7 +11,7 @@ use addr2line::{
 use elsa::FrozenMap;
 use thiserror::Error;
 
-type Addr2LineContext = addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>;
+type Context = addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>;
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -64,15 +64,15 @@ impl FileLineCache {
 		}
 		let content = fs::read_to_string(filepath)?;
 		let line_start_indices = Iterator::chain(
-			// zero out line number 0, so we can index with 1-indexed linenumbers.
+			// The first line starts at byte 0, and all following lines start 1 past a `'\n'` (This
+			// holds even for `"\r\n"` line ends!).
 			iter::once(0),
-			// chain it with the line start indices for content
 			content
 				.bytes()
 				.enumerate()
-				// allow newline and line feed characters to be included in this line instead of
-				// being part of next line.
-				.filter_map(|(i, ch)| (ch == b'\n' || ch == b'\r').then_some(i + 1)),
+				// allow newline characters to be included in this line instead of being part of
+				// next line.
+				.filter_map(|(i, ch)| (ch == b'\n').then_some(i + 1)),
 		)
 		.collect();
 		self.files.insert(
@@ -84,19 +84,17 @@ impl FileLineCache {
 	}
 }
 
-/// For caching source files loaded into memory. So that source code lines can be fetched without
-/// rereading the source code files.
-pub struct Context {
-	cache: FileLineCache, // Cached source files that have already been opened.
-	addr2line_context: Addr2LineContext,
+pub struct Addr2Line {
+	file_line_cache: FileLineCache,
+	addr2line_context: Context,
 }
 
-impl Context {
+impl Addr2Line {
 	/// `filepath` is the path to the binary.
 	pub fn new(filepath: &Path) -> Result<Self, Error> {
 		Ok(Self {
-			cache: FileLineCache::default(),
-			addr2line_context: Context::create_addr2line_context(filepath)?,
+			file_line_cache: FileLineCache::default(),
+			addr2line_context: Addr2Line::create_addr2line_context(filepath)?,
 		})
 	}
 
@@ -108,7 +106,7 @@ impl Context {
 		let Some((file_name, line, _)) = line_info else { return Ok(None); };
 		let filepath = Path::new(&file_name);
 
-		self.cache.get(filepath, line)
+		self.file_line_cache.get(filepath, line)
 	}
 
 	/// Returns source code line information for a virtual adress range in binary if the sources
@@ -133,14 +131,14 @@ impl Context {
 					return Err(Error::MissingDebugData("Source line reference"));
 				}
 				(Some(file), Some(line)) => {
-					self.cache.get(file.as_ref(), line)?;
+					self.file_line_cache.get(file.as_ref(), line)?;
 				}
 			}
 		}
 
 		let mut res = Vec::with_capacity(loc_range_iter.size_hint().0);
 		for (start_addr, size, loc) in loc_range_iter {
-			let item = self.cache.get(
+			let item = self.file_line_cache.get(
 				loc.file.ok_or(Error::WeirdDebugData)?.as_ref(),
 				loc.line.ok_or(Error::WeirdDebugData)?,
 			)?;
@@ -155,7 +153,7 @@ impl Context {
 	/// Get the `Ok(Some((filepath, line, column)))` corresponding to an address. If no location
 	/// information for the `addr` is found, `Ok(None)` is returned. Other errors from addr2line is
 	/// otherwise propagated and wrapped in our `Error`.
-	pub fn addr2loc(&self, probe: u64) -> Result<Option<(String, u32, u32)>, Error> {
+	fn addr2loc(&self, probe: u64) -> Result<Option<(String, u32, u32)>, Error> {
 		let mut locs = self.addr2line_context.find_frames(probe)?;
 		let frame = locs.next()?.and_then(|frame| {
 			let location = frame.location?;
@@ -168,7 +166,7 @@ impl Context {
 		Ok(frame)
 	}
 
-	fn create_addr2line_context<P>(filepath: P) -> Result<Addr2LineContext, Error>
+	fn create_addr2line_context<P>(filepath: P) -> Result<Context, Error>
 	where
 		P: AsRef<Path> + fmt::Debug,
 	{
@@ -234,7 +232,7 @@ mod test {
 		let (source_filepath, binary_filepath) = create_hello_prog();
 		const ADDR: u64 = 0x401134;
 
-		let context = Context::new(&binary_filepath).unwrap();
+		let context = Addr2Line::new(&binary_filepath).unwrap();
 		let line = context.get_source_line(ADDR).unwrap().unwrap().to_owned();
 
 		assert_eq!(line, read_line(source_filepath, 5).unwrap());
@@ -245,7 +243,7 @@ mod test {
 		let (source_filepath, binary_filepath) = create_hello_prog();
 		let low = 0x401126;
 		let high = 0x40113F;
-		let context = Context::new(&binary_filepath).unwrap();
+		let context = Addr2Line::new(&binary_filepath).unwrap();
 		let res: Vec<_> = context
 			.get_source_lines(low, high)
 			.unwrap()
