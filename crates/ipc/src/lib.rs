@@ -35,11 +35,9 @@ impl Drop for IpcTx<'_> {
 impl IpcTx<'_> {
 	pub fn blocking_send(&mut self, msg: &IpcMessage<'_>) -> Result<(), IpcError> {
 		let size = bincode::serialized_size(msg).unwrap();
-		println!("DEBUGIPC sending over ipc {size}+8 bytes");
 		self.tx.write_all(&size.to_le_bytes())?;
 		bincode::serialize_into(&mut self.tx, msg)?;
 		self.tx.flush()?;
-		println!("DEBUGIPC sent over ipctx");
 		Ok(())
 	}
 }
@@ -64,9 +62,7 @@ impl IpcRx<'_> {
 			self.rx.read_exact(&mut size)?;
 			u64::from_le_bytes(size)
 		};
-		println!("DEBUGIPC blocking receive of {size} bytes started");
 		let ret = bincode::deserialize_from((&mut self.rx).take(size))?;
-		println!("DEBUGIPC blocking receive finished");
 		Ok(ret)
 	}
 }
@@ -74,7 +70,10 @@ impl IpcRx<'_> {
 #[derive(Serialize, Deserialize, Debug)]
 pub enum IpcMessage<'a> {
 	Ping,
-	GraphSnapshot(Cow<'a, data_structures::Graph>),
+	GraphSnapshot {
+		name: Cow<'a, str>,
+		graph: Cow<'a, data_structures::Graph>,
+	},
 }
 
 #[derive(Debug)]

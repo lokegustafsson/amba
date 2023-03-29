@@ -2,10 +2,10 @@
 
 namespace control_flow {
 
-ControlFlow::ControlFlow()
+ControlFlow::ControlFlow(std::string name)
 	: m_last(0)
+  , m_name(name)
 	, m_cfg(rust_new_control_flow_graph())
-	, m_ipc(rust_ipc_new())
 	{}
 
 ControlFlow::~ControlFlow() {
@@ -58,8 +58,7 @@ void ControlFlow::onStateMerge(
 }
 
 void ControlFlow::onTimer() {
-	std::cerr << "\n\n\nDEBUGIPC control flow ontimer\n\n\n";
-	rust_ipc_send_graph(this->m_ipc, this->m_cfg);
+	rust_ipc_send_graph(this->m_name.c_str(), this->m_cfg);
 }
 
 } // namespace control_flow

@@ -1,10 +1,27 @@
+use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
+
+use crate::control_flow::ControlFlowGraph;
+
 pub mod control_flow;
+
+static IPC: Mutex<Option<ipc::IpcTx<'static>>> = Mutex::new(None);
+
+fn with_ipc(f: impl FnOnce(&mut ipc::IpcTx<'static>)) {
+	let mut guard = IPC.lock().unwrap();
+	let ipc = guard.get_or_insert_with(|| match UnixStream::connect("amba-ipc.socket") {
+		Ok(stream) => {
+			let stream = Box::leak(Box::new(stream));
+			let (tx, _rx) = ipc::new_wrapping(&*stream);
+			tx
+		}
+		Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
+	});
+	f(ipc);
+}
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
-	use std::{borrow::Cow, os::unix::net::UnixStream, sync::Mutex};
-
-	use crate::control_flow::ControlFlowGraph;
+	use super::*;
 
 	/// Create a newly allocated `ControlFlowGraph` and return an
 	/// owning raw pointer. This pointer may only be freed with
@@ -44,37 +61,20 @@ mod ffi {
 		println!("{cfg}");
 	}
 
-	/// Initialize `Ipc` and return an owning raw pointer. If initialization
-	/// fails, a null pointer is returned.
-	#[no_mangle]
-	pub extern "C" fn rust_ipc_new() -> *mut Mutex<ipc::IpcTx<'static>> {
-		match UnixStream::connect("amba-ipc.socket") {
-			Ok(stream) => {
-				let stream = Box::leak(Box::new(stream));
-				let (tx, _rx) = ipc::new_wrapping(&*stream);
-				println!("\nDEBUGIPC libamba connected to amba-ipc.socket\n");
-				Box::leak(Box::new(Mutex::new(tx)))
-			}
-			Err(err) => {
-				println!("libamba failed to connect to IPC socket: {err:?}");
-				std::ptr::null_mut()
-			}
-		}
-	}
-
 	#[no_mangle]
 	pub unsafe extern "C" fn rust_ipc_send_graph(
-		ipc: *mut Mutex<ipc::IpcTx<'static>>,
+		name: *const i8,
 		graph: *mut Mutex<ControlFlowGraph>,
 	) {
-		println!("DEBUGIPC sending graph");
-		let mut ipc = (&*ipc).lock().unwrap();
-		let graph = (&*graph).lock().unwrap();
-		ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot(Cow::Borrowed(
-			&graph.graph,
-		)))
-		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
-		println!("DEBUGIPC sent graph");
+		let name = CStr::from_ptr(name).to_string_lossy();
+		with_ipc(|ipc| {
+			let graph = (&*graph).lock().unwrap();
+			ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
+				name,
+				graph: Cow::Borrowed(&graph.graph),
+			})
+			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+		});
 	}
 
 	#[no_mangle]

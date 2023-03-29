@@ -8,7 +8,7 @@ namespace control_flow {
 
 class ControlFlow {
   public:
-	ControlFlow();
+	ControlFlow(std::string);
 	~ControlFlow();
 
 	amba::ExecutionFunction onBlockStart;
@@ -17,8 +17,8 @@ class ControlFlow {
 	amba::TimerFunction onTimer;
   protected:
 	u64 m_last;
+  std::string m_name;
 	ControlFlowGraph *m_cfg;
-	Ipc *m_ipc;
 };
 
 } // namespace control_flow
