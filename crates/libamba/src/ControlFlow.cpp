@@ -9,7 +9,7 @@ ControlFlow::ControlFlow(std::string name)
 	{}
 
 ControlFlow::~ControlFlow() {
-	rust_print_graph_size(this->m_cfg);
+	rust_print_graph_size(this->m_name.c_str(), this->m_cfg);
 	rust_free_control_flow_graph(this->m_cfg);
 }
 
@@ -58,6 +58,9 @@ void ControlFlow::onStateMerge(
 }
 
 void ControlFlow::onTimer() {
+	rust_ipc_send_graph(this->m_name.c_str(), this->m_cfg);
+}
+void ControlFlow::onEngineShutdown() {
 	rust_ipc_send_graph(this->m_name.c_str(), this->m_cfg);
 }
 

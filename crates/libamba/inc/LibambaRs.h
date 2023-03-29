@@ -10,6 +10,6 @@ extern "C" {
 		u64 from,
 		u64 to
 	);
-	void rust_print_graph_size(ControlFlowGraph *ptr);
+	void rust_print_graph_size(const char *name, ControlFlowGraph *ptr);
 	void rust_ipc_send_graph(const char *name, ControlFlowGraph *graph);
 }

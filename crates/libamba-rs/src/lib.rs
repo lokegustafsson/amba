@@ -55,10 +55,11 @@ mod ffi {
 	}
 
 	#[no_mangle]
-	pub unsafe extern "C" fn rust_print_graph_size(ptr: *mut Mutex<ControlFlowGraph>) {
+	pub unsafe extern "C" fn rust_print_graph_size(name: *const i8, ptr: *mut Mutex<ControlFlowGraph>) {
+		let name = CStr::from_ptr(name).to_string_lossy();
 		let mutex = &*ptr;
 		let cfg = mutex.lock().unwrap();
-		println!("{cfg}");
+		println!("\nGraph of: {name}\n{cfg}");
 	}
 
 	#[no_mangle]

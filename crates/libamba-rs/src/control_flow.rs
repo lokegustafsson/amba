@@ -30,7 +30,7 @@ impl fmt::Display for ControlFlowGraph {
 		write!(
 			f,
 			concat!(
-				"\nNodes: {} ({})\n",
+				"Nodes: {} ({})\n",
 				"Edges: {} ({})\n",
 				"Connections: Avg: {}, Max: {}\n",
 				"Updates: {}\n",

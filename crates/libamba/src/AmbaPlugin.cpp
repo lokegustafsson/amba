@@ -55,6 +55,17 @@ void AmbaPlugin::initialize() {
 		<< '\n';
 
         // Set up event callbacks
+	core.onTimer
+		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&control_flow::ControlFlow::onTimer
+		));
+	core.onEngineShutdown
+		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&control_flow::ControlFlow::onEngineShutdown
+		));
+
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -79,6 +90,11 @@ void AmbaPlugin::initialize() {
 		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
 			&control_flow::ControlFlow::onTimer
+		));
+	core.onEngineShutdown
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onEngineShutdown
 		));
 
 	monitor->onModuleLoad

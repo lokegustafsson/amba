@@ -15,6 +15,7 @@ class ControlFlow {
 	amba::SymbolicExecutionFunction onStateFork;
 	amba::StateMergeFunction onStateMerge;
 	amba::TimerFunction onTimer;
+	amba::TimerFunction onEngineShutdown;
   protected:
 	u64 m_last;
   std::string m_name;
