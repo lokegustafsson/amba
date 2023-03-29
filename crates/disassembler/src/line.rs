@@ -36,13 +36,8 @@ pub struct FileLineCache {
 impl FileLineCache {
 	/// Gets a reference to the line at `linenumber` in `filepath`. Caches the content of
 	/// `filepath` for future calls to `get`. Returns Ok(None) if the file is read but the line at
-	/// `linenumber` doesn't exist. Any `std::io::Error` is propagated if the file couldn't be
-	/// read.
-	pub fn get<'a>(
-		&'a self,
-		filepath: &Path,
-		linenumber: u32,
-	) -> Result<Option<&'a str>, io::Error> {
+	/// `linenumber` doesn't exist. Any error is propagated if the file couldn't be read.
+	pub fn get<'a>(&'a self, filepath: &Path, linenumber: u32) -> Result<Option<&'a str>, Error> {
 		self.populate(filepath)?;
 		let (line_start_indices, content) = &self.files[filepath];
 		let ret = (|| {
