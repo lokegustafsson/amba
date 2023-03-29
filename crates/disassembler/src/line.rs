@@ -51,7 +51,10 @@ impl FileLineCache {
 				.get(linenumber as usize)
 				.map_or(content.len(), |&idx| idx);
 			let line_content = &content[this_line..next_line];
-			line_content.strip_suffix('\n').or(Some(line_content))
+			// Strip `"\r\n"` or `"\n"` suffixes if present.
+			line_content
+				.strip_suffix("\r\n")
+				.or_else(|| Some(line_content.strip_suffix('\n').unwrap_or(line_content)))
 		})();
 
 		Ok(ret)
