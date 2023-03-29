@@ -107,8 +107,7 @@ impl Context {
 		let Some((file_name, line, _)) = line_info else { return Ok(None); };
 
 		let filepath = Path::new(&file_name);
-		let res = self.cache.get(filepath, line)?;
-		Ok(res)
+		self.cache.get(filepath, line)
 	}
 
 	/// Returns source code line information for a virtual adress range in binary if the sources
