@@ -79,6 +79,7 @@ impl FileLineCache {
 			filepath.to_owned(),
 			Box::new((line_start_indices, content)),
 		);
+
 		Ok(())
 	}
 }
@@ -105,8 +106,8 @@ impl Context {
 	pub fn get_source_line(&self, addr: u64) -> Result<Option<&str>, Error> {
 		let line_info = self.addr2loc(addr)?;
 		let Some((file_name, line, _)) = line_info else { return Ok(None); };
-
 		let filepath = Path::new(&file_name);
+
 		self.cache.get(filepath, line)
 	}
 
@@ -147,6 +148,7 @@ impl Context {
 				res.push((start_addr, size, loc, line));
 			}
 		}
+
 		Ok(res)
 	}
 
