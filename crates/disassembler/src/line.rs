@@ -220,7 +220,7 @@ mod test {
 		}
 		"#;
 
-		let out_dir = env::var("OUT_DIR").unwrap();
+		let out_dir = env::temp_dir();
 		let dest_src_path = Path::new(&out_dir).join("hello.c");
 		let dest_bin_path = Path::new(&out_dir).join("hello");
 		fs::write(&dest_src_path, HELLO_PROG).unwrap();
