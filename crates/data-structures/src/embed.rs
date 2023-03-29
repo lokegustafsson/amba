@@ -1,10 +1,10 @@
-use crate::Graph;
+use crate::GraphIpc;
 
 pub struct Graph2D {
 	nodes: Vec<Node2D>,
 	edges: Vec<(usize, usize)>,
 }
-struct Node2D {
+pub struct Node2D {
 	x: f64,
 	y: f64,
 }
@@ -17,7 +17,11 @@ impl Graph2D {
 		}
 	}
 
-	pub fn embedding_of(graph: &Graph) -> Self {
-		todo!()
+	pub fn embedding_of(graph: GraphIpc) -> Self {
+		let nodes = todo!();
+		Self {
+			nodes,
+			edges: graph.edges,
+		}
 	}
 }

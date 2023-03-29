@@ -1,5 +1,7 @@
 use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
 
+use data_structures::GraphIpc;
+
 use crate::control_flow::ControlFlowGraph;
 
 pub mod control_flow;
@@ -55,7 +57,10 @@ mod ffi {
 	}
 
 	#[no_mangle]
-	pub unsafe extern "C" fn rust_print_graph_size(name: *const i8, ptr: *mut Mutex<ControlFlowGraph>) {
+	pub unsafe extern "C" fn rust_print_graph_size(
+		name: *const i8,
+		ptr: *mut Mutex<ControlFlowGraph>,
+	) {
 		let name = CStr::from_ptr(name).to_string_lossy();
 		let mutex = &*ptr;
 		let cfg = mutex.lock().unwrap();
@@ -72,7 +77,7 @@ mod ffi {
 			let graph = (&*graph).lock().unwrap();
 			ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
 				name,
-				graph: Cow::Borrowed(&graph.graph),
+				graph: Cow::Owned(GraphIpc::from(&graph.graph)),
 			})
 			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 		});

@@ -1,14 +1,12 @@
 use std::{collections::BTreeSet, default::Default, mem};
 
-use serde::{Deserialize, Serialize};
-
 use crate::small_set::SmallU64Set;
 
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::BTreeSet<T>;
 pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct Node {
 	pub id: u64,
 	pub from: SmallU64Set,
@@ -16,7 +14,7 @@ pub struct Node {
 	pub of: SmallU64Set,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct Graph {
 	pub nodes: Map<u64, Node>,
 	pub merges: Map<u64, u64>,

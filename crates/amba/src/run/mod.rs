@@ -169,12 +169,12 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 	loop {
 		match ipc_rx.blocking_receive() {
 			Ok(IpcMessage::GraphSnapshot { name, graph }) => {
-				let embedding = Graph2D::embedding_of(&*graph);
+				let embedding = Graph2D::embedding_of(graph.into_owned());
 				let msg = match &*name {
 					"symbolic states" => ControllerMsg::ReplaceStateGraph(embedding),
 					"basic blocks" => ControllerMsg::ReplaceBlockGraph(embedding),
 					other => {
-						tracing::info!("received unknown graph '{name}'");
+						tracing::info!("received unknown graph '{other}'");
 						continue;
 					}
 				};

@@ -8,7 +8,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
-pub fn new_wrapping(stream: &UnixStream) -> (IpcTx, IpcRx) {
+pub fn new_wrapping(stream: &UnixStream) -> (IpcTx<'_>, IpcRx<'_>) {
 	(
 		IpcTx {
 			tx: BufWriter::new(stream),
@@ -72,7 +72,7 @@ pub enum IpcMessage<'a> {
 	Ping,
 	GraphSnapshot {
 		name: Cow<'a, str>,
-		graph: Cow<'a, data_structures::Graph>,
+		graph: Cow<'a, data_structures::GraphIpc>,
 	},
 }
 
