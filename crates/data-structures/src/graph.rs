@@ -382,7 +382,7 @@ mod test {
 		test_runner::{Config, TestRunner},
 	};
 
-	use crate::graph::*;
+	use super::*;
 
 	impl PartialEq for Node {
 		fn eq(&self, other: &Self) -> bool {

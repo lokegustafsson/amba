@@ -91,6 +91,7 @@ dependencies = [
  "chrono",
  "clap",
  "ctrlc",
+ "data-structures",
  "dirs",
  "eframe",
  "include_dir",

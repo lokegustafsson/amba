@@ -4,6 +4,7 @@
 
 use std::{
 	ffi::{OsStr, OsString},
+	mem,
 	net::Shutdown,
 	os::unix::{
 		net::{UnixListener, UnixStream},
@@ -16,8 +17,9 @@ use std::{
 	time::Duration,
 };
 
+use data_structures::Graph2D;
 use eframe::egui::Context;
-use ipc::IpcError;
+use ipc::{IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
@@ -26,8 +28,11 @@ mod session;
 
 pub enum ControllerMsg {
 	Shutdown,
+	ReplaceStateGraph(Graph2D),
+	ReplaceBlockGraph(Graph2D),
 }
 pub struct Controller {
+	pub tx: mpsc::Sender<ControllerMsg>,
 	pub rx: mpsc::Receiver<ControllerMsg>,
 	pub model: Arc<Mutex<Model>>,
 	pub gui_context: Option<Context>,
@@ -43,11 +48,13 @@ impl Controller {
 
 		let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
 		let qmp_socket = &config.temp_dir.join("qmp.socket");
+		let controller_tx_from_ipc = self.tx.clone();
+		let controller_tx_from_qmp = self.tx.clone();
 
 		let res = thread::scope(|s| {
 			let ipc = thread::Builder::new()
 				.name("ipc".to_owned())
-				.spawn_scoped(s, || run_ipc(ipc_socket))
+				.spawn_scoped(s, || run_ipc(ipc_socket, controller_tx_from_ipc))
 				.unwrap();
 			let qemu = thread::Builder::new()
 				.name("qemu".to_owned())
@@ -55,13 +62,32 @@ impl Controller {
 				.unwrap();
 			let qmp = thread::Builder::new()
 				.name("qmp".to_owned())
-				.spawn_scoped(s, || run_qmp(qmp_socket))
+				.spawn_scoped(s, || run_qmp(qmp_socket, controller_tx_from_qmp))
 				.unwrap();
+			self.run_controller();
 			shutdown_controller(ipc_socket, ipc, qemu, qmp)
 		});
 		cmd.try_remove(ipc_socket);
 		cmd.try_remove(qmp_socket);
 		res
+	}
+
+	fn run_controller(self) {
+		loop {
+			match self.rx.recv().unwrap() {
+				ControllerMsg::Shutdown => return,
+				ControllerMsg::ReplaceBlockGraph(mut block_graph) => {
+					let mut guard = self.model.lock().unwrap();
+					mem::swap(&mut guard.block_graph, &mut block_graph);
+					mem::drop(guard);
+				}
+				ControllerMsg::ReplaceStateGraph(mut state_graph) => {
+					let mut guard = self.model.lock().unwrap();
+					mem::swap(&mut guard.state_graph, &mut state_graph);
+					mem::drop(guard);
+				}
+			}
+		}
 	}
 }
 
@@ -135,13 +161,25 @@ fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	Ok(())
 }
 
-fn run_ipc(ipc_socket: &Path) -> Result<(), ()> {
+fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
 	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
 	let stream = ipc_listener.accept().unwrap().0;
 	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
 	tracing::info!("IPC initialized");
 	loop {
 		match ipc_rx.blocking_receive() {
+			Ok(IpcMessage::GraphSnapshot { name, graph }) => {
+				let embedding = Graph2D::embedding_of(&*graph);
+				let msg = match &*name {
+					"symbolic states" => ControllerMsg::ReplaceStateGraph(embedding),
+					"basic blocks" => ControllerMsg::ReplaceBlockGraph(embedding),
+					other => {
+						tracing::info!("received unknown graph '{name}'");
+						continue;
+					}
+				};
+				controller_tx.send(msg).unwrap();
+			}
 			Ok(msg) => tracing::info!(?msg),
 			Err(IpcError::EndOfFile) => break,
 			Err(other) => panic!("ipc error: {other:?}"),
@@ -288,7 +326,7 @@ fn run_qemu_inner(
 	cmd.command_spawn_wait(&mut command)
 }
 
-fn run_qmp(socket: &Path) -> Result<(), ()> {
+fn run_qmp(socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
 	let stream = 'outer: {
 		let mut attempt = 0;
 		let result = loop {
@@ -329,6 +367,7 @@ fn run_qmp(socket: &Path) -> Result<(), ()> {
 				tracing::info!(?response, "QMP");
 				if let qmp_client::QmpResponse::Event(QmpEvent { event, .. }) = response {
 					if event == "SHUTDOWN" {
+						controller_tx.send(ControllerMsg::Shutdown).unwrap();
 						return Ok(());
 					}
 				}

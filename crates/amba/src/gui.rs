@@ -3,6 +3,7 @@ use std::{
 	thread,
 };
 
+use data_structures::Graph2D;
 use eframe::{egui::Context, App, CreationContext, Frame};
 
 use crate::{
@@ -23,11 +24,17 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 	.map_err(|error| tracing::error!(?error, "GUI"))
 }
 
-pub struct Model {}
+pub struct Model {
+	pub state_graph: Graph2D,
+	pub block_graph: Graph2D,
+}
 
 impl Model {
 	pub fn new() -> Self {
-		Self {}
+		Self {
+			state_graph: Graph2D::empty(),
+			block_graph: Graph2D::empty(),
+		}
 	}
 }
 
@@ -45,10 +52,12 @@ impl Gui {
 		thread::Builder::new()
 			.name("controller".to_owned())
 			.spawn({
+				let tx = controller_tx.clone();
 				let gui_context = Some(cc.egui_ctx.clone());
 				let model = Arc::clone(&model);
 				move || {
 					(Controller {
+						tx,
 						rx: controller_rx,
 						model,
 						gui_context,
@@ -76,6 +85,7 @@ impl App for Gui {
 			Err(mpsc::SendError(ControllerMsg::Shutdown)) => {
 				tracing::warn!("controller already exited")
 			}
+			Err(mpsc::SendError(_)) => unreachable!(),
 		}
 	}
 }

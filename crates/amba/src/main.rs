@@ -102,9 +102,10 @@ fn main() -> ExitCode {
 		Args::Init(args) => init::init(cmd, base, args),
 		Args::Run(args) => {
 			if args.no_gui {
-				let (_, rx) = mpsc::channel();
+				let (tx, rx) = mpsc::channel();
 				SessionConfig::new(cmd, base, &args).and_then(|config| {
 					(run::Controller {
+						tx,
 						rx,
 						model: Arc::new(Mutex::new(Model::new())),
 						gui_context: None,
