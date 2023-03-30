@@ -7,7 +7,7 @@ pub(crate) type Set<T> = std::collections::BTreeSet<T>;
 pub(crate) type Map<K, V> = std::collections::BTreeMap<K, V>;
 
 #[derive(Debug, Clone, Default)]
-pub struct Block {
+pub struct Node {
 	pub id: u64,
 	pub from: SmallU64Set,
 	pub to: SmallU64Set,
@@ -16,7 +16,7 @@ pub struct Block {
 
 #[derive(Debug, Clone, Default)]
 pub struct Graph {
-	pub nodes: Map<u64, Block>,
+	pub nodes: Map<u64, Node>,
 	pub merges: Map<u64, u64>,
 }
 
@@ -25,7 +25,8 @@ impl Graph {
 		Default::default()
 	}
 
-	pub fn with_nodes(nodes: Map<u64, Block>) -> Self {
+	pub fn with_nodes(nodes: Map<u64, Node>) -> Self {
+		let max = nodes.keys().max().copied().unwrap_or_default() as usize;
 		Graph {
 			nodes,
 			merges: Map::new(),
@@ -40,18 +41,18 @@ impl Graph {
 		self.nodes.is_empty()
 	}
 
-	pub fn get(&mut self, mut idx: u64) -> Option<&Block> {
+	pub fn get(&mut self, mut idx: u64) -> Option<&Node> {
 		idx = translate(idx, &mut self.merges);
 		self.nodes.get(&idx)
 	}
 
-	pub fn get_mut(&mut self, mut idx: u64) -> Option<&mut Block> {
+	pub fn get_mut(&mut self, mut idx: u64) -> Option<&mut Node> {
 		idx = translate(idx, &mut self.merges);
 		self.nodes.get_mut(&idx)
 	}
 
 	pub fn apply_merges(&mut self) {
-		for Block { from, to, .. } in self.nodes.values_mut() {
+		for Node { from, to, .. } in self.nodes.values_mut() {
 			*from = from
 				.iter()
 				.copied()
@@ -79,7 +80,7 @@ impl Graph {
 				modified = true;
 				let to = [to].into_iter().collect::<SmallU64Set>();
 				let of = [from].into_iter().collect::<SmallU64Set>();
-				Block {
+				Node {
 					id: from,
 					to,
 					from: Default::default(),
@@ -95,7 +96,7 @@ impl Graph {
 				modified = true;
 				let from = [from].into_iter().collect::<SmallU64Set>();
 				let of = [to].into_iter().collect::<SmallU64Set>();
-				Block {
+				Node {
 					id: to,
 					to: Default::default(),
 					from,
@@ -360,10 +361,10 @@ fn translate(key: u64, map: &mut Map<u64, u64>) -> u64 {
 }
 
 impl<const N: usize, const M: usize, const O: usize> From<(u64, [u64; N], [u64; M], [u64; O])>
-	for Block
+	for Node
 {
 	fn from((id, f, t, o): (u64, [u64; N], [u64; M], [u64; O])) -> Self {
-		Block {
+		Node {
 			id,
 			from: f.into_iter().collect(),
 			to: t.into_iter().collect(),
@@ -381,18 +382,18 @@ mod test {
 
 	use crate::graph::*;
 
-	impl PartialEq for Block {
+	impl PartialEq for Node {
 		fn eq(&self, other: &Self) -> bool {
 			// Deconstructed so that it will cause a
 			// compilation error if we add a field and
 			// forget to update this
-			let Block {
+			let Node {
 				id: l_id,
 				from: l_from,
 				to: l_to,
 				of: l_of,
 			} = self;
-			let Block {
+			let Node {
 				id: r_id,
 				from: r_from,
 				to: r_to,
@@ -403,7 +404,7 @@ mod test {
 		}
 	}
 
-	impl Eq for Block {}
+	impl Eq for Node {}
 
 	fn compare_behaviour(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
 		let mut fast = Graph::new();

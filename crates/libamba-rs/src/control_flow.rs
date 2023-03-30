@@ -1,9 +1,10 @@
 use std::{
+	collections::BTreeMap,
 	fmt,
 	time::{Duration, Instant},
 };
 
-use data_structures::Graph;
+use data_structures::{Graph, NodeMetadata};
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
@@ -13,6 +14,8 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
+	pub(crate) metadata: Vec<NodeMetadata>,
+	pub(crate) meta_mapping: BTreeMap<u64, usize>,
 }
 
 impl Default for ControlFlowGraph {
@@ -76,12 +79,17 @@ impl ControlFlowGraph {
 			rebuilds: 0,
 			created_at: Instant::now(),
 			rebuilding_time: Duration::new(0, 0),
+			metadata: Vec::new(),
+			meta_mapping: BTreeMap::new(),
 		}
 	}
 
 	/// Insert a node connection. Returns true if the connection
 	/// is new.
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
+		self.update_metadata(from);
+		self.update_metadata(to);
+
 		let now = Instant::now();
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
@@ -98,6 +106,15 @@ impl ControlFlowGraph {
 
 		self.rebuilding_time += Instant::now() - now;
 		modified
+	}
+
+	fn update_metadata(&mut self, node: u64) {
+		if self.meta_mapping.contains_key(&node) {
+			return;
+		}
+		let idx = self.metadata.len();
+		self.metadata.push(NodeMetadata { id: idx as _ });
+		self.meta_mapping.insert(node, idx);
 	}
 }
 
