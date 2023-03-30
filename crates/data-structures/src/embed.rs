@@ -30,15 +30,15 @@ impl Graph2D {
 		let mut node_push = vec![DVec2::ZERO; nodes.len()];
 		let rng = Rng::with_seed(0);
 
-		const NOISE: f64 = 1.0;
-		const ATTRACTION: f64 = 1.0;
+		const NOISE: f64 = 0.3;
+		const ATTRACTION: f64 = 0.2;
 		const REPULSION: f64 = 1.0;
 		const REPULSION_RADIUS: f64 = 0.02;
 		const DOWNPUSH: f64 = 0.2;
-		const ITERS: usize = 100;
+		const ITERS: usize = 300;
 
 		// NOTE: Insanely slow for now (100 * num_nodes^2 iterations)
-		for temperature in (0..ITERS).map(|t| (t as f64 / ITERS as f64).exp()).rev() {
+		for temperature in (0..ITERS).map(|t| (t as f64 / ITERS as f64).powi(2)).rev() {
 			node_push.fill_with(|| {
 				DVec2 {
 					x: rng.f64(),
@@ -46,7 +46,7 @@ impl Graph2D {
 				} * (NOISE * temperature)
 			});
 			for &(a, b) in &graph.edges {
-				let push = ATTRACTION * (nodes[b] - nodes[a]).normalize_or_zero();
+				let push = ATTRACTION * (nodes[b] - nodes[a]);
 				node_push[a] += push;
 				node_push[b] -= push;
 			}

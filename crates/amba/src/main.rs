@@ -78,6 +78,22 @@ fn main() -> ExitCode {
 	)
 	.expect("enabling global logger");
 
+	std::panic::set_hook(Box::new(|info| {
+		let payload = info.payload();
+		let msg = Option::or(
+			payload.downcast_ref::<&str>().map(|s| *s),
+			payload.downcast_ref::<String>().map(|s| &**s),
+		)
+		.unwrap_or("<no message>");
+		let location = info
+			.location()
+			.map_or("<unknown location>".to_owned(), |loc| {
+				format!("file {} at line {}", loc.file(), loc.line())
+			});
+		tracing::error!(location, msg, "panicked!");
+		cmd::ctrlc_handler();
+	}));
+
 	let args: Args = clap::Parser::parse();
 
 	let base = Box::leak(Box::new(BaseConfig {

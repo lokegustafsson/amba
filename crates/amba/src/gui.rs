@@ -97,7 +97,7 @@ impl App for Gui {
 							draw_graph(
 								ui,
 								viewport,
-								&self.model.lock().unwrap().state_graph,
+								&self.model.lock().unwrap().block_graph,
 							)
 						});
 				},
