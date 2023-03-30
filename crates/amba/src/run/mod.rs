@@ -19,7 +19,7 @@ use std::{
 
 use data_structures::Graph2D;
 use eframe::egui::Context;
-use ipc::{IpcError, IpcMessage};
+use ipc::{GraphKind, IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
@@ -29,8 +29,7 @@ mod session;
 pub enum ControllerMsg {
 	Shutdown,
 	TellQemuPid(u32),
-	ReplaceStateGraph(Graph2D),
-	ReplaceBlockGraph(Graph2D),
+	ReplaceGraph { kind: GraphKind, embedding: Graph2D },
 }
 pub struct Controller {
 	pub tx: mpsc::Sender<ControllerMsg>,
@@ -82,15 +81,18 @@ impl Controller {
 			match self.rx.recv().unwrap() {
 				ControllerMsg::Shutdown => return,
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
-				ControllerMsg::ReplaceBlockGraph(mut block_graph) => {
+				ControllerMsg::ReplaceGraph {
+					kind,
+					mut embedding,
+				} => {
 					let mut guard = self.model.lock().unwrap();
-					mem::swap(&mut guard.block_graph, &mut block_graph);
-					mem::drop(guard);
-					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
-				}
-				ControllerMsg::ReplaceStateGraph(mut state_graph) => {
-					let mut guard = self.model.lock().unwrap();
-					mem::swap(&mut guard.state_graph, &mut state_graph);
+					mem::swap(
+						match kind {
+							GraphKind::BasicBlocks => &mut guard.block_graph,
+							GraphKind::SymbolicStates => &mut guard.state_graph,
+						},
+						&mut embedding,
+					);
 					mem::drop(guard);
 					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
 				}
@@ -183,18 +185,10 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 	tracing::info!("IPC initialized");
 	loop {
 		match ipc_rx.blocking_receive() {
-			Ok(IpcMessage::GraphSnapshot { name, graph }) => {
+			Ok(IpcMessage::GraphSnapshot { kind, graph }) => {
 				let embedding = Graph2D::embedding_of(graph.into_owned());
-				let msg = match &*name {
-					"symbolic states" => ControllerMsg::ReplaceStateGraph(embedding),
-					"basic blocks" => ControllerMsg::ReplaceBlockGraph(embedding),
-					other => {
-						tracing::info!("received unknown graph '{other}'");
-						continue;
-					}
-				};
 				controller_tx
-					.send(msg)
+					.send(ControllerMsg::ReplaceGraph { kind, embedding })
 					.unwrap_or_else(|mpsc::SendError(_)| {
 						tracing::warn!("ipc failed messaging controller: already shut down")
 					});

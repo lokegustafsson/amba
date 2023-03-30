@@ -71,9 +71,15 @@ impl IpcRx<'_> {
 pub enum IpcMessage<'a> {
 	Ping,
 	GraphSnapshot {
-		name: Cow<'a, str>,
+		kind: GraphKind,
 		graph: Cow<'a, data_structures::GraphIpc>,
 	},
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum GraphKind {
+	SymbolicStates,
+	BasicBlocks,
 }
 
 #[derive(Debug)]

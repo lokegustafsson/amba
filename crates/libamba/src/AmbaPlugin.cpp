@@ -7,8 +7,8 @@
 // Our headers
 #include "Amba.h"
 #include "AmbaPlugin.h"
-#include "ControlFlow.h"
 #include "HeapLeak.h"
+#include "LibambaRs.h"
 
 namespace s2e {
 namespace plugins {
@@ -18,8 +18,6 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_assembly_graph(control_flow::ControlFlow {"basic blocks"})
-	, m_symbolic_graph(control_flow::ControlFlow {"symbolic states"})
 {
 	auto self = this;
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
@@ -54,49 +52,29 @@ void AmbaPlugin::initialize() {
 		<< this->m_module_path
 		<< '\n';
 
-        // Set up event callbacks
-	core.onTimer
-		.connect(sigc::mem_fun(
-			this->m_assembly_graph,
-			&control_flow::ControlFlow::onTimer
-		));
+	// Rust hooks
 	core.onEngineShutdown
 		.connect(sigc::mem_fun(
-			this->m_assembly_graph,
-			&control_flow::ControlFlow::onEngineShutdown
+			*this,
+			&AmbaPlugin::onEngineShutdown
 		));
-
-	core.onTranslateInstructionStart
+	core.onStateFork
 		.connect(sigc::mem_fun(
 			*this,
-			&AmbaPlugin::translateInstructionStart
+			&AmbaPlugin::onStateFork
+		));
+	core.onStateMerge
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onStateMerge
 		));
 	core.onTranslateBlockStart
 		.connect(sigc::mem_fun(
 			*this,
-			&AmbaPlugin::translateBlockStart
-		));
-	core.onStateFork
-		.connect(sigc::mem_fun(
-			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onStateFork
-		));
-	core.onStateMerge
-		.connect(sigc::mem_fun(
-			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onStateMerge
-		));
-	core.onTimer
-		.connect(sigc::mem_fun(
-			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onTimer
-		));
-	core.onEngineShutdown
-		.connect(sigc::mem_fun(
-			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onEngineShutdown
+			&AmbaPlugin::onTranslateBlockStart
 		));
 
+	// Module bookkeeping
 	monitor->onModuleLoad
 		.connect(sigc::mem_fun(
 			*this,
@@ -113,43 +91,46 @@ void AmbaPlugin::initialize() {
 			&AmbaPlugin::onProcessUnload
 		));
 
+	// Inactivated and paused heap overflow detector
+	core.onTranslateInstructionStart
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onTranslateInstructionStart
+		));
+
 	(void) core.onStateForkDecide;
 	(void) core.onStateKill;
 	(void) core.onStateSwitch;
 
+	rust_init();
+
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
 
-void AmbaPlugin::translateInstructionStart(
-	ExecutionSignal *signal,
-	S2EExecutionState *state,
-	TranslationBlock *tb,
-	u64 pc
-) {
-	//*amba::debug_stream() << "Translating instruction at " << hexval(pc) << '\n';
-
-	/*
-	const auto inst = amba::readInstruction(state, pc);
-	if (inst.isCall()) {
-		signal->connect(sigc::mem_fun(
-			this->m_heap_leak,
-			&heap_leak::HeapLeak::onMalloc
-		));
-		signal->connect(sigc::mem_fun(
-			this->m_heap_leak,
-			&heap_leak::HeapLeak::onFree
-		));
-	}
-	if (inst.isDeref()) {
-		signal->connect(sigc::mem_fun(
-			this->m_heap_leak,
-			&heap_leak::HeapLeak::derefLeakCheck
-		));
-	}
-	*/
+void AmbaPlugin::onEngineShutdown() {
+	rust_on_engine_shutdown();
 }
 
-void AmbaPlugin::translateBlockStart(
+void AmbaPlugin::onStateFork(
+	s2e::S2EExecutionState *old_state,
+	const std::vector<s2e::S2EExecutionState *> &new_states,
+	const std::vector<klee::ref<klee::Expr>> &conditions
+) {
+	std::vector<u32> new_state_ids {};
+	for (auto &new_state : new_states) {
+		new_state_ids.push_back(new_state->getID());
+	}
+	rust_on_state_fork(old_state->getID(), new_state_ids.data(), new_state_ids.size());
+}
+
+void AmbaPlugin::onStateMerge(
+	s2e::S2EExecutionState *base_state,
+	s2e::S2EExecutionState *other_state
+) {
+	rust_on_state_merge(base_state->getID(), other_state->getID());
+}
+
+void AmbaPlugin::onTranslateBlockStart(
 	ExecutionSignal *signal,
 	S2EExecutionState *state,
 	TranslationBlock *tb,
@@ -160,17 +141,16 @@ void AmbaPlugin::translateBlockStart(
 	}
 
 	auto mod = this->m_modules->getModule(state);
-	u64 native_addr = 0;
-	bool ok = mod ? mod->ToNativeBase(pc, native_addr) : false;
-	*amba::debug_stream()
-		<< "Translating instruction at " << hexval(pc)
-		<< (mod ? " in " + mod->Name + " (" + mod->Path + ")" : "")
-		<< (ok ? ", native addr " + hexval(native_addr).str() : "")
-		<< '\n';
+	u64 module_internal_offset = 0;
+	if (mod) {
+		mod->ToNativeBase(pc, module_internal_offset);
+	}
+	const char* module_path_cstr = mod ? mod->Path.c_str() : nullptr;
+	rust_on_translate_block(pc, nullptr, 0, module_path_cstr, module_internal_offset);
 
 	signal->connect(sigc::mem_fun(
-		this->m_assembly_graph,
-		&control_flow::ControlFlow::onBlockStart
+		*this,
+		&AmbaPlugin::onBlockStart
 	));
 }
 
@@ -220,6 +200,43 @@ void AmbaPlugin::onProcessUnload(
 		<< std::to_string(return_code)
 		<< '\n';
 }
+
+void AmbaPlugin::onBlockStart(
+	s2e::S2EExecutionState *s2e_state,
+	u64 pc
+) {
+	rust_on_watched_block_start_execute(pc);
+}
+
+void AmbaPlugin::onTranslateInstructionStart(
+	ExecutionSignal *signal,
+	S2EExecutionState *state,
+	TranslationBlock *tb,
+	u64 pc
+) {
+	//*amba::debug_stream() << "Translating instruction at " << hexval(pc) << '\n';
+
+	/*
+	const auto inst = amba::readInstruction(state, pc);
+	if (inst.isCall()) {
+		signal->connect(sigc::mem_fun(
+			this->m_heap_leak,
+			&heap_leak::HeapLeak::onMalloc
+		));
+		signal->connect(sigc::mem_fun(
+			this->m_heap_leak,
+			&heap_leak::HeapLeak::onFree
+		));
+	}
+	if (inst.isDeref()) {
+		signal->connect(sigc::mem_fun(
+			this->m_heap_leak,
+			&heap_leak::HeapLeak::derefLeakCheck
+		));
+	}
+	*/
+}
+
 
 } // namespace plugins
 } // namespace s2e
