@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use fastrand::Rng;
 use glam::DVec2;
 
@@ -25,7 +27,7 @@ impl Graph2D {
 		}
 	}
 
-	pub fn embedding_of(graph: GraphIpc) -> Self {
+	pub fn embedding_of(graph: Cow<'_, GraphIpc>) -> Self {
 		let mut nodes = vec![DVec2::ZERO; graph.metadata.len()];
 		let mut node_push = vec![DVec2::ZERO; nodes.len()];
 		let rng = Rng::with_seed(0);
@@ -76,7 +78,10 @@ impl Graph2D {
 				.reduce(DVec2::max)
 				.unwrap_or(DVec2::ZERO),
 			nodes: nodes.into_iter().map(|pos| Node2D { pos }).collect(),
-			edges: graph.edges,
+			edges: match graph {
+				Cow::Borrowed(graph) => graph.edges.clone(),
+				Cow::Owned(graph) => graph.edges,
+			},
 		}
 	}
 }

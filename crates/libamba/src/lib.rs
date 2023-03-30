@@ -12,10 +12,8 @@ use std::{
 	time::Duration,
 };
 
-use data_structures::GraphIpc;
-use ipc::{GraphKind, IpcError, IpcMessage, IpcTx};
-
-use crate::control_flow::ControlFlowGraph;
+use data_structures::GraphIpcBuilder;
+use ipc::{IpcError, IpcMessage, IpcTx};
 
 pub mod control_flow;
 
@@ -23,10 +21,15 @@ static STATE: Mutex<Option<State>> = Mutex::new(None);
 static STATE_SHUTDOWN: AtomicBool = AtomicBool::new(false);
 
 struct State {
+	// IPC
 	ipc_tx: IpcTx<'static>,
-	symbolic_state_graph: ControlFlowGraph,
-	basic_block_graph: ControlFlowGraph,
+
+	// Mutable local state
 	latest_executed_basic_block_vaddr: u64,
+
+	// Payload
+	symbolic_state_graph: GraphIpcBuilder,
+	basic_block_graph: GraphIpcBuilder,
 }
 impl State {
 	fn init() {
@@ -49,8 +52,8 @@ impl State {
 				}
 				Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
 			},
-			symbolic_state_graph: ControlFlowGraph::new(),
-			basic_block_graph: ControlFlowGraph::new(),
+			symbolic_state_graph: GraphIpcBuilder::new(),
+			basic_block_graph: GraphIpcBuilder::new(),
 			latest_executed_basic_block_vaddr: 0,
 		});
 		thread::spawn(|| loop {
@@ -58,43 +61,30 @@ impl State {
 			assert!(!STATE_SHUTDOWN.load(Ordering::SeqCst));
 
 			let mut guard = STATE.lock().unwrap();
-			let state = guard.as_mut().unwrap();
-			state
-				.ipc_tx
-				.blocking_send(&IpcMessage::GraphSnapshot {
-					kind: GraphKind::SymbolicStates,
-					graph: Cow::Owned(GraphIpc::from(&state.symbolic_state_graph.graph)),
-				})
-				.unwrap_or_else(|err| {
-					println!("libamba ipc error sending symbolic graph: {err:?}")
-				});
-			state
-				.ipc_tx
-				.blocking_send(&IpcMessage::GraphSnapshot {
-					kind: GraphKind::BasicBlocks,
-					graph: Cow::Owned(GraphIpc::from(&state.basic_block_graph.graph)),
-				})
-				.unwrap_or_else(|err| println!("libamba ipc error sending block graph: {err:?}"));
+			guard.as_mut().unwrap().send_graph_snapshot();
 		});
 	}
 
-	fn shutdown(&mut self) {
-		println!("Basic block graph\n{}", self.basic_block_graph);
-		println!(
-			"Symbolic state graph\n{}",
-			self.symbolic_state_graph
-		);
+	fn send_graph_snapshot(&mut self) {
+		self.ipc_tx
+			.blocking_send(&IpcMessage::GraphSnapshot {
+				symbolic_state_graph: Cow::Borrowed(self.symbolic_state_graph.get()),
+				basic_block_graph: Cow::Borrowed(self.basic_block_graph.get()),
+			})
+			.unwrap_or_else(|err| println!("libamba ipc error sending symbolic graph: {err:?}"));
 	}
+
+	fn shutdown(&mut self) {}
 
 	fn on_state_fork(&mut self, old_state_id: u32, new_state_ids: &[u32]) {
 		for &new_state_id in new_state_ids {
 			self.symbolic_state_graph
-				.update(u64::from(old_state_id), u64::from(new_state_id));
+				.maybe_add_edge(u64::from(old_state_id), u64::from(new_state_id));
 		}
 	}
 
 	fn on_state_merge(&mut self, base_state_id: u32, other_state_id: u32) {
-		self.symbolic_state_graph.update(
+		self.symbolic_state_graph.maybe_add_edge(
 			u64::from(other_state_id),
 			u64::from(base_state_id),
 		);
@@ -111,7 +101,7 @@ impl State {
 	}
 
 	fn on_watched_block_start_execute(&mut self, block_virtual_addr: u64) {
-		self.basic_block_graph.update(
+		self.basic_block_graph.maybe_add_edge(
 			self.latest_executed_basic_block_vaddr,
 			block_virtual_addr,
 		);

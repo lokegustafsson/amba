@@ -19,7 +19,7 @@ use std::{
 
 use data_structures::Graph2D;
 use eframe::egui::Context;
-use ipc::{GraphKind, IpcError, IpcMessage};
+use ipc::{IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
@@ -29,7 +29,10 @@ mod session;
 pub enum ControllerMsg {
 	Shutdown,
 	TellQemuPid(u32),
-	ReplaceGraph { kind: GraphKind, embedding: Graph2D },
+	ReplaceGraph {
+		symbolic_state_embedding: Graph2D,
+		basic_block_embedding: Graph2D,
+	},
 }
 pub struct Controller {
 	pub tx: mpsc::Sender<ControllerMsg>,
@@ -82,17 +85,15 @@ impl Controller {
 				ControllerMsg::Shutdown => return,
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
 				ControllerMsg::ReplaceGraph {
-					kind,
-					mut embedding,
+					mut symbolic_state_embedding,
+					mut basic_block_embedding,
 				} => {
 					let mut guard = self.model.lock().unwrap();
 					mem::swap(
-						match kind {
-							GraphKind::BasicBlocks => &mut guard.block_graph,
-							GraphKind::SymbolicStates => &mut guard.state_graph,
-						},
-						&mut embedding,
+						&mut guard.state_graph,
+						&mut symbolic_state_embedding,
 					);
+					mem::swap(&mut guard.block_graph, &mut basic_block_embedding);
 					mem::drop(guard);
 					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
 				}
@@ -185,10 +186,17 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 	tracing::info!("IPC initialized");
 	loop {
 		match ipc_rx.blocking_receive() {
-			Ok(IpcMessage::GraphSnapshot { kind, graph }) => {
-				let embedding = Graph2D::embedding_of(graph.into_owned());
+			Ok(IpcMessage::GraphSnapshot {
+				symbolic_state_graph,
+				basic_block_graph,
+			}) => {
+				let symbolic_state_embedding = Graph2D::embedding_of(symbolic_state_graph);
+				let basic_block_embedding = Graph2D::embedding_of(basic_block_graph);
 				controller_tx
-					.send(ControllerMsg::ReplaceGraph { kind, embedding })
+					.send(ControllerMsg::ReplaceGraph {
+						symbolic_state_embedding,
+						basic_block_embedding,
+					})
 					.unwrap_or_else(|mpsc::SendError(_)| {
 						tracing::warn!("ipc failed messaging controller: already shut down")
 					});
