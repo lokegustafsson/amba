@@ -409,7 +409,6 @@ impl Graph {
 
 	/// Returns a new graph of strongly connected components using
 	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-	#[deprecated = "Doesn't connect components"]
 	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
 		let scc = self.tarjan();
 		connect_dag(scc)
@@ -1422,7 +1421,6 @@ mod test {
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
 	#[test]
-	#[allow(deprecated)]
 	fn strongly_connected_graph_small_tarjan() {
 		let graph = Graph::with_nodes(
 			[
@@ -1457,7 +1455,6 @@ mod test {
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
 	#[test]
-	#[allow(deprecated)]
 	fn strongly_connected_graph_large_tarjan() {
 		let graph = Graph::with_nodes(
 			[
