@@ -25,8 +25,8 @@ impl Graph {
 		Default::default()
 	}
 
+	#[cfg(test)]
 	pub fn with_nodes(nodes: Map<u64, Node>) -> Self {
-		let max = nodes.keys().max().copied().unwrap_or_default() as usize;
 		Graph {
 			nodes,
 			merges: Map::new(),
@@ -116,15 +116,15 @@ impl Graph {
 		// keys except in the case where this is the operation
 		// where we're adding the keys to `self`
 		if source.nodes.contains_key(&from) {
-			if let Some(block) = self.get(from) {
-				for node in block.of.iter().copied() {
+			if let Some(super_node) = self.get(from) {
+				for node in super_node.of.iter().copied() {
 					nodes.insert(node);
 				}
 			}
 		}
 		if source.nodes.contains_key(&to) {
-			if let Some(block) = self.get(to) {
-				for node in block.of.iter().copied() {
+			if let Some(super_node) = self.get(to) {
+				for node in super_node.of.iter().copied() {
 					nodes.insert(node);
 				}
 			}
@@ -380,7 +380,7 @@ mod test {
 		test_runner::{Config, TestRunner},
 	};
 
-	use crate::graph::*;
+	use super::*;
 
 	impl PartialEq for Node {
 		fn eq(&self, other: &Self) -> bool {

@@ -31,22 +31,35 @@ pub struct Cmd {
 	_no_construct: (),
 }
 impl Cmd {
-	pub fn get() -> Self {
+	#[allow(unsafe_code)]
+	pub fn get() -> &'static mut Self {
 		static ACQUIRED: AtomicBool = AtomicBool::new(false);
 		ACQUIRED
 			.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
 			.expect("Cmd::get() can only be called once");
 		ctrlc::set_handler(ctrlc_handler).unwrap();
-		Self { _no_construct: () }
+		static mut SELF: Cmd = Cmd { _no_construct: () };
+		// SAFETY: `Cmd` is zero sized.
+		unsafe { &mut SELF }
 	}
 
-	pub fn command_spawn_wait(&mut self, command: &mut Command) -> ExitStatus {
+	pub fn command_spawn_wait_with_pid(
+		&mut self,
+		command: &mut Command,
+		with_pid: impl FnOnce(u32),
+	) -> ExitStatus {
 		tracing::debug!(
 			cwd = ?command.get_current_dir(),
 			env = ?command.get_envs().collect::<Vec<_>>(),
 			args = ?iter::once(command.get_program()).chain(command.get_args()).collect::<Vec<_>>()
 		);
-		safe_wait(command.spawn().unwrap()).wait().unwrap()
+		let child = command.spawn().unwrap();
+		with_pid(child.id());
+		safe_wait(child).wait().unwrap()
+	}
+
+	pub fn command_spawn_wait(&mut self, command: &mut Command) -> ExitStatus {
+		self.command_spawn_wait_with_pid(command, |_| {})
 	}
 
 	pub fn read_dir(&mut self, dir: impl AsRef<Path>) -> ReadDir {
@@ -87,6 +100,12 @@ impl Cmd {
 		let file = file.as_ref();
 		tracing::debug!(?file, "read_file");
 		fs::read(file).unwrap()
+	}
+
+	pub fn try_remove(&mut self, file: impl AsRef<Path>) {
+		let file = file.as_ref();
+		tracing::debug!(?file, "try_remove_file");
+		let _ = fs::remove_file(file);
 	}
 
 	pub fn remove(&mut self, file: impl AsRef<Path>) {

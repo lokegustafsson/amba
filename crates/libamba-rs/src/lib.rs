@@ -1,12 +1,29 @@
+use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
+
+use data_structures::GraphIpc;
+
+use crate::control_flow::ControlFlowGraph;
+
 pub mod control_flow;
+
+static IPC: Mutex<Option<ipc::IpcTx<'static>>> = Mutex::new(None);
+
+fn with_ipc(f: impl FnOnce(&mut ipc::IpcTx<'static>)) {
+	let mut guard = IPC.lock().unwrap();
+	let ipc = guard.get_or_insert_with(|| match UnixStream::connect("amba-ipc.socket") {
+		Ok(stream) => {
+			let stream = Box::leak(Box::new(stream));
+			let (tx, _rx) = ipc::new_wrapping(&*stream);
+			tx
+		}
+		Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
+	});
+	f(ipc);
+}
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
-	use std::{os::unix::net::UnixStream, sync::Mutex};
-
-	use crate::control_flow::ControlFlowGraph;
-
-	type Ipc = ipc::Ipc<&'static std::os::unix::net::UnixStream>;
+	use super::*;
 
 	/// Create a newly allocated `ControlFlowGraph` and return an
 	/// owning raw pointer. This pointer may only be freed with
@@ -40,32 +57,30 @@ mod ffi {
 	}
 
 	#[no_mangle]
-	pub unsafe extern "C" fn rust_print_graph_size(ptr: *mut Mutex<ControlFlowGraph>) {
+	pub unsafe extern "C" fn rust_print_graph_size(
+		name: *const i8,
+		ptr: *mut Mutex<ControlFlowGraph>,
+	) {
+		let name = CStr::from_ptr(name).to_string_lossy();
 		let mutex = &*ptr;
 		let cfg = mutex.lock().unwrap();
-		println!("{cfg}");
-	}
-
-	/// Initialize `Ipc` and return an owning raw pointer. If initialization
-	/// fails, a null pointer is returned.
-	#[no_mangle]
-	pub extern "C" fn rust_ipc_new() -> *mut Ipc {
-		match UnixStream::connect("amba-ipc.socket") {
-			Ok(stream) => {
-				let stream = Box::leak(Box::new(stream));
-				Box::leak(Box::new(Ipc::new(&*stream)))
-			}
-			Err(err) => {
-				println!("libamba failed to connect to IPC socket: {err:?}");
-				std::ptr::null_mut()
-			}
-		}
+		println!("\nGraph of: {name}\n{cfg}");
 	}
 
 	#[no_mangle]
-	pub extern "C" fn rust_ipc_send_graph(ipc: &mut Ipc, graph: &mut ControlFlowGraph) {
-		ipc.blocking_send(&ipc::IpcMessage::Ping)
+	pub unsafe extern "C" fn rust_ipc_send_graph(
+		name: *const i8,
+		graph: *mut Mutex<ControlFlowGraph>,
+	) {
+		let name = CStr::from_ptr(name).to_string_lossy();
+		with_ipc(|ipc| {
+			let graph = (&*graph).lock().unwrap();
+			ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
+				name,
+				graph: Cow::Owned(GraphIpc::from(&graph.graph)),
+			})
 			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+		});
 	}
 
 	#[no_mangle]

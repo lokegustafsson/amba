@@ -2,13 +2,14 @@
 
 namespace control_flow {
 
-ControlFlow::ControlFlow()
+ControlFlow::ControlFlow(std::string name)
 	: m_last(0)
+  , m_name(name)
 	, m_cfg(rust_new_control_flow_graph())
 	{}
 
 ControlFlow::~ControlFlow() {
-	rust_print_graph_size(this->m_cfg);
+	rust_print_graph_size(this->m_name.c_str(), this->m_cfg);
 	rust_free_control_flow_graph(this->m_cfg);
 }
 
@@ -34,7 +35,6 @@ void ControlFlow::onStateFork(
 	for (auto &new_state : new_states) {
 		const auto new_id = new_state->getID();
 
-		// TODO: Investigate thread safety:
 		rust_update_control_flow_graph(
 			this->m_cfg,
 			(u64) old_id,
@@ -55,6 +55,13 @@ void ControlFlow::onStateMerge(
 		(u64) src_id,
 		(u64) dest_id
 	);
+}
+
+void ControlFlow::onTimer() {
+	rust_ipc_send_graph(this->m_name.c_str(), this->m_cfg);
+}
+void ControlFlow::onEngineShutdown() {
+	rust_ipc_send_graph(this->m_name.c_str(), this->m_cfg);
 }
 
 } // namespace control_flow

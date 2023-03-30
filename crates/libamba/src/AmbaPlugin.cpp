@@ -18,8 +18,8 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_assembly_graph(control_flow::ControlFlow {})
-	, m_symbolic_graph(control_flow::ControlFlow {})
+	, m_assembly_graph(control_flow::ControlFlow {"basic blocks"})
+	, m_symbolic_graph(control_flow::ControlFlow {"symbolic states"})
 {
 	auto self = this;
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
@@ -55,6 +55,17 @@ void AmbaPlugin::initialize() {
 		<< '\n';
 
         // Set up event callbacks
+	core.onTimer
+		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&control_flow::ControlFlow::onTimer
+		));
+	core.onEngineShutdown
+		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&control_flow::ControlFlow::onEngineShutdown
+		));
+
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -74,6 +85,16 @@ void AmbaPlugin::initialize() {
 		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
 			&control_flow::ControlFlow::onStateMerge
+		));
+	core.onTimer
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onTimer
+		));
+	core.onEngineShutdown
+		.connect(sigc::mem_fun(
+			this->m_symbolic_graph,
+			&control_flow::ControlFlow::onEngineShutdown
 		));
 
 	monitor->onModuleLoad

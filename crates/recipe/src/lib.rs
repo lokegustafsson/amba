@@ -19,13 +19,13 @@ pub struct Recipe {
 impl Recipe {
 	pub fn deserialize_from(bytes: &[u8]) -> Result<Self, RecipeError> {
 		let string = std::str::from_utf8(bytes)?;
-		let mut ret: Self = match serde_json::from_str(string) {
-			Ok(ret) => ret,
-			Err(recipe_err) => match serde_json::from_str::<'_, serde_json::Value>(string) {
-				Ok(_) => return Err(RecipeError::NotRecipe(recipe_err)),
-				Err(json_err) => return Err(RecipeError::NotRecipe(json_err)),
-			},
-		};
+		let mut ret: Self = serde_json::from_str(string).map_err(|recipe_err| {
+			match serde_json::from_str::<'_, serde_json::Value>(string) {
+				Ok(_) => RecipeError::NotSyntacticRecipe(recipe_err),
+				Err(json_err) => RecipeError::NotJson(json_err),
+			}
+		})?;
+
 		for file in ret.files.values_mut() {
 			match file {
 				FileSource::Host(_) => {}
@@ -53,7 +53,8 @@ impl Recipe {
 pub enum RecipeError {
 	NotUtf8(std::str::Utf8Error),
 	NotJson(serde_json::Error),
-	NotRecipe(serde_json::Error),
+	NotSyntacticRecipe(serde_json::Error),
+	NotSemanticRecipe(String),
 }
 
 impl From<std::str::Utf8Error> for RecipeError {

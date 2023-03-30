@@ -2,32 +2,23 @@
 
 #include "Numbers.h"
 #include "Amba.h"
-
-struct ControlFlowGraph;
-
-extern "C" {
-	ControlFlowGraph *rust_new_control_flow_graph();
-	void rust_free_control_flow_graph(ControlFlowGraph *ptr);
-	void rust_print_graph_size(ControlFlowGraph *ptr);
-	void rust_update_control_flow_graph(
-		ControlFlowGraph *ptr,
-		u64 from,
-		u64 to
-	);
-}
+#include "LibambaRs.h"
 
 namespace control_flow {
 
 class ControlFlow {
   public:
-	ControlFlow();
+	ControlFlow(std::string);
 	~ControlFlow();
 
 	amba::ExecutionFunction onBlockStart;
 	amba::SymbolicExecutionFunction onStateFork;
 	amba::StateMergeFunction onStateMerge;
+	amba::TimerFunction onTimer;
+	amba::TimerFunction onEngineShutdown;
   protected:
 	u64 m_last;
+  std::string m_name;
 	ControlFlowGraph *m_cfg;
 };
 
