@@ -1573,4 +1573,27 @@ mod test {
 		let result = graph.to_strongly_connected_components_kosaraju();
 		assert_eq!(result.nodes, expected.nodes);
 	}
+
+	#[test]
+	fn tarjan_kosaraju_eq_small() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+
+		let t = graph.tarjan();
+		let k = graph.kosaraju();
+
+		assert_eq!(t, k);
+	}
 }
