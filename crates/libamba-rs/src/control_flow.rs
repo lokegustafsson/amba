@@ -4,13 +4,7 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use data_structures::Graph;
-
-#[repr(C)]
-#[derive(Debug, Clone, Default)]
-pub struct Metadata {
-	id: u64,
-}
+use data_structures::{Graph, Metadata};
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
