@@ -403,8 +403,9 @@ impl Graph {
 		state.out
 	}
 
+	/// Returns a new graph of strongly connected components using
 	/// [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
-	pub fn to_strongly_connected_components_2(&self) -> Self {
+	pub fn to_strongly_connected_components_kosaraju(&self) -> Self {
 		let mut l = Vec::new(); // Backwards compared to wikipedia
 		let mut visited = Set::new();
 		let mut assigned = Set::new();
