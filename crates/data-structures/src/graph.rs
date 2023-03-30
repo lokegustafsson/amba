@@ -382,7 +382,13 @@ impl Graph {
 				};
 				while let Some(w) = state.stack.pop() {
 					state.translation.get_mut(&w).unwrap().on_stack = false;
+
+					let old_node = &graph.nodes[&w];
 					new_node.of.insert(w);
+					new_node.from.union(&old_node.from);
+					new_node.to.union(&old_node.to);
+					new_node.id = new_node.id.min(old_node.id);
+
 					if v == w {
 						break;
 					}
