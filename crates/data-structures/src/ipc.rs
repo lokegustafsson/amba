@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{Block, Graph, SmallU64Set};
+use crate::{Graph, Node, SmallU64Set};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct NodeMetadata {
@@ -21,11 +21,11 @@ pub struct GraphIpc {
 impl From<&GraphIpc> for Graph {
 	fn from(ipc: &GraphIpc) -> Graph {
 		let mut merges = BTreeMap::new();
-		let mut nodes: BTreeMap<u64, Block> = ipc
+		let mut nodes: BTreeMap<u64, Node> = ipc
 			.metadata
 			.iter()
 			.map(|NodeMetadata { id, of }| {
-				let block = Block {
+				let node = Node {
 					id: *id,
 					from: SmallU64Set::new(),
 					to: SmallU64Set::new(),
@@ -36,7 +36,7 @@ impl From<&GraphIpc> for Graph {
 						merges.insert(*child, *id);
 					}
 				}
-				(*id, block)
+				(*id, node)
 			})
 			.collect();
 		for &(from, to) in &ipc.edges {
@@ -53,7 +53,7 @@ impl From<&Graph> for GraphIpc {
 		let metadata: Vec<NodeMetadata> = graph
 			.nodes
 			.values()
-			.inspect(|block| num_edges += block.to.len())
+			.inspect(|node| num_edges += node.to.len())
 			.map(|node| NodeMetadata {
 				id: node.id,
 				of: node.of.clone(),
