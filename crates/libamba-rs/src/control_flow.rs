@@ -93,6 +93,9 @@ impl ControlFlowGraph {
 	/// Insert a node connection. Returns true if the connection
 	/// is new.
 	pub fn update(&mut self, from: u64, to: u64) -> bool {
+		self.update_metadata(from);
+		self.update_metadata(to);
+
 		let now = Instant::now();
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
@@ -109,6 +112,15 @@ impl ControlFlowGraph {
 
 		self.rebuilding_time += Instant::now() - now;
 		modified
+	}
+
+	fn update_metadata(&mut self, node: u64) {
+		if self.meta_mapping.contains_key(&node) {
+			return;
+		}
+		let idx = self.metadata.len();
+		self.metadata.push(Metadata { id: idx as _ });
+		self.meta_mapping.insert(node, idx);
 	}
 }
 
