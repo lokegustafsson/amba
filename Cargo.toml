@@ -1,6 +1,6 @@
 [workspace]
 members = [ "crates/*" ]
-exclude = [ "crates/libamba" ]
+exclude = [ "crates/AmbaPlugin" ]
 
 [profile.test]
 opt-level = 3
