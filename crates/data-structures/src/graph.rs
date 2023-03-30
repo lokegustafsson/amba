@@ -404,8 +404,8 @@ impl Graph {
 	}
 
 	/// Returns a new graph of strongly connected components using
-	/// [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
-	pub fn to_strongly_connected_components_kosaraju(&self) -> Self {
+
+	fn kosaraju(&self) -> Map<u64, Node> {
 		let mut l = Vec::new(); // Backwards compared to wikipedia
 		let mut visited = Set::new();
 		let mut assigned = Set::new();
@@ -454,34 +454,14 @@ impl Graph {
 			assign(self, &mut acc, &mut assigned, u, u);
 		}
 
-		let new_ids = acc
-			.values()
-			.flat_map(|Node { id, of, .. }| of.iter().map(|x| (*x, *id)))
-			.collect::<Map<_, _>>();
+		acc
+	}
 
-		let out = acc
-			.values()
-			.map(|Node { id, from, to, of }| {
-				let id = *id;
-				let from = from
-					.iter()
-					.map(|x| new_ids[x])
-					.filter(|&x| x != id && acc.values().any(|y| x == y.id))
-					.collect();
-				let to = to
-					.iter()
-					.map(|x| new_ids[x])
-					.filter(|&x| x != id && acc.values().any(|y| x == y.id))
-					.collect();
-				let of = of.clone();
-				(id, Node { id, from, to, of })
-			})
-			.collect();
-
-		Graph {
-			nodes: out,
-			..Default::default()
-		}
+	/// Returns a new graph of strongly connected components using
+	/// [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+	pub fn to_strongly_connected_components_kosaraju(&self) -> Self {
+		let scc = self.kosaraju();
+		connect_dag(scc)
 	}
 
 	/// Verify that all node pairs have matching to and from
@@ -506,6 +486,37 @@ impl Graph {
 				);
 			}
 		}
+	}
+}
+
+fn connect_dag(strongly_connected_components: Map<u64, Node>) -> Graph {
+	let new_ids = strongly_connected_components
+		.values()
+		.flat_map(|Node { id, of, .. }| of.iter().map(|x| (*x, *id)))
+		.collect::<Map<_, _>>();
+
+	let out = strongly_connected_components
+		.values()
+		.map(|Node { id, from, to, of }| {
+			let id = *id;
+			let from = from
+				.iter()
+				.map(|x| new_ids[x])
+				.filter(|&x| x != id && strongly_connected_components.values().any(|y| x == y.id))
+				.collect();
+			let to = to
+				.iter()
+				.map(|x| new_ids[x])
+				.filter(|&x| x != id && strongly_connected_components.values().any(|y| x == y.id))
+				.collect();
+			let of = of.clone();
+			(id, Node { id, from, to, of })
+		})
+		.collect();
+
+	Graph {
+		nodes: out,
+		..Default::default()
 	}
 }
 
