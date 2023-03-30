@@ -327,10 +327,7 @@ impl Graph {
 			.flat_map(|n| n.to.iter().map(|&m| (n.id, m)))
 	}
 
-	/// Returns a new graph of strongly connected components using
-	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-	#[deprecated = "Doesn't connect components"]
-	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
+	fn tarjan(&self) -> Map<u64, Node> {
 		#[derive(Copy, Clone, PartialEq, Eq, Default)]
 		struct Translation {
 			index: u64,
@@ -343,7 +340,7 @@ impl Graph {
 			stack: Vec<u64>,
 			translation: Map<u64, Translation>,
 			index: u64,
-			out: Graph,
+			out: Map<u64, Node>,
 		}
 
 		let mut state = State::default();
@@ -390,7 +387,7 @@ impl Graph {
 						break;
 					}
 				}
-				state.out.nodes.insert(v, new_node);
+				state.out.insert(v, new_node);
 			}
 		}
 
@@ -404,6 +401,12 @@ impl Graph {
 	}
 
 	/// Returns a new graph of strongly connected components using
+	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
+	#[deprecated = "Doesn't connect components"]
+	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
+		let scc = self.tarjan();
+		connect_dag(scc)
+	}
 
 	fn kosaraju(&self) -> Map<u64, Node> {
 		let mut l = Vec::new(); // Backwards compared to wikipedia
