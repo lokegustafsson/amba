@@ -456,18 +456,23 @@ impl Graph {
 
 		dbg!(&acc);
 
+		let new_ids = acc
+			.values()
+			.flat_map(|Node { id, of, .. }| of.iter().map(|x| (*x, *id)))
+			.collect::<Map<_, _>>();
+
 		let out = acc
-			.iter()
-			.map(|(_, Node { id, from, to, of })| {
+			.values()
+			.map(|Node { id, from, to, of }| {
 				let id = *id;
 				let from = from
 					.iter()
-					.copied()
+					.map(|x| new_ids[x])
 					.filter(|&x| x != id && acc.values().any(|y| x == y.id))
 					.collect();
 				let to = to
 					.iter()
-					.copied()
+					.map(|x| new_ids[x])
 					.filter(|&x| x != id && acc.values().any(|y| x == y.id))
 					.collect();
 				let of = of.clone();
