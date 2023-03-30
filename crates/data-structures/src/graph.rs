@@ -1402,7 +1402,7 @@ mod test {
 	#[test]
 	#[ignore = "Relies on knowingly broken code"]
 	#[allow(deprecated)]
-	fn strongly_connected_graph_small_1() {
+	fn strongly_connected_graph_small_tarjan() {
 		let graph = Graph::with_nodes(
 			[
 				(0, (0, [4], [1], [0]).into()),
@@ -1438,7 +1438,7 @@ mod test {
 	#[test]
 	#[ignore = "Relies on knowingly broken code"]
 	#[allow(deprecated)]
-	fn strongly_connected_graph_large_1() {
+	fn strongly_connected_graph_large_tarjan() {
 		let graph = Graph::with_nodes(
 			[
 				(0, (0, [1], [2], [0]).into()),
@@ -1483,7 +1483,7 @@ mod test {
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
 	#[test]
-	fn strongly_connected_graph_small_2() {
+	fn strongly_connected_graph_small_kosaraju() {
 		let graph = Graph::with_nodes(
 			[
 				(0, (0, [4], [1], [0]).into()),
@@ -1517,7 +1517,7 @@ mod test {
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
 	#[test]
-	fn strongly_connected_graph_large_2() {
+	fn strongly_connected_graph_large_kosaraju() {
 		let graph = Graph::with_nodes(
 			[
 				(0, (0, [1], [2], [0]).into()),
