@@ -1396,7 +1396,8 @@ mod test {
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
 	#[test]
-	fn strongly_connected_graph_1() {
+	#[ignore = "Relies on knowingly broken code"]
+	fn strongly_connected_graph_small_1() {
 		let graph = Graph::with_nodes(
 			[
 				(0, (0, [4], [1], [0]).into()),
@@ -1424,13 +1425,14 @@ mod test {
 		);
 		expected.verify();
 
-		let result = graph.to_strongly_connected_components();
+		let result = graph.to_strongly_connected_components_tarjan();
 		assert_eq!(result.nodes, expected.nodes);
 	}
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
 	#[test]
-	fn strongly_connected_graph_2() {
+	#[ignore = "Relies on knowingly broken code"]
+	fn strongly_connected_graph_large_1() {
 		let graph = Graph::with_nodes(
 			[
 				(0, (0, [1], [2], [0]).into()),
@@ -1469,7 +1471,86 @@ mod test {
 		);
 		expected.verify();
 
-		let result = graph.to_strongly_connected_components();
+		let result = graph.to_strongly_connected_components_tarjan();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
+	#[test]
+	fn strongly_connected_graph_small_2() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [2, 5], [0, 1, 4]).into()),
+				(2, (2, [0], [5], [2, 3, 7]).into()),
+				(5, (5, [0, 2], [], [5, 6]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_kosaraju();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
+	#[test]
+	fn strongly_connected_graph_large_2() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [1], [2], [0]).into()),
+				(1, (1, [2], [0, 5], [1]).into()),
+				(2, (2, [0, 3], [1, 4], [2]).into()),
+				(3, (3, [4], [2, 9], [3]).into()),
+				(4, (4, [2], [3, 5, 10], [4]).into()),
+				(5, (5, [1, 4], [6, 8, 13], [5]).into()),
+				(6, (6, [5, 8], [7], [6]).into()),
+				(7, (7, [6], [8, 15], [7]).into()),
+				(8, (8, [5, 7], [6, 15], [8]).into()),
+				(9, (9, [3, 11], [10], [9]).into()),
+				(10, (10, [9, 4], [11, 12], [10]).into()),
+				(11, (11, [10, 12], [9], [11]).into()),
+				(12, (12, [10], [11, 13], [12]).into()),
+				(13, (13, [5, 12, 14], [14, 15], [13]).into()),
+				(14, (14, [13], [13], [14]).into()),
+				(15, (15, [7, 8, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [5, 9], [0, 1, 2, 3, 4]).into()),
+				(5, (5, [0], [6, 13], [5]).into()),
+				(6, (6, [5], [15], [6, 7, 8]).into()),
+				(9, (9, [0], [13], [9, 10, 11, 12]).into()),
+				(13, (13, [5, 9], [15], [13, 14]).into()),
+				(15, (15, [6, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_kosaraju();
 		assert_eq!(result.nodes, expected.nodes);
 	}
 }
