@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::{Block, Graph, SmallU64Set};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-struct NodeMetadata {
+pub struct NodeMetadata {
 	id: u64,
 	of: SmallU64Set,
 }
@@ -13,7 +13,7 @@ struct NodeMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GraphIpc {
 	/// Metadata for nodes with implicit indices `0..metadata.len()`.
-	metadata: Vec<NodeMetadata>,
+	pub metadata: Vec<NodeMetadata>,
 	/// Directed edges between nodes, identified by their implicit indices
 	pub edges: Vec<(usize, usize)>,
 }

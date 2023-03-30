@@ -43,13 +43,23 @@ impl Cmd {
 		unsafe { &mut SELF }
 	}
 
-	pub fn command_spawn_wait(&mut self, command: &mut Command) -> ExitStatus {
+	pub fn command_spawn_wait_with_pid(
+		&mut self,
+		command: &mut Command,
+		with_pid: impl FnOnce(u32),
+	) -> ExitStatus {
 		tracing::debug!(
 			cwd = ?command.get_current_dir(),
 			env = ?command.get_envs().collect::<Vec<_>>(),
 			args = ?iter::once(command.get_program()).chain(command.get_args()).collect::<Vec<_>>()
 		);
-		safe_wait(command.spawn().unwrap()).wait().unwrap()
+		let child = command.spawn().unwrap();
+		with_pid(child.id());
+		safe_wait(child).wait().unwrap()
+	}
+
+	pub fn command_spawn_wait(&mut self, command: &mut Command) -> ExitStatus {
+		self.command_spawn_wait_with_pid(command, |_| {})
 	}
 
 	pub fn read_dir(&mut self, dir: impl AsRef<Path>) -> ReadDir {

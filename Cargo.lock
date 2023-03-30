@@ -94,6 +94,8 @@ dependencies = [
  "data-structures",
  "dirs",
  "eframe",
+ "emath",
+ "glam",
  "include_dir",
  "ipc",
  "nix 0.26.2",
@@ -849,6 +851,8 @@ name = "data-structures"
 version = "0.1.0"
 dependencies = [
  "arrayvec",
+ "fastrand",
+ "glam",
  "itertools 0.10.5",
  "proptest",
  "serde",
@@ -1255,6 +1259,12 @@ dependencies = [
  "log",
  "xml-rs",
 ]
+
+[[package]]
+name = "glam"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8e4afd9ad95555081e109fe1d21f2a30c691b5f0919c67dfa690a2e1eb6bd51c"
 
 [[package]]
 name = "glob"

@@ -28,6 +28,7 @@ mod session;
 
 pub enum ControllerMsg {
 	Shutdown,
+	TellQemuPid(u32),
 	ReplaceStateGraph(Graph2D),
 	ReplaceBlockGraph(Graph2D),
 }
@@ -36,6 +37,7 @@ pub struct Controller {
 	pub rx: mpsc::Receiver<ControllerMsg>,
 	pub model: Arc<Mutex<Model>>,
 	pub gui_context: Option<Context>,
+	pub qemu_pid: Option<u32>,
 }
 impl Controller {
 	/// Launch QEMU+S2E. That is, we do the equivalent of
@@ -43,12 +45,13 @@ impl Controller {
 	/// but in rust code.
 	///
 	/// TODO: support more guests than just `ubuntu-22.04-x86_64`
-	pub fn run(self, cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+	pub fn run(mut self, cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 		prepare_run(cmd, config)?;
 
 		let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
 		let qmp_socket = &config.temp_dir.join("qmp.socket");
 		let controller_tx_from_ipc = self.tx.clone();
+		let controller_tx_from_qemu = self.tx.clone();
 		let controller_tx_from_qmp = self.tx.clone();
 
 		let res = thread::scope(|s| {
@@ -58,53 +61,65 @@ impl Controller {
 				.unwrap();
 			let qemu = thread::Builder::new()
 				.name("qemu".to_owned())
-				.spawn_scoped(s, || run_qemu(cmd, config, qmp_socket))
+				.spawn_scoped(s, || {
+					run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
+				})
 				.unwrap();
 			let qmp = thread::Builder::new()
 				.name("qmp".to_owned())
 				.spawn_scoped(s, || run_qmp(qmp_socket, controller_tx_from_qmp))
 				.unwrap();
 			self.run_controller();
-			shutdown_controller(ipc_socket, ipc, qemu, qmp)
+			self.shutdown_controller(ipc_socket, ipc, qemu, qmp)
 		});
 		cmd.try_remove(ipc_socket);
 		cmd.try_remove(qmp_socket);
 		res
 	}
 
-	fn run_controller(self) {
+	fn run_controller(&mut self) {
 		loop {
 			match self.rx.recv().unwrap() {
 				ControllerMsg::Shutdown => return,
+				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
 				ControllerMsg::ReplaceBlockGraph(mut block_graph) => {
 					let mut guard = self.model.lock().unwrap();
 					mem::swap(&mut guard.block_graph, &mut block_graph);
 					mem::drop(guard);
+					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
 				}
 				ControllerMsg::ReplaceStateGraph(mut state_graph) => {
 					let mut guard = self.model.lock().unwrap();
 					mem::swap(&mut guard.state_graph, &mut state_graph);
 					mem::drop(guard);
+					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
 				}
 			}
 		}
 	}
-}
 
-fn shutdown_controller(
-	ipc_socket: &Path,
-	ipc: ScopedJoinHandle<'_, Result<(), ()>>,
-	qemu: ScopedJoinHandle<'_, Result<(), ()>>,
-	qmp: ScopedJoinHandle<'_, Result<(), ()>>,
-) -> Result<(), ()> {
-	qmp.join().unwrap()?;
-	qemu.join().unwrap()?;
-	match UnixStream::connect(ipc_socket) {
-		Ok(conn) => conn.shutdown(Shutdown::Both).unwrap(),
-		Err(_) => {}
+	fn shutdown_controller(
+		&mut self,
+		ipc_socket: &Path,
+		ipc: ScopedJoinHandle<'_, Result<(), ()>>,
+		qemu: ScopedJoinHandle<'_, Result<(), ()>>,
+		qmp: ScopedJoinHandle<'_, Result<(), ()>>,
+	) -> Result<(), ()> {
+		match UnixStream::connect(ipc_socket) {
+			Ok(conn) => conn.shutdown(Shutdown::Both).unwrap(),
+			Err(_) => {}
+		}
+		self.qemu_pid.map(|pid| {
+			nix::sys::signal::kill(
+				nix::unistd::Pid::from_raw(pid.try_into().unwrap()),
+				Some(nix::sys::signal::Signal::SIGTERM),
+			)
+		});
+		qmp.join().unwrap()?;
+		qemu.join().unwrap()?;
+		ipc.join().unwrap()?;
+		Ok(())
 	}
-	ipc.join().unwrap()?;
-	Ok(())
 }
 
 fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
@@ -178,7 +193,11 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 						continue;
 					}
 				};
-				controller_tx.send(msg).unwrap();
+				controller_tx
+					.send(msg)
+					.unwrap_or_else(|mpsc::SendError(_)| {
+						tracing::warn!("ipc failed messaging controller: already shut down")
+					});
 			}
 			Ok(msg) => tracing::info!(?msg),
 			Err(IpcError::EndOfFile) => break,
@@ -190,7 +209,12 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 	Ok(())
 }
 
-fn run_qemu(cmd: &mut Cmd, config: &SessionConfig, qmp_socket: &Path) -> Result<(), ()> {
+fn run_qemu(
+	cmd: &mut Cmd,
+	config: &SessionConfig,
+	qmp_socket: &Path,
+	controller_tx: mpsc::Sender<ControllerMsg>,
+) -> Result<(), ()> {
 	// supporting single- vs multi-path
 	let s2e_mode = match true {
 		true => "s2e",
@@ -222,6 +246,7 @@ fn run_qemu(cmd: &mut Cmd, config: &SessionConfig, qmp_socket: &Path) -> Result<
 		max_processes,
 		image,
 		qmp_socket,
+		|pid| controller_tx.send(ControllerMsg::TellQemuPid(pid)).unwrap(),
 	);
 	match status.success() {
 		true => Ok(()),
@@ -243,6 +268,7 @@ fn run_qemu_inner(
 	max_processes: u16,
 	image: &Path,
 	qmp_socket: &Path,
+	with_pid: impl FnOnce(u32),
 ) -> ExitStatus {
 	assert!(qemu.exists());
 	assert!(libs2e.exists());
@@ -323,7 +349,7 @@ fn run_qemu_inner(
 			"-loadvm",
 			"ready",
 		]);
-	cmd.command_spawn_wait(&mut command)
+	cmd.command_spawn_wait_with_pid(&mut command, with_pid)
 }
 
 fn run_qmp(socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {

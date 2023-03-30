@@ -109,6 +109,7 @@ fn main() -> ExitCode {
 						rx,
 						model: Arc::new(Mutex::new(Model::new())),
 						gui_context: None,
+						qemu_pid: None,
 					})
 					.run(cmd, &config)
 				})
