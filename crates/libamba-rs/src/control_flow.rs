@@ -4,7 +4,7 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use data_structures::{Graph, Metadata};
+use data_structures::{Graph, NodeMetadata};
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
@@ -14,7 +14,7 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
-	pub(crate) metadata: Vec<Metadata>,
+	pub(crate) metadata: Vec<NodeMetadata>,
 	pub(crate) meta_mapping: BTreeMap<u64, usize>,
 }
 
@@ -113,7 +113,7 @@ impl ControlFlowGraph {
 			return;
 		}
 		let idx = self.metadata.len();
-		self.metadata.push(Metadata { id: idx as _ });
+		self.metadata.push(NodeMetadata { id: idx as _ });
 		self.meta_mapping.insert(node, idx);
 	}
 }
