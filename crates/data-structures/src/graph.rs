@@ -327,6 +327,7 @@ impl Graph {
 			.flat_map(|n| n.to.iter().map(|&m| (n.id, m)))
 	}
 
+	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
 	fn tarjan(&self) -> Map<u64, Node> {
 		#[derive(Copy, Clone, PartialEq, Eq, Default)]
 		struct Translation {
@@ -414,6 +415,7 @@ impl Graph {
 		connect_dag(scc)
 	}
 
+	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
 	fn kosaraju(&self) -> Map<u64, Node> {
 		let mut l = Vec::new(); // Backwards compared to wikipedia
 		let mut visited = Set::new();
