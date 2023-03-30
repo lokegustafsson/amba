@@ -8,7 +8,9 @@ use data_structures::Graph;
 
 #[repr(C)]
 #[derive(Debug, Clone, Default)]
-pub struct Metadata {}
+pub struct Metadata {
+	id: u64,
+}
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
