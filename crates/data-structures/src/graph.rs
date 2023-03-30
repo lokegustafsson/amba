@@ -379,7 +379,7 @@ impl Graph {
 
 			let v_ref = state.translation[&v];
 			if v_ref.index == v_ref.low_link {
-				let mut new_node = Block {
+				let mut new_node = Node {
 					id: v,
 					..Default::default()
 				};
@@ -421,7 +421,7 @@ impl Graph {
 		}
 		fn assign(
 			graph: &Graph,
-			acc: &mut Map<u64, Block>,
+			acc: &mut Map<u64, Node>,
 			assigned: &mut Set<u64>,
 			u: u64,
 			root: u64,
@@ -432,7 +432,7 @@ impl Graph {
 			let u_ref = graph.nodes.get(&u).unwrap();
 			let node = acc
 				.entry(root)
-				.and_modify(|Block { to, from, of, id }| {
+				.and_modify(|Node { to, from, of, id }| {
 					of.union(&u_ref.of);
 					to.union(&u_ref.to);
 					from.union(&u_ref.from);
@@ -457,7 +457,7 @@ impl Graph {
 
 		let out = acc
 			.iter()
-			.map(|(_, Block { id, from, to, of })| {
+			.map(|(_, Node { id, from, to, of })| {
 				let id = *id;
 				let from = from
 					.iter()
@@ -470,7 +470,7 @@ impl Graph {
 					.filter(|&x| x != id && acc.values().any(|y| x == y.id))
 					.collect();
 				let of = of.clone();
-				(id, Block { id, from, to, of })
+				(id, Node { id, from, to, of })
 			})
 			.collect();
 
