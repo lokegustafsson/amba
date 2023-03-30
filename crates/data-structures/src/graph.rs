@@ -1414,7 +1414,6 @@ mod test {
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
 	#[test]
-	#[ignore = "Relies on knowingly broken code"]
 	#[allow(deprecated)]
 	fn strongly_connected_graph_small_tarjan() {
 		let graph = Graph::with_nodes(
@@ -1450,7 +1449,6 @@ mod test {
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
 	#[test]
-	#[ignore = "Relies on knowingly broken code"]
 	#[allow(deprecated)]
 	fn strongly_connected_graph_large_tarjan() {
 		let graph = Graph::with_nodes(
