@@ -328,9 +328,9 @@ impl Graph {
 	}
 
 	/// Returns a new graph of strongly connected components using
-	/// Tarjan's strongly connected components algorith
-	/// [Wikipedia](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-	pub fn to_strongly_connected_components(&self) -> Self {
+	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
+	#[deprecated = "Doesn't connect components"]
+	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
 		#[derive(Copy, Clone, PartialEq, Eq, Default)]
 		struct Translation {
 			index: u64,
