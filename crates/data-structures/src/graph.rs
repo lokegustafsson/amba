@@ -454,8 +454,6 @@ impl Graph {
 			assign(self, &mut acc, &mut assigned, u, u);
 		}
 
-		dbg!(&acc);
-
 		let new_ids = acc
 			.values()
 			.flat_map(|Node { id, of, .. }| of.iter().map(|x| (*x, *id)))
