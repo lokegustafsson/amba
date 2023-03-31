@@ -1,5 +1,5 @@
 use std::{
-	sync::{mpsc, Arc, Mutex},
+	sync::{mpsc, Arc, RwLock},
 	thread,
 };
 
@@ -28,15 +28,15 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 }
 
 pub struct Model {
-	pub state_graph: Graph2D,
-	pub block_graph: Graph2D,
+	pub state_graph: RwLock<Graph2D>,
+	pub block_graph: RwLock<Graph2D>,
 }
 
 impl Model {
 	pub fn new() -> Self {
 		Self {
-			state_graph: Graph2D::empty(),
-			block_graph: Graph2D::empty(),
+			state_graph: RwLock::new(Graph2D::empty()),
+			block_graph: RwLock::new(Graph2D::empty()),
 		}
 	}
 }
@@ -44,13 +44,13 @@ impl Model {
 struct Gui {
 	controller_tx: mpsc::Sender<ControllerMsg>,
 	/// Asynchronously computed model, displayed by the GUI somehow
-	model: Arc<Mutex<Model>>,
+	model: Arc<Model>,
 }
 
 impl Gui {
 	fn new(cc: &CreationContext<'_>, cmd: &'static mut Cmd, config: SessionConfig) -> Self {
 		let (controller_tx, controller_rx) = mpsc::channel();
-		let model = Arc::new(Mutex::new(Model::new()));
+		let model = Arc::new(Model::new());
 
 		thread::Builder::new()
 			.name("controller".to_owned())
@@ -65,6 +65,7 @@ impl Gui {
 						model,
 						gui_context,
 						qemu_pid: None,
+						embedder_tx: None,
 					})
 					.run(cmd, &config)
 				}
@@ -97,7 +98,7 @@ impl App for Gui {
 							draw_graph(
 								ui,
 								viewport,
-								&self.model.lock().unwrap().block_graph,
+								&self.model.block_graph.read().unwrap(),
 							)
 						});
 				},
@@ -109,9 +110,9 @@ impl App for Gui {
 	}
 
 	fn on_exit(&mut self, _: Option<&eframe::glow::Context>) {
-		match self.controller_tx.send(ControllerMsg::Shutdown) {
+		match self.controller_tx.send(ControllerMsg::GuiShutdown) {
 			Ok(()) => tracing::info!("gui telling controller to exit"),
-			Err(mpsc::SendError(ControllerMsg::Shutdown)) => {
+			Err(mpsc::SendError(ControllerMsg::GuiShutdown)) => {
 				tracing::warn!("controller already exited")
 			}
 			Err(mpsc::SendError(_)) => unreachable!(),
@@ -142,16 +143,16 @@ fn draw_graph(ui: &mut Ui, viewport: Rect, graph: &Graph2D) {
 			NODE_WIDTH / 2.0 + (viewport.height() - NODE_WIDTH) * pos.as_vec2(),
 		))
 	};
-	for node in &graph.nodes {
-		let pos = normalize_pos(node.pos);
+	for &node in &graph.node_positions {
+		let pos = normalize_pos(node);
 		draw_node(
 			translate_pos(pos),
-			format!("{:.2}\n{:.2}", node.pos.x, node.pos.y),
+			format!("{:.2}\n{:.2}", node.x, node.y),
 		);
 	}
 	for &(a, b) in &graph.edges {
-		let origin = translate_pos(normalize_pos(graph.nodes[a].pos));
-		let target = translate_pos(normalize_pos(graph.nodes[b].pos));
+		let origin = translate_pos(normalize_pos(graph.node_positions[a]));
+		let target = translate_pos(normalize_pos(graph.node_positions[b]));
 		edge_arrow(
 			ui.painter(),
 			origin + offset,

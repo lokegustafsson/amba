@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct NodeMetadata {
-	id: u64,
+	pub id: u64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
