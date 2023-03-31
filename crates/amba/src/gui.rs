@@ -1,10 +1,10 @@
 use std::{
 	convert,
-	sync::{mpsc, Arc, RwLock},
+	sync::{mpsc, Arc, Mutex, RwLock},
 	thread,
 };
 
-use data_structures::Graph2D;
+use data_structures::{EmbeddingParameters, Graph2D};
 use eframe::{
 	egui::{self, Context, Rect, Ui},
 	App, CreationContext, Frame,
@@ -31,6 +31,7 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 pub struct Model {
 	pub state_graph: RwLock<Graph2D>,
 	pub block_graph: RwLock<Graph2D>,
+	pub embedding_parameters: Mutex<EmbeddingParameters>,
 }
 
 impl Model {
@@ -38,6 +39,7 @@ impl Model {
 		Self {
 			state_graph: RwLock::new(Graph2D::empty()),
 			block_graph: RwLock::new(Graph2D::empty()),
+			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
 		}
 	}
 }
@@ -92,7 +94,16 @@ impl App for Gui {
 			ctx.input(|input| (input.zoom_delta(), input.scroll_delta));
 
 		egui::CentralPanel::default().show(ctx, |ui| {
-			ui.horizontal(|ui| ui.heading("top stuff"));
+			ui.horizontal(|ui| {
+				ui.heading("top stuff");
+				ui.vertical(|ui| {
+					let mut params = self.model.embedding_parameters.lock().unwrap();
+					ui.add(egui::Slider::new(&mut params.noise, 0.0..=1000.0).text("noise"));
+					ui.add(egui::Slider::new(&mut params.attraction, 0.0..=0.5).text("attraction"));
+					ui.add(egui::Slider::new(&mut params.repulsion, 0.0..=100.0).text("repulsion"));
+					ui.add(egui::Slider::new(&mut params.gravity, 0.0..=1.0).text("gravity"));
+				})
+			});
 			draw_below_first(
 				ui,
 				|ui| {

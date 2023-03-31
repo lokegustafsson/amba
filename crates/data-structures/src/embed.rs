@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use fastrand::Rng;
 use glam::DVec2;
 
@@ -14,6 +12,24 @@ pub struct Graph2D {
 	pub max: DVec2,
 }
 
+#[derive(Clone, Copy)]
+pub struct EmbeddingParameters {
+	pub noise: f64,
+	pub attraction: f64,
+	pub repulsion: f64,
+	pub gravity: f64,
+}
+impl Default for EmbeddingParameters {
+	fn default() -> Self {
+		Self {
+			noise: 10.0,
+			attraction: 0.1,
+			repulsion: 1.0,
+			gravity: 0.0,
+		}
+	}
+}
+
 impl Graph2D {
 	pub fn empty() -> Self {
 		Self {
@@ -25,31 +41,21 @@ impl Graph2D {
 		}
 	}
 
-	pub fn new(graph: Cow<'_, GraphIpc>) -> Self {
-		let (node_metadata, edges) = match graph {
-			Cow::Borrowed(graph) => (graph.metadata.clone(), graph.edges.clone()),
-			Cow::Owned(graph) => (graph.metadata, graph.edges),
-		};
+	pub fn new(graph: GraphIpc, params: EmbeddingParameters) -> Self {
 		let mut ret = Self {
-			node_positions: vec![DVec2::ZERO; node_metadata.len()],
-			node_metadata,
-			edges,
+			node_positions: vec![DVec2::ZERO; graph.metadata.len()],
+			node_metadata: graph.metadata,
+			edges: graph.edges,
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
 		};
-		ret.run_layout_iterations(100);
+		ret.run_layout_iterations(100, params);
 		ret
 	}
 
-	pub fn run_layout_iterations(&mut self, iterations: usize) {
+	pub fn run_layout_iterations(&mut self, iterations: usize, params: EmbeddingParameters) {
 		let mut node_push = vec![DVec2::ZERO; self.node_positions.len()];
-		let rng = Rng::with_seed(0);
-
-		const NOISE: f64 = 0.3;
-		const ATTRACTION: f64 = 0.2;
-		const REPULSION: f64 = 1.0;
-		const REPULSION_RADIUS: f64 = 0.02;
-		const DOWNPUSH: f64 = 0.2;
+		let rng = Rng::new();
 
 		// NOTE: Insanely slow for now (`iterations` * `self.node_positions.len()`^2)
 		for temperature in (0..iterations)
@@ -59,11 +65,11 @@ impl Graph2D {
 			node_push.fill_with(|| {
 				DVec2 {
 					x: rng.f64(),
-					y: rng.f64() - DOWNPUSH,
-				} * (NOISE * temperature)
+					y: rng.f64(),
+				} * (params.noise * temperature)
 			});
 			for &(a, b) in &self.edges {
-				let push = ATTRACTION * (self.node_positions[b] - self.node_positions[a]);
+				let push = params.attraction * (self.node_positions[b] - self.node_positions[a]);
 				node_push[a] += push;
 				node_push[b] -= push;
 			}
@@ -71,12 +77,14 @@ impl Graph2D {
 			for a in 0..self.node_positions.len() {
 				for b in 0..self.node_positions.len() {
 					let a_to_b = self.node_positions[b] - self.node_positions[a];
-					let push = REPULSION * a_to_b / (REPULSION_RADIUS + a_to_b.length_squared());
+					let push = params.repulsion * a_to_b / (1.0 + a_to_b.length_squared());
 					node_push[a] -= push;
 					node_push[b] += push;
 				}
 			}
 			for i in 1..self.node_positions.len() {
+				node_push[i] +=
+					DVec2::Y * (params.gravity * self.node_positions[i].y.max(1.0).log2());
 				self.node_positions[i] += node_push[i] - node_push[0];
 				assert!(self.node_positions[i].is_finite());
 			}

@@ -12,12 +12,12 @@ use std::{
 	},
 	path::Path,
 	process::{self, Command, ExitStatus},
-	sync::{mpsc, Arc, RwLock},
+	sync::{mpsc, Arc, Mutex, RwLock},
 	thread::{self, ScopedJoinHandle},
 	time::Duration,
 };
 
-use data_structures::Graph2D;
+use data_structures::{EmbeddingParameters, Graph2D, GraphIpc};
 use eframe::egui::Context;
 use ipc::{IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
@@ -31,8 +31,8 @@ pub enum ControllerMsg {
 	QemuShutdown,
 	TellQemuPid(u32),
 	ReplaceGraph {
-		symbolic_state_embedding: Graph2D,
-		basic_block_embedding: Graph2D,
+		symbolic_state_graph: GraphIpc,
+		basic_block_graph: GraphIpc,
 	},
 }
 pub struct Controller {
@@ -41,7 +41,7 @@ pub struct Controller {
 	pub model: Arc<Model>,
 	pub gui_context: Option<Context>,
 	pub qemu_pid: Option<u32>,
-	pub embedder_tx: Option<mpsc::Sender<[Graph2D; 2]>>,
+	pub embedder_tx: Option<mpsc::Sender<[GraphIpc; 2]>>,
 }
 impl Controller {
 	/// Launch QEMU+S2E. That is, we do the equivalent of
@@ -83,6 +83,7 @@ impl Controller {
 					run_embedder(
 						&embedder_model.state_graph,
 						&embedder_model.block_graph,
+						&embedder_model.embedding_parameters,
 						embedder_rx,
 						embedder_gui_context,
 					)
@@ -107,12 +108,12 @@ impl Controller {
 				}
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
 				ControllerMsg::ReplaceGraph {
-					symbolic_state_embedding,
-					basic_block_embedding,
+					symbolic_state_graph,
+					basic_block_graph,
 				} => {
 					self.embedder_tx
 						.as_ref()
-						.map(|tx| tx.send([symbolic_state_embedding, basic_block_embedding]));
+						.map(|tx| tx.send([symbolic_state_graph, basic_block_graph]));
 					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
 				}
 			}
@@ -211,12 +212,10 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 				symbolic_state_graph,
 				basic_block_graph,
 			}) => {
-				let symbolic_state_embedding = Graph2D::new(symbolic_state_graph);
-				let basic_block_embedding = Graph2D::new(basic_block_graph);
 				controller_tx
 					.send(ControllerMsg::ReplaceGraph {
-						symbolic_state_embedding,
-						basic_block_embedding,
+						symbolic_state_graph: symbolic_state_graph.into_owned(),
+						basic_block_graph: basic_block_graph.into_owned(),
 					})
 					.unwrap_or_else(|mpsc::SendError(_)| {
 						tracing::warn!("ipc failed messaging controller: already shut down")
@@ -430,15 +429,17 @@ fn run_qmp(socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<
 fn run_embedder(
 	state_graph: &RwLock<Graph2D>,
 	block_graph: &RwLock<Graph2D>,
-	rx: mpsc::Receiver<[Graph2D; 2]>,
+	embedding_parameters: &Mutex<EmbeddingParameters>,
+	rx: mpsc::Receiver<[GraphIpc; 2]>,
 	gui_context: Option<Context>,
 ) -> Result<(), ()> {
 	// TODO Non-zero timeout once really stable, to save cpu
 	loop {
+		let params = embedding_parameters.lock().unwrap().clone();
 		match rx.try_recv() {
 			Ok([state, block]) => {
-				*state_graph.write().unwrap() = state;
-				*block_graph.write().unwrap() = block;
+				*state_graph.write().unwrap() = Graph2D::new(state, params);
+				*block_graph.write().unwrap() = Graph2D::new(block, params);
 				continue;
 			}
 			Err(mpsc::TryRecvError::Empty) => {}
@@ -449,7 +450,7 @@ fn run_embedder(
 		}
 		for graph in [state_graph, block_graph] {
 			let mut working_copy = graph.read().unwrap().clone();
-			working_copy.run_layout_iterations(100);
+			working_copy.run_layout_iterations(100, params);
 			*graph.write().unwrap() = working_copy;
 		}
 		gui_context.as_ref().map(|ctx| ctx.request_repaint());
