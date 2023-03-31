@@ -504,6 +504,10 @@ fn connect_dag(strongly_connected_components: Map<u64, Node>) -> Graph {
 		.values()
 		.flat_map(|Node { id, of, .. }| of.iter().map(|x| (*x, *id)))
 		.collect::<Map<_, _>>();
+	let nodes = strongly_connected_components
+		.values()
+		.map(|x| x.id)
+		.collect::<Set<_>>();
 
 	let out = strongly_connected_components
 		.values()
@@ -512,12 +516,12 @@ fn connect_dag(strongly_connected_components: Map<u64, Node>) -> Graph {
 			let from = from
 				.iter()
 				.map(|x| new_ids[x])
-				.filter(|&x| x != id && strongly_connected_components.values().any(|y| x == y.id))
+				.filter(|&x| x != id && nodes.contains(&x))
 				.collect();
 			let to = to
 				.iter()
 				.map(|x| new_ids[x])
-				.filter(|&x| x != id && strongly_connected_components.values().any(|y| x == y.id))
+				.filter(|&x| x != id && nodes.contains(&x))
 				.collect();
 			let of = of.clone();
 			(id, Node { id, from, to, of })
