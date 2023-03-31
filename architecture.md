@@ -1,5 +1,9 @@
 # Project architecture documentation
 
+## Bird's eye view
+
+![Bird's eye view.](https://cdn.discordapp.com/attachments/803687143871742004/1091376154704879696/image.png)
+
 ## Introduction
 
 This is an overview of the project's code architecture and aims to give a brief
@@ -39,7 +43,7 @@ description of AMBA.
 ... 
 ```
 
-### How to read this documentation
+## How to read this documentation
 
 This documentation is structured such that one can search for a directory's name
 and find a corresponding heading with documentation of the relevant components
@@ -50,7 +54,7 @@ AMBA follows a typical project structure where the responsibility of different
 components are separated into different directories. All source files reside in
 amba/crates/*. 
 
-## AMBA
+## crates/amba
 The amba directory contains the essential parts responsible for connecting and
 running all components.
 
@@ -121,29 +125,42 @@ For more technical details, refer to all files in the init/ directory.
 
 ### Run subcommand
 
+The idea of this command is to mimic S2E's launch-s2e.sh [script](https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh), meaning it aims to launch QEMU & S2E. The main
+difference is that it's written in Rust.
 
+The run subcommand will also create a controller which spawns a number of threads with different tasks:
+an ipc thread, a qemu thread and qmp thread. The controller will then loop and
+handle various messages, such as `ReplaceBlockGraph` or `ReplaceStateGraph`
+which will tell the gui to repaint itself with new graph data.
 
-## AMBA-gui 
+## crates/bootstrap
+This crate mimics the behavior of S2E's bootstrap.sh script. 
+This executable will run on startup within the guest, and is responsible
+for starting the analyzed executable with a correctly made-symbolic
+environment. 
 
-## Bootstrap
+## crates/data-structures
+Crate used to modularize our utility data structures. 
 
-## Data-structures
+## `crates/ipc`
+IPC stands for Inter-process communication. This crate contains a structured IPC
+implementation utilizing unix sockets to send messages.
 
-## IPC
-IPC stands for Inter-process communication
+## crates/libamba
+The libamba crate contains the S2E plugin which acts as the driver in amba.
+It is through libamba that all data relevant to the analysis is acquired.
+Since the gui needs to get updates of the blocks to render a control flow graph,
+libamba accomplishes this by hooking a number of modules and listens for changes and sends these to libamba-rs 
+where they get processed into a graph
 
-## LibAMBA
-
-## LibAMBA-rs
-
-## Mitm-debug-stream
+## crates/mitm-debug-stream
 Debugging tool used to log and print contents of a stream when using the
 qmp-client. For more in depth, refer to the source file
 mitm-debug-stream/src/lib.rs
 
 Mitm, in this context, is an acronym for Man-in-the-middle.
 
-## Qmp-client
+## crates/qmp-client
 
 QMP-client is our own implementation of client communication using the QEMU
 Machine Protocol (QMP). The intention with QMP is to communicate directly with
@@ -151,7 +168,7 @@ the virtual machine instance that S2E starts. One example of communication could
 be querying for current execution state, start and/or stop the virtual machine,
 etc. 
 
-## Recipe
+## crates/recipe
 The specification of recipes reside in this directory. 
 Recipes purpose is to describe how and what symbolic data is sent to the stdin of the given
 binary. Refer to demos/hello.recipe.json for an example. 
@@ -179,15 +196,5 @@ have a representation of a recipe in any high-level description language as the
 data has to pass through FFI (Foreign Function Interface) and later be sent to
 the guest in libamba. 
 
-(tanken är att vi också ska ha en dokumentation för hur man beskriver ett recipe
-i json.)
-
-
-## S2e-rs
-
-
-## Vad jag vill säga:
-- Beskriv projektstrukturen, (skelettform)
-- vad är viktigt att veta för de olika filerna (delkomponenterna),
-- kanske beskriva call-flow (? heter det så?)
-- vad har filerna för uppgift? 
+## crates/s2e-rs
+This crate generates rust code from c++ using autocxx. 
