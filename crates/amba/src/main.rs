@@ -2,7 +2,7 @@ use std::{
 	env,
 	path::PathBuf,
 	process::ExitCode,
-	sync::{mpsc, Arc, Mutex},
+	sync::{mpsc, Arc},
 	time::Instant,
 };
 
