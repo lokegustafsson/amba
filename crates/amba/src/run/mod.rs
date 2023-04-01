@@ -17,8 +17,9 @@ use std::{
 	time::Duration,
 };
 
-use data_structures::{EmbeddingParameters, Graph2D, GraphIpc};
+use data_structures::GraphIpc;
 use eframe::egui::Context;
+use graphui::{EmbeddingParameters, Graph2D};
 use ipc::{IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 

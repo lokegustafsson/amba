@@ -1,7 +1,6 @@
+use data_structures::{GraphIpc, NodeMetadata};
 use fastrand::Rng;
 use glam::DVec2;
-
-use crate::{GraphIpc, NodeMetadata};
 
 #[derive(Clone, Debug)]
 pub struct Graph2D {
@@ -10,6 +9,8 @@ pub struct Graph2D {
 	pub edges: Vec<(usize, usize)>,
 	pub min: DVec2,
 	pub max: DVec2,
+	pub gui_zoom: f32,
+	pub gui_pos: emath::Vec2,
 }
 
 #[derive(Clone, Copy)]
@@ -18,6 +19,12 @@ pub struct EmbeddingParameters {
 	pub attraction: f64,
 	pub repulsion: f64,
 	pub gravity: f64,
+}
+impl EmbeddingParameters {
+	pub const MAX_ATTRACTION: f64 = 0.5;
+	pub const MAX_GRAVITY: f64 = 1.0;
+	pub const MAX_NOISE: f64 = 1000.0;
+	pub const MAX_REPULSION: f64 = 100.0;
 }
 impl Default for EmbeddingParameters {
 	fn default() -> Self {
@@ -38,6 +45,8 @@ impl Graph2D {
 			edges: Vec::new(),
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
+			gui_zoom: 1.0,
+			gui_pos: emath::Vec2::ZERO,
 		}
 	}
 
@@ -48,6 +57,8 @@ impl Graph2D {
 			edges: graph.edges,
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
+			gui_zoom: 1.0,
+			gui_pos: emath::Vec2::ZERO,
 		};
 		ret.run_layout_iterations(100, params);
 		ret

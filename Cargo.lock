@@ -94,8 +94,8 @@ dependencies = [
  "data-structures",
  "dirs",
  "eframe",
- "emath",
  "glam",
+ "graphui",
  "include_dir",
  "ipc",
  "nix 0.26.2",
@@ -851,8 +851,6 @@ name = "data-structures"
 version = "0.1.0"
 dependencies = [
  "arrayvec",
- "fastrand",
- "glam",
  "itertools 0.10.5",
  "proptest",
  "serde",
@@ -1370,6 +1368,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ef89398e90033fc6bc65e9bd42fd29bbbfd483bda5b56dc5562f455550618165"
 dependencies = [
  "gl_generator",
+]
+
+[[package]]
+name = "graphui"
+version = "0.1.0"
+dependencies = [
+ "data-structures",
+ "eframe",
+ "egui",
+ "emath",
+ "fastrand",
+ "glam",
 ]
 
 [[package]]

@@ -15,8 +15,8 @@ ctrlc = "3"
 data-structures = { path = "../data-structures" }
 dirs = "4"
 eframe = { version = "0.21", default-features = false, features = ["default_fonts", "glow"] }
-emath = "0.21"
 glam = "0.23"
+graphui = { path = "../graphui" }
 include_dir = "0.7"
 ipc = { path = "../ipc" }
 nix = "0.26"

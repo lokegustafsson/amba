@@ -1,0 +1,14 @@
+[package]
+name = "graphui"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+data-structures = { path = "../data-structures" }
+eframe = { version = "0.21", default-features = false, features = ["default_fonts", "glow"] }
+egui = "0.21"
+emath = "0.21"
+fastrand = "1"
+glam = "0.23"

@@ -1,14 +1,13 @@
 use std::{
-	convert,
 	sync::{mpsc, Arc, Mutex, RwLock},
 	thread,
 };
 
-use data_structures::{EmbeddingParameters, Graph2D};
 use eframe::{
-	egui::{self, Context, Rect, Ui},
+	egui::{self, Context, Ui},
 	App, CreationContext, Frame,
 };
+use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
 
 use crate::{
 	cmd::Cmd,
@@ -47,11 +46,7 @@ impl Model {
 struct Gui {
 	controller_tx: mpsc::Sender<ControllerMsg>,
 	model: Arc<Model>,
-	/// Linear zoom level:
-	/// 1x => the graph fits within the area with some margin
-	/// 10x => we are looking at a small part of the graph
-	graph_area_zoom: f32,
-	graph_area_pos: emath::Vec2,
+	graph_widget: GraphWidget,
 }
 
 impl Gui {
@@ -82,72 +77,23 @@ impl Gui {
 		Self {
 			controller_tx,
 			model,
-			graph_area_zoom: 1.0,
-			graph_area_pos: emath::Vec2::ZERO,
+			graph_widget: GraphWidget::default(),
 		}
 	}
 }
 
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
-		let (zoom_delta, scroll_delta) =
-			ctx.input(|input| (input.zoom_delta(), input.scroll_delta));
-
 		egui::CentralPanel::default().show(ctx, |ui| {
 			ui.horizontal(|ui| {
 				ui.heading("top stuff");
-				ui.vertical(|ui| {
-					let mut params = self.model.embedding_parameters.lock().unwrap();
-					ui.add(egui::Slider::new(&mut params.noise, 0.0..=1000.0).text("noise"));
-					ui.add(egui::Slider::new(&mut params.attraction, 0.0..=0.5).text("attraction"));
-					ui.add(egui::Slider::new(&mut params.repulsion, 0.0..=100.0).text("repulsion"));
-					ui.add(egui::Slider::new(&mut params.gravity, 0.0..=1.0).text("gravity"));
-				})
+				ui.add(&mut *self.model.embedding_parameters.lock().unwrap());
 			});
-			draw_below_first(
+			draw_bottom_first(
 				ui,
 				|ui| {
-					egui::Frame::none()
-						.stroke(ui.visuals().widgets.inactive.fg_stroke)
-						.show(ui, |ui| {
-							ui.set_clip_rect({
-								let mut clip = ui.cursor();
-								clip.set_height(ui.available_height());
-								clip.set_width(ui.available_width());
-								clip
-							});
-
-							let scrollarea = egui::ScrollArea::both()
-								.auto_shrink([false, false])
-								.scroll_offset(self.graph_area_pos)
-								.show_viewport(ui, |ui, viewport| {
-									draw_graph(
-										ui,
-										self.graph_area_zoom,
-										viewport,
-										&self.model.block_graph.read().unwrap(),
-									)
-								});
-
-							if let Some(hover_pos) = scrollarea.inner.hover_pos() {
-								let new_zoom = (self.graph_area_zoom * zoom_delta).max(1.0);
-								let real_zoom_delta = new_zoom / self.graph_area_zoom;
-								self.graph_area_zoom = new_zoom;
-
-								let hover_pos = hover_pos - scrollarea.inner_rect.min;
-								let new_offset =
-									(self.graph_area_pos + hover_pos) * real_zoom_delta - hover_pos;
-								self.graph_area_pos = new_offset;
-
-								self.graph_area_pos = (self.graph_area_pos - scroll_delta)
-									.max(emath::Vec2::ZERO)
-									.min(scrollarea.content_size - scrollarea.inner_rect.size());
-							}
-							self.graph_area_pos = (self.graph_area_pos
-								- scrollarea.inner.drag_delta())
-							.max(emath::Vec2::ZERO)
-							.min(scrollarea.content_size - scrollarea.inner_rect.size());
-						});
+					self.graph_widget
+						.show(ui, &self.model.block_graph.read().unwrap());
 				},
 				|ui| {
 					ui.horizontal(|ui| ui.heading("bottom stuff"));
@@ -167,72 +113,9 @@ impl App for Gui {
 	}
 }
 
-const NODE_WIDTH: f32 = 50.0;
-
-fn draw_graph(ui: &mut Ui, zoom_level: f32, viewport: Rect, graph: &Graph2D) -> egui::Response {
-	let offset = ui.cursor().left_top();
-	let background = ui.allocate_rect(
-		Rect::from_min_size(offset, ui.available_size() * zoom_level),
-		egui::Sense::drag(),
-	);
-	let expanded_viewport = viewport.expand(NODE_WIDTH / 2.0);
-
-	let style = ui.visuals().widgets.hovered;
-	let mut draw_node = |pos, text| {
-		let rect = Rect::from_center_size(pos, egui::Vec2::new(NODE_WIDTH, NODE_WIDTH));
-		ui.put(
-			rect.translate(offset.to_vec2()),
-			move |ui: &mut Ui| {
-				egui::Frame::none()
-					.fill(style.bg_fill)
-					.rounding(NODE_WIDTH / 5.0)
-					.show(ui, |ui| {
-						ui.label(egui::RichText::new(text).small());
-					})
-					.response
-			},
-		)
-	};
-	let translate = |embed_space_pos: glam::DVec2| {
-		let unit_square_pos = egui::Vec2::from(<[f32; 2]>::from(
-			((embed_space_pos - graph.min) / (graph.max - graph.min).max_element()).as_vec2(),
-		));
-		let scrollarea = viewport.size();
-		let scrollarea_content_width = (scrollarea.min_elem() - 2.0 * NODE_WIDTH) * 0.9;
-		let scrollarea_offset = (scrollarea - emath::Vec2::splat(scrollarea_content_width)) / 2.0;
-		let scrollarea_pos = scrollarea_offset + unit_square_pos * scrollarea_content_width;
-		let final_pos = (scrollarea_pos * zoom_level).to_pos2();
-		match expanded_viewport.contains(final_pos) {
-			true => Ok(final_pos),
-			false => Err(final_pos),
-		}
-	};
-	for &node in &graph.node_positions {
-		if let Ok(pos_within_viewport) = translate(node) {
-			draw_node(pos_within_viewport, "");
-		}
-	}
-	for &(a, b) in &graph.edges {
-		let origin = translate(graph.node_positions[a]);
-		let target = translate(graph.node_positions[b]);
-		if origin.is_err() && target.is_err() {
-			continue;
-		}
-		let origin = origin.unwrap_or_else(convert::identity);
-		let target = target.unwrap_or_else(convert::identity);
-		edge_arrow(
-			ui.painter(),
-			origin + offset.to_vec2(),
-			target - origin,
-			style.fg_stroke,
-		);
-	}
-	background
-}
-
 /// Draw widgets in `reversed_lower` bottom up, then draw widgets from `upper`
 /// top down in the remaining middle space.
-fn draw_below_first(
+fn draw_bottom_first(
 	ui: &mut Ui,
 	upper: impl FnOnce(&mut Ui),
 	reversed_lower: impl FnOnce(&mut Ui),
@@ -241,26 +124,4 @@ fn draw_below_first(
 		reversed_lower(ui);
 		ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), upper);
 	});
-}
-
-fn edge_arrow(
-	painter: &egui::Painter,
-	mut origin: egui::Pos2,
-	vec: egui::Vec2,
-	stroke: egui::Stroke,
-) {
-	let mut tip = origin + vec;
-	let margin = NODE_WIDTH / 2.0 * vec / vec.abs().max_elem();
-	origin += margin;
-	tip -= margin;
-
-	let rot = emath::Rot2::from_angle(std::f32::consts::TAU / 10.0);
-	let tip_length = (((tip - origin).length()) / 4.0).min(NODE_WIDTH / 3.0);
-	let dir = vec.normalized();
-	painter.line_segment([origin, tip], stroke);
-	painter.line_segment([tip, tip - tip_length * (rot * dir)], stroke);
-	painter.line_segment(
-		[tip, tip - tip_length * (rot.inverse() * dir)],
-		stroke,
-	);
 }
