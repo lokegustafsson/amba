@@ -1,5 +1,3 @@
-use std::convert;
-
 use egui::{self, Rect, Response, Sense, Ui, Widget};
 use emath::Vec2;
 
@@ -49,14 +47,14 @@ pub struct GraphWidget {
 	/// 10x => we are looking at a small part of the graph
 	zoom: f32,
 	pos: Vec2,
-	active_node: Option<usize>,
+	active_node_and_pan: Option<(usize, bool)>,
 }
 impl Default for GraphWidget {
 	fn default() -> Self {
 		Self {
 			zoom: 1.0,
 			pos: Vec2::ZERO,
-			active_node: None,
+			active_node_and_pan: None,
 		}
 	}
 }
@@ -82,7 +80,7 @@ impl GraphWidget {
 						draw_graph(
 							ui,
 							self.zoom,
-							&mut self.active_node,
+							&mut self.active_node_and_pan,
 							viewport,
 							graph,
 						)
@@ -94,6 +92,7 @@ impl GraphWidget {
 						input.pointer.interact_pos(),
 					)
 				});
+				let background_drag = scrollarea.inner.drag_delta();
 
 				let real_zoom_delta = if let (true, Some(hover_pos)) =
 					(ui.ui_contains_pointer(), latest_pointer_pos)
@@ -109,7 +108,31 @@ impl GraphWidget {
 				} else {
 					1.0
 				};
-				self.pos = (self.pos - scrollarea.inner.drag_delta())
+				if background_drag != emath::Vec2::ZERO {
+					self.pos -= background_drag;
+					self.active_node_and_pan
+						.as_mut()
+						.map(|(_, pan)| *pan = false);
+				}
+
+				if zoom_delta == 1.0 && background_drag == emath::Vec2::ZERO {
+					if let Some((active, true)) = self.active_node_and_pan {
+						const TAKE_FOCUS_SPEED: f32 = 0.5;
+
+						let active_pos = translate_embed_to_scrollarea_pos(
+							graph.node_positions[active],
+							graph,
+							self.zoom,
+							scrollarea.inner_rect.size(),
+						)
+						.to_vec2();
+						self.pos = self.pos * (1.0 - TAKE_FOCUS_SPEED)
+							+ (active_pos - scrollarea.inner_rect.size() / 2.0) * TAKE_FOCUS_SPEED;
+					}
+				}
+
+				self.pos = self
+					.pos
 					.max(emath::Vec2::ZERO)
 					.min(scrollarea.content_size * real_zoom_delta - scrollarea.inner_rect.size());
 			});
@@ -121,7 +144,7 @@ const NODE_WIDTH: f32 = 50.0;
 fn draw_graph(
 	ui: &mut Ui,
 	zoom_level: f32,
-	active_node: &mut Option<usize>,
+	active_node_and_pan: &mut Option<(usize, bool)>,
 	viewport: Rect,
 	graph: &Graph2D,
 ) -> egui::Response {
@@ -153,36 +176,35 @@ fn draw_graph(
 		});
 		resp
 	};
-	let translate = |embed_space_pos: glam::DVec2| {
-		let unit_square_pos = egui::Vec2::from(<[f32; 2]>::from(
-			((embed_space_pos - graph.min) / (graph.max - graph.min).max_element()).as_vec2(),
-		));
-		let scrollarea = viewport.size();
-		let scrollarea_content_width = (scrollarea.min_elem() - 2.0 * NODE_WIDTH) * 0.9;
-		let scrollarea_offset = (scrollarea - emath::Vec2::splat(scrollarea_content_width)) / 2.0;
-		let scrollarea_pos = scrollarea_offset + unit_square_pos * scrollarea_content_width;
-		let final_pos = (scrollarea_pos * zoom_level).to_pos2();
-		match expanded_viewport.contains(final_pos) {
-			true => Ok(final_pos),
-			false => Err(final_pos),
-		}
-	};
 	for (i, &node) in graph.node_positions.iter().enumerate() {
-		if let Ok(pos_within_viewport) = translate(node) {
-			let node = draw_node(pos_within_viewport, "", Some(i) == *active_node);
-			if node.clicked() || node.dragged() {
-				*active_node = Some(i);
+		let pos = translate_embed_to_scrollarea_pos(node, graph, zoom_level, viewport.size());
+		if expanded_viewport.contains(pos) {
+			let node = draw_node(
+				pos,
+				"",
+				active_node_and_pan.map_or(false, |(node, _)| node == i),
+			);
+			if node.clicked() || node.drag_started() {
+				*active_node_and_pan = Some((i, true));
 			}
 		}
 	}
 	for &(a, b) in &graph.edges {
-		let origin = translate(graph.node_positions[a]);
-		let target = translate(graph.node_positions[b]);
-		if origin.is_err() && target.is_err() {
+		let origin = translate_embed_to_scrollarea_pos(
+			graph.node_positions[a],
+			graph,
+			zoom_level,
+			viewport.size(),
+		);
+		let target = translate_embed_to_scrollarea_pos(
+			graph.node_positions[b],
+			graph,
+			zoom_level,
+			viewport.size(),
+		);
+		if !expanded_viewport.contains(origin) && !expanded_viewport.contains(target) {
 			continue;
 		}
-		let origin = origin.unwrap_or_else(convert::identity);
-		let target = target.unwrap_or_else(convert::identity);
 		edge_arrow(
 			ui.painter(),
 			origin + offset.to_vec2(),
@@ -213,4 +235,22 @@ fn edge_arrow(
 		[tip, tip - tip_length * (rot.inverse() * dir)],
 		stroke,
 	);
+}
+
+fn translate_embed_to_scrollarea_pos(
+	embed_space_pos: glam::DVec2,
+	graph: &Graph2D,
+	zoom_level: f32,
+	viewport_size: Vec2,
+) -> emath::Pos2 {
+	let unit_square_pos =
+		glam_to_emath((embed_space_pos - graph.min) / (graph.max - graph.min).max_element());
+	let nozoom_content_width = (viewport_size.min_elem() - 2.0 * NODE_WIDTH) * 0.9;
+	let nozoom_offset = (viewport_size - emath::Vec2::splat(nozoom_content_width)) / 2.0;
+	let nozoom_pos = nozoom_offset + unit_square_pos * nozoom_content_width;
+	(nozoom_pos * zoom_level).to_pos2()
+}
+
+fn glam_to_emath(v: glam::DVec2) -> emath::Vec2 {
+	emath::Vec2::from(<[f32; 2]>::from(v.as_vec2()))
 }
