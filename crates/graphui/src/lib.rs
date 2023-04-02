@@ -60,6 +60,10 @@ impl Default for GraphWidget {
 }
 
 impl GraphWidget {
+	pub fn active_node_id(&self) -> Option<usize> {
+		self.active_node_and_pan.map(|(node, _)| node)
+	}
+
 	pub fn show(&mut self, ui: &mut Ui, graph: &Graph2D) {
 		egui::Frame::none()
 			.stroke(ui.visuals().widgets.inactive.fg_stroke)

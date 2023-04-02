@@ -70,6 +70,9 @@ impl Graph2D {
 	}
 
 	pub fn run_layout_iterations(&mut self, iterations: usize, params: EmbeddingParameters) {
+		if self.node_positions.is_empty() {
+			return;
+		}
 		let mut node_velocity = vec![DVec2::ZERO; self.node_positions.len()];
 		let mut node_accel = vec![DVec2::ZERO; self.node_positions.len()];
 		let rng = &Rng::new();

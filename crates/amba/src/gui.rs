@@ -84,22 +84,24 @@ impl Gui {
 
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
-		egui::CentralPanel::default().show(ctx, |ui| {
+		let graph = &self.model.block_graph.read().unwrap();
+		let active = self.graph_widget.active_node_id();
+
+		egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
 			ui.horizontal(|ui| {
-				ui.heading("top stuff");
+				ui.heading("Drawing parameters");
 				ui.add(&mut *self.model.embedding_parameters.lock().unwrap());
-			});
-			draw_bottom_first(
-				ui,
-				|ui| {
-					self.graph_widget
-						.show(ui, &self.model.block_graph.read().unwrap());
-				},
-				|ui| {
-					ui.horizontal(|ui| ui.heading("bottom stuff"));
-				},
-			)
+			})
 		});
+		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {
+			ui.horizontal(|ui| {
+				if let Some(active) = active {
+					ui.heading("Selected node");
+					ui.label(format!("{:#?}", graph.node_metadata[active]));
+				}
+			})
+		});
+		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, graph));
 	}
 
 	fn on_exit(&mut self, _: Option<&eframe::glow::Context>) {
@@ -111,17 +113,4 @@ impl App for Gui {
 			Err(mpsc::SendError(_)) => unreachable!(),
 		}
 	}
-}
-
-/// Draw widgets in `reversed_lower` bottom up, then draw widgets from `upper`
-/// top down in the remaining middle space.
-fn draw_bottom_first(
-	ui: &mut Ui,
-	upper: impl FnOnce(&mut Ui),
-	reversed_lower: impl FnOnce(&mut Ui),
-) {
-	ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-		reversed_lower(ui);
-		ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), upper);
-	});
 }
