@@ -119,7 +119,7 @@ mod test {
 			true
 		}
 
-		pub fn canonicalize(&mut self, mut x: u64) -> u64 {
+		pub fn canonicalize(&mut self, x: u64) -> u64 {
 			assert!(x < LIMIT);
 			if !self.canon.contains_key(&x) {
 				self.canon.insert(x, x);
