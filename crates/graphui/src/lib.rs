@@ -64,10 +64,12 @@ impl GraphWidget {
 		egui::Frame::none()
 			.stroke(ui.visuals().widgets.inactive.fg_stroke)
 			.show(ui, |ui| {
+				let height = ui.available_height();
+				let width = ui.available_width();
 				ui.set_clip_rect({
 					let mut clip = ui.cursor();
-					clip.set_height(ui.available_height());
-					clip.set_width(ui.available_width());
+					clip.set_height(height);
+					clip.set_width(width);
 					clip
 				});
 
@@ -78,25 +80,24 @@ impl GraphWidget {
 						draw_graph(ui, self.zoom, viewport, graph)
 					});
 
-				let (zoom_delta, scroll_delta) =
-					ui.input(|input| (input.zoom_delta(), input.scroll_delta));
+				let zoom_delta =
+					ui.input(|input| input.zoom_delta() + input.scroll_delta.y * 2.0 / height);
 
-				if let Some(hover_pos) = scrollarea.inner.hover_pos() {
+				let real_zoom_delta = if let Some(hover_pos) = scrollarea.inner.hover_pos() {
 					let new_zoom = (self.zoom * zoom_delta).max(1.0);
 					let real_zoom_delta = new_zoom / self.zoom;
 					self.zoom = new_zoom;
 
-					let hover_pos = hover_pos - scrollarea.inner_rect.min;
+					let hover_pos = 1.0 * (hover_pos - scrollarea.inner_rect.min);
 					let new_offset = (self.pos + hover_pos) * real_zoom_delta - hover_pos;
 					self.pos = new_offset;
-
-					self.pos = (self.pos - scroll_delta)
-						.max(emath::Vec2::ZERO)
-						.min(scrollarea.content_size - scrollarea.inner_rect.size());
-				}
+					real_zoom_delta
+				} else {
+					1.0
+				};
 				self.pos = (self.pos - scrollarea.inner.drag_delta())
 					.max(emath::Vec2::ZERO)
-					.min(scrollarea.content_size - scrollarea.inner_rect.size());
+					.min(scrollarea.content_size * real_zoom_delta - scrollarea.inner_rect.size());
 			});
 	}
 }

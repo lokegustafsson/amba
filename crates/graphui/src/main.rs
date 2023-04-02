@@ -43,7 +43,7 @@ fn main() {
 			let ctx = cc.egui_ctx.clone();
 			thread::spawn(move || loop {
 				let mut working_copy = worker_graph.read().unwrap().clone();
-        let params = *worker_params.lock().unwrap();
+				let params = *worker_params.lock().unwrap();
 				working_copy.run_layout_iterations(100, params);
 				*worker_graph.write().unwrap() = working_copy;
 				ctx.request_repaint();
