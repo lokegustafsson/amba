@@ -410,8 +410,27 @@ impl Graph {
 	/// Returns a new graph of strongly connected components using
 	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
 	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
-		let scc = self.tarjan();
-		connect_dag(scc)
+		let edges = self.edges().count();
+
+		// Tarjan often overflows the default stack, so if the
+		// graph is large enough to cause issues, do the work
+		// in a worker thread with a guaranteed large enough
+		// stack
+		if edges > 10_000 {
+			let stack_size = (edges as f64 * 64. * 3. * 1.1) as usize;
+			let graph = self.clone();
+
+			std::thread::Builder::new()
+				.name("Tarjan worker thread".into())
+				.stack_size(stack_size)
+				.spawn(move || connect_dag(graph.tarjan()))
+				.unwrap()
+				.join()
+				.unwrap()
+		} else {
+			let scc = self.tarjan();
+			connect_dag(scc)
+		}
 	}
 
 	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
