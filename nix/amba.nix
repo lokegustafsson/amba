@@ -41,6 +41,17 @@ let
   AMBA_BUILD_GUEST_IMAGES_SCRIPT =
     "${s2e.build-guest-images}/bin/build-guest-images";
 
+  gui-native-dependencies = p: [
+        p.fontconfig
+        p.freetype
+        p.libGL
+        p.wayland
+        p.xorg.libX11
+        p.xorg.libXcursor
+        p.xorg.libXi
+        p.xorg.libXrandr
+  ];
+
   rust = import ./rust.nix {
     inherit lib pkgs;
     extra-overrides = { mkNativeDep, mkEnvDep, mkRpath, mkOverride, p }: [
@@ -59,16 +70,7 @@ let
         inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR
           AMBA_BUILD_GUEST_IMAGES_SCRIPT;
       })
-      (mkRpath "amba" [
-        p.fontconfig
-        p.freetype
-        p.libGL
-        p.wayland
-        p.xorg.libX11
-        p.xorg.libXcursor
-        p.xorg.libXi
-        p.xorg.libXrandr
-      ])
+      (mkRpath "amba" (gui-native-dependencies p))
     ];
   };
 
@@ -113,6 +115,6 @@ let
   };
 in {
   inherit COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT
-    amba-deps impure-amba amba-wrapped;
+    amba-deps impure-amba amba-wrapped gui-native-dependencies;
   inherit (rust) amba workspaceShell;
 }
