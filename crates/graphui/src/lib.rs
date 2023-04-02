@@ -101,7 +101,11 @@ impl GraphWidget {
 					let real_zoom_delta = new_zoom / self.zoom;
 					self.zoom = new_zoom;
 
-					let hover_pos = 1.0 * (hover_pos - scrollarea.inner_rect.min);
+					let hover_pos = if self.active_node_and_pan.map_or(false, |(_, pan)| pan) {
+						scrollarea.inner_rect.size() / 2.0
+					} else {
+						hover_pos - scrollarea.inner_rect.min
+					};
 					let new_offset = (self.pos + hover_pos) * real_zoom_delta - hover_pos;
 					self.pos = new_offset;
 					real_zoom_delta
@@ -139,8 +143,6 @@ impl GraphWidget {
 	}
 }
 
-const NODE_WIDTH: f32 = 50.0;
-
 fn draw_graph(
 	ui: &mut Ui,
 	zoom_level: f32,
@@ -148,86 +150,124 @@ fn draw_graph(
 	viewport: Rect,
 	graph: &Graph2D,
 ) -> egui::Response {
-	let offset = ui.cursor().left_top();
+	let offset = ui.cursor().left_top().to_vec2();
 	let background = ui.allocate_rect(
-		Rect::from_min_size(offset, ui.available_size() * zoom_level),
+		Rect::from_min_size(offset.to_pos2(), ui.available_size() * zoom_level),
 		egui::Sense::drag(),
 	);
-	let expanded_viewport = viewport.expand(NODE_WIDTH / 2.0);
-
 	let style_widgets = &ui.visuals().widgets.clone();
 	let style_selection = &ui.visuals().selection.clone();
-	let mut draw_node = |pos, text, selected| {
-		let rect = Rect::from_center_size(pos, egui::Vec2::new(NODE_WIDTH, NODE_WIDTH))
-			.translate(offset.to_vec2());
-		let resp = ui.allocate_rect(rect, Sense::click_and_drag());
-		ui.put(rect, move |ui: &mut Ui| {
-			egui::Frame::none()
-				.fill(if selected {
-					style_selection.bg_fill
-				} else {
-					style_widgets.hovered.bg_fill
-				})
-				.rounding(NODE_WIDTH / 5.0)
-				.show(ui, |ui| {
-					ui.label(egui::RichText::new(text).small());
-				})
-				.response
-		});
-		resp
+
+	let scrollarea_node_pos: Vec<emath::Pos2> = graph
+		.node_positions
+		.iter()
+		.map(|&p| translate_embed_to_scrollarea_pos(p, graph, zoom_level, viewport.size()))
+		.collect();
+
+	let node_size = {
+		let mut node_size = vec![std::f32::INFINITY; graph.node_positions.len()];
+		for &(a, b) in &graph.edges {
+			let d = scrollarea_node_pos[a].distance(scrollarea_node_pos[b]);
+			node_size[a] = node_size[a].min(0.6 * d);
+			node_size[b] = node_size[b].min(0.6 * d);
+		}
+		let avg_size = node_size.iter().copied().sum::<f32>() / node_size.len() as f32;
+		for size in &mut node_size {
+			*size = size.clamp(avg_size / 3.0, avg_size * 2.0);
+		}
+		node_size
 	};
-	for (i, &node) in graph.node_positions.iter().enumerate() {
-		let pos = translate_embed_to_scrollarea_pos(node, graph, zoom_level, viewport.size());
+
+	let expanded_viewport = viewport.expand(
+		node_size
+			.iter()
+			.copied()
+			.reduce(|a, b| a.max(b))
+			.unwrap_or(0.0)
+			/ 2.0,
+	);
+
+	for (i, &pos) in scrollarea_node_pos.iter().enumerate() {
 		if expanded_viewport.contains(pos) {
 			let node = draw_node(
+				ui,
+				style_widgets,
+				style_selection,
 				pos,
+				node_size[i],
 				"",
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
+				offset,
 			);
 			if node.clicked() || node.drag_started() {
 				*active_node_and_pan = Some((i, true));
 			}
 		}
 	}
+
 	for &(a, b) in &graph.edges {
-		let origin = translate_embed_to_scrollarea_pos(
-			graph.node_positions[a],
-			graph,
-			zoom_level,
-			viewport.size(),
-		);
-		let target = translate_embed_to_scrollarea_pos(
-			graph.node_positions[b],
-			graph,
-			zoom_level,
-			viewport.size(),
-		);
-		if !expanded_viewport.contains(origin) && !expanded_viewport.contains(target) {
+		let origin = scrollarea_node_pos[a];
+		let target = scrollarea_node_pos[b];
+		if !viewport.intersects(Rect::from_two_pos(origin, target)) {
 			continue;
 		}
 		edge_arrow(
 			ui.painter(),
-			origin + offset.to_vec2(),
+			origin + offset,
 			target - origin,
+			node_size[a],
+			node_size[b],
 			style_widgets.hovered.fg_stroke,
 		);
 	}
 	background
 }
 
+fn draw_node(
+	ui: &mut Ui,
+	style_widgets: &egui::style::Widgets,
+	style_selection: &egui::style::Selection,
+	pos: egui::Pos2,
+	node_width: f32,
+	text: &str,
+	selected: bool,
+	offset: Vec2,
+) -> Response {
+	let rect =
+		Rect::from_center_size(pos, egui::Vec2::new(node_width, node_width)).translate(offset);
+	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
+	ui.put(rect, move |ui: &mut Ui| {
+		egui::Frame::none()
+			.fill(if selected {
+				style_selection.bg_fill
+			} else {
+				style_widgets.hovered.bg_fill
+			})
+			.rounding(node_width / 5.0)
+			.show(ui, |ui| {
+				ui.label(egui::RichText::new(text).small());
+			})
+			.response
+	});
+	resp
+}
+
 fn edge_arrow(
 	painter: &egui::Painter,
 	mut origin: egui::Pos2,
 	vec: egui::Vec2,
+	node_size_origin: f32,
+	node_size_target: f32,
 	stroke: egui::Stroke,
 ) {
 	let mut tip = origin + vec;
-	let margin = NODE_WIDTH / 2.0 * vec / vec.abs().max_elem();
-	origin += margin;
-	tip -= margin;
+	let margin_origin = node_size_origin / 2.0 * vec / vec.abs().max_elem();
+	let margin_tip = node_size_target / 2.0 * vec / vec.abs().max_elem();
+	origin += margin_origin;
+	tip -= margin_tip;
 
 	let rot = emath::Rot2::from_angle(std::f32::consts::TAU / 10.0);
-	let tip_length = (((tip - origin).length()) / 4.0).min(NODE_WIDTH / 3.0);
+	let tip_length = ((tip - origin).length()) / 4.0;
 	let dir = vec.normalized();
 	painter.line_segment([origin, tip], stroke);
 	painter.line_segment([tip, tip - tip_length * (rot * dir)], stroke);
@@ -245,7 +285,8 @@ fn translate_embed_to_scrollarea_pos(
 ) -> emath::Pos2 {
 	let unit_square_pos =
 		glam_to_emath((embed_space_pos - graph.min) / (graph.max - graph.min).max_element());
-	let nozoom_content_width = (viewport_size.min_elem() - 2.0 * NODE_WIDTH) * 0.9;
+	let nozoom_viewport_margin = (viewport_size.min_elem() / 20.0).min(50.0);
+	let nozoom_content_width = (viewport_size.min_elem() - 2.0 * nozoom_viewport_margin) * 0.9;
 	let nozoom_offset = (viewport_size - emath::Vec2::splat(nozoom_content_width)) / 2.0;
 	let nozoom_pos = nozoom_offset + unit_square_pos * nozoom_content_width;
 	(nozoom_pos * zoom_level).to_pos2()
