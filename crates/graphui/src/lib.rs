@@ -1,6 +1,6 @@
 use std::convert;
 
-use egui::{self, Rect, Response, Ui, Widget};
+use egui::{self, Rect, Response, Sense, Ui, Widget};
 use emath::Vec2;
 
 mod embed;
@@ -49,12 +49,14 @@ pub struct GraphWidget {
 	/// 10x => we are looking at a small part of the graph
 	zoom: f32,
 	pos: Vec2,
+	active_node: Option<usize>,
 }
 impl Default for GraphWidget {
 	fn default() -> Self {
 		Self {
 			zoom: 1.0,
 			pos: Vec2::ZERO,
+			active_node: None,
 		}
 	}
 }
@@ -77,13 +79,25 @@ impl GraphWidget {
 					.auto_shrink([false, false])
 					.scroll_offset(self.pos)
 					.show_viewport(ui, |ui, viewport| {
-						draw_graph(ui, self.zoom, viewport, graph)
+						draw_graph(
+							ui,
+							self.zoom,
+							&mut self.active_node,
+							viewport,
+							graph,
+						)
 					});
 
-				let zoom_delta =
-					ui.input(|input| input.zoom_delta() + input.scroll_delta.y * 2.0 / height);
+				let (zoom_delta, latest_pointer_pos) = ui.input(|input| {
+					(
+						input.zoom_delta() + input.scroll_delta.y * 2.0 / height,
+						input.pointer.interact_pos(),
+					)
+				});
 
-				let real_zoom_delta = if let Some(hover_pos) = scrollarea.inner.hover_pos() {
+				let real_zoom_delta = if let (true, Some(hover_pos)) =
+					(ui.ui_contains_pointer(), latest_pointer_pos)
+				{
 					let new_zoom = (self.zoom * zoom_delta).max(1.0);
 					let real_zoom_delta = new_zoom / self.zoom;
 					self.zoom = new_zoom;
@@ -104,7 +118,13 @@ impl GraphWidget {
 
 const NODE_WIDTH: f32 = 50.0;
 
-fn draw_graph(ui: &mut Ui, zoom_level: f32, viewport: Rect, graph: &Graph2D) -> egui::Response {
+fn draw_graph(
+	ui: &mut Ui,
+	zoom_level: f32,
+	active_node: &mut Option<usize>,
+	viewport: Rect,
+	graph: &Graph2D,
+) -> egui::Response {
 	let offset = ui.cursor().left_top();
 	let background = ui.allocate_rect(
 		Rect::from_min_size(offset, ui.available_size() * zoom_level),
@@ -112,21 +132,26 @@ fn draw_graph(ui: &mut Ui, zoom_level: f32, viewport: Rect, graph: &Graph2D) -> 
 	);
 	let expanded_viewport = viewport.expand(NODE_WIDTH / 2.0);
 
-	let style = ui.visuals().widgets.hovered;
-	let mut draw_node = |pos, text| {
-		let rect = Rect::from_center_size(pos, egui::Vec2::new(NODE_WIDTH, NODE_WIDTH));
-		ui.put(
-			rect.translate(offset.to_vec2()),
-			move |ui: &mut Ui| {
-				egui::Frame::none()
-					.fill(style.bg_fill)
-					.rounding(NODE_WIDTH / 5.0)
-					.show(ui, |ui| {
-						ui.label(egui::RichText::new(text).small());
-					})
-					.response
-			},
-		)
+	let style_widgets = &ui.visuals().widgets.clone();
+	let style_selection = &ui.visuals().selection.clone();
+	let mut draw_node = |pos, text, selected| {
+		let rect = Rect::from_center_size(pos, egui::Vec2::new(NODE_WIDTH, NODE_WIDTH))
+			.translate(offset.to_vec2());
+		let resp = ui.allocate_rect(rect, Sense::click_and_drag());
+		ui.put(rect, move |ui: &mut Ui| {
+			egui::Frame::none()
+				.fill(if selected {
+					style_selection.bg_fill
+				} else {
+					style_widgets.hovered.bg_fill
+				})
+				.rounding(NODE_WIDTH / 5.0)
+				.show(ui, |ui| {
+					ui.label(egui::RichText::new(text).small());
+				})
+				.response
+		});
+		resp
 	};
 	let translate = |embed_space_pos: glam::DVec2| {
 		let unit_square_pos = egui::Vec2::from(<[f32; 2]>::from(
@@ -142,9 +167,12 @@ fn draw_graph(ui: &mut Ui, zoom_level: f32, viewport: Rect, graph: &Graph2D) -> 
 			false => Err(final_pos),
 		}
 	};
-	for &node in &graph.node_positions {
+	for (i, &node) in graph.node_positions.iter().enumerate() {
 		if let Ok(pos_within_viewport) = translate(node) {
-			draw_node(pos_within_viewport, "");
+			let node = draw_node(pos_within_viewport, "", Some(i) == *active_node);
+			if node.clicked() || node.dragged() {
+				*active_node = Some(i);
+			}
 		}
 	}
 	for &(a, b) in &graph.edges {
@@ -159,7 +187,7 @@ fn draw_graph(ui: &mut Ui, zoom_level: f32, viewport: Rect, graph: &Graph2D) -> 
 			ui.painter(),
 			origin + offset.to_vec2(),
 			target - origin,
-			style.fg_stroke,
+			style_widgets.hovered.fg_stroke,
 		);
 	}
 	background
