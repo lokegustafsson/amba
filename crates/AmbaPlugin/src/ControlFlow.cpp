@@ -29,15 +29,15 @@ void ControlFlow::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	const auto old_id = old_state->getID();
+	const u64 old_id = (u64) old_state->getID();
 
 	for (auto &new_state : new_states) {
-		const auto new_id = new_state->getID();
+		const u64 new_id = (u64) new_state->getID();
 
 		rust_update_control_flow_graph(
 			this->m_cfg,
-			(u64) old_id,
-			(u64) new_id
+			old_id,
+			new_id
 		);
 	}
 }
