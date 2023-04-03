@@ -8,7 +8,7 @@ on:
     paths:
       - '.github/workflows/**'
       - 'crates/**'
-      - '!crates/libamba/**'
+      - '!crates/AmbaPlugin/**'
       - 'Cargo.toml'
       - 'Cargo.lock'
       - 'rustfmt.toml'
@@ -32,6 +32,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: cargo test
         run: |
-          PACKAGES=$(ls crates | grep -P -v '^(bootstrap|libamba|s2e-rs)$' | sed -e 's/^/-p /')
+          PACKAGES=$(ls crates | grep -P -v '^(bootstrap|AmbaPlugin|s2e-rs)$' | sed -e 's/^/-p /')
           echo PACKAGES=$PACKAGES
           nix develop -L --accept-flake-config --command cargo test $PACKAGES
