@@ -1661,8 +1661,8 @@ mod test {
 			graph.update(from, to);
 		}
 
-		let t = graph.tarjan();
-		let k = graph.kosaraju();
+		let t = graph.to_strongly_connected_components_tarjan().nodes;
+		let k = graph.to_strongly_connected_components_kosaraju().nodes;
 
 		assert_eq!(t, k);
 
