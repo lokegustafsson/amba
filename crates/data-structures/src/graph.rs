@@ -642,7 +642,9 @@ mod test {
 	#[test]
 	fn compare_10_20_compression() {
 		let mut runner = TestRunner::new(Config::with_cases(10_000));
-		runner.run(&generator(10, 20), compare_behaviour_compression).unwrap();
+		runner
+			.run(&generator(10, 20), compare_behaviour_compression)
+			.unwrap();
 	}
 
 	/// 0 → 1 → 2
@@ -1621,5 +1623,35 @@ mod test {
 		let k = graph.kosaraju();
 
 		assert_eq!(t, k);
+	}
+
+	fn compare_behaviour_scc(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
+		let mut graph = Graph::new();
+		for (from, to) in instructions.into_iter() {
+			graph.update(from, to);
+		}
+
+		let t = graph.tarjan();
+		let k = graph.kosaraju();
+
+		assert_eq!(t, k);
+
+		Ok(())
+	}
+
+	#[test]
+	fn compare_10_20_scc() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner
+			.run(&generator(10, 20), compare_behaviour_scc)
+			.unwrap();
+	}
+
+	#[test]
+	fn compare_100_2000_scc() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner
+			.run(&generator(100, 2000), compare_behaviour_scc)
+			.unwrap();
 	}
 }
