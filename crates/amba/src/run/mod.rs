@@ -17,7 +17,7 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use data_structures::GraphIpc;
+use ipc::GraphIpc;
 use eframe::egui::Context;
 use graphui::{EmbeddingParameters, Graph2D};
 use ipc::{IpcError, IpcMessage};

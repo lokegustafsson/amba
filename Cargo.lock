@@ -91,7 +91,6 @@ dependencies = [
  "chrono",
  "clap",
  "ctrlc",
- "data-structures",
  "dirs",
  "eframe",
  "glam",
@@ -851,6 +850,7 @@ name = "data-structures"
 version = "0.1.0"
 dependencies = [
  "arrayvec",
+ "ipc",
  "itertools 0.10.5",
  "proptest",
  "serde",
@@ -1374,12 +1374,12 @@ dependencies = [
 name = "graphui"
 version = "0.1.0"
 dependencies = [
- "data-structures",
  "eframe",
  "egui",
  "emath",
  "fastrand",
  "glam",
+ "ipc",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1650,7 +1650,6 @@ name = "ipc"
 version = "0.1.0"
 dependencies = [
  "bincode",
- "data-structures",
  "serde",
  "tracing",
 ]
@@ -1765,7 +1764,6 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 name = "libamba"
 version = "0.1.0"
 dependencies = [
- "data-structures",
  "ipc",
 ]
 

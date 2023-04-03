@@ -1,6 +1,6 @@
 use std::mem;
 
-use data_structures::{GraphIpc, NodeMetadata};
+use ipc::{NodeMetadata, GraphIpc};
 use fastrand::Rng;
 use glam::DVec2;
 

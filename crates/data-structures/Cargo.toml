@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 arrayvec = { version = "0.7", features = ["serde"] }
+ipc = { path = "../ipc" }
 itertools = "0.10"
 serde = { version = "1", features = ["derive"] }
 

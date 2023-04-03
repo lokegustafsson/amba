@@ -11,4 +11,3 @@ crate-type = [ "staticlib", "rlib" ]
 
 [dependencies]
 ipc = { path = "../ipc" }
-data-structures = { path = "../data-structures" }

@@ -6,8 +6,8 @@ args@{
   rootFeatures ? [
     "amba/default"
     "data-structures/default"
-    "graphui/default"
     "ipc/default"
+    "graphui/default"
     "qmp-client/default"
     "recipe/default"
     "bootstrap/default"
@@ -50,8 +50,8 @@ in
   workspace = {
     amba = rustPackages.unknown.amba."0.1.0";
     data-structures = rustPackages.unknown.data-structures."0.1.0";
-    graphui = rustPackages.unknown.graphui."0.1.0";
     ipc = rustPackages.unknown.ipc."0.1.0";
+    graphui = rustPackages.unknown.graphui."0.1.0";
     qmp-client = rustPackages.unknown.qmp-client."0.1.0";
     recipe = rustPackages.unknown.recipe."0.1.0";
     bootstrap = rustPackages.unknown.bootstrap."0.1.0";
@@ -1200,6 +1200,7 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/data-structures");
     dependencies = {
       arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
+      ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
       itertools = rustPackages."registry+https://github.com/rust-lang/crates.io-index".itertools."0.10.5" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
     };
@@ -1933,12 +1934,12 @@ in
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/graphui");
     dependencies = {
-      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       eframe = rustPackages."registry+https://github.com/rust-lang/crates.io-index".eframe."0.21.3" { inherit profileName; };
       egui = rustPackages."registry+https://github.com/rust-lang/crates.io-index".egui."0.21.0" { inherit profileName; };
       emath = rustPackages."registry+https://github.com/rust-lang/crates.io-index".emath."0.21.0" { inherit profileName; };
       fastrand = rustPackages."registry+https://github.com/rust-lang/crates.io-index".fastrand."1.8.0" { inherit profileName; };
       glam = rustPackages."registry+https://github.com/rust-lang/crates.io-index".glam."0.23.0" { inherit profileName; };
+      ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
       tracing_subscriber = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-subscriber."0.3.16" { inherit profileName; };
     };
@@ -2294,7 +2295,6 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/ipc");
     dependencies = {
       bincode = rustPackages."registry+https://github.com/rust-lang/crates.io-index".bincode."1.3.3" { inherit profileName; };
-      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };
@@ -2442,7 +2442,6 @@ in
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/libamba");
     dependencies = {
-      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
     };
   });

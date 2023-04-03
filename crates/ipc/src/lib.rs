@@ -6,7 +6,10 @@ use std::{
 	os::unix::net::UnixStream,
 };
 
+pub use graph::{GraphIpc, GraphIpcBuilder, NodeMetadata};
 use serde::{Deserialize, Serialize};
+
+mod graph;
 
 pub fn new_wrapping(stream: &UnixStream) -> (IpcTx<'_>, IpcRx<'_>) {
 	(
@@ -71,8 +74,8 @@ impl IpcRx<'_> {
 pub enum IpcMessage<'a> {
 	Ping,
 	GraphSnapshot {
-		symbolic_state_graph: Cow<'a, data_structures::GraphIpc>,
-		basic_block_graph: Cow<'a, data_structures::GraphIpc>,
+		symbolic_state_graph: Cow<'a, GraphIpc>,
+		basic_block_graph: Cow<'a, GraphIpc>,
 	},
 }
 
