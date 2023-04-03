@@ -3,8 +3,7 @@
 namespace control_flow {
 
 ControlFlow::ControlFlow(std::string name)
-	: m_last(0)
-  , m_name(name)
+	: m_name(name)
 	, m_cfg(rust_new_control_flow_graph())
 	{}
 

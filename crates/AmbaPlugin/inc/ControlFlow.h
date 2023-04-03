@@ -19,10 +19,12 @@ class ControlFlow {
 	amba::TimerFunction onTimer;
 	amba::TimerFunction onEngineShutdown;
   protected:
-	u64 m_last;
-  std::string m_name;
+	std::string m_name;
+
 	u64 m_last_uuid = 0;
 	std::unordered_map<u32, u32> m_uuids {};
+
+	u64 m_last = 0;
 	ControlFlowGraph *m_cfg;
 };
 
