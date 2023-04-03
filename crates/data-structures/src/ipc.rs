@@ -50,4 +50,8 @@ impl GraphIpcBuilder {
 	pub fn get(&self) -> &GraphIpc {
 		&self.graph
 	}
+
+	pub fn is_empty(&self) -> bool {
+		self.id_to_idx.is_empty()
+	}
 }

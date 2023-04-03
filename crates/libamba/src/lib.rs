@@ -66,6 +66,9 @@ impl State {
 	}
 
 	fn send_graph_snapshot(&mut self) {
+		if self.symbolic_state_graph.is_empty() && self.basic_block_graph.is_empty() {
+			return;
+		}
 		self.ipc_tx
 			.blocking_send(&IpcMessage::GraphSnapshot {
 				symbolic_state_graph: Cow::Borrowed(self.symbolic_state_graph.get()),

@@ -90,7 +90,12 @@ impl App for Gui {
 		egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
 			ui.horizontal(|ui| {
 				ui.heading("Drawing parameters");
-				ui.add(&mut *self.model.embedding_parameters.lock().unwrap());
+				let params_widget = ui.add(&mut *self.model.embedding_parameters.lock().unwrap());
+				if params_widget.changed() {
+					self.controller_tx
+						.send(ControllerMsg::EmbeddingParamsUpdated)
+						.unwrap();
+				}
 			})
 		});
 		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {

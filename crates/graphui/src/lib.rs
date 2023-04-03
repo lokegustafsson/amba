@@ -7,37 +7,65 @@ pub use embed::{EmbeddingParameters, Graph2D};
 
 impl Widget for &mut EmbeddingParameters {
 	fn ui(self, ui: &mut Ui) -> Response {
+		const STEPS: f64 = 10.0;
 		ui.vertical(|ui| {
-			ui.add(
-				egui::Slider::new(
-					&mut self.noise,
-					0.0..=EmbeddingParameters::MAX_NOISE,
+			let resp = ui
+				.add(
+					egui::Slider::new(
+						&mut self.noise,
+						0.0..=EmbeddingParameters::MAX_NOISE,
+					)
+					.step_by(EmbeddingParameters::MAX_NOISE / STEPS)
+					.text("noise"),
 				)
-				.text("noise"),
-			);
-			ui.add(
-				egui::Slider::new(
-					&mut self.attraction,
-					0.0..=EmbeddingParameters::MAX_ATTRACTION,
+				.union(
+					ui.add(
+						egui::Slider::new(
+							&mut self.attraction,
+							0.0..=EmbeddingParameters::MAX_ATTRACTION,
+						)
+						.step_by(EmbeddingParameters::MAX_ATTRACTION / STEPS)
+						.text("attraction"),
+					),
 				)
-				.text("attraction"),
-			);
-			ui.add(
-				egui::Slider::new(
-					&mut self.repulsion,
-					0.0..=EmbeddingParameters::MAX_REPULSION,
+				.union(
+					ui.add(
+						egui::Slider::new(
+							&mut self.repulsion,
+							0.0..=EmbeddingParameters::MAX_REPULSION,
+						)
+						.step_by(EmbeddingParameters::MAX_REPULSION / STEPS)
+						.text("repulsion"),
+					),
 				)
-				.text("repulsion"),
-			);
-			ui.add(
-				egui::Slider::new(
-					&mut self.gravity,
-					0.0..=EmbeddingParameters::MAX_GRAVITY,
+				.union(
+					ui.add(
+						egui::Slider::new(&mut self.repulsion_approximation, 0.0..=0.5)
+							.step_by(0.5 / STEPS)
+							.text("repulsion approximaton"),
+					),
 				)
-				.text("gravity"),
-			);
+				.union(
+					ui.add(
+						egui::Slider::new(
+							&mut self.gravity,
+							0.0..=EmbeddingParameters::MAX_GRAVITY,
+						)
+						.step_by(EmbeddingParameters::MAX_GRAVITY / STEPS)
+						.text("gravity"),
+					),
+				);
+			if self.statistic_updates_per_second == 0.0 {
+				ui.label("Updates per second: paused");
+			} else if self.statistic_updates_per_second.is_finite() {
+				ui.label(format!(
+					"Updates per second: {:.0}00",
+					self.statistic_updates_per_second / 100.0
+				));
+			}
+			resp
 		})
-		.response
+		.inner
 	}
 }
 

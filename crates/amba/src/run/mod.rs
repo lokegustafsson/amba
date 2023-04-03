@@ -14,7 +14,7 @@ use std::{
 	process::{self, Command, ExitStatus},
 	sync::{mpsc, Arc, Mutex, RwLock},
 	thread::{self, ScopedJoinHandle},
-	time::Duration,
+	time::{Duration, Instant},
 };
 
 use data_structures::GraphIpc;
@@ -35,6 +35,7 @@ pub enum ControllerMsg {
 		symbolic_state_graph: GraphIpc,
 		basic_block_graph: GraphIpc,
 	},
+	EmbeddingParamsUpdated,
 }
 pub struct Controller {
 	pub tx: mpsc::Sender<ControllerMsg>,
@@ -42,7 +43,7 @@ pub struct Controller {
 	pub model: Arc<Model>,
 	pub gui_context: Option<Context>,
 	pub qemu_pid: Option<u32>,
-	pub embedder_tx: Option<mpsc::Sender<[GraphIpc; 2]>>,
+	pub embedder_tx: Option<mpsc::Sender<Option<[GraphIpc; 2]>>>,
 }
 impl Controller {
 	/// Launch QEMU+S2E. That is, we do the equivalent of
@@ -114,8 +115,11 @@ impl Controller {
 				} => {
 					self.embedder_tx
 						.as_ref()
-						.map(|tx| tx.send([symbolic_state_graph, basic_block_graph]));
+						.map(|tx| tx.send(Some([symbolic_state_graph, basic_block_graph])));
 					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
+				}
+				ControllerMsg::EmbeddingParamsUpdated => {
+					self.embedder_tx.as_ref().map(|tx| tx.send(None));
 				}
 			}
 		}
@@ -431,16 +435,32 @@ fn run_embedder(
 	state_graph: &RwLock<Graph2D>,
 	block_graph: &RwLock<Graph2D>,
 	embedding_parameters: &Mutex<EmbeddingParameters>,
-	rx: mpsc::Receiver<[GraphIpc; 2]>,
+	rx: mpsc::Receiver<Option<[GraphIpc; 2]>>,
 	gui_context: Option<Context>,
 ) -> Result<(), ()> {
-	// TODO Non-zero timeout once really stable, to save cpu
+	let mut updates_per_second: f64 = 0.0;
+	let iterations = 100;
+	let mut blocking = true;
 	loop {
-		let params = embedding_parameters.lock().unwrap().clone();
-		match rx.try_recv() {
-			Ok([state, block]) => {
-				*state_graph.write().unwrap() = Graph2D::new(state, params);
-				*block_graph.write().unwrap() = Graph2D::new(block, params);
+		let params = {
+			let mut guard = embedding_parameters.lock().unwrap();
+			guard.statistic_updates_per_second = iterations as f64 * updates_per_second;
+			*guard
+		};
+		match blocking
+			.then(|| rx.recv().map_err(Into::into))
+			.unwrap_or(rx.try_recv())
+		{
+			Ok(Some([state, block])) => {
+				let mut start_params = params;
+				start_params.noise = 0.1;
+				*state_graph.write().unwrap() = Graph2D::new(state, start_params);
+				*block_graph.write().unwrap() = Graph2D::new(block, start_params);
+				blocking = false;
+				continue;
+			}
+			Ok(None) => {
+				blocking = false;
 				continue;
 			}
 			Err(mpsc::TryRecvError::Empty) => {}
@@ -449,11 +469,20 @@ fn run_embedder(
 				return Ok(());
 			}
 		}
+		let timer = Instant::now();
+		let mut total_delta_pos = 0.0;
+
 		for graph in [state_graph, block_graph] {
 			let mut working_copy = graph.read().unwrap().clone();
-			working_copy.run_layout_iterations(100, params);
+			total_delta_pos += working_copy.run_layout_iterations(iterations, params);
 			*graph.write().unwrap() = working_copy;
 		}
+		updates_per_second = timer.elapsed().as_secs_f64().recip();
+		if total_delta_pos < 0.1 {
+			updates_per_second = 0.0;
+			blocking = true;
+		}
+
 		gui_context.as_ref().map(|ctx| ctx.request_repaint());
 	}
 }
