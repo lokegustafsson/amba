@@ -4,7 +4,7 @@ use std::{
 };
 
 use eframe::{
-	egui::{self, Context, Ui},
+	egui::{self, Context},
 	App, CreationContext, Frame,
 };
 use graphui::{EmbeddingParameters, Graph2D, GraphWidget};

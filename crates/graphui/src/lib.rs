@@ -199,7 +199,7 @@ fn draw_graph(
 				style_selection,
 				pos,
 				node_size[i],
-				"",
+				"A",
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);
@@ -240,20 +240,27 @@ fn draw_node(
 	let rect =
 		Rect::from_center_size(pos, egui::Vec2::new(node_width, node_width)).translate(offset);
 	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
+	let lod_cutoff = ui.style().spacing.interact_size.y;
+	let rounding = node_width / 5.0;
+	let bg_color = if selected {
+		style_selection.bg_fill
+	} else {
+		style_widgets.hovered.bg_fill
+	};
+
 	ui.put(rect, move |ui: &mut Ui| {
-		egui::Frame::none()
-			.fill(if selected {
-				style_selection.bg_fill
-			} else {
-				style_widgets.hovered.bg_fill
-			})
-			.rounding(node_width / 5.0)
-			.show(ui, |ui| {
-				ui.label(egui::RichText::new(text).small());
-			})
-			.response
-	});
-	resp
+		if node_width < lod_cutoff {
+			ui.painter().rect_filled(rect, rounding, bg_color);
+		} else {
+			egui::Frame::none()
+				.rounding(rounding)
+				.fill(bg_color)
+				.show(ui, |ui| {
+					ui.label(egui::RichText::new(text).small());
+				});
+		}
+		resp
+	})
 }
 
 fn edge_arrow(

@@ -1,5 +1,3 @@
-use std::iter;
-
 use data_structures::{GraphIpc, NodeMetadata};
 use fastrand::Rng;
 use glam::DVec2;
@@ -24,9 +22,9 @@ pub struct EmbeddingParameters {
 }
 impl EmbeddingParameters {
 	pub const MAX_ATTRACTION: f64 = 0.2;
-	pub const MAX_GRAVITY: f64 = 1.0;
+	pub const MAX_GRAVITY: f64 = 2.0;
 	pub const MAX_NOISE: f64 = 20.0;
-	pub const MAX_REPULSION: f64 = 100.0;
+	pub const MAX_REPULSION: f64 = 2.0;
 }
 impl Default for EmbeddingParameters {
 	fn default() -> Self {
@@ -34,7 +32,7 @@ impl Default for EmbeddingParameters {
 			noise: 0.0,
 			attraction: 0.1,
 			repulsion: 1.0,
-			gravity: 0.0,
+			gravity: 0.5,
 		}
 	}
 }
@@ -53,11 +51,34 @@ impl Graph2D {
 	}
 
 	pub fn new(graph: GraphIpc, params: EmbeddingParameters) -> Self {
+		if graph.metadata.is_empty() {
+			return Self::empty();
+		}
+
 		let rng = &Rng::with_seed(0);
 		let mut ret = Self {
-			node_positions: iter::repeat_with(|| random_dvec2(rng))
-				.take(graph.metadata.len())
-				.collect(),
+			node_positions: {
+				let mut adjacency_list = vec![Vec::new(); graph.metadata.len()];
+				for &(a, b) in &graph.edges {
+					adjacency_list[a].push(b);
+				}
+
+				let mut node_depth = vec![usize::MAX; graph.metadata.len()];
+				node_depth[0] = 0;
+				let mut stack = vec![0];
+				while let Some(i) = stack.pop() {
+					for &e in &adjacency_list[i] {
+						if node_depth[e] == usize::MAX {
+							node_depth[e] = node_depth[i] + 1;
+							stack.push(e);
+						}
+					}
+				}
+
+				(0..graph.metadata.len())
+					.map(|i| (random_dvec2(rng) + DVec2::Y) * node_depth[i] as f64)
+					.collect()
+			},
 			node_metadata: graph.metadata,
 			edges: graph.edges,
 			min: DVec2::ZERO,
@@ -105,16 +126,15 @@ impl Graph2D {
 			let a0 = node_accel[0];
 			for i in 1..self.node_positions.len() {
 				// Gravity
-				node_accel[i] +=
-					DVec2::Y * (params.gravity * self.node_positions[i].y.max(1.0).log2());
+				node_accel[i] += DVec2::Y * params.gravity;
 				node_accel[i] -= a0;
 				// Opposite accel and velocity => exponentially reduce velocity
-				if node_accel[i].signum() == -node_velocity[i].signum() {
+				if node_accel[i].dot(node_velocity[i]) > 0.0 {
+					const VELOCITY_SPEEDUP: f64 = 1.10;
+					node_velocity[i] *= VELOCITY_SPEEDUP;
+				} else {
 					const VELOCITY_SLOWDOWN: f64 = 0.9;
 					node_velocity[i] *= VELOCITY_SLOWDOWN;
-				} else {
-					const VELOCITY_SPEEDUP: f64 = 1.04;
-					node_velocity[i] *= VELOCITY_SPEEDUP;
 				}
 				node_velocity[i] += node_accel[i];
 				self.node_positions[i] +=
