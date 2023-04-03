@@ -18,7 +18,6 @@ use std::{
 use ipc::{GraphIpcBuilder, IpcError, IpcMessage, IpcTx, NodeMetadata};
 
 static STATE: Mutex<Option<State>> = Mutex::new(None);
-static STATE_SHUTDOWN: AtomicBool = AtomicBool::new(false);
 
 struct State {
 	// IPC
@@ -67,7 +66,6 @@ impl State {
 		});
 		thread::spawn(|| loop {
 			thread::sleep(Duration::from_millis(100));
-			assert!(!STATE_SHUTDOWN.load(MemoryOrdering::SeqCst));
 
 			let mut guard = STATE.lock().unwrap();
 			guard.as_mut().unwrap().send_graph_snapshot();
@@ -86,7 +84,9 @@ impl State {
 			.unwrap_or_else(|err| println!("libamba ipc error sending symbolic graph: {err:?}"));
 	}
 
-	fn shutdown(&mut self) {}
+	fn shutdown(&mut self) {
+		self.send_graph_snapshot();
+	}
 
 	fn on_state_fork(&mut self, old_state_alias: u32, new_state_aliases: &[u32]) {
 		let old_state_id = self.symbolic_state_alias_to_id[old_state_alias as usize];
