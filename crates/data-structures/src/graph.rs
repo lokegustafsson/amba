@@ -511,9 +511,7 @@ impl Graph {
 			std::thread::Builder::new()
 				.name("Kosaraju worker thread".into())
 				.stack_size(stack_size)
-				.spawn(move || {
-					connect_dag(graph.kosaraju())
-				})
+				.spawn(move || connect_dag(graph.kosaraju()))
 				.expect("Failed to spawn thread for kosaraju")
 				.join()
 				.unwrap()
@@ -1691,7 +1689,10 @@ mod test {
 		let edges = 100_000;
 
 		let mut graph = Graph::new();
-		for (from, to) in std::iter::from_fn(|| Some((fastrand::u64(..nodes), fastrand::u64(..nodes)))).take(edges) {
+		for (from, to) in
+			std::iter::from_fn(|| Some((fastrand::u64(..nodes), fastrand::u64(..nodes))))
+				.take(edges)
+		{
 			graph.update(from, to);
 		}
 
