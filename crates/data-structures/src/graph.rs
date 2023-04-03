@@ -613,7 +613,7 @@ mod test {
 
 	impl Eq for Node {}
 
-	fn compare_behaviour(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
+	fn compare_behaviour_compression(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
 		let mut fast = Graph::new();
 		let mut slow = Graph::new();
 		for (from, to) in instructions.into_iter() {
@@ -640,9 +640,9 @@ mod test {
 	}
 
 	#[test]
-	fn compare_10_20() {
+	fn compare_10_20_compression() {
 		let mut runner = TestRunner::new(Config::with_cases(10_000));
-		runner.run(&generator(10, 20), compare_behaviour).unwrap();
+		runner.run(&generator(10, 20), compare_behaviour_compression).unwrap();
 	}
 
 	/// 0 → 1 → 2
