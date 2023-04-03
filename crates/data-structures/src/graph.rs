@@ -428,11 +428,10 @@ impl Graph {
 		// in a worker thread with a guaranteed large enough
 		// stack
 		if edges > 10_000 {
-			// `tarjan`'s stack should at worst be 16 word
-			// sized values. This should not require any
-			// extra alignment. Should grow with nodes,
-			// but let's go worst case of nodes and edges,
-			// then add 25% for safety.
+			// Keeping no variables in registers should
+			// give tarjan a frame of 320 bytes. Grow by
+			// the worst of nodes and edges and add 10%
+			// for safety.
 
 			let stack_size = (edges.max(nodes) as f64 * 320. * 1.1) as usize;
 			let graph = self.clone();
