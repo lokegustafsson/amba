@@ -478,7 +478,7 @@ impl Graph {
 				.or_insert_with(|| u_ref.clone());
 			// Because borrow checker
 			let from = node.from.clone();
-			for &v in from.iter() {
+			for v in from.into_iter() {
 				assign(graph, acc, assigned, v, root);
 			}
 		}
@@ -486,6 +486,8 @@ impl Graph {
 		for &u in self.nodes.keys() {
 			visit(self, &mut visited, &mut l, u);
 		}
+		std::mem::drop(visited);
+
 		for u in l.into_iter().rev() {
 			assign(self, &mut acc, &mut assigned, u, u);
 		}
