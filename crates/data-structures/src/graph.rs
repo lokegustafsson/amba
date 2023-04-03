@@ -411,13 +411,20 @@ impl Graph {
 	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
 	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
 		let edges = self.edges().count();
+		let nodes = self.len();
 
 		// Tarjan often overflows the default stack, so if the
 		// graph is large enough to cause issues, do the work
 		// in a worker thread with a guaranteed large enough
 		// stack
 		if edges > 10_000 {
-			let stack_size = (edges as f64 * 64. * 3. * 1.1) as usize;
+			// `tarjan`'s stack should at worst be 16 word
+			// sized values. This should not require any
+			// extra alignment. Should grow with nodes,
+			// but let's go worst case of nodes and edges,
+			// then add 25% for safety.
+
+			let stack_size = (edges.max(nodes) as f64 * 320. * 1.1) as usize;
 			let graph = self.clone();
 
 			std::thread::Builder::new()
