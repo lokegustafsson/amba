@@ -17,10 +17,9 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use ipc::GraphIpc;
 use eframe::egui::Context;
 use graphui::{EmbeddingParameters, Graph2D};
-use ipc::{IpcError, IpcMessage};
+use ipc::{GraphIpc, IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};

@@ -1,8 +1,8 @@
 use std::mem;
 
-use ipc::{NodeMetadata, GraphIpc};
 use fastrand::Rng;
 use glam::DVec2;
+use ipc::{GraphIpc, NodeMetadata};
 
 #[derive(Clone, Debug)]
 pub struct Graph2D {

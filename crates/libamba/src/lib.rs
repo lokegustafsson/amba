@@ -15,7 +15,7 @@ use std::{
 	time::Duration,
 };
 
-use ipc::{IpcError, IpcMessage, IpcTx, GraphIpcBuilder, NodeMetadata};
+use ipc::{GraphIpcBuilder, IpcError, IpcMessage, IpcTx, NodeMetadata};
 
 static STATE: Mutex<Option<State>> = Mutex::new(None);
 static STATE_SHUTDOWN: AtomicBool = AtomicBool::new(false);
