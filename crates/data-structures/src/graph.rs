@@ -409,7 +409,7 @@ impl Graph {
 
 	/// Returns a new graph of strongly connected components using
 	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-	pub fn to_strongly_connected_components(&self) -> Self {
+	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
 		let edges = self.edges().count();
 
 		// Tarjan often overflows the default stack, so if the
@@ -431,6 +431,66 @@ impl Graph {
 			let scc = self.tarjan();
 			connect_dag(scc)
 		}
+	}
+
+	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
+	fn kosaraju(&self) -> Map<u64, Node> {
+		let mut l = Vec::new(); // Backwards compared to wikipedia
+		let mut visited = Set::new();
+		let mut assigned = Set::new();
+		let mut acc = Map::new();
+
+		fn visit(graph: &Graph, visited: &mut Set<u64>, l: &mut Vec<u64>, u: u64) {
+			if !visited.insert(u) {
+				return;
+			}
+			for &v in graph.nodes.get(&u).unwrap().to.iter() {
+				visit(graph, visited, l, v);
+			}
+			l.push(u);
+		}
+		fn assign(
+			graph: &Graph,
+			acc: &mut Map<u64, Node>,
+			assigned: &mut Set<u64>,
+			u: u64,
+			root: u64,
+		) {
+			if !assigned.insert(u) {
+				return;
+			}
+			let u_ref = graph.nodes.get(&u).unwrap();
+			let node = acc
+				.entry(root)
+				.and_modify(|Node { to, from, of, id }| {
+					of.union(&u_ref.of);
+					to.union(&u_ref.to);
+					from.union(&u_ref.from);
+					*id = (*id).min(u);
+				})
+				.or_insert_with(|| u_ref.clone());
+			// Because borrow checker
+			let from = node.from.clone();
+			for &v in from.iter() {
+				assign(graph, acc, assigned, v, root);
+			}
+		}
+
+		for &u in self.nodes.keys() {
+			visit(self, &mut visited, &mut l, u);
+		}
+		for u in l.into_iter().rev() {
+			assign(self, &mut acc, &mut assigned, u, u);
+		}
+
+		acc
+	}
+
+	/// Returns a new graph of strongly connected components using
+	/// [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+	pub fn to_strongly_connected_components_kosaraju(&self) -> Self {
+		let scc = self.kosaraju();
+		connect_dag(scc)
 	}
 
 	/// Verify that all node pairs have matching to and from
@@ -1412,7 +1472,7 @@ mod test {
 		);
 		expected.verify();
 
-		let result = graph.to_strongly_connected_components();
+		let result = graph.to_strongly_connected_components_tarjan();
 		assert_eq!(result.nodes, expected.nodes);
 	}
 
@@ -1457,7 +1517,109 @@ mod test {
 		);
 		expected.verify();
 
-		let result = graph.to_strongly_connected_components();
+		let result = graph.to_strongly_connected_components_tarjan();
 		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
+	#[test]
+	fn strongly_connected_graph_small_kosaraju() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [2, 5], [0, 1, 4]).into()),
+				(2, (2, [0], [5], [2, 3, 7]).into()),
+				(5, (5, [0, 2], [], [5, 6]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_kosaraju();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
+	#[test]
+	fn strongly_connected_graph_large_kosaraju() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [1], [2], [0]).into()),
+				(1, (1, [2], [0, 5], [1]).into()),
+				(2, (2, [0, 3], [1, 4], [2]).into()),
+				(3, (3, [4], [2, 9], [3]).into()),
+				(4, (4, [2], [3, 5, 10], [4]).into()),
+				(5, (5, [1, 4], [6, 8, 13], [5]).into()),
+				(6, (6, [5, 8], [7], [6]).into()),
+				(7, (7, [6], [8, 15], [7]).into()),
+				(8, (8, [5, 7], [6, 15], [8]).into()),
+				(9, (9, [3, 11], [10], [9]).into()),
+				(10, (10, [9, 4], [11, 12], [10]).into()),
+				(11, (11, [10, 12], [9], [11]).into()),
+				(12, (12, [10], [11, 13], [12]).into()),
+				(13, (13, [5, 12, 14], [14, 15], [13]).into()),
+				(14, (14, [13], [13], [14]).into()),
+				(15, (15, [7, 8, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [5, 9], [0, 1, 2, 3, 4]).into()),
+				(5, (5, [0], [6, 13], [5]).into()),
+				(6, (6, [5], [15], [6, 7, 8]).into()),
+				(9, (9, [0], [13], [9, 10, 11, 12]).into()),
+				(13, (13, [5, 9], [15], [13, 14]).into()),
+				(15, (15, [6, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_kosaraju();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	#[test]
+	fn tarjan_kosaraju_eq_small() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+
+		let t = graph.tarjan();
+		let k = graph.kosaraju();
+
+		assert_eq!(t, k);
 	}
 }
