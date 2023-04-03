@@ -508,13 +508,17 @@ impl Graph {
 	/// [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
 	pub fn to_strongly_connected_components_kosaraju(&self) -> Self {
 		let edges = self.edges().count();
+		let nodes = self.len();
 
-		// Tarjan often overflows the default stack, so if the
+		// Kosaraju often overflows the default stack, so if the
 		// graph is large enough to cause issues, do the work
 		// in a worker thread with a guaranteed large enough
 		// stack
 		if edges > 10_000 {
-			let stack_size = (edges as f64 * 64. * 3. * 1.1) as usize;
+			// `assign` keeps at worst three pointers and a
+			// SmallU64set on the stack. Scale by the
+			// worst of nodes and edges and then add 10%
+			let stack_size = (nodes.max(edges) as f64 * 80. * 1.1) as usize;
 			let graph = self.clone();
 
 			std::thread::Builder::new()
