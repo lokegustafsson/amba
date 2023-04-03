@@ -431,7 +431,7 @@ impl Graph {
 				.name("Tarjan worker thread".into())
 				.stack_size(stack_size)
 				.spawn(move || connect_dag(graph.tarjan()))
-				.unwrap()
+				.expect("Failed to spawn thread for tarjan")
 				.join()
 				.unwrap()
 		} else {
