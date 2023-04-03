@@ -329,17 +329,19 @@ impl Graph {
 
 	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
 	fn tarjan(&self) -> Map<u64, Node> {
+		/// Associated metadata for each node
 		#[derive(Copy, Clone, PartialEq, Eq, Default)]
 		struct Translation {
+			// A separate index from the node id, given in order nodes are found
 			index: u64,
-			low_link: u64,
+			lowest_index_child: u64,
 			on_stack: bool,
 		}
 
 		#[derive(Clone, Default)]
 		struct State {
 			stack: Vec<u64>,
-			translation: Map<u64, Translation>,
+			search_metadata: Map<u64, Translation>,
 			index: u64,
 			out: Map<u64, Node>,
 		}
@@ -347,11 +349,11 @@ impl Graph {
 		let mut state = State::default();
 
 		fn strong_connect(graph: &Graph, state: &mut State, v: u64) {
-			state.translation.insert(
+			state.search_metadata.insert(
 				v,
 				Translation {
 					index: state.index,
-					low_link: state.index,
+					lowest_index_child: state.index,
 					on_stack: true,
 				},
 			);
@@ -359,30 +361,30 @@ impl Graph {
 			state.stack.push(v);
 
 			for &w in graph.nodes.get(&v).unwrap().to.iter() {
-				match state.translation.get(&w) {
+				match state.search_metadata.get(&w) {
 					None => {
 						strong_connect(graph, state, w);
-						let w_low = state.translation[&w].low_link;
-						let v_ref = &mut state.translation.get_mut(&v).unwrap().low_link;
+						let w_low = state.search_metadata[&w].lowest_index_child;
+						let v_ref = &mut state.search_metadata.get_mut(&v).unwrap().lowest_index_child;
 						*v_ref = (*v_ref).min(w_low);
 					}
 					Some(Translation { on_stack, .. }) if *on_stack => {
-						let w_idx = state.translation[&w].index;
-						let v_ref = &mut state.translation.get_mut(&v).unwrap().low_link;
+						let w_idx = state.search_metadata[&w].index;
+						let v_ref = &mut state.search_metadata.get_mut(&v).unwrap().lowest_index_child;
 						*v_ref = (*v_ref).min(w_idx);
 					}
 					_ => {}
 				}
 			}
 
-			let v_ref = state.translation[&v];
-			if v_ref.index == v_ref.low_link {
+			let v_ref = state.search_metadata[&v];
+			if v_ref.index == v_ref.lowest_index_child {
 				let mut new_node = Node {
 					id: v,
 					..Default::default()
 				};
 				while let Some(w) = state.stack.pop() {
-					state.translation.get_mut(&w).unwrap().on_stack = false;
+					state.search_metadata.get_mut(&w).unwrap().on_stack = false;
 
 					let old_node = &graph.nodes[&w];
 					new_node.of.insert(w);
@@ -399,7 +401,7 @@ impl Graph {
 		}
 
 		for node in self.nodes.values() {
-			if !state.translation.contains_key(&node.id) {
+			if !state.search_metadata.contains_key(&node.id) {
 				strong_connect(self, &mut state, node.id);
 			}
 		}
