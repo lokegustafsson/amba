@@ -8,20 +8,20 @@ Under \emph{BlueHat} 2019 gav \emph{MSRC} (\emph{Microsoft Security Response Cen
 	\item minimera platserna där attackerarna kan göra skada och förhindra åtkomst; samt slutligen
 	\item minimera tidsfönstret då attackerare har tillgång till systemet med hjälp av aktiv övervakning.
 \end{itemize}
-Enligt Miller härstammar ungefär 70 procent av alla Microsofts CVEr från minnessäkerhetsbuggar. Om
+Enligt Miller \cite{miller19} härstammar ungefär 70 procent av alla Microsofts CVEr från minnessäkerhetsbuggar. Om
 hela klasser av säkerhetsbrister kan eliminieras genom att utveckla nya verktyg som underlättar för
-utvecklare att finna dem kan man ha stor påverkan på antalet sårbarheter.
+utvecklare att finna dem kan det leda till stor påverkan på antalet sårbarheter.
 
-För att kunna hitta och undersöka minnessäkerhetsbuggar behöver man ibland betrakta maskinkod, med
-anledningen att man vill
-\begin{itemize}
-  \item kunna kontrollera om det förekommer kompilatorbuggar som ger oväntad maskinkod i binären;
-  \item se hur \emph{UB} (\emph{undefined behaviour}) har utnyttjats av kompilatorn; och
-  \item enklare kunna börja analysera då man endast behöver en binär, och inte behöva integrera
-djupt in i byggsystemet.
-\end{itemize}
+% probably need a source for this paragraph
+Det är särskilt fördelaktigt att undersöka minnessäkerhetsbuggar genom att
+betrakta maskinkod. Genom att betrakta maskinkod bildar man en lågnivåförståelse
+av en binär eftersom den fullständiga målkoden som kompilatorn genererat
+existerar på denna nivån. Med en lågnivåförståelse kan man också härleda hur
+binären interagerar med minnet genom att bland annat analysera minneslayouten
+och den underliggande datastrukturen för att hitta problem vid minnesallokering
+och minnesdeallokering, och därigenom hitta minnessäkerhetsbuggar.
 
-Det finns ett flertal metoder för att analysera en exekverbar binärer. Exempel på dessa är att: 
+Det finns ett flertal metoder för att analysera en exekverbar binär. Exempel på dessa är att: 
 \begin{enumerate}
   \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
   \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
