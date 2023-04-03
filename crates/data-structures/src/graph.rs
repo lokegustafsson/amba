@@ -1654,4 +1654,20 @@ mod test {
 			.run(&generator(100, 2000), compare_behaviour_scc)
 			.unwrap();
 	}
+
+	#[test]
+	fn compare_75k_100k_scc() {
+		let nodes = 75_000;
+		let edges = 100_000;
+
+		let mut graph = Graph::new();
+		for (from, to) in std::iter::from_fn(|| Some((fastrand::u64(..nodes), fastrand::u64(..nodes)))).take(edges) {
+			graph.update(from, to);
+		}
+
+		let t = graph.to_strongly_connected_components_tarjan().nodes;
+		let k = graph.to_strongly_connected_components_kosaraju().nodes;
+
+		assert_eq!(t, k);
+	}
 }
