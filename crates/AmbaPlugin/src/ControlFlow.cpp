@@ -1,4 +1,5 @@
 #include "ControlFlow.h"
+#include "AmbaException.h"
 
 namespace control_flow {
 
@@ -29,15 +30,20 @@ void ControlFlow::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	const u64 old_id = (u64) old_state->getID();
+	const auto old_id = old_state->getID();
+	const auto from = this->m_uuids[old_id];
 
 	for (auto &new_state : new_states) {
-		const u64 new_id = (u64) new_state->getID();
+		const auto new_id = new_state->getID();
+
+		AMBA_ASSERT(new_id != old_id);
+
+		this->m_uuids[new_id] = ++this->m_last_uuid;
 
 		rust_update_control_flow_graph(
 			this->m_cfg,
-			old_id,
-			new_id
+			from,
+			this->m_last_uuid
 		);
 	}
 }
@@ -49,10 +55,20 @@ void ControlFlow::onStateMerge(
 	const auto dest_id = destination_state->getID();
 	const auto src_id = source_state->getID();
 
+	const auto from_left = this->m_uuids[(i32) dest_id];
+	const auto from_right = this->m_uuids[(i32) src_id];
+
+	this->m_uuids[(i32) dest_id] = ++this->m_last_uuid;
+
 	rust_update_control_flow_graph(
 		this->m_cfg,
-		(u64) src_id,
-		(u64) dest_id
+		from_left,
+		this->m_last_uuid
+	);
+	rust_update_control_flow_graph(
+		this->m_cfg,
+		from_right,
+		this->m_last_uuid
 	);
 }
 

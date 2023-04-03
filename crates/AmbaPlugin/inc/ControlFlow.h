@@ -22,7 +22,7 @@ class ControlFlow {
 	std::string m_name;
 
 	u64 m_last_uuid = 0;
-	std::unordered_map<u32, u32> m_uuids {};
+	std::unordered_map<i32, u64> m_uuids {};
 
 	u64 m_last = 0;
 	ControlFlowGraph *m_cfg;
