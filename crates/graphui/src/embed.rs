@@ -144,6 +144,14 @@ impl Graph2D {
 				assert!(node_velocity[i].is_finite());
 				assert!(self.node_positions[i].is_finite());
 			}
+			let rotate_down_center_of_mass = {
+				let center_of_mass = self.node_positions.iter().sum::<DVec2>();
+				(2.0 * center_of_mass.project_onto(DVec2::ONE) - center_of_mass).normalize()
+			};
+			for i in 1..self.node_positions.len() {
+				self.node_positions[i] = rotate_down_center_of_mass.rotate(self.node_positions[i]);
+				node_velocity[i] = rotate_down_center_of_mass.rotate(node_velocity[i]);
+			}
 		}
 		self.min = self
 			.node_positions

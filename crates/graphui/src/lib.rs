@@ -47,7 +47,13 @@ pub struct GraphWidget {
 	/// 10x => we are looking at a small part of the graph
 	zoom: f32,
 	pos: Vec2,
-	active_node_and_pan: Option<(usize, bool)>,
+	active_node_and_pan: Option<(usize, PanState)>,
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum PanState {
+	Centering,
+	Centered,
+	Off,
 }
 impl Default for GraphWidget {
 	fn default() -> Self {
@@ -101,11 +107,15 @@ impl GraphWidget {
 				let real_zoom_delta = if let (true, Some(hover_pos)) =
 					(ui.ui_contains_pointer(), latest_pointer_pos)
 				{
+					// Scroll to zoom
 					let new_zoom = (self.zoom * zoom_delta).max(1.0);
 					let real_zoom_delta = new_zoom / self.zoom;
 					self.zoom = new_zoom;
 
-					let hover_pos = if self.active_node_and_pan.map_or(false, |(_, pan)| pan) {
+					let hover_pos = if self
+						.active_node_and_pan
+						.map_or(false, |(_, pan)| pan != PanState::Off)
+					{
 						scrollarea.inner_rect.size() / 2.0
 					} else {
 						hover_pos - scrollarea.inner_rect.min
@@ -117,28 +127,40 @@ impl GraphWidget {
 					1.0
 				};
 				if background_drag != emath::Vec2::ZERO {
+					// Drag to pan
 					self.pos -= background_drag;
 					self.active_node_and_pan
 						.as_mut()
-						.map(|(_, pan)| *pan = false);
-				}
-
-				if zoom_delta == 1.0 && background_drag == emath::Vec2::ZERO {
-					if let Some((active, true)) = self.active_node_and_pan {
-						const TAKE_FOCUS_SPEED: f32 = 0.5;
-
+						.map(|(_, pan)| *pan = PanState::Off);
+				} else {
+					// Automatic pan to active node
+					if let Some((active, pan @ (PanState::Centering | PanState::Centered))) =
+						&mut self.active_node_and_pan
+					{
 						let active_pos = translate_embed_to_scrollarea_pos(
-							graph.node_positions[active],
+							graph.node_positions[*active],
 							graph,
 							self.zoom,
 							scrollarea.inner_rect.size(),
 						)
-						.to_vec2();
-						self.pos = self.pos * (1.0 - TAKE_FOCUS_SPEED)
-							+ (active_pos - scrollarea.inner_rect.size() / 2.0) * TAKE_FOCUS_SPEED;
+						.to_vec2() - scrollarea.inner_rect.size() / 2.0;
+
+						match pan {
+							PanState::Centering => {
+								const TAKE_FOCUS_SPEED: f32 = 0.5;
+								self.pos = self.pos * (1.0 - TAKE_FOCUS_SPEED)
+									+ active_pos * TAKE_FOCUS_SPEED;
+								if (self.pos - active_pos).length() < self.pos.length() * 1e-6 {
+									*pan = PanState::Centered;
+								}
+							}
+							PanState::Centered => self.pos = active_pos,
+							PanState::Off => unreachable!(),
+						}
 					}
 				}
 
+				//  Clip scrollarea position to content size
 				self.pos = self
 					.pos
 					.max(emath::Vec2::ZERO)
@@ -150,7 +172,7 @@ impl GraphWidget {
 fn draw_graph(
 	ui: &mut Ui,
 	zoom_level: f32,
-	active_node_and_pan: &mut Option<(usize, bool)>,
+	active_node_and_pan: &mut Option<(usize, PanState)>,
 	viewport: Rect,
 	graph: &Graph2D,
 ) -> egui::Response {
@@ -203,8 +225,8 @@ fn draw_graph(
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);
-			if node.clicked() || node.drag_started() {
-				*active_node_and_pan = Some((i, true));
+			if node.drag_started() {
+				*active_node_and_pan = Some((i, PanState::Centering));
 			}
 		}
 	}
@@ -242,19 +264,24 @@ fn draw_node(
 	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
 	let lod_cutoff = ui.style().spacing.interact_size.y;
 	let rounding = node_width / 5.0;
-	let bg_color = if selected {
-		style_selection.bg_fill
+	let (bg_color, stroke) = if selected {
+		(style_selection.bg_fill, style_selection.stroke)
 	} else {
-		style_widgets.hovered.bg_fill
+		(
+			style_widgets.hovered.bg_fill,
+			style_widgets.hovered.bg_stroke,
+		)
 	};
 
 	ui.put(rect, move |ui: &mut Ui| {
 		if node_width < lod_cutoff {
 			ui.painter().rect_filled(rect, rounding, bg_color);
+			ui.painter().rect_stroke(rect, rounding, stroke);
 		} else {
 			egui::Frame::none()
 				.rounding(rounding)
 				.fill(bg_color)
+				.stroke(stroke)
 				.show(ui, |ui| {
 					ui.label(egui::RichText::new(text).small());
 				});
@@ -278,7 +305,7 @@ fn edge_arrow(
 	tip -= margin_tip;
 
 	let rot = emath::Rot2::from_angle(std::f32::consts::TAU / 10.0);
-	let tip_length = ((tip - origin).length()) / 4.0;
+	let tip_length = ((tip - origin).length() / 4.0).min(node_size_target / 3.0);
 	let dir = vec.normalized();
 	painter.line_segment([origin, tip], stroke);
 	painter.line_segment([tip, tip - tip_length * (rot * dir)], stroke);

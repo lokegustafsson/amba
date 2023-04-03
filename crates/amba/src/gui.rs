@@ -97,7 +97,10 @@ impl App for Gui {
 			ui.horizontal(|ui| {
 				if let Some(active) = active {
 					ui.heading("Selected node");
-					ui.label(format!("{:#?}", graph.node_metadata[active]));
+					ui.label(format!(
+						"{}: {:#?}",
+						active, graph.node_metadata[active]
+					));
 				}
 			})
 		});
