@@ -183,7 +183,12 @@ impl Graph2D {
 				let center_of_mass = self.node_positions.iter().sum::<DVec2>();
 				(2.0 * center_of_mass.project_onto(DVec2::ONE) - center_of_mass).normalize()
 			};
-			for (pos, vel) in Iterator::zip(self.node_positions.iter_mut(), node_velocity.iter_mut()).skip(1) {
+			for (pos, vel) in Iterator::zip(
+				self.node_positions.iter_mut(),
+				node_velocity.iter_mut(),
+			)
+			.skip(1)
+			{
 				*pos = rotate_down_center_of_mass.rotate(*pos);
 				*vel = rotate_down_center_of_mass.rotate(*vel);
 			}
