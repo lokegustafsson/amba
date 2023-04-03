@@ -136,17 +136,17 @@ void AmbaPlugin::onTranslateBlockStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	if (!this->m_module_pid) {
+	auto mod = this->m_modules->getModule(state);
+	if (mod.get() == nullptr || mod->Path != this->m_module_path) {
 		return;
 	}
 
-	auto mod = this->m_modules->getModule(state);
 	u64 module_internal_offset = 0;
 	if (mod) {
 		mod->ToNativeBase(pc, module_internal_offset);
 	}
 	const char* module_path_cstr = mod ? mod->Path.c_str() : nullptr;
-	rust_on_translate_block(pc, nullptr, 0, module_path_cstr, module_internal_offset);
+	rust_on_translate_block(state->getID(), pc, nullptr, 0, module_path_cstr, module_internal_offset);
 
 	signal->connect(sigc::mem_fun(
 		*this,
@@ -205,7 +205,7 @@ void AmbaPlugin::onBlockStart(
 	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
-	rust_on_watched_block_start_execute(pc);
+	rust_on_watched_block_start_execute(s2e_state->getID(), pc);
 }
 
 void AmbaPlugin::onTranslateInstructionStart(
