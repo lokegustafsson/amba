@@ -1,5 +1,6 @@
-use data_structures::{GraphIpc, NodeMetadata};
 use std::num::NonZeroU64;
+
+use data_structures::{GraphIpc, NodeMetadata};
 
 pub fn example_graph() -> GraphIpc {
 	GraphIpc {

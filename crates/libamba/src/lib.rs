@@ -275,7 +275,7 @@ mod ffi {
 		block_virtual_addr: u64,
 		block_data: *const u8,
 		block_len: usize,
-		module_path_cstr: *const i8,
+		module_path_cstr: *const std::ffi::c_char,
 		module_internal_offset: u64,
 	) {
 		let block: Option<&[u8]> = Option::zip(
@@ -283,8 +283,8 @@ mod ffi {
 			NonZeroUsize::new(block_len),
 		)
 		.map(|(data, len)| std::slice::from_raw_parts(data.as_ptr(), len.get()));
-		let module_path_str =
-			NonNull::new(module_path_cstr as *mut i8).map(|ptr| CStr::from_ptr(ptr.as_ptr()));
+		let module_path_str = NonNull::new(module_path_cstr as *mut std::ffi::c_char)
+			.map(|ptr| CStr::from_ptr(ptr.as_ptr()));
 
 		STATE.lock().unwrap().as_mut().unwrap().on_translate_block(
 			current_state_alias,
