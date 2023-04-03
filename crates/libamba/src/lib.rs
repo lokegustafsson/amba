@@ -7,10 +7,7 @@ use std::{
 	num::{NonZeroU64, NonZeroUsize},
 	os::unix::net::UnixStream,
 	ptr::NonNull,
-	sync::{
-		atomic::{AtomicBool, Ordering as MemoryOrdering},
-		Mutex,
-	},
+	sync::Mutex,
 	thread,
 	time::Duration,
 };
