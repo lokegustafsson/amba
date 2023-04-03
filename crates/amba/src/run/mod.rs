@@ -115,10 +115,14 @@ impl Controller {
 					self.embedder_tx
 						.as_ref()
 						.map(|tx| tx.send(Some([symbolic_state_graph, basic_block_graph])));
-					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
+					if let Some(ctx) = self.gui_context.as_ref() {
+						ctx.request_repaint();
+					}
 				}
 				ControllerMsg::EmbeddingParamsUpdated => {
-					self.embedder_tx.as_ref().map(|tx| tx.send(None));
+					if let Some(tx) = self.embedder_tx.as_ref() {
+						let (Ok(_) | Err(_)) = tx.send(None);
+					}
 				}
 			}
 		}
@@ -206,7 +210,7 @@ fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 }
 
 fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
-	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
+	let ipc_listener = UnixListener::bind(ipc_socket).unwrap();
 	let stream = ipc_listener.accept().unwrap().0;
 	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
 	tracing::info!("IPC initialized");
@@ -222,7 +226,7 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 						basic_block_graph: basic_block_graph.into_owned(),
 					})
 					.unwrap_or_else(|mpsc::SendError(_)| {
-						tracing::warn!("ipc failed messaging controller: already shut down")
+						tracing::warn!("ipc failed messaging controller: already shut down");
 					});
 			}
 			Ok(msg) => tracing::info!(?msg),
@@ -448,7 +452,7 @@ fn run_embedder(
 		};
 		match blocking
 			.then(|| rx.recv().map_err(Into::into))
-			.unwrap_or(rx.try_recv())
+			.unwrap_or_else(|| rx.try_recv())
 		{
 			Ok(Some([state, block])) => {
 				let mut start_params = params;
@@ -482,6 +486,8 @@ fn run_embedder(
 			blocking = true;
 		}
 
-		gui_context.as_ref().map(|ctx| ctx.request_repaint());
+		if let Some(ctx) = gui_context.as_ref() {
+			ctx.request_repaint();
+		}
 	}
 }

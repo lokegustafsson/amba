@@ -24,7 +24,7 @@ impl NodeMetadata {
 
 		// Pack bits
 		let mut ret = 0;
-		ret |= 0x0000_FFFF_FFFF_FFFF & (vaddr << 0);
+		ret |= 0x0000_FFFF_FFFF_FFFF & vaddr;
 		ret |= 0x000F_0000_0000_0000 & (gen << 48);
 		ret |= 0xFFF0_0000_0000_0000 & (state << (48 + 4));
 
@@ -50,8 +50,8 @@ pub struct GraphIpcBuilder {
 	id_to_idx: HashMap<u64, usize>,
 }
 
-impl GraphIpcBuilder {
-	pub fn new() -> Self {
+impl Default for GraphIpcBuilder {
+	fn default() -> Self {
 		Self {
 			graph: GraphIpc {
 				metadata: Vec::new(),
@@ -61,7 +61,9 @@ impl GraphIpcBuilder {
 			id_to_idx: HashMap::new(),
 		}
 	}
+}
 
+impl GraphIpcBuilder {
 	pub fn maybe_add_edge(&mut self, from: NodeMetadata, to: NodeMetadata) {
 		let from_id = from.unique_id();
 		let to_id = to.unique_id();

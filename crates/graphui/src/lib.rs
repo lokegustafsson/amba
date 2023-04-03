@@ -157,9 +157,9 @@ impl GraphWidget {
 				if background_drag != emath::Vec2::ZERO {
 					// Drag to pan
 					self.pos -= background_drag;
-					self.active_node_and_pan
-						.as_mut()
-						.map(|(_, pan)| *pan = PanState::Off);
+					if let Some((_, pan)) = self.active_node_and_pan.as_mut() {
+						*pan = PanState::Off;
+					}
 				} else {
 					// Automatic pan to active node
 					if let Some((active, pan @ (PanState::Centering | PanState::Centered))) =

@@ -81,7 +81,7 @@ fn main() -> ExitCode {
 	std::panic::set_hook(Box::new(|info| {
 		let payload = info.payload();
 		let msg = Option::or(
-			payload.downcast_ref::<&str>().map(|s| *s),
+			payload.downcast_ref::<&str>().copied(),
 			payload.downcast_ref::<String>().map(|s| &**s),
 		)
 		.unwrap_or("<no message>");
@@ -171,20 +171,20 @@ impl SessionConfig {
 							?recipe_path,
 							?err,
 							"Not a semantically valid Recipe"
-						)
+						);
 					}
 					RecipeError::NotSyntacticRecipe(err) => {
 						tracing::error!(
 							?recipe_path,
 							?err,
 							"Not a syntactically valid Recipe"
-						)
+						);
 					}
 					RecipeError::NotJson(err) => {
-						tracing::error!(?recipe_path, ?err, "Not a valid JSON")
+						tracing::error!(?recipe_path, ?err, "Not a valid JSON");
 					}
 					RecipeError::NotUtf8(err) => {
-						tracing::error!(?recipe_path, ?err, "Not valid UTF8")
+						tracing::error!(?recipe_path, ?err, "Not valid UTF8");
 					}
 				}
 				return Err(());

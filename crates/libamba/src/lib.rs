@@ -62,8 +62,8 @@ impl State {
 			state_predecessor: vec![u32::MAX],
 			basic_block_state_vaddr_to_generation: HashMap::new(),
 
-			symbolic_state_graph: GraphIpcBuilder::new(),
-			basic_block_graph: GraphIpcBuilder::new(),
+			symbolic_state_graph: GraphIpcBuilder::default(),
+			basic_block_graph: GraphIpcBuilder::default(),
 		});
 		thread::spawn(|| loop {
 			thread::sleep(Duration::from_millis(100));
@@ -97,7 +97,7 @@ impl State {
 			// But they might be aliased by an existing state alias
 			match new_state_alias.cmp(&(self.symbolic_state_alias_to_id.len() as u32)) {
 				Ordering::Less => {
-					self.symbolic_state_alias_to_id[new_state_alias as usize] = new_state_id
+					self.symbolic_state_alias_to_id[new_state_alias as usize] = new_state_id;
 				}
 				Ordering::Equal => self.symbolic_state_alias_to_id.push(new_state_id),
 				Ordering::Greater => unreachable!(),
@@ -175,7 +175,7 @@ impl State {
 		if current_state_id == 0
 			&& self
 				.symbolic_state_to_last_executed_basic_block_state_and_vaddr
-				.len() == 0
+				.is_empty()
 		{
 			// Very first block execution of state 0
 			self.symbolic_state_to_last_executed_basic_block_state_and_vaddr

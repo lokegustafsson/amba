@@ -128,8 +128,8 @@ impl Graph2D {
 			// Nodes repell with `F \propto D^-2`
 			if params.repulsion_approximation > 0.0 {
 				let tree = BarnesHutRTree::new(&mut self.node_positions.clone());
-				for i in 0..self.node_positions.len() {
-					node_accel[i] += params.repulsion
+				for (i, accel) in node_accel.iter_mut().enumerate() {
+					*accel += params.repulsion
 						* tree.force_on(
 							self.node_positions[i],
 							params.repulsion_approximation,
@@ -183,9 +183,9 @@ impl Graph2D {
 				let center_of_mass = self.node_positions.iter().sum::<DVec2>();
 				(2.0 * center_of_mass.project_onto(DVec2::ONE) - center_of_mass).normalize()
 			};
-			for i in 1..self.node_positions.len() {
-				self.node_positions[i] = rotate_down_center_of_mass.rotate(self.node_positions[i]);
-				node_velocity[i] = rotate_down_center_of_mass.rotate(node_velocity[i]);
+			for (pos, vel) in Iterator::zip(self.node_positions.iter_mut(), node_velocity.iter_mut()).skip(1) {
+				*pos = rotate_down_center_of_mass.rotate(*pos);
+				*vel = rotate_down_center_of_mass.rotate(*vel);
 			}
 		}
 		self.min = self
@@ -225,7 +225,7 @@ enum BarnesHutRTree {
 }
 impl BarnesHutRTree {
 	fn new(positions: &mut [DVec2]) -> Self {
-		assert!(positions.len() > 0);
+		assert!(!positions.is_empty());
 		if positions.len() == 1 {
 			return Self::Leaf {
 				point_mass: positions[0],
