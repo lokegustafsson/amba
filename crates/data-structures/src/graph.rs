@@ -365,12 +365,20 @@ impl Graph {
 					None => {
 						strong_connect(graph, state, w);
 						let w_low = state.search_metadata[&w].lowest_index_child;
-						let v_ref = &mut state.search_metadata.get_mut(&v).unwrap().lowest_index_child;
+						let v_ref = &mut state
+							.search_metadata
+							.get_mut(&v)
+							.unwrap()
+							.lowest_index_child;
 						*v_ref = (*v_ref).min(w_low);
 					}
 					Some(Translation { on_stack, .. }) if *on_stack => {
 						let w_idx = state.search_metadata[&w].index;
-						let v_ref = &mut state.search_metadata.get_mut(&v).unwrap().lowest_index_child;
+						let v_ref = &mut state
+							.search_metadata
+							.get_mut(&v)
+							.unwrap()
+							.lowest_index_child;
 						*v_ref = (*v_ref).min(w_idx);
 					}
 					_ => {}
@@ -562,11 +570,7 @@ fn connect_dag(strongly_connected_components: Map<u64, Node>) -> Graph {
 				.map(|x| new_ids[x])
 				.filter(|&x| x != id)
 				.collect();
-			let to = to
-				.iter()
-				.map(|x| new_ids[x])
-				.filter(|&x| x != id)
-				.collect();
+			let to = to.iter().map(|x| new_ids[x]).filter(|&x| x != id).collect();
 			(id, Node { id, from, to, of })
 		})
 		.collect();
