@@ -114,6 +114,12 @@ impl SmallU64Set {
 		}
 	}
 
+	pub fn union(&mut self, other: &Self) {
+		for &x in other.iter() {
+			self.insert(x);
+		}
+	}
+
 	pub fn len(&self) -> usize {
 		match self {
 			SmallU64Set::Set(s) => s.len(),

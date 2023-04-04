@@ -321,6 +321,219 @@ impl Graph {
 		l
 	}
 
+	fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
+		self.nodes
+			.values()
+			.flat_map(|n| n.to.iter().map(|&m| (n.id, m)))
+	}
+
+	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
+	fn tarjan(&self) -> Map<u64, Node> {
+		/// Associated metadata for each node
+		#[derive(Copy, Clone, PartialEq, Eq, Default)]
+		struct Translation {
+			// A separate index from the node id, given in order nodes are found
+			index: u64,
+			lowest_index_child: u64,
+			on_stack: bool,
+		}
+
+		#[derive(Clone, Default)]
+		struct State {
+			stack: Vec<u64>,
+			search_metadata: Map<u64, Translation>,
+			index: u64,
+			out: Map<u64, Node>,
+		}
+
+		let mut state = State::default();
+
+		fn strong_connect(graph: &Graph, state: &mut State, v: u64) {
+			state.search_metadata.insert(
+				v,
+				Translation {
+					index: state.index,
+					lowest_index_child: state.index,
+					on_stack: true,
+				},
+			);
+			state.index += 1;
+			state.stack.push(v);
+
+			for &w in graph.nodes.get(&v).unwrap().to.iter() {
+				match state.search_metadata.get(&w) {
+					None => {
+						strong_connect(graph, state, w);
+						let w_low = state.search_metadata[&w].lowest_index_child;
+						let v_ref = &mut state
+							.search_metadata
+							.get_mut(&v)
+							.unwrap()
+							.lowest_index_child;
+						*v_ref = (*v_ref).min(w_low);
+					}
+					Some(Translation { on_stack, .. }) if *on_stack => {
+						let w_idx = state.search_metadata[&w].index;
+						let v_ref = &mut state
+							.search_metadata
+							.get_mut(&v)
+							.unwrap()
+							.lowest_index_child;
+						*v_ref = (*v_ref).min(w_idx);
+					}
+					_ => {}
+				}
+			}
+
+			let v_ref = state.search_metadata[&v];
+			if v_ref.index == v_ref.lowest_index_child {
+				let mut new_node = Node {
+					id: v,
+					..Default::default()
+				};
+				while let Some(w) = state.stack.pop() {
+					state.search_metadata.get_mut(&w).unwrap().on_stack = false;
+
+					let old_node = &graph.nodes[&w];
+					new_node.of.insert(w);
+					new_node.from.union(&old_node.from);
+					new_node.to.union(&old_node.to);
+					new_node.id = new_node.id.min(old_node.id);
+
+					if v == w {
+						break;
+					}
+				}
+				state.out.insert(v, new_node);
+			}
+		}
+
+		for node in self.nodes.values() {
+			if !state.search_metadata.contains_key(&node.id) {
+				strong_connect(self, &mut state, node.id);
+			}
+		}
+
+		state.out
+	}
+
+	/// Returns a new graph of strongly connected components using
+	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
+	pub fn to_strongly_connected_components_tarjan(&self) -> Self {
+		let edges = self.edges().count();
+		let nodes = self.len();
+
+		// Tarjan often overflows the default stack, so if the
+		// graph is large enough to cause issues, do the work
+		// in a worker thread with a guaranteed large enough
+		// stack
+		if edges > 10_000 {
+			// Keeping no variables in registers should
+			// give tarjan a frame of 320 bytes. Grow by
+			// the worst of nodes and edges and add 10%
+			// for safety.
+
+			let stack_size = (edges.max(nodes) as f64 * 320. * 1.1) as usize;
+			let graph = self.clone();
+
+			std::thread::Builder::new()
+				.name("Tarjan worker thread".into())
+				.stack_size(stack_size)
+				.spawn(move || connect_dag(graph.tarjan()))
+				.expect("Failed to spawn thread for tarjan")
+				.join()
+				.unwrap()
+		} else {
+			let scc = self.tarjan();
+			connect_dag(scc)
+		}
+	}
+
+	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
+	fn kosaraju(&self) -> Map<u64, Node> {
+		let mut l = Vec::new(); // Backwards compared to wikipedia
+		let mut visited = Set::new();
+		let mut assigned = Set::new();
+		let mut acc = Map::new();
+
+		fn visit(graph: &Graph, visited: &mut Set<u64>, l: &mut Vec<u64>, u: u64) {
+			if !visited.insert(u) {
+				return;
+			}
+			for &v in graph.nodes.get(&u).unwrap().to.iter() {
+				visit(graph, visited, l, v);
+			}
+			l.push(u);
+		}
+		fn assign(
+			graph: &Graph,
+			acc: &mut Map<u64, Node>,
+			assigned: &mut Set<u64>,
+			u: u64,
+			root: u64,
+		) {
+			if !assigned.insert(u) {
+				return;
+			}
+			let u_ref = graph.nodes.get(&u).unwrap();
+			let node = acc
+				.entry(root)
+				.and_modify(|Node { to, from, of, id }| {
+					of.union(&u_ref.of);
+					to.union(&u_ref.to);
+					from.union(&u_ref.from);
+					*id = (*id).min(u);
+				})
+				.or_insert_with(|| u_ref.clone());
+			// Because borrow checker
+			let from = node.from.clone();
+			for v in from.into_iter() {
+				assign(graph, acc, assigned, v, root);
+			}
+		}
+
+		for &u in self.nodes.keys() {
+			visit(self, &mut visited, &mut l, u);
+		}
+		std::mem::drop(visited);
+
+		for u in l.into_iter().rev() {
+			assign(self, &mut acc, &mut assigned, u, u);
+		}
+
+		acc
+	}
+
+	/// Returns a new graph of strongly connected components using
+	/// [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+	pub fn to_strongly_connected_components_kosaraju(&self) -> Self {
+		let edges = self.edges().count();
+		let nodes = self.len();
+
+		// Kosaraju often overflows the default stack, so if the
+		// graph is large enough to cause issues, do the work
+		// in a worker thread with a guaranteed large enough
+		// stack
+		if edges > 10_000 {
+			// `assign` keeps at worst three pointers and a
+			// SmallU64set on the stack. Scale by the
+			// worst of nodes and edges and then add 10%
+			let stack_size = (nodes.max(edges) as f64 * 80. * 1.1) as usize;
+			let graph = self.clone();
+
+			std::thread::Builder::new()
+				.name("Kosaraju worker thread".into())
+				.stack_size(stack_size)
+				.spawn(move || connect_dag(graph.kosaraju()))
+				.expect("Failed to spawn thread for kosaraju")
+				.join()
+				.unwrap()
+		} else {
+			let scc = self.kosaraju();
+			connect_dag(scc)
+		}
+	}
+
 	/// Verify that all node pairs have matching to and from
 	#[cfg(test)]
 	fn verify(&self) {
@@ -343,6 +556,31 @@ impl Graph {
 				);
 			}
 		}
+	}
+}
+
+fn connect_dag(strongly_connected_components: Map<u64, Node>) -> Graph {
+	let new_ids = strongly_connected_components
+		.values()
+		.flat_map(|Node { id, of, .. }| of.iter().map(|x| (*x, *id)))
+		.collect::<Map<_, _>>();
+
+	let out = strongly_connected_components
+		.into_values()
+		.map(|Node { id, from, to, of }| {
+			let from = from
+				.iter()
+				.map(|x| new_ids[x])
+				.filter(|&x| x != id)
+				.collect();
+			let to = to.iter().map(|x| new_ids[x]).filter(|&x| x != id).collect();
+			(id, Node { id, from, to, of })
+		})
+		.collect();
+
+	Graph {
+		nodes: out,
+		..Default::default()
 	}
 }
 
@@ -406,7 +644,7 @@ mod test {
 
 	impl Eq for Node {}
 
-	fn compare_behaviour(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
+	fn compare_behaviour_compression(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
 		let mut fast = Graph::new();
 		let mut slow = Graph::new();
 		for (from, to) in instructions.into_iter() {
@@ -433,9 +671,11 @@ mod test {
 	}
 
 	#[test]
-	fn compare_10_20() {
+	fn compare_10_20_compression() {
 		let mut runner = TestRunner::new(Config::with_cases(10_000));
-		runner.run(&generator(10, 20), compare_behaviour).unwrap();
+		runner
+			.run(&generator(10, 20), compare_behaviour_compression)
+			.unwrap();
 	}
 
 	/// 0 → 1 → 2
@@ -1233,5 +1473,235 @@ mod test {
 		cycle(9, 8);
 		cycle(0, 9);
 		cycle(1, 8);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
+	#[test]
+	fn strongly_connected_graph_small_tarjan() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [2, 5], [0, 1, 4]).into()),
+				(2, (2, [0], [5], [2, 3, 7]).into()),
+				(5, (5, [0, 2], [], [5, 6]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_tarjan();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
+	#[test]
+	fn strongly_connected_graph_large_tarjan() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [1], [2], [0]).into()),
+				(1, (1, [2], [0, 5], [1]).into()),
+				(2, (2, [0, 3], [1, 4], [2]).into()),
+				(3, (3, [4], [2, 9], [3]).into()),
+				(4, (4, [2], [3, 5, 10], [4]).into()),
+				(5, (5, [1, 4], [6, 8, 13], [5]).into()),
+				(6, (6, [5, 8], [7], [6]).into()),
+				(7, (7, [6], [8, 15], [7]).into()),
+				(8, (8, [5, 7], [6, 15], [8]).into()),
+				(9, (9, [3, 11], [10], [9]).into()),
+				(10, (10, [9, 4], [11, 12], [10]).into()),
+				(11, (11, [10, 12], [9], [11]).into()),
+				(12, (12, [10], [11, 13], [12]).into()),
+				(13, (13, [5, 12, 14], [14, 15], [13]).into()),
+				(14, (14, [13], [13], [14]).into()),
+				(15, (15, [7, 8, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [5, 9], [0, 1, 2, 3, 4]).into()),
+				(5, (5, [0], [6, 13], [5]).into()),
+				(6, (6, [5], [15], [6, 7, 8]).into()),
+				(9, (9, [0], [13], [9, 10, 11, 12]).into()),
+				(13, (13, [5, 9], [15], [13, 14]).into()),
+				(15, (15, [6, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_tarjan();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
+	#[test]
+	fn strongly_connected_graph_small_kosaraju() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [2, 5], [0, 1, 4]).into()),
+				(2, (2, [0], [5], [2, 3, 7]).into()),
+				(5, (5, [0, 2], [], [5, 6]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_kosaraju();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	/// [Image](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg)
+	#[test]
+	fn strongly_connected_graph_large_kosaraju() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [1], [2], [0]).into()),
+				(1, (1, [2], [0, 5], [1]).into()),
+				(2, (2, [0, 3], [1, 4], [2]).into()),
+				(3, (3, [4], [2, 9], [3]).into()),
+				(4, (4, [2], [3, 5, 10], [4]).into()),
+				(5, (5, [1, 4], [6, 8, 13], [5]).into()),
+				(6, (6, [5, 8], [7], [6]).into()),
+				(7, (7, [6], [8, 15], [7]).into()),
+				(8, (8, [5, 7], [6, 15], [8]).into()),
+				(9, (9, [3, 11], [10], [9]).into()),
+				(10, (10, [9, 4], [11, 12], [10]).into()),
+				(11, (11, [10, 12], [9], [11]).into()),
+				(12, (12, [10], [11, 13], [12]).into()),
+				(13, (13, [5, 12, 14], [14, 15], [13]).into()),
+				(14, (14, [13], [13], [14]).into()),
+				(15, (15, [7, 8, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		graph.verify();
+
+		let expected = Graph::with_nodes(
+			[
+				(0, (0, [], [5, 9], [0, 1, 2, 3, 4]).into()),
+				(5, (5, [0], [6, 13], [5]).into()),
+				(6, (6, [5], [15], [6, 7, 8]).into()),
+				(9, (9, [0], [13], [9, 10, 11, 12]).into()),
+				(13, (13, [5, 9], [15], [13, 14]).into()),
+				(15, (15, [6, 13], [], [15]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+		expected.verify();
+
+		let result = graph.to_strongly_connected_components_kosaraju();
+		assert_eq!(result.nodes, expected.nodes);
+	}
+
+	#[test]
+	fn tarjan_kosaraju_eq_small() {
+		let graph = Graph::with_nodes(
+			[
+				(0, (0, [4], [1], [0]).into()),
+				(1, (1, [0], [2, 4, 5], [1]).into()),
+				(2, (2, [1, 3], [3, 6], [2]).into()),
+				(3, (3, [2, 7], [2, 7], [3]).into()),
+				(4, (4, [1], [0, 5], [4]).into()),
+				(5, (5, [1, 4, 6], [6], [5]).into()),
+				(6, (6, [2, 5, 7], [5], [6]).into()),
+				(7, (7, [3], [3, 6], [7]).into()),
+			]
+			.into_iter()
+			.collect(),
+		);
+
+		let t = graph.tarjan();
+		let k = graph.kosaraju();
+
+		assert_eq!(t, k);
+	}
+
+	fn compare_behaviour_scc(instructions: Vec<(u64, u64)>) -> Result<(), TestCaseError> {
+		let mut graph = Graph::new();
+		for (from, to) in instructions.into_iter() {
+			graph.update(from, to);
+		}
+
+		let t = graph.to_strongly_connected_components_tarjan().nodes;
+		let k = graph.to_strongly_connected_components_kosaraju().nodes;
+
+		assert_eq!(t, k);
+
+		Ok(())
+	}
+
+	#[test]
+	fn compare_10_20_scc() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner
+			.run(&generator(10, 20), compare_behaviour_scc)
+			.unwrap();
+	}
+
+	#[test]
+	fn compare_100_2000_scc() {
+		let mut runner = TestRunner::new(Config::with_cases(10_000));
+		runner
+			.run(&generator(100, 2000), compare_behaviour_scc)
+			.unwrap();
+	}
+
+	#[test]
+	fn compare_75k_100k_scc() {
+		let nodes = 75_000;
+		let edges = 100_000;
+
+		let mut graph = Graph::new();
+		for (from, to) in
+			std::iter::from_fn(|| Some((fastrand::u64(..nodes), fastrand::u64(..nodes))))
+				.take(edges)
+		{
+			graph.update(from, to);
+		}
+
+		let t = graph.to_strongly_connected_components_tarjan().nodes;
+		let k = graph.to_strongly_connected_components_kosaraju().nodes;
+
+		assert_eq!(t, k);
 	}
 }
