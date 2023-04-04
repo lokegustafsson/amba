@@ -54,7 +54,7 @@ AMBA follows a typical project structure where the responsibility of different
 components are separated into different directories. All source files reside in
 amba/crates/*. 
 
-## crates/amba
+## `crates/amba`
 The amba directory contains the essential parts responsible for connecting and
 running all components.
 
@@ -146,21 +146,21 @@ Crate used to modularize our utility data structures.
 IPC stands for Inter-process communication. This crate contains a structured IPC
 implementation utilizing unix sockets to send messages.
 
-## crates/libamba
+## `crates/libamba`
 The libamba crate contains the S2E plugin which acts as the driver in amba.
 It is through libamba that all data relevant to the analysis is acquired.
 Since the gui needs to get updates of the blocks to render a control flow graph,
 libamba accomplishes this by hooking a number of modules and listens for changes and sends these to libamba-rs 
 where they get processed into a graph
 
-## crates/mitm-debug-stream
+## `crates/mitm-debug-stream`
 Debugging tool used to log and print contents of a stream when using the
 qmp-client. For more in depth, refer to the source file
 mitm-debug-stream/src/lib.rs
 
 Mitm, in this context, is an acronym for Man-in-the-middle.
 
-## crates/qmp-client
+## `crates/qmp-client`
 
 QMP-client is our own implementation of client communication using the QEMU
 Machine Protocol (QMP). The intention with QMP is to communicate directly with
@@ -168,7 +168,7 @@ the virtual machine instance that S2E starts. One example of communication could
 be querying for current execution state, start and/or stop the virtual machine,
 etc. 
 
-## crates/recipe
+## `crates/recipe`
 The specification of recipes reside in this directory. 
 Recipes purpose is to describe how and what symbolic data is sent to the stdin of the given
 binary. Refer to demos/hello.recipe.json for an example. 
@@ -196,5 +196,5 @@ have a representation of a recipe in any high-level description language as the
 data has to pass through FFI (Foreign Function Interface) and later be sent to
 the guest in libamba. 
 
-## crates/s2e-rs
+## `crates/s2e-rs`
 This crate generates rust code from c++ using autocxx. 
