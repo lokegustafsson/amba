@@ -10,6 +10,7 @@ This is an overview of the project's code architecture and aims to give a brief
 picture of what resides where and its responsibility rather than a detailed
 description of AMBA. 
 
+
 ```md
 ├── crates
 │   ├── amba
@@ -80,9 +81,9 @@ the following enumeration:
 
 ```rust
 enum Args {
-	Init(InitArgs),
-	Run(RunArgs),
-	Gui(GuiArgs),
+    Init(InitArgs),
+    Run(RunArgs),
+    Gui(GuiArgs),
     // new entry here
 } 
 ```
@@ -91,10 +92,10 @@ and pass a struct to it, e.g
 
 ```rust
 pub struct InitArgs {
-	#[arg(short, long)]
-	force: bool,
-	#[arg(short, long)]
-	download: bool,
+    #[arg(short, long)]
+    force: bool,
+    #[arg(short, long)]
+    download: bool,
 }
 ```
 
@@ -121,7 +122,7 @@ This is done in several steps:
 - init/mod.rs is the "runner" part of this module, meaning it wraps the
     subcommand together and is later to be included in amba/src/main.rs
 
-For more technical details, refer to all files in the init/ directory.
+    For more technical details, refer to files in the init/ directory.
 
 ### Run subcommand
 
@@ -177,16 +178,16 @@ A recipe is described using json, but is really a struct:
 
 ```rust
 pub struct Recipe {
-	pub files: BTreeMap<GuestPath, FileSource>,
-    // Path to the given binary which is to be analyzed
-	pub executable_path: String,
-    // filepath to where we're looking for the stdin-file
-	pub stdin_path: String,
-	pub arg0: Option<String>,
-	arguments: Vec<ArgumentSource>,
-    // Keeps track of concrete and symbolic variables
-	environment: Environment,
+    pub files: BTreeMap<GuestPath, FileSource>,
+    pub executable_path: String,
+    pub stdin_path: String,
+    pub arg0: Option<String>,
+    #[serde(default)]
+    arguments: Vec<ArgumentSource>,
+    #[serde(default)]
+    environment: Environment,
 }
+
 ```
 
 A recipe is later used with the s2ecmd utility to generate symbolic data.
