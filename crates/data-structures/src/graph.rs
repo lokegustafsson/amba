@@ -20,6 +20,12 @@ pub struct Graph {
 	pub merges: Map<u64, u64>,
 }
 
+impl From<&Graph> for ipc::GraphIpc {
+	fn from(_: &Graph) -> Self {
+		todo!()
+	}
+}
+
 impl Graph {
 	pub fn new() -> Self {
 		Default::default()

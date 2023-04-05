@@ -7,6 +7,5 @@ edition = "2021"
 
 [dependencies]
 bincode = "1"
-data-structures = { path = "../data-structures" }
 serde = { version = "1", features = ["derive"] }
 tracing = "0.1"

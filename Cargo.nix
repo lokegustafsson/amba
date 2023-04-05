@@ -1200,6 +1200,7 @@ in
       arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
       fastrand = rustPackages."registry+https://github.com/rust-lang/crates.io-index".fastrand."1.8.0" { inherit profileName; };
       glam = rustPackages."registry+https://github.com/rust-lang/crates.io-index".glam."0.23.0" { inherit profileName; };
+      ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
       itertools = rustPackages."registry+https://github.com/rust-lang/crates.io-index".itertools."0.10.5" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
     };
@@ -2276,7 +2277,6 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/ipc");
     dependencies = {
       bincode = rustPackages."registry+https://github.com/rust-lang/crates.io-index".bincode."1.3.3" { inherit profileName; };
-      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };

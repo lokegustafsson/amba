@@ -35,7 +35,11 @@ mod ffi {
 	) -> bool {
 		let mutex = &*ptr;
 		let mut cfg = mutex.lock().unwrap();
-		cfg.update(from, to)
+
+		let from_meta = (from as u32).into();
+		let to_meta = (to as u32).into();
+
+		cfg.update(from_meta, to_meta)
 	}
 
 	#[no_mangle]

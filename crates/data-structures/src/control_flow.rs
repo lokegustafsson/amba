@@ -4,7 +4,9 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use crate::{Graph, NodeMetadata};
+use ipc::NodeMetadata;
+
+use crate::Graph;
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
@@ -15,7 +17,7 @@ pub struct ControlFlowGraph {
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
 	pub(crate) metadata: Vec<NodeMetadata>,
-	pub(crate) meta_mapping: BTreeMap<u64, usize>,
+	pub(crate) meta_mapping_unique_id_to_index: BTreeMap<u64, usize>,
 }
 
 impl Default for ControlFlowGraph {
@@ -86,15 +88,15 @@ impl ControlFlowGraph {
 			created_at: Instant::now(),
 			rebuilding_time: Duration::new(0, 0),
 			metadata: Vec::new(),
-			meta_mapping: BTreeMap::new(),
+			meta_mapping_unique_id_to_index: BTreeMap::new(),
 		}
 	}
 
 	/// Insert a node connection. Returns true if the connection
 	/// is new.
-	pub fn update(&mut self, from: u64, to: u64) -> bool {
-		self.update_metadata(from);
-		self.update_metadata(to);
+	pub fn update(&mut self, from_meta: NodeMetadata, to_meta: NodeMetadata) -> bool {
+		let from = self.update_metadata(from_meta);
+		let to = self.update_metadata(to_meta);
 
 		let now = Instant::now();
 		let modified = self.graph.update(from, to);
@@ -114,13 +116,17 @@ impl ControlFlowGraph {
 		modified
 	}
 
-	fn update_metadata(&mut self, node: u64) {
-		if self.meta_mapping.contains_key(&node) {
-			return;
-		}
-		let idx = self.metadata.len();
-		self.metadata.push(NodeMetadata { id: idx as _ });
-		self.meta_mapping.insert(node, idx);
+	fn update_metadata(&mut self, node: NodeMetadata) -> u64 {
+		let id = node.unique_id();
+		let index: usize = *self
+			.meta_mapping_unique_id_to_index
+			.entry(id)
+			.or_insert_with(|| {
+				let seq_index = self.metadata.len();
+				self.metadata.push(node);
+				seq_index
+			});
+		index as u64
 	}
 }
 
@@ -128,35 +134,43 @@ impl ControlFlowGraph {
 mod test {
 	use crate::control_flow::*;
 
+	fn node(i: u32) -> NodeMetadata {
+		NodeMetadata {
+			symbolic_state_id: i,
+			basic_block_vaddr: None,
+			basic_block_generation: None,
+		}
+	}
+
 	#[test]
 	fn test1() {
 		let mut cfg = ControlFlowGraph::new();
 		// 0 → 1
-		assert!(cfg.update(0, 1));
+		assert!(cfg.update(node(0), node(1)));
 		assert_eq!(cfg.graph.len(), 2);
 		assert_eq!(cfg.compressed_graph.len(), 1);
-		assert!(!cfg.update(0, 1));
+		assert!(!cfg.update(node(0), node(1)));
 
 		// 0 → 1 → 2
-		assert!(cfg.update(1, 2));
+		assert!(cfg.update(node(1), node(2)));
 		assert_eq!(cfg.graph.len(), 3);
 		assert_eq!(cfg.compressed_graph.len(), 1);
-		assert!(!cfg.update(1, 2));
+		assert!(!cfg.update(node(1), node(2)));
 
 		// 0 → 1 → 2
 		//     ↓
 		//     3
-		assert!(cfg.update(1, 3));
+		assert!(cfg.update(node(1), node(3)));
 		assert_eq!(cfg.graph.len(), 4);
 		assert_eq!(cfg.compressed_graph.len(), 3);
-		assert!(!cfg.update(1, 3));
+		assert!(!cfg.update(node(1), node(3)));
 
 		// 0 → 1 → 2
 		// ↑   ↓
 		// 4   3
-		assert!(cfg.update(4, 0));
+		assert!(cfg.update(node(4), node(0)));
 		assert_eq!(cfg.graph.len(), 5);
 		assert_eq!(cfg.compressed_graph.len(), 3);
-		assert!(!cfg.update(4, 0));
+		assert!(!cfg.update(node(4), node(0)));
 	}
 }
