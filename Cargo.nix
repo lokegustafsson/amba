@@ -11,7 +11,7 @@ args@{
     "recipe/default"
     "bootstrap/default"
     "disassembler/default"
-    "libamba-rs/default"
+    "libamba/default"
     "mitm-debug-stream/default"
     "s2e/default"
   ],
@@ -54,7 +54,7 @@ in
     recipe = rustPackages.unknown.recipe."0.1.0";
     bootstrap = rustPackages.unknown.bootstrap."0.1.0";
     disassembler = rustPackages.unknown.disassembler."0.1.0";
-    libamba-rs = rustPackages.unknown.libamba-rs."0.1.0";
+    libamba = rustPackages.unknown.libamba."0.1.0";
     mitm-debug-stream = rustPackages.unknown.mitm-debug-stream."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
   };
@@ -2418,11 +2418,11 @@ in
     src = fetchCratesIo { inherit name version; sha256 = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"; };
   });
   
-  "unknown".libamba-rs."0.1.0" = overridableMkRustCrate (profileName: rec {
-    name = "libamba-rs";
+  "unknown".libamba."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "libamba";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/libamba-rs");
+    src = fetchCrateLocal (workspaceSrc + "/crates/libamba");
     dependencies = {
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };

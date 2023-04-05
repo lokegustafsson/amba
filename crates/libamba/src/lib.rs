@@ -1,10 +1,6 @@
 use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
 
-use data_structures::GraphIpc;
-
-use crate::control_flow::ControlFlowGraph;
-
-pub mod control_flow;
+use data_structures::{ControlFlowGraph, GraphIpc};
 
 static IPC: Mutex<Option<ipc::IpcTx<'static>>> = Mutex::new(None);
 
