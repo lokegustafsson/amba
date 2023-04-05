@@ -15,7 +15,7 @@ let
   all-include-paths = s2e-include-paths // {
     ZYDIS_PATH = "${pkgs.zydis}";
     ZYCORE_PATH = "${pkgs.callPackage ./zycore.nix { }}";
-    LIBAMBARS_PATH = "${rust.libamba}/lib/";
+    LIBAMBA_PATH = "${rust.libamba}/lib/";
   };
 
   rust = import ./rust.nix {

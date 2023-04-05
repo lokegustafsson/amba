@@ -50,15 +50,13 @@ libamba.a:
 	if [ -v IMPURE_RUST ]; then \
 		make libamba_impure; \
 	else \
-		cp $(LIBAMBARS_PATH)/libamba.a . ; \
+		cp $(LIBAMBA_PATH)/libamba.a . ; \
 	fi
 
 libamba_impure: ../libamba/*
 	cargo build -p libamba
 	cp ../../target/debug/libamba.a .
 	touch libamba_impure
-
-$(LIBAMBARS_PATH)/libamba.a:
 
 Amba.o: \
   src/Amba.cpp \
