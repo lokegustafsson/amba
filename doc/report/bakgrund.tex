@@ -1,19 +1,4 @@
-\subsection{Bakgrund}
-
-Attacker mot organisationers eller nationers IT-system har ofta förrödande direkta och indirekt
-konsekvenser för de drabbade. Enligt företaget Cybereason svarade över 70 procent av de över 1400
-tillfrågade säkerhetsspecialister i en av deras studier att deras organisation hade utsats för
-\emph{Utpresningsprogram} (engelska: \emph{ransomware}) minst en gång de senaste 24 månaderna.
-\cite{cyberreason2021}\cite{cyberreason2022} Cybereasons rapporter beskriver att några av de
-direkta följderna av att en lyckad attack är höga kostnader för organisationen; stoppad produktion;
-konsekvenser från reglerare; skadat anseende. Enligt Cyberreaons rapporter leder de höga kostnaderna
-till bland annat uppsägningar av anställda för att kunna kompensera. I en artikel i Bloomberg
-Newsweek beskrivs hur cancerpatienter som behövde akut sjukvård förflyttades till sjukhus med
-fungerade datorsystem när Irlands offentliga sjukhussystem låg nere.\cite{gallagher2023} I slutet
-av 2021 överlämnade revisorfirman PWC deras granskningsrapport till HSE:s ledning där de går igenom.
-\cite{hse_report} Ransomware attacker möjliggörs tack vare säkerhetsbrister i programvarorna som
-finns på offrens datorsystem.
-
+\section{Bakgrund}
 Under \emph{BlueHat} 2019 gav \emph{MSRC} (\emph{Microsoft Security Response Center}) en överblick
 över Microsofts taktiker för hur de hanterar säkerhetsbrister i deras produkter och tjänster.
 \cite{miller19} Taktikerna som listades var att
@@ -23,20 +8,20 @@ Under \emph{BlueHat} 2019 gav \emph{MSRC} (\emph{Microsoft Security Response Cen
 	\item minimera platserna där attackerarna kan göra skada och förhindra åtkomst; samt slutligen
 	\item minimera tidsfönstret då attackerare har tillgång till systemet med hjälp av aktiv övervakning.
 \end{itemize}
-Enligt Miller härstammar ungefär 70 procent av alla Microsofts CVEr från minnessäkerhetsbuggar. Om
+Enligt Miller \cite{miller19} härstammar ungefär 70 procent av alla Microsofts CVEr från minnessäkerhetsbuggar. Om
 hela klasser av säkerhetsbrister kan eliminieras genom att utveckla nya verktyg som underlättar för
-utvecklare att finna dem kan man ha stor påverkan på antalet sårbarheter.
+utvecklare att finna dem kan det leda till stor påverkan på antalet sårbarheter.
 
-För att kunna hitta och undersöka minnessäkerhetsbuggar behöver man ibland betrakta maskinkod, med
-anledningen att man vill
-\begin{itemize}
-  \item kunna kontrollera om det förekommer kompilatorbuggar som ger oväntad maskinkod i binären;
-  \item se hur \emph{UB} (\emph{undefined behaviour}) har utnyttjats av kompilatorn; och
-  \item enklare kunna börja analysera då man endast behöver en binär, och inte behöva integrera
-djupt in i byggsystemet.
-\end{itemize}
+% probably need a source for this paragraph
+Det är särskilt fördelaktigt att undersöka minnessäkerhetsbuggar genom att
+betrakta maskinkod. Genom att betrakta maskinkod bildar man en lågnivåförståelse
+av en binär eftersom den fullständiga målkoden som kompilatorn genererat
+existerar på denna nivån. Med en lågnivåförståelse kan man också härleda hur
+binären interagerar med minnet genom att bland annat analysera minneslayouten
+och den underliggande datastrukturen för att hitta problem vid minnesallokering
+och minnesdeallokering, och därigenom hitta minnessäkerhetsbuggar.
 
-Det finns ett flertal metoder för att analysera en exekverbar binärer. Exempel på dessa är att: 
+Det finns ett flertal metoder för att analysera en exekverbar binär. Exempel på dessa är att: 
 \begin{enumerate}
   \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
   \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
