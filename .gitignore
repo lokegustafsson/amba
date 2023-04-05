@@ -48,4 +48,4 @@ eurydice-private-key
 compile_flags.txt
 **/TAGS
 **/tags
-/crates/AmbaPlugin/libamba_rs_impure
+/crates/AmbaPlugin/libamba_impure
