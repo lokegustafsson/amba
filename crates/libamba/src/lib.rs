@@ -12,8 +12,7 @@ use std::{
 	time::Duration,
 };
 
-use data_structures::{Graph, GraphIpc};
-use ipc::{IpcError, IpcMessage, IpcTx};
+use ipc::{GraphIpcBuilder, IpcError, IpcMessage, IpcTx, NodeMetadata};
 
 static STATE: Mutex<Option<State>> = Mutex::new(None);
 
@@ -26,8 +25,8 @@ struct State {
 	basic: BasicLocalsMut,
 
 	// Payload
-	symbolic_state_graph: Graph,
-	basic_block_graph: Graph,
+	symbolic_state_graph: GraphIpcBuilder,
+	basic_block_graph: GraphIpcBuilder,
 }
 struct SymbolicLocalsMut {
 	/// Map `state alias` to `state id`
@@ -35,7 +34,7 @@ struct SymbolicLocalsMut {
 	/// Number of states, equivalently: next available `state id`
 	allocated_ids_count: u32,
 	/// Map `state id` to most recently executed `basic block id` from this state
-	last_executed_bb_id: Vec<u64>,
+	last_executed_bb: Vec<NodeMetadata>,
 	/// Map `state id` to predecessor `state id`
 	predecessor: Vec<u32>,
 }
@@ -67,15 +66,15 @@ impl State {
 			symbolic: SymbolicLocalsMut {
 				alias_to_id: vec![0],
 				allocated_ids_count: 1,
-				last_executed_bb_id: Vec::new(),
+				last_executed_bb: Vec::new(),
 				predecessor: vec![u32::MAX],
 			},
 			basic: BasicLocalsMut {
 				vaddr_to_generation: HashMap::new(),
 			},
 
-			symbolic_state_graph: Graph::default(),
-			basic_block_graph: Graph::default(),
+			symbolic_state_graph: GraphIpcBuilder::default(),
+			basic_block_graph: GraphIpcBuilder::default(),
 		});
 		thread::spawn(|| loop {
 			thread::sleep(Duration::from_millis(100));
@@ -91,14 +90,8 @@ impl State {
 		}
 		self.ipc_tx
 			.blocking_send(&IpcMessage::GraphSnapshot {
-				name: Cow::Borrowed("symbolic states"),
-				graph: Cow::Owned(GraphIpc::from(&self.symbolic_state_graph)),
-			})
-			.unwrap_or_else(|err| println!("libamba ipc error sending symbolic graph: {err:?}"));
-		self.ipc_tx
-			.blocking_send(&IpcMessage::GraphSnapshot {
-				name: Cow::Borrowed("basic blocks"),
-				graph: Cow::Owned(GraphIpc::from(&self.basic_block_graph)),
+				symbolic_state_graph: Cow::Borrowed(self.symbolic_state_graph.get()),
+				basic_block_graph: Cow::Borrowed(self.basic_block_graph.get()),
 			})
 			.unwrap_or_else(|err| println!("libamba ipc error sending symbolic graph: {err:?}"));
 	}
@@ -121,27 +114,45 @@ impl State {
 				Ordering::Equal => self.symbolic.alias_to_id.push(new_state_id),
 				Ordering::Greater => unreachable!(),
 			}
-			self.symbolic_state_graph
-				.update(u64::from(old_state_id), u64::from(new_state_id));
+			self.symbolic_state_graph.maybe_add_edge(
+				NodeMetadata {
+					symbolic_state_id: old_state_id,
+					basic_block_vaddr: None,
+					basic_block_generation: None,
+				},
+				NodeMetadata {
+					symbolic_state_id: new_state_id,
+					basic_block_vaddr: None,
+					basic_block_generation: None,
+				},
+			);
 			assert_eq!(
 				new_state_id as usize,
-				self.symbolic.last_executed_bb_id.len()
+				self.symbolic.last_executed_bb.len()
 			);
 			assert_eq!(
 				new_state_id as usize,
 				self.symbolic.predecessor.len(),
 			);
 			self.symbolic
-				.last_executed_bb_id
-				.push(self.symbolic.last_executed_bb_id[old_state_id as usize]);
+				.last_executed_bb
+				.push(self.symbolic.last_executed_bb[old_state_id as usize]);
 			self.symbolic.predecessor.push(old_state_id);
 		}
 	}
 
 	fn on_state_merge(&mut self, base_state_alias: u32, other_state_alias: u32) {
-		self.symbolic_state_graph.update(
-			u64::from(self.symbolic.alias_to_id[other_state_alias as usize]),
-			u64::from(self.symbolic.alias_to_id[base_state_alias as usize]),
+		self.symbolic_state_graph.maybe_add_edge(
+			NodeMetadata {
+				symbolic_state_id: self.symbolic.alias_to_id[other_state_alias as usize],
+				basic_block_vaddr: None,
+				basic_block_generation: None,
+			},
+			NodeMetadata {
+				symbolic_state_id: self.symbolic.alias_to_id[base_state_alias as usize],
+				basic_block_vaddr: None,
+				basic_block_generation: None,
+			},
 		);
 	}
 
@@ -171,20 +182,46 @@ impl State {
 		block_virtual_addr: NonZeroU64,
 	) {
 		let current_state_id = self.symbolic.alias_to_id[current_state_alias as usize];
-		if current_state_id == 0 && self.symbolic.last_executed_bb_id.is_empty() {
+		if current_state_id == 0 && self.symbolic.last_executed_bb.is_empty() {
 			// Very first block execution of state 0
-			self.symbolic
-				.last_executed_bb_id
-				.push(block_virtual_addr.get());
+			self.symbolic.last_executed_bb.push(NodeMetadata {
+				symbolic_state_id: current_state_id,
+				basic_block_vaddr: Some(block_virtual_addr),
+				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
+			});
 			return;
 		}
-		let current_id = block_virtual_addr.get();
-		let last_id = mem::replace(
-			&mut self.symbolic.last_executed_bb_id[current_state_id as usize],
-			current_id,
+
+		let mut generation_from_state_vaddr = |mut state_id, vaddr| {
+			let mut stack = Vec::new();
+			loop {
+				if let Some(&gen) = self.basic.vaddr_to_generation.get(&(state_id, vaddr)) {
+					for s in stack {
+						self.basic.vaddr_to_generation.insert((s, vaddr), gen);
+					}
+					return NonZeroU64::new(gen as u64).unwrap();
+				} else {
+					stack.push(state_id);
+					state_id = self.symbolic.predecessor[state_id as usize];
+				}
+			}
+		};
+
+		let current_metadata = NodeMetadata {
+			symbolic_state_id: current_state_id,
+			basic_block_vaddr: Some(block_virtual_addr),
+			basic_block_generation: Some(generation_from_state_vaddr(
+				current_state_id,
+				block_virtual_addr,
+			)),
+		};
+		let last_metadata = mem::replace(
+			&mut self.symbolic.last_executed_bb[current_state_id as usize],
+			current_metadata,
 		);
 
-		self.basic_block_graph.update(last_id, current_id);
+		self.basic_block_graph
+			.maybe_add_edge(last_metadata, current_metadata);
 	}
 }
 

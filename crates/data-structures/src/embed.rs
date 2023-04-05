@@ -1,7 +1,6 @@
 use fastrand::Rng;
 use glam::DVec2;
-
-use crate::GraphIpc;
+use ipc::GraphIpc;
 
 #[derive(Clone, Debug)]
 pub struct Graph2D {
