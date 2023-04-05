@@ -42,7 +42,7 @@ LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
 
 libamba.so: \
-  Amba.o Zydis.o HeapLeak.o ControlFlow.o AmbaPlugin.o \
+  Amba.o Zydis.o HeapLeak.o AmbaPlugin.o \
   libamba.a
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
@@ -74,11 +74,6 @@ HeapLeak.o: \
   src/HeapLeak.cpp \
   inc/HeapLeak.h inc/AmbaException.h inc/Numbers.h
 	$(CXX) src/HeapLeak.cpp $(CXX-FLAGS) -c -o $@
-
-ControlFlow.o: \
-  src/ControlFlow.cpp \
-  inc/ControlFlow.h inc/AmbaException.h inc/Numbers.h
-	$(CXX) src/ControlFlow.cpp $(CXX-FLAGS) -c -o $@
 
 Zydis.o: \
   src/Zydis.cpp \

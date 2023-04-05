@@ -4,7 +4,6 @@
 
 #include "HeapLeak.h"
 #include "Numbers.h"
-#include "ControlFlow.h"
 
 class ModuleMap;
 class ModuleDescriptor;
@@ -17,24 +16,39 @@ class AmbaPlugin : public Plugin {
   public:
 	explicit AmbaPlugin(S2E *s2e);
 
+	using EngineShutdownFunction = void ();
+	using StateForkFunction = void (
+		s2e::S2EExecutionState *state,
+		const std::vector<s2e::S2EExecutionState *> &,
+		const std::vector<klee::ref<klee::Expr>> &
+	);
+	using StateMergeFunction = void (
+		s2e::S2EExecutionState *dest,
+		s2e::S2EExecutionState *source
+	);
 	using TranslationFunction = void (
 		s2e::ExecutionSignal *,
 		s2e::S2EExecutionState *state,
 		TranslationBlock *tb,
 		u64 p
 	);
-	using ExecutionFunction = void (s2e::S2EExecutionState *state, u64 pc);
 	using ModuleFunction = void (S2EExecutionState *state, const ModuleDescriptor &module);
 	using ProcessFunction = void (S2EExecutionState *state, const u64 cr3, const u64 pid, const u64 return_code);
 
+
 	void initialize();
 
-	TranslationFunction translateInstructionStart;
-	TranslationFunction translateBlockStart;
+	EngineShutdownFunction onEngineShutdown;
+	StateForkFunction onStateFork;
+	StateMergeFunction onStateMerge;
+	TranslationFunction onTranslateBlockStart;
+	amba::ExecutionFunction onBlockStart;
+
 	ModuleFunction onModuleLoad;
 	ModuleFunction onModuleUnload;
 	ProcessFunction onProcessUnload;
 
+	TranslationFunction onTranslateInstructionStart;
 
   protected:
 	ModuleMap *m_modules = nullptr;
@@ -42,8 +56,6 @@ class AmbaPlugin : public Plugin {
 	u64 m_module_pid = 0;
 
 	heap_leak::HeapLeak m_heap_leak;
-	control_flow::ControlFlow m_assembly_graph;
-	control_flow::ControlFlow m_symbolic_graph;
 };
 
 } // namespace plugins

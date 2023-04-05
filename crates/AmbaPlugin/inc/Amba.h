@@ -17,23 +17,7 @@ extern std::function<llvm::raw_ostream *()> debug_stream;
 extern std::function<llvm::raw_ostream *()> info_stream;
 extern std::function<llvm::raw_ostream *()> warning_stream;
 
-using TranslationFunction = void (
-	s2e::ExecutionSignal *,
-	s2e::S2EExecutionState *state,
-	TranslationBlock *tb,
-	u64 p
-);
 using ExecutionFunction = void (s2e::S2EExecutionState *state, u64 pc);
-using SymbolicExecutionFunction = void (
-	s2e::S2EExecutionState *state,
-	const std::vector<s2e::S2EExecutionState *> &,
-	const std::vector<klee::ref<klee::Expr>> &
-);
-using StateMergeFunction = void (
-	s2e::S2EExecutionState *dest,
-	s2e::S2EExecutionState *source
-);
-using TimerFunction = void ();
 
 struct AddressLengthPair {
 	target_phys_addr_t adr;
