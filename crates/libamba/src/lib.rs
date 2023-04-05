@@ -22,15 +22,26 @@ struct State {
 	ipc_tx: IpcTx<'static>,
 
 	// Mutable local state
-	symbolic_state_alias_to_id: Vec<u32>,
-	symbolic_state_id_count: u32,
-	symbolic_state_to_last_executed_basic_block_id: Vec<u64>,
-	state_predecessor: Vec<u32>,
-	basic_block_state_vaddr_to_generation: HashMap<(u32, NonZeroU64), u8>,
+	symbolic: SymbolicLocalsMut,
+	basic: BasicLocalsMut,
 
 	// Payload
 	symbolic_state_graph: Graph,
 	basic_block_graph: Graph,
+}
+struct SymbolicLocalsMut {
+	/// Map `state alias` to `state id`
+	alias_to_id: Vec<u32>,
+	/// Number of states, equivalently: next available `state id`
+	allocated_ids_count: u32,
+	/// Map `state id` to most recently executed `basic block id` from this state
+	last_executed_bb_id: Vec<u64>,
+	/// Map `state id` to predecessor `state id`
+	predecessor: Vec<u32>,
+}
+struct BasicLocalsMut {
+	/// Map `basic block virtual address` to `basic block translation generation`
+	vaddr_to_generation: HashMap<(u32, NonZeroU64), u8>,
 }
 impl State {
 	fn init() {
@@ -53,11 +64,15 @@ impl State {
 				}
 				Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
 			},
-			symbolic_state_alias_to_id: vec![0],
-			symbolic_state_id_count: 1,
-			symbolic_state_to_last_executed_basic_block_id: Vec::new(),
-			state_predecessor: vec![u32::MAX],
-			basic_block_state_vaddr_to_generation: HashMap::new(),
+			symbolic: SymbolicLocalsMut {
+				alias_to_id: vec![0],
+				allocated_ids_count: 1,
+				last_executed_bb_id: Vec::new(),
+				predecessor: vec![u32::MAX],
+			},
+			basic: BasicLocalsMut {
+				vaddr_to_generation: HashMap::new(),
+			},
 
 			symbolic_state_graph: Graph::default(),
 			basic_block_graph: Graph::default(),
@@ -93,39 +108,40 @@ impl State {
 	}
 
 	fn on_state_fork(&mut self, old_state_alias: u32, new_state_aliases: &[u32]) {
-		let old_state_id = self.symbolic_state_alias_to_id[old_state_alias as usize];
+		let old_state_id = self.symbolic.alias_to_id[old_state_alias as usize];
 		for &new_state_alias in new_state_aliases {
 			// Newly forked states are always newly allocated
-			let new_state_id = self.symbolic_state_id_count;
-			self.symbolic_state_id_count += 1;
+			let new_state_id = self.symbolic.allocated_ids_count;
+			self.symbolic.allocated_ids_count += 1;
 			// But they might be aliased by an existing state alias
-			match new_state_alias.cmp(&(self.symbolic_state_alias_to_id.len() as u32)) {
+			match new_state_alias.cmp(&(self.symbolic.alias_to_id.len() as u32)) {
 				Ordering::Less => {
-					self.symbolic_state_alias_to_id[new_state_alias as usize] = new_state_id;
+					self.symbolic.alias_to_id[new_state_alias as usize] = new_state_id;
 				}
-				Ordering::Equal => self.symbolic_state_alias_to_id.push(new_state_id),
+				Ordering::Equal => self.symbolic.alias_to_id.push(new_state_id),
 				Ordering::Greater => unreachable!(),
 			}
 			self.symbolic_state_graph
 				.update(u64::from(old_state_id), u64::from(new_state_id));
 			assert_eq!(
 				new_state_id as usize,
-				self.symbolic_state_to_last_executed_basic_block_id.len()
+				self.symbolic.last_executed_bb_id.len()
 			);
 			assert_eq!(
 				new_state_id as usize,
-				self.state_predecessor.len(),
+				self.symbolic.predecessor.len(),
 			);
-			self.symbolic_state_to_last_executed_basic_block_id
-				.push(self.symbolic_state_to_last_executed_basic_block_id[old_state_id as usize]);
-			self.state_predecessor.push(old_state_id);
+			self.symbolic
+				.last_executed_bb_id
+				.push(self.symbolic.last_executed_bb_id[old_state_id as usize]);
+			self.symbolic.predecessor.push(old_state_id);
 		}
 	}
 
 	fn on_state_merge(&mut self, base_state_alias: u32, other_state_alias: u32) {
 		self.symbolic_state_graph.update(
-			u64::from(self.symbolic_state_alias_to_id[other_state_alias as usize]),
-			u64::from(self.symbolic_state_alias_to_id[base_state_alias as usize]),
+			u64::from(self.symbolic.alias_to_id[other_state_alias as usize]),
+			u64::from(self.symbolic.alias_to_id[base_state_alias as usize]),
 		);
 	}
 
@@ -137,9 +153,10 @@ impl State {
 		module_path: Option<&CStr>,
 		module_internal_offset: Option<NonZeroU64>,
 	) {
-		let current_state_id = self.symbolic_state_alias_to_id[current_state_alias as usize];
+		let current_state_id = self.symbolic.alias_to_id[current_state_alias as usize];
 		*self
-			.basic_block_state_vaddr_to_generation
+			.basic
+			.vaddr_to_generation
 			.entry((
 				current_state_id,
 				NonZeroU64::new(block_virtual_addr).unwrap(),
@@ -153,20 +170,17 @@ impl State {
 		current_state_alias: u32,
 		block_virtual_addr: NonZeroU64,
 	) {
-		let current_state_id = self.symbolic_state_alias_to_id[current_state_alias as usize];
-		if current_state_id == 0
-			&& self
-				.symbolic_state_to_last_executed_basic_block_id
-				.is_empty()
-		{
+		let current_state_id = self.symbolic.alias_to_id[current_state_alias as usize];
+		if current_state_id == 0 && self.symbolic.last_executed_bb_id.is_empty() {
 			// Very first block execution of state 0
-			self.symbolic_state_to_last_executed_basic_block_id
+			self.symbolic
+				.last_executed_bb_id
 				.push(block_virtual_addr.get());
 			return;
 		}
 		let current_id = block_virtual_addr.get();
 		let last_id = mem::replace(
-			&mut self.symbolic_state_to_last_executed_basic_block_id[current_state_id as usize],
+			&mut self.symbolic.last_executed_bb_id[current_state_id as usize],
 			current_id,
 		);
 
