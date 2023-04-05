@@ -126,7 +126,7 @@ fn main() -> ExitCode {
 						model: Arc::new(Model::new()),
 						gui_context: None,
 						qemu_pid: None,
-            embedder_tx: None,
+						embedder_tx: None,
 					})
 					.run(cmd, &config)
 				})
