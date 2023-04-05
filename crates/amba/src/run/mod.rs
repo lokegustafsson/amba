@@ -12,14 +12,14 @@ use std::{
 	},
 	path::Path,
 	process::{self, Command, ExitStatus},
-	sync::{mpsc, Arc, Mutex},
+	sync::{mpsc, Arc, Mutex, RwLock},
 	thread::{self, ScopedJoinHandle},
-	time::Duration,
+	time::{Duration, Instant},
 };
 
-use data_structures::Graph2D;
 use eframe::egui::Context;
-use ipc::{IpcError, IpcMessage};
+use graphui::{EmbeddingParameters, Graph2D};
+use ipc::{GraphIpc, IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
@@ -27,19 +27,22 @@ use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
 mod session;
 
 pub enum ControllerMsg {
-	Shutdown,
+	GuiShutdown,
+	QemuShutdown,
 	TellQemuPid(u32),
 	ReplaceGraph {
-		symbolic_state_graph: Graph2D,
-		basic_block_graph: Graph2D,
+		symbolic_state_graph: GraphIpc,
+		basic_block_graph: GraphIpc,
 	},
+	EmbeddingParamsUpdated,
 }
 pub struct Controller {
 	pub tx: mpsc::Sender<ControllerMsg>,
 	pub rx: mpsc::Receiver<ControllerMsg>,
-	pub model: Arc<Mutex<Model>>,
+	pub model: Arc<Model>,
 	pub gui_context: Option<Context>,
 	pub qemu_pid: Option<u32>,
+	pub embedder_tx: Option<mpsc::Sender<Option<[GraphIpc; 2]>>>,
 }
 impl Controller {
 	/// Launch QEMU+S2E. That is, we do the equivalent of
@@ -55,6 +58,10 @@ impl Controller {
 		let controller_tx_from_ipc = self.tx.clone();
 		let controller_tx_from_qemu = self.tx.clone();
 		let controller_tx_from_qmp = self.tx.clone();
+		let embedder_model = self.model.clone();
+		let (embedder_tx, embedder_rx) = mpsc::channel();
+		self.embedder_tx = Some(embedder_tx);
+		let embedder_gui_context = self.gui_context.clone();
 
 		let res = thread::scope(|s| {
 			let ipc = thread::Builder::new()
@@ -71,8 +78,20 @@ impl Controller {
 				.name("qmp".to_owned())
 				.spawn_scoped(s, || run_qmp(qmp_socket, controller_tx_from_qmp))
 				.unwrap();
+			let embedder = thread::Builder::new()
+				.name("embedder".to_owned())
+				.spawn_scoped(s, || {
+					run_embedder(
+						&embedder_model.state_graph,
+						&embedder_model.block_graph,
+						&embedder_model.embedding_parameters,
+						embedder_rx,
+						embedder_gui_context,
+					)
+				})
+				.unwrap();
 			self.run_controller();
-			self.shutdown_controller(ipc_socket, ipc, qemu, qmp)
+			self.shutdown_controller(ipc_socket, ipc, qemu, qmp, embedder)
 		});
 		cmd.try_remove(ipc_socket);
 		cmd.try_remove(qmp_socket);
@@ -82,28 +101,40 @@ impl Controller {
 	fn run_controller(&mut self) {
 		loop {
 			match self.rx.recv().unwrap() {
-				ControllerMsg::Shutdown => return,
+				ControllerMsg::GuiShutdown => return,
+				ControllerMsg::QemuShutdown => {
+					if self.gui_context.is_none() {
+						return;
+					}
+				}
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
 				ControllerMsg::ReplaceGraph {
-					mut symbolic_state_graph,
-					mut basic_block_graph,
+					symbolic_state_graph,
+					basic_block_graph,
 				} => {
-					let mut guard = self.model.lock().unwrap();
-					mem::swap(&mut guard.state_graph, &mut symbolic_state_graph);
-					mem::swap(&mut guard.block_graph, &mut basic_block_graph);
-					mem::drop(guard);
-					self.gui_context.as_ref().map(|ctx| ctx.request_repaint());
+					self.embedder_tx
+						.as_ref()
+						.map(|tx| tx.send(Some([symbolic_state_graph, basic_block_graph])));
+					if let Some(ctx) = self.gui_context.as_ref() {
+						ctx.request_repaint();
+					}
+				}
+				ControllerMsg::EmbeddingParamsUpdated => {
+					if let Some(tx) = self.embedder_tx.as_ref() {
+						let (Ok(_) | Err(_)) = tx.send(None);
+					}
 				}
 			}
 		}
 	}
 
 	fn shutdown_controller(
-		&mut self,
+		self,
 		ipc_socket: &Path,
 		ipc: ScopedJoinHandle<'_, Result<(), ()>>,
 		qemu: ScopedJoinHandle<'_, Result<(), ()>>,
 		qmp: ScopedJoinHandle<'_, Result<(), ()>>,
+		embedder: ScopedJoinHandle<'_, Result<(), ()>>,
 	) -> Result<(), ()> {
 		match UnixStream::connect(ipc_socket) {
 			Ok(conn) => conn.shutdown(Shutdown::Both).unwrap(),
@@ -115,9 +146,11 @@ impl Controller {
 				Some(nix::sys::signal::Signal::SIGTERM),
 			)
 		});
+		mem::drop(self.embedder_tx);
 		qmp.join().unwrap()?;
 		qemu.join().unwrap()?;
 		ipc.join().unwrap()?;
+		embedder.join().unwrap()?;
 		Ok(())
 	}
 }
@@ -177,7 +210,7 @@ fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 }
 
 fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
-	let ipc_listener = UnixListener::bind(&ipc_socket).unwrap();
+	let ipc_listener = UnixListener::bind(ipc_socket).unwrap();
 	let stream = ipc_listener.accept().unwrap().0;
 	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
 	tracing::info!("IPC initialized");
@@ -189,13 +222,11 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 			}) => {
 				controller_tx
 					.send(ControllerMsg::ReplaceGraph {
-						symbolic_state_graph: Graph2D::embedding_of(
-							symbolic_state_graph.into_owned(),
-						),
-						basic_block_graph: Graph2D::embedding_of(basic_block_graph.into_owned()),
+						symbolic_state_graph: symbolic_state_graph.into_owned(),
+						basic_block_graph: basic_block_graph.into_owned(),
 					})
 					.unwrap_or_else(|mpsc::SendError(_)| {
-						tracing::warn!("ipc failed messaging controller: already shut down")
+						tracing::warn!("ipc failed messaging controller: already shut down");
 					});
 			}
 			Ok(msg) => tracing::info!(?msg),
@@ -392,13 +423,71 @@ fn run_qmp(socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<
 				tracing::info!(?response, "QMP");
 				if let qmp_client::QmpResponse::Event(QmpEvent { event, .. }) = response {
 					if event == "SHUTDOWN" {
-						controller_tx.send(ControllerMsg::Shutdown).unwrap();
+						controller_tx.send(ControllerMsg::QemuShutdown).unwrap();
 						return Ok(());
 					}
 				}
 			}
 			Err(QmpError::EndOfFile) => return Err(()),
 			Err(err) => unreachable!("{:?}", err),
+		}
+	}
+}
+
+fn run_embedder(
+	state_graph: &RwLock<Graph2D>,
+	block_graph: &RwLock<Graph2D>,
+	embedding_parameters: &Mutex<EmbeddingParameters>,
+	rx: mpsc::Receiver<Option<[GraphIpc; 2]>>,
+	gui_context: Option<Context>,
+) -> Result<(), ()> {
+	let mut updates_per_second: f64 = 0.0;
+	let iterations = 100;
+	let mut blocking = true;
+	loop {
+		let params = {
+			let mut guard = embedding_parameters.lock().unwrap();
+			guard.statistic_updates_per_second = iterations as f64 * updates_per_second;
+			*guard
+		};
+		match blocking
+			.then(|| rx.recv().map_err(Into::into))
+			.unwrap_or_else(|| rx.try_recv())
+		{
+			Ok(Some([state, block])) => {
+				let mut start_params = params;
+				start_params.noise = 0.1;
+				*state_graph.write().unwrap() = Graph2D::new(state, start_params);
+				*block_graph.write().unwrap() = Graph2D::new(block, start_params);
+				blocking = false;
+				continue;
+			}
+			Ok(None) => {
+				blocking = false;
+				continue;
+			}
+			Err(mpsc::TryRecvError::Empty) => {}
+			Err(mpsc::TryRecvError::Disconnected) => {
+				tracing::info!("exiting");
+				return Ok(());
+			}
+		}
+		let timer = Instant::now();
+		let mut total_delta_pos = 0.0;
+
+		for graph in [state_graph, block_graph] {
+			let mut working_copy = graph.read().unwrap().clone();
+			total_delta_pos += working_copy.run_layout_iterations(iterations, params);
+			*graph.write().unwrap() = working_copy;
+		}
+		updates_per_second = timer.elapsed().as_secs_f64().recip();
+		if total_delta_pos < 0.1 {
+			updates_per_second = 0.0;
+			blocking = true;
+		}
+
+		if let Some(ctx) = gui_context.as_ref() {
+			ctx.request_repaint();
 		}
 	}
 }
