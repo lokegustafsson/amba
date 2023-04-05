@@ -70,6 +70,9 @@
             inherit (amba)
               COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
 
+            LD_LIBRARY_PATH =
+              lib.strings.makeLibraryPath (amba.gui-native-dependencies pkgs);
+
             meta.description =
               "Rust, C++ and LaTeX tooling for developing AMBA";
           } // libamba.all-include-paths);
