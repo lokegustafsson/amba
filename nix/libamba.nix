@@ -20,9 +20,8 @@ let
 
   rust = import ./rust.nix {
     inherit lib pkgs;
-    extra-overrides = { mkNativeDep, mkEnvDep, mkRpath, mkOverride, p }: [
-      (mkOverride "libamba" (old: { dontFixup = true; }))
-    ];
+    extra-overrides = { mkNativeDep, mkEnvDep, mkRpath, mkOverride, p }:
+      [ (mkOverride "libamba" (old: { dontFixup = true; })) ];
   };
 
   libamba = pkgs.stdenv.mkDerivation ({
