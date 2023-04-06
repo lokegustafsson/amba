@@ -1,4 +1,4 @@
-\section{Inledning}
+\chapter{Inledning}
 
 Attacker mot organisationers eller nationers IT-system har ofta förrödande
 direkta och indirekta konsekvenser för de drabbade. Enligt företaget Cybereason
@@ -16,102 +16,50 @@ offentliga sjukhussystem låg nere. \cite{hse_report} Ransomware attacker
 möjliggörs tack vare säkerhetsbrister i programvarorna som finns på offrens
 datorsystem.
 
+Under \emph{BlueHat} 2019 gav \emph{MSRC} (\emph{Microsoft Security Response Center}) en överblick
+över Microsofts taktiker för hur de hanterar säkerhetsbrister i deras produkter och tjänster.
+\cite{miller19} Taktikerna som listades var att
+\begin{itemize}
+	\item eliminera säkerhetsbristerna från början;
+	\item implementera metoder för att försvåra utnyttjande av säkerhetsbrister;
+	\item minimera platserna där attackerarna kan göra skada och förhindra åtkomst; samt slutligen
+	\item minimera tidsfönstret då attackerare har tillgång till systemet med hjälp av aktiv övervakning.
+\end{itemize}
+Enligt Miller \cite{miller19} härstammar ungefär 70 procent av alla Microsofts CVEr (Common Vulnerabilities and Exposures)https://en.wikipedia.org/wiki/Sci-Hubzz från minnessäkerhetsbuggar. Om
+hela klasser av säkerhetsbrister kan eliminieras genom att utveckla nya verktyg som underlättar för
+utvecklare att finna dem kan det leda till stor påverkan på antalet sårbarheter.zyyy
 
-\subsection{Tidigare arbete}
-Flertalet arbeten existerar inom domänen binäranalys och dess analystekniker. Fowze \cite{fowze_mem_vul}
-beskriver verkyget \emph{SEESAW}, ett verktyg för att analysera
-minnessårbarheter i protokollstacken. Fokuset ligger på att undersöka USB och
-blåtandsmoduler med hjälp av en hybrid av analysmetoder: statisk analys och
-dynamisk analys. \emph{SEESAW} implementerar en algoritm som tillämpar
-bidirektionell kommunikation mellan en statisk analys som tillhandahåller ett
-mål i binären till en riktad symbolisk exekvering dvs den dynamiska analysen som
-ger tillbaka en bestämd funktionspekare för att komplettera och öka precisionen
-av analysen.  
+% probably need a source for this paragraph
+% explain machine code?
+Det är särskilt fördelaktigt att undersöka minnessäkerhetsbuggar genom att
+betrakta maskinkod. Genom att betrakta maskinkod bildar man en lågnivåförståelse
+av en binär eftersom den fullständiga målkoden som kompilatorn genererat
+existerar på denna nivån. Med en lågnivåförståelse kan man också härleda hur
+binären interagerar med minnet genom att bland annat analysera minneslayouten
+och den underliggande datastrukturen för att hitta problem vid minnesallokering
+och minnesdeallokering, och därigenom hitta minnessäkerhetsbuggar.
 
-\subsection{Syfte}
+Det finns ett flertal metoder för att analysera en exekverbar binär. Exempel på dessa är att: 
+\begin{enumerate}
+  \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
+  \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
+    läsbara koden.
+  \item köra binären på speciella testfall och jämföra svaret med vad som förväntas. Om
+    programmet implementerar en specifikation kan en existerande testsamling användas.
+  \item fuzztesta binären, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
+    annat oönskat beteende i binären. Många fuzztestmotorer skapar testfall med en evolutionär
+    algoritm, och många använder instrumentering över vilka programhopp som tas för att bedöma
+    testfalls nyttighet.
+  \item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
+    lösa för testfall som orsakar annorlunda programhopp.
+  \item stega igenom programmet i en debugger för att se exakt vad programmet gör med viss input.
+\end{enumerate}
 
-\subsubsection{Mål}
-Detta projekt ämnar utveckla ett binäranalysverktyg för generell reverse
-engineering, det vill säga en applikation vars uppgift är att analysera binära
-program utan kännedom om källkoden utifrån ett datorsäkerhetsperspektiv.
-Verktyget ska ha en korrekt och testbar förståelse av det analyserade programmet
-och ska samtidigt kunna kommunicera denna till användaren genom visualisering.
-Visualiseringen ska presenteras i ett grafiskt användargränssnitt där användaren
-kan interaktivt stega igenom det binära programmet och själv välja vilka beslut
-som görs gällande exempelvis programhopp. Funktionaliteten i verktyget uppnås
-med hjälp av symbolisk exekvering, och därigenom kombineras fördelarna i
-automatiska och manuella analysmetoder.
+Problematisk minneshantering har potential att påverka ett programs korrekthet och 
+kan utnyttjas av fientliga aktörer i skadliga syften. Att minne hanteras på ett 
+osäkert sätt är inte ovanligt, speciellt då proggrammet är skrivet i ett språk som är 
+"memory unsafe" som exempelvis C/C++. Det är då lätt att vid utveckling av program 
+göra misstag som introducerar sårbarheter, och kan vara svårare att upptäcka dessa 
+sårbarheter när de väl introducerats, speciellt om det inkorrekta beteendet endast 
+uppstår under körning med specifika indata.
 
-% Utveckla syfte (förstå nyttan och det akademiskt relevanta i arbetet)
-Verktyget ämnar att genom mänskligt läsbara representationer av programmets 
-beteende, öka användarens abstrakta förståelse av det. Verktyget ska vara 
-användbart för att öka användarens abstrakta förståelse av ett program då källkod 
-saknas. Det vill säga verktyget ska hjälpa användaren att resonera om programmet 
-generellt. 
-
-\subsubsection{Användningsområden}
-Att kunna avgöra ett programs beteende utifrån endast exkeverbar (binär) 
-kod är viktigt när man undersöker potentiellt skadlig mjukvara eftersom
-dess källkod oftast är okänd. För att upptäcka pågående, och motverka 
-framtida attacker är det viktigt att förstå hur attackerna är utformade och
-hur de beteer sig. 
-
-Binär analys är också användbart då tredje-parts bibliotek används.
-Att analysera säkerheten hos ett program kan behöva ske utan att involvera 
-dess utgivare. Då är det användbart att kunna dra slutsatser om programmet 
-endast ifrån dess maskinkod. 
-
-Förutom att analysera program där källkoden inte är tillgänglig så är det även 
-användbart att analysera ett programs maskinkod för att undersöka kompilatorbuggar.
-
-%\section{akademisk relevans}
-
-\subsection{Avgränsningar}
-
-Att skapa en en exekveringsmotor med stöd för bland annat symbolisk exekvering
-skulle i praktiken innebära implementering av en emulator. Det är en relativ
-stor och tidskrävande uppgift som dessutom kräver nogrann testning för att vara
-korrekt och tillförlitlig. För att fastställa korrekthet ska applikationen
-därför utnyttja existerande verktyg för att exekvera programmet med stöd för
-symbolisk exekvering. Detta möjliggör också bredare plattformssupport jämfört
-med en hemmasnickrad emulator.
-
-
-\subsection{\stoe}
-
-\stoe\cite{s2e} är en plattform för symbolisk exekvering som bygger på QEMU:s
-virtuella maskin och använder KLEE\cite{klee}, en motor för symbolisk
-exekvering, som interpreter för att möjliggöra symbolisk exekvering. \stoe\ är i
-sin tur utbyggbart med möjlighet för användaren att skriva ett eget plugin för
-att utföra analyser och används inom säkerhetsforskning för att till exempel
-analysera skadlig kod. \stoe\ användes som del av Galactica-systemet som spelade
-i DARPA Cyber Grand Challenge\cite{s2e_website}. \stoe\ är öppen källkod,
-väldokumenterat och underhålls aktivt.
-
-\subsection{SymQEMU}
-
-Ett alternativt verktyg för symbolisk exekvering är symQEMU\cite{symqemu},
-som också kombinerar QEMU:s virtuella maskin med KLEE:s motor för symbolisk
-exekvering. Till skillnad från \stoe\ kompilerar SymQEMU KLEE in i den
-analyserade binären och har jämförelsevis hög prestanda. Däremot har SymQEMU
-bristfällig dokumentation och är ej aktivt uppdaterat.
-
-\subsection{Beslut}
-
-Då SymQEMU ej uppdateras aktivt och har bristfällig dokumentation kommer \stoe\
-användas. Projektet avgränsas i och med att existerande verktyg (\stoe) kommer
-användas istället för att bygga en motor för symbolisk exekvering från grunden.
-
-\subsection{Begränsningar}
-
-Att använda \stoe\ innebär att arbetet avgränsas till att, i praktiken, skapa
-ett plugin som avlyssnar och styr motorn. Varken emulator eller motor ska
-byggas och de uppgifter som ingår i att skapa en exekveringsmotor exkluderas.
-
-Det innebär att fokus flyttas ifrån motorns tekniska detaljer till resterande
-jobbet med att utveckla en användbar slutprodukt som bygger ut \stoe:s redan
-existerande funktionalitet med ett grafiskt användargränsnitt och möjlighet att
-stega igenom, analysera och interaktivt besluta om värden under exekvering.
-
-Beslutet innebär också att applikationens utformning blir bunden till \stoe:s
-tekniska begränsningar.
