@@ -9,7 +9,7 @@ symbolisk exekvering. Detta möjliggör också bredare plattformssupport jämfö
 med en hemmasnickrad emulator.
 
 
-\subsection{\stoe}
+\subsection{\Verktyg}
 
 \stoe\cite{s2e} är en plattform för symbolisk exekvering som bygger på QEMU:s
 virtuella maskin och använder KLEE\cite{klee}, en motor för symbolisk
@@ -20,15 +20,11 @@ analysera skadlig kod. \stoe\ användes som del av Galactica-systemet som spelad
 i DARPA Cyber Grand Challenge\cite{s2e_website}. \stoe\ är öppen källkod,
 väldokumenterat och underhålls aktivt.
 
-\subsection{SymQEMU}
-
 Ett alternativt verktyg för symbolisk exekvering är symQEMU\cite{symqemu},
 som också kombinerar QEMU:s virtuella maskin med KLEE:s motor för symbolisk
 exekvering. Till skillnad från \stoe\ kompilerar SymQEMU KLEE in i den
 analyserade binären och har jämförelsevis hög prestanda. Däremot har SymQEMU
 bristfällig dokumentation och är ej aktivt uppdaterat.
-
-\subsection{Beslut}
 
 Då SymQEMU ej uppdateras aktivt och har bristfällig dokumentation kommer \stoe\
 användas. Projektet avgränsas i och med att existerande verktyg (\stoe) kommer
