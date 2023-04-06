@@ -3,7 +3,17 @@
 
 name: self-hosted-nix-ci
 
-on: push
+on:
+  push:
+    paths:
+      - 'crates/**'
+      - 'nix/**'
+      - 'demos/**'
+      - 'Cargo.lock'
+      - 'Cargo.nix'
+      - 'Cargo.toml'
+      - 'flake.lock'
+      - 'flake.nix'
 
 jobs:
   build-s2e:
