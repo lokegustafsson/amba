@@ -6,8 +6,14 @@ name: self-hosted-nix-ci
 on:
   push:
     paths:
-      - '**'
-      - '!doc/**'
+      - 'crates/**'
+      - 'nix/**'
+      - 'demos/**'
+      - 'Cargo.lock'
+      - 'Cargo.nix'
+      - 'Cargo.toml'
+      - 'flake.lock'
+      - 'flake.nix'
 
 jobs:
   build-s2e:
