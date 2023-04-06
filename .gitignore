@@ -49,3 +49,4 @@ compile_flags.txt
 **/TAGS
 **/tags
 /crates/libamba/libamba_rs_impure
+/crates/AmbaPlugin/libamba_impure

@@ -4,11 +4,11 @@ use std::{
 	time::{Duration, Instant},
 };
 
-use data_structures::{Graph, NodeMetadata};
+use crate::{Graph, NodeMetadata};
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
-	pub(crate) graph: Graph,
+	pub graph: Graph,
 	pub(crate) compressed_graph: Graph,
 	pub(crate) updates: usize,
 	pub(crate) rebuilds: usize,

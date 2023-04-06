@@ -23,7 +23,7 @@ ARCHIVES := \
 	-L $(ZYCORE_PATH)/lib \
 	-l Zycore \
 	-L . \
-	-l amba_rs
+	-l amba
 CXX-FLAGS := \
 	-std=c++20 \
 	-Wall \
@@ -43,22 +43,20 @@ S2E_PATH ?= ../../s2e
 
 libamba.so: \
   Amba.o Zydis.o HeapLeak.o ControlFlow.o AmbaPlugin.o \
-  libamba_rs.a
+  libamba.a
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
-libamba_rs.a:
+libamba.a:
 	if [ -v IMPURE_RUST ]; then \
-		make libamba_rs_impure; \
+		make libamba_impure; \
 	else \
-		cp $(LIBAMBARS_PATH)/libamba_rs.a . ; \
+		cp $(LIBAMBA_PATH)/libamba.a . ; \
 	fi
 
-libamba_rs_impure: ../libamba-rs/*
-	cargo build -p libamba-rs
-	cp ../../target/debug/libamba_rs.a .
-	touch libamba_rs_impure
-
-$(LIBAMBARS_PATH)/libamba_rs.a:
+libamba_impure: ../libamba/*
+	cargo build -p libamba
+	cp ../../target/debug/libamba.a .
+	touch libamba_impure
 
 Amba.o: \
   src/Amba.cpp \
@@ -89,7 +87,7 @@ Test: \
   src/Test.cpp \
   inc/Numbers.h inc/AmbaException.h \
   Zydis.o Amba.o \
-  libamba_rs.a
+  libamba.a
 	$(CXX) src/Test.cpp Zydis.o $(CXX-FLAGS) $(ARCHIVES) -o $@
 
 TAGS: inc/* src/*
@@ -118,7 +116,7 @@ clean:
 	-rm Test
 	-rm ../../compile_flags.txt
 	-rm compile_flags.txt
-	-rm libamba_rs_impure
+	-rm libamba_impure
 	-cargo clean
 
-.PHONY: clean libamba_rs.a
+.PHONY: clean libamba.a
