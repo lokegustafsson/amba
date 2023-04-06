@@ -3,7 +3,11 @@
 
 name: self-hosted-nix-ci
 
-on: push
+on:
+  push:
+    paths:
+      - '**'
+      - '!doc/**'
 
 jobs:
   build-s2e:
