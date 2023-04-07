@@ -18,8 +18,8 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_assembly_graph(control_flow::ControlFlow {"basic blocks"})
-	, m_symbolic_graph(control_flow::ControlFlow {"symbolic states"})
+	, m_assembly_graph(control_flow::ControlFlow { "basic blocks" })
+	, m_symbolic_graph(control_flow::ControlFlow { "symbolic states" })
 {
 	auto self = this;
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
