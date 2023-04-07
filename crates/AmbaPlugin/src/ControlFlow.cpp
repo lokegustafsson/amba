@@ -17,12 +17,14 @@ void ControlFlow::onBlockStart(
 	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
+	// Will insert 0 if value doesn't yet exist
+	auto &last = this->m_last[s2e_state->getID()];
 	rust_update_control_flow_graph(
 		this->m_cfg,
-		this->m_last,
+		last,
 		pc
 	);
-	this->m_last = pc;
+	last = pc;
 }
 
 void ControlFlow::onStateFork(
@@ -32,6 +34,7 @@ void ControlFlow::onStateFork(
 ) {
 	const auto old_id = old_state->getID();
 	const auto from = this->m_uuids[old_id];
+	const auto last_raw = this->m_last[old_id];
 
 	for (auto &new_state : new_states) {
 		const auto new_id = new_state->getID();
@@ -39,6 +42,7 @@ void ControlFlow::onStateFork(
 		AMBA_ASSERT(new_id != old_id);
 
 		this->m_uuids[new_id] = ++this->m_last_uuid;
+		this->m_last[new_id] = last_raw;
 
 		rust_update_control_flow_graph(
 			this->m_cfg,
