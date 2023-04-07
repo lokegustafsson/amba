@@ -1,6 +1,8 @@
 #include "Numbers.h"
 
 struct ControlFlowGraph;
+struct IpcTx;
+struct IpcRx;
 
 extern "C" {
 	ControlFlowGraph *rust_new_control_flow_graph();
@@ -12,4 +14,7 @@ extern "C" {
 	);
 	void rust_print_graph_size(const char *name, ControlFlowGraph *ptr);
 	void rust_ipc_send_graph(const char *name, ControlFlowGraph *graph);
+
+	IpcTx *rust_new_ipc();
+	void rust_free_ipc(IpcTx *ptr);
 }

@@ -3,6 +3,7 @@ use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
 use data_structures::{ControlFlowGraph, GraphIpc};
 
 static IPC: Mutex<Option<ipc::IpcTx<'static>>> = Mutex::new(None);
+use ipc::IpcTx;
 
 fn with_ipc(f: impl FnOnce(&mut ipc::IpcTx<'static>)) {
 	let mut guard = IPC.lock().unwrap();
@@ -61,6 +62,24 @@ mod ffi {
 		let mutex = &*ptr;
 		let cfg = mutex.lock().unwrap();
 		println!("\nGraph of: {name}\n{cfg}");
+	}
+
+	#[no_mangle]
+	pub extern "C" fn rust_new_ipc<'a>() -> *mut Mutex<IpcTx<'a>> {
+		let ipc = match UnixStream::connect("amba-ipc.socket") {
+			Ok(stream) => {
+				let stream = Box::leak(Box::new(stream));
+				let (tx, _rx) = ipc::new_wrapping(&*stream);
+				tx
+			}
+			Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
+		};
+		Box::into_raw(Box::new(Mutex::new(ipc)))
+	}
+
+	#[no_mangle]
+	pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcTx<'_>>) {
+		let _ = Box::from_raw(ptr);
 	}
 
 	#[no_mangle]
