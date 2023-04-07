@@ -105,11 +105,11 @@ void ControlFlow::onStateMerge(
 }
 
 void ControlFlow::onTimer() {
-	rust_ipc_send_graph(this->m_name.c_str(), this->m_cfg);
+	rust_ipc_send_graph(this->m_name.c_str(), nullptr, this->m_cfg);
 }
 
 void ControlFlow::onEngineShutdown() {
-	rust_ipc_send_graph(this->m_name.c_str(), this->m_cfg);
+	rust_ipc_send_graph(this->m_name.c_str(), nullptr, this->m_cfg);
 }
 
 } // namespace control_flow
