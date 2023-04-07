@@ -1,8 +1,7 @@
 use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
 
-use ipc::IpcTx;
-
 use data_structures::{ControlFlowGraph, GraphIpc};
+use ipc::IpcTx;
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
