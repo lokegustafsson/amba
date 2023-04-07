@@ -33,4 +33,4 @@ demo-control-flow:
 	nix run . -- run "$$(nix path-info '.#control-flow')""/control-flow.recipe.json"
 
 compile_flags.txt:
-	make -C crates/libamba ../../compile_flags.txt
+	make -C crates/AmbaPlugin ../../compile_flags.txt
