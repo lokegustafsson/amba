@@ -24,13 +24,13 @@ ARCHIVES := \
 	-l Zycore \
 	-L . \
 	-l amba
+OPT-LEVEL ?= -g3 -O0
 CXX-FLAGS := \
 	-std=c++20 \
 	-Wall \
 	-Wextra \
 	-Wno-unused-parameter \
-	-g3 \
-	-O0 \
+	$(OPT-LEVEL) \
 	-U _FORTIFY_SOURCE \
 	-I inc \
 	$(LIBS) \
