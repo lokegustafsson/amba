@@ -51,6 +51,6 @@ LSP server.
 Adding dependencies in Rust is much simplier. Just add it to `Cargo.toml`
 of the crate in question and then run
 ```bash
-$ cargo2nix -f
+$ cargo check && cargo2nix -f
 ```
 from the top folder. Make sure to commit the new lockfiles.
