@@ -12,6 +12,7 @@ group_64_project_report.pdf: \
   avgransningar.tex \
   metod.tex \
   amba.tex \
+  graph.tex \
   resultat.tex \
   diskussion.tex \
   slutsatser.tex \
