@@ -1,3 +1,116 @@
+Medan programmet körs byggs två riktade grafer. I den första
+representerar varje kant ett hopp som programmet gör och i den andra
+representerar varje kant ett hopp som programmet gör som konsekvents
+av ett beslut baserat på ett symboliskt uttryck.
+
+% New page?
+\begin{lstlisting}[
+    label={list:first},
+    language=Python,
+    caption=Ickesymbolisk input\, två möjliga vägar,
+    frame=single
+    ]
+def f(x):
+    y = 0
+    if x == 0:
+        y = 1
+    else:
+        y = 2
+    return y
+
+f(0)
+f(1)
+\end{lstlisting}
+TODO: Graph this:
+            State: y = 0
+State: y = 1      State: y = 2
+
+I ovanstående exempel har vi en funktion som tar in ett värde som vi
+sedan kallar med värdena 0 och 1. Första gången funktionen kallas
+skapas då en nod i början av funktionen och sedan en till nod för
+then-branchen (svenska?) innan den returnerar. Sedan kallas funktionen
+igen och en ytterligare nod skapas för else-branchen, vilken
+resulterar i grafen bredvid.
+
+\begin{lstlisting}[
+    label={list:first},
+    language=Python,
+    caption=Ickesymbolisk input\, en använd väg,
+    frame=single
+    ]
+def f(x):
+    y = 0
+    if x % 2 == 0:
+        y = 1
+    else:
+        y = 2
+    return y
+
+f(4)
+f(2)
+\end{lstlisting}
+TODO: Graph this:
+State: x = 0
+State: x = 1
+
+I detta exempel finns det två branches, men den senare nås aldrig av
+de input som programmet får och hittas därför inte och dyker då inte
+upp i grafen.
+
+\begin{lstlisting}[
+    label={list:first},
+    language=Python,
+    caption=Symbolisk input,
+    frame=single
+    ]
+def f(x):
+    y = 0
+    if x % 2 == 0:
+        y = 1
+    else:
+        y = 2
+    return y
+
+s = input()
+f(s)
+\end{lstlisting}
+
+Här är istället inputen symbolisk. Då sker evalueras båda vägar och
+endast ett anrop krävs för att populera alla möjliga vägar.
+
+% Does this example even work? Or does it need to be inside a larger branch?
+\begin{lstlisting}[
+    label={list:first},
+    language=Python,
+    caption=Symbolisk input\, omöjlig väg,
+    frame=single
+    ]
+def f(x):
+    y = 0
+    if x % 4 == 0:
+        if x % 2 == 0:
+            y = 1
+        else:
+            y = 2
+    else:
+        y = 3
+    return y
+
+s = input()
+f(s)
+\end{lstlisting}
+
+Men även i det symboliska fallet finns det omöjliga branches som inte
+kan nås. Är x delbart med 4 kan det inte samtidigt inte vara delbart
+med två.
+
 \subsection{Komprimering}
+Resultatet av att många branches alltid leder ned samma väg är att
+många subgrafer blir linjegrafer. Dessa tillför då inget värde och gör
+det svårare att läsa grafen slås alla dessa noder samman till en kant.
+
+Grafen visas under programmets exekvering medan noder läggs till
+allteftersom de upptäcks. Därför görs komprimeringen på två sätt. Ett
+på färdiga grafer 
 
 \subsection{Starkt anslutna komponenter}
