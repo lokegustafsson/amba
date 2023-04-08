@@ -115,11 +115,11 @@ images that are later ran jointly in S2E, AmbaPlugin and QEMU.
 
 This is done in several steps:
 
-- init/download.rs tries to download guest images from a given public google drive
+- `init/download.rs` tries to download guest images from a given public google drive
     hosted by S2E.
-- init/build.rs  after downloading the guest images, build.rs will try to build
+- `init/build.rs`  after downloading the guest images, build.rs will try to build
     these 
-- init/mod.rs is the "runner" part of this module, meaning it wraps the
+- `init/mod.rs` is the "runner" part of this module, meaning it wraps the
     subcommand together and is later to be included in amba/src/main.rs
 
     For more technical details, refer to files in the init/ directory.
@@ -190,7 +190,7 @@ pub struct Recipe {
 
 ```
 
-A recipe is later used with the s2ecmd utility to generate symbolic data.
+A recipe is later used with the `s2ecmd` utility to generate symbolic data.
 
 It is convenient out of a user-experience perspective but also necessary to
 have a representation of a recipe in any high-level description language as the
