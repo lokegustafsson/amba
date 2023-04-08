@@ -54,3 +54,12 @@ of the crate in question and then run
 $ cargo check && cargo2nix -f
 ```
 from the top folder. Make sure to commit the new lockfiles.
+
+## Tests
+AMBA can be testrun with the command: ```bash
+$ nix run .#test-amba
+```
+Rust crates' tests can be run with ```bash
+$ cargo test
+```
+from either the top level folder or each respective crate.
