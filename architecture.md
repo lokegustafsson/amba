@@ -13,6 +13,9 @@ description of AMBA.
 
 ```md
 ├── crates
+│   ├── AmbaPlugin
+│   │   ├── inc
+│   │   └── src
 │   ├── amba
 │   │   ├── data
 │   │   ├── src
@@ -28,9 +31,6 @@ description of AMBA.
 │   ├── ipc
 │   │   └── src
 │   ├── libamba
-│   │   ├── inc
-│   │   └── src
-│   ├── libamba-rs
 │   │   └── src
 │   ├── mitm-debug-stream
 │   │   └── src
@@ -111,7 +111,7 @@ let res = match args {
 
 ### Init subcommand
 Init's main purpose is to initialize amba by downloading and building the guest
-images that are later ran jointly in S2E, libamba and QEMU.
+images that are later ran jointly in S2E, AmbaPlugin and QEMU.
 
 This is done in several steps:
 
@@ -147,7 +147,7 @@ Crate used to modularize our utility data structures.
 IPC stands for Inter-process communication. This crate contains a structured IPC
 implementation utilizing unix sockets to send messages.
 
-## `crates/libamba`
+## `crates/AmbaPlugin`
 The libamba crate contains the S2E plugin which acts as the driver in amba.
 It is through libamba that all data relevant to the analysis is acquired.
 Since the gui needs to get updates of the blocks to render a control flow graph,
@@ -195,7 +195,7 @@ A recipe is later used with the s2ecmd utility to generate symbolic data.
 It is convenient out of a user-experience perspective but also necessary to
 have a representation of a recipe in any high-level description language as the
 data has to pass through FFI (Foreign Function Interface) and later be sent to
-the guest in libamba. 
+the guest in AmbaPlugin.
 
 ## `crates/s2e-rs`
 This crate generates rust code from c++ using autocxx. 
