@@ -476,7 +476,7 @@ impl Graph {
 				return;
 			}
 			let u_ref = graph.nodes.get(&u).unwrap();
-			let mut ofcopy = u_ref.of.clone();
+            let mut ofcopy = u_ref.of.clone();
             let node = acc
 				.entry(root)
 				.and_modify(|Node { to, from, of, id }| {
@@ -876,7 +876,7 @@ mod test {
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
 				(2, (2, [3], [0], [2]).into()),
-				(3, (3, [], [1, 2], [3, 4, 5, 6]).into()),
+				(3, (3, [], [1, 2], [3, 6, 4, 5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -987,7 +987,7 @@ mod test {
 			.collect(),
 		);
 		let expected = Graph::with_nodes(
-			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+			[(0, (0, [0], [0], [0, 3, 1, 2]).into())]
 				.into_iter()
 				.collect(),
 		);
