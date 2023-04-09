@@ -13,6 +13,7 @@ class ControlFlow {
 	ControlFlow(std::string);
 	~ControlFlow();
 
+	amba::TranslationFunction translateBlockStart;
 	amba::ExecutionFunction onBlockStart;
 	amba::SymbolicExecutionFunction onStateFork;
 	amba::StateMergeFunction onStateMerge;
