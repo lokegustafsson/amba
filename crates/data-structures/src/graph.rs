@@ -314,8 +314,6 @@ impl Graph {
 			l_.from.insert(l);
 			l_.to.insert(l);
 		}
-		l_.of.push(l);
-		l_.of.push(r);
 
 		// Remove the right node from the graph
 		map.remove(&r);
