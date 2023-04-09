@@ -11,6 +11,7 @@ fastrand = "1"
 glam = "0.23"
 itertools = "0.10"
 serde = { version = "1", features = ["derive"] }
+smallvec = { version = "1.10.0", features = ["serde"] }
 
 [dev-dependencies]
 proptest = "1"

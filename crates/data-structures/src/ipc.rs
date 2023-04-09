@@ -1,13 +1,14 @@
 use std::collections::{BTreeMap, HashMap};
 
 use serde::{Deserialize, Serialize};
+use smallvec::SmallVec;
 
 use crate::{Graph, Node, SmallU64Set};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct NodeMetadata {
 	id: u64,
-	of: SmallU64Set,
+	of: SmallVec<[u64; 6]>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

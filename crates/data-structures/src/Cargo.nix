@@ -35,7 +35,6 @@ let
 in let
   inherit (rustLib) fetchCratesIo fetchCrateLocal fetchCrateGit fetchCrateAlternativeRegistry expandFeatures decideProfile genDrvsByProfile;
   profilesByName = {
-    test = builtins.fromTOML "debug-assertions = true\nopt-level = 3\noverflow-checks = true\n";
   };
   rootFeatures' = expandFeatures rootFeatures;
   overridableMkRustCrate = f:
@@ -184,7 +183,7 @@ in
     name = "amba";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/amba");
+    src = fetchCrateLocal (workspaceSrc + "/../../amba");
     dependencies = {
       chrono = rustPackages."registry+https://github.com/rust-lang/crates.io-index".chrono."0.4.23" { inherit profileName; };
       clap = rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.1.6" { inherit profileName; };
@@ -615,7 +614,7 @@ in
     name = "bootstrap";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/bootstrap");
+    src = fetchCrateLocal (workspaceSrc + "/../../bootstrap");
     dependencies = {
       nix = rustPackages."registry+https://github.com/rust-lang/crates.io-index".nix."0.26.2" { inherit profileName; };
       recipe = rustPackages."unknown".recipe."0.1.0" { inherit profileName; };
@@ -1195,7 +1194,7 @@ in
     name = "data-structures";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/data-structures");
+    src = fetchCrateLocal (workspaceSrc + "/..");
     dependencies = {
       arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
       fastrand = rustPackages."registry+https://github.com/rust-lang/crates.io-index".fastrand."1.8.0" { inherit profileName; };
@@ -1258,7 +1257,7 @@ in
     name = "disassembler";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/disassembler");
+    src = fetchCrateLocal (workspaceSrc + "/../../disassembler");
     dependencies = {
       addr2line = rustPackages."registry+https://github.com/rust-lang/crates.io-index".addr2line."0.19.0" { inherit profileName; };
       elsa = rustPackages."registry+https://github.com/rust-lang/crates.io-index".elsa."1.8.0" { inherit profileName; };
@@ -2274,7 +2273,7 @@ in
     name = "ipc";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/ipc");
+    src = fetchCrateLocal (workspaceSrc + "/../../ipc");
     dependencies = {
       bincode = rustPackages."registry+https://github.com/rust-lang/crates.io-index".bincode."1.3.3" { inherit profileName; };
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
@@ -2423,7 +2422,7 @@ in
     name = "libamba";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/libamba");
+    src = fetchCrateLocal (workspaceSrc + "/../../libamba");
     dependencies = {
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
@@ -2693,7 +2692,7 @@ in
     name = "mitm-debug-stream";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/mitm-debug-stream");
+    src = fetchCrateLocal (workspaceSrc + "/../../mitm-debug-stream");
     dependencies = {
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };
@@ -3504,7 +3503,7 @@ in
     name = "qmp-client";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/qmp-client");
+    src = fetchCrateLocal (workspaceSrc + "/../../qmp-client");
     dependencies = {
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
       serde_json = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde_json."1.0.92" { inherit profileName; };
@@ -3614,7 +3613,7 @@ in
     name = "recipe";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/recipe");
+    src = fetchCrateLocal (workspaceSrc + "/../../recipe");
     dependencies = {
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
       serde_json = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde_json."1.0.92" { inherit profileName; };
@@ -3904,7 +3903,7 @@ in
     name = "s2e";
     version = "0.1.0";
     registry = "unknown";
-    src = fetchCrateLocal (workspaceSrc + "/crates/s2e-rs");
+    src = fetchCrateLocal (workspaceSrc + "/../../s2e-rs");
     dependencies = {
       autocxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".autocxx."0.24.0" { inherit profileName; };
       cxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".cxx."1.0.89" { inherit profileName; };

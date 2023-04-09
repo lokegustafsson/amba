@@ -1,6 +1,7 @@
 use std::{collections::BTreeSet, default::Default, mem};
 
 use crate::small_set::SmallU64Set;
+use smallvec::{SmallVec, smallvec};
 
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::BTreeSet<T>;
@@ -11,7 +12,7 @@ pub struct Node {
 	pub id: u64,
 	pub from: SmallU64Set,
 	pub to: SmallU64Set,
-	pub of: SmallU64Set,
+	pub of: SmallVec<[u64; 6]>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -79,7 +80,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let to = [to].into_iter().collect::<SmallU64Set>();
-				let of = [from].into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<[u64;6]> = smallvec![from]; //.into_iter().collect::<SmallU64Set>();
 				Node {
 					id: from,
 					to,
@@ -95,7 +96,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let from = [from].into_iter().collect::<SmallU64Set>();
-				let of = [to].into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<[u64;6]> = smallvec![to];//.into_iter().collect::<SmallU64Set>();
 				Node {
 					id: to,
 					to: Default::default(),
@@ -291,16 +292,17 @@ impl Graph {
 		let r_ = map.get_mut(&r).unwrap();
 		let to_r = mem::take(&mut r_.to);
 		let from_r = mem::take(&mut r_.from);
-		let of_r = mem::take(&mut r_.of);
+		let mut of_r = mem::take(&mut r_.of);
 
 		let l_ = map.get_mut(&l).unwrap();
 		let to_l = mem::take(&mut l_.to);
 		let from_l = mem::take(&mut l_.from);
-		let of_l = mem::take(&mut l_.of);
+		let mut of_l = mem::take(&mut l_.of);
 
 		l_.to = combine_sets(to_l, to_r);
 		l_.from = combine_sets(from_l, from_r);
-		l_.of = combine_sets(of_l, of_r);
+		l_.of.append(&mut of_l);// = combine_sets(of_l, of_r);
+        l_.of.append(&mut of_r);
 
 		for parent in l_.of.iter() {
 			l_.to.remove(parent);
@@ -312,8 +314,8 @@ impl Graph {
 			l_.from.insert(l);
 			l_.to.insert(l);
 		}
-		l_.of.insert(l);
-		l_.of.insert(r);
+		l_.of.push(l);
+		l_.of.push(r);
 
 		// Remove the right node from the graph
 		map.remove(&r);
@@ -395,7 +397,7 @@ impl Graph {
 					state.search_metadata.get_mut(&w).unwrap().on_stack = false;
 
 					let old_node = &graph.nodes[&w];
-					new_node.of.insert(w);
+					new_node.of.push(w);
 					new_node.from.union(&old_node.from);
 					new_node.to.union(&old_node.to);
 					new_node.id = new_node.id.min(old_node.id);
@@ -476,10 +478,11 @@ impl Graph {
 				return;
 			}
 			let u_ref = graph.nodes.get(&u).unwrap();
-			let node = acc
+			let mut ofcopy = u_ref.of.clone();
+            let node = acc
 				.entry(root)
 				.and_modify(|Node { to, from, of, id }| {
-					of.union(&u_ref.of);
+					of.append(&mut ofcopy);
 					to.union(&u_ref.to);
 					from.union(&u_ref.from);
 					*id = (*id).min(u);
@@ -606,7 +609,7 @@ impl<const N: usize, const M: usize, const O: usize> From<(u64, [u64; N], [u64; 
 			id,
 			from: f.into_iter().collect(),
 			to: t.into_iter().collect(),
-			of: o.into_iter().collect(),
+			of: o.into_iter().collect::<SmallVec<_>>(),
 		}
 	}
 }
