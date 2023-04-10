@@ -33,7 +33,7 @@ class ControlFlow {
 	std::unordered_map<u64, u64> m_generations {};
 
 	/// Either:
-	/// (State, pc) → (State, pc)
+	/// State → (State, pc)
 	/// Alias → Alias
 	std::unordered_map<u64, u64> m_last {};
 };

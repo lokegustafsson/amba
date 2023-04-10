@@ -41,7 +41,7 @@ void ControlFlow::onBlockStart(
 ) {
 	auto curr = this->getBlockId(state, pc);
 	// Will insert 0 if value doesn't yet exist
-	auto &last = this->m_last[curr];
+	auto &last = this->m_last[(u64) state->getID()];
 	rust_update_control_flow_graph(
 		this->m_cfg,
 		last,
