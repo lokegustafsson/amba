@@ -29,6 +29,7 @@ let
     name = "libamba";
     src = ../crates/AmbaPlugin;
 
+    OPT-LEVEL = "-O3 -g0";
     buildInputs = let p = pkgs; in [ p.boost p.zydis ];
 
     installPhase = ''
