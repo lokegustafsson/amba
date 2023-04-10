@@ -55,6 +55,15 @@ $ cargo check && cargo2nix -f
 ```
 from the top folder. Make sure to commit the new lockfiles.
 
+## Formatting
+C++ is manually formatted. Contributions of a automatic formatting setup that
+follows the existing style is appreciated.
+Rust is formatted with rustfmt. Make sure to run rustfmt on every commit as CI
+checks for style. You can run rustfmt with
+```bash
+$ cargo fmt
+```
+
 ## Tests
 AMBA can be testrun with the command:
 ```bash
