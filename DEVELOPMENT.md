@@ -65,3 +65,7 @@ Rust crates' tests can be run with
 $ cargo test
 ```
 from either the top level folder or each respective crate.
+
+## READMEs
+* [amba/README.md](README.md)
+* [amba/ARCHITECTURE.md](ARCHITECTURE.md)

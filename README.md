@@ -50,3 +50,7 @@ AMBA is licensed under AGPLv3 or later. The main dependency S2E consists of
 software components with various licenses, described in
 <https://github.com/S2E/s2e/blob/master/LICENSE>. All Nix derivations should
 have the proper license metadata.
+
+## READMEs
+* [amba/DEVELOPMENT.md](DEVELOPMENT.md)
+* [amba/ARCHITECTURE.md](ARCHITECTURE.md)

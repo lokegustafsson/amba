@@ -199,3 +199,7 @@ the guest in AmbaPlugin.
 
 ## `crates/s2e-rs`
 This crate generates rust code from c++ using autocxx. 
+
+## READMEs
+* [amba/README.md](README.md)
+* [amba/DEVELOPMENT.md](DEVELOPMENT.md)
