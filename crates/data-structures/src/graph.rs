@@ -174,9 +174,9 @@ impl Graph {
 			l = translate(l, &mut self.merges);
 			r = translate(r, &mut self.merges);
 
-			let x = l.min(r);
-			let y = l.max(r);
-			self.merge_nodes(x, y);
+			//let x = l.min(r);
+			//let y = l.max(r);
+			self.merge_nodes(l, r);
 		}
 	}
 
@@ -188,7 +188,7 @@ impl Graph {
 			while let Some((mut from, mut to)) = queued.pop_first() {
 				from = translate(from, &mut graph.merges);
 				to = translate(to, &mut graph.merges);
-				(from, to) = (from.min(to), from.max(to));
+				//(from, to) = (from.min(to), from.max(to));
 
 				if !graph.are_mergable_link(from, to) {
 					continue;
@@ -196,11 +196,13 @@ impl Graph {
 				let this = graph.merge_nodes(from, to);
 				let node = &graph.nodes[&this];
 
-				let tos = node.to.iter().filter(|&&n| n != this);
-				let froms = node.from.iter().filter(|&&n| n != this);
+				//let tos = node.to.iter().filter(|&&n| n != this);
+				//let froms = node.from.iter().filter(|&&n| n != this);
+				let tos = node.to.iter().filter(|&&n| n != this).copied().map(move |t| (this, t));
+				let froms = node.from.iter().filter(|&&n| n != this).copied().map(move |f| (f, this));
 
-				for &connection in tos.chain(froms) {
-					queued.insert((connection, this));
+				for connection in tos.chain(froms) {
+					queued.insert(connection);
 				}
 			}
 		}
@@ -259,9 +261,9 @@ impl Graph {
 
 	/// Returns the id of the merged node
 	pub fn merge_nodes(&mut self, l: u64, r: u64) -> u64 {
-		if l > r {
+		/*if l > r {
 			return self.merge_nodes(r, l);
-		}
+		}*/
 		if l == r {
 			return l;
 		}
