@@ -3,6 +3,16 @@
 
 namespace control_flow {
 
+ControlFlow::ControlFlow(std::string name)
+	: m_name(name)
+	, m_cfg(rust_new_control_flow_graph())
+	{}
+
+ControlFlow::~ControlFlow() {
+	rust_print_graph_size(this->m_name.c_str(), this->m_cfg);
+	rust_free_control_flow_graph(this->m_cfg);
+}
+
 u64 ControlFlow::getBlockId(
 	s2e::S2EExecutionState *state,
 	u64 pc
@@ -13,16 +23,6 @@ u64 ControlFlow::getBlockId(
 	// self modifying code won't touch the same address more than 16 times.
 	const u64 id = this->m_uuids[state->getID()] & 15;
 	return id | pc;
-}
-
-ControlFlow::ControlFlow(std::string name)
-	: m_name(name)
-	, m_cfg(rust_new_control_flow_graph())
-	{}
-
-ControlFlow::~ControlFlow() {
-	rust_print_graph_size(this->m_name.c_str(), this->m_cfg);
-	rust_free_control_flow_graph(this->m_cfg);
 }
 
 void ControlFlow::translateBlockStart(
