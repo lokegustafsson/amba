@@ -161,12 +161,12 @@ impl Graph {
 		//  the parents.
 		let to_merge = m
 			.values()
-			.filter(|l| l.from.len() == 1)
-			.map(|l| {
-				let key = translate(l.from.get_any(), &mut self.merges);
-				(l, &m[&key])
+			.filter(|r| r.from.len() == 1)
+			.map(|r| {
+				let key = translate(r.from.get_any(), &mut self.merges);
+				(&m[&key], r)
 			})
-			.filter(|(_, r)| r.to.len() == 1)
+			.filter(|(l, _)| l.to.len() == 1)
 			.map(|(l, r)| (l.id, r.id))
 			.collect::<Set<_>>();
 
@@ -716,7 +716,7 @@ mod test {
 			.collect(),
 		);
 		let expected =
-			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+			Graph::with_nodes([(2, (2, [], [], [2, 1, 0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -754,7 +754,7 @@ mod test {
 				.into_iter()
 				.collect(),
 		);
-		let expected = Graph::with_nodes([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
+		let expected = Graph::with_nodes([(1, (1, [], [], [1, 0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -837,10 +837,11 @@ mod test {
 		);
 		let expected = Graph::with_nodes(
 			[
-				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
-				(1, (1, [0], [3], [1]).into()),
-				(2, (2, [0], [3], [2]).into()),
+				(1, (1, [6], [3], [1]).into()),
+				(2, (2, [6], [3], [2]).into()),
 				(3, (3, [1, 2], [], [3]).into()),
+				(6, (6, [], [1, 2], [6, 5, 4, 0]).into()),
+
 			]
 			.into_iter()
 			.collect(),
@@ -876,9 +877,9 @@ mod test {
 		let expected = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0]).into()),
-				(1, (1, [3], [0], [1]).into()),
-				(2, (2, [3], [0], [2]).into()),
-				(3, (3, [], [1, 2], [3, 4, 5, 6]).into()),
+				(1, (1, [4], [0], [1]).into()),
+				(2, (2, [4], [0], [2]).into()),
+				(4, (4, [], [1, 2], [4, 5, 6, 3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -954,11 +955,11 @@ mod test {
 		);
 		let expected = Graph::with_nodes(
 			[
-				(0, (0, [2], [], [0]).into()),
-				(1, (1, [2], [], [1]).into()),
-				(2, (2, [4, 5], [0, 1], [2, 3]).into()),
-				(4, (4, [], [2], [4]).into()),
-				(5, (5, [], [2], [5]).into()),
+				(0, (0, [3], [], [0]).into()),
+				(1, (1, [3], [], [1]).into()),
+				(3, (3, [4, 5], [0, 1], [3, 2]).into()),
+				(4, (4, [], [3], [4]).into()),
+				(5, (5, [], [3], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -1019,7 +1020,7 @@ mod test {
 			.collect(),
 		);
 		let expected = Graph::with_nodes(
-			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+			[(2, (2, [2], [2], [2, 1, 0, 3]).into())]
 				.into_iter()
 				.collect(),
 		);
@@ -1101,7 +1102,7 @@ mod test {
 			.collect(),
 		);
 		let expected =
-			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+			Graph::with_nodes([(2, (2, [], [], [2, 1, 0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress_with_hint([0, 1].into_iter().collect());
@@ -1184,10 +1185,11 @@ mod test {
 		);
 		let expected = Graph::with_nodes(
 			[
-				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
-				(1, (1, [0], [3], [1]).into()),
-				(2, (2, [0], [3], [2]).into()),
+				(1, (1, [6], [3], [1]).into()),
+				(2, (2, [6], [3], [2]).into()),
 				(3, (3, [1, 2], [], [3]).into()),
+				(6, (6, [], [1, 2], [6, 5, 4, 0]).into()),
+
 			]
 			.into_iter()
 			.collect(),
@@ -1223,9 +1225,9 @@ mod test {
 		let expected = Graph::with_nodes(
 			[
 				(0, (0, [1, 2], [], [0]).into()),
-				(1, (1, [3], [0], [1]).into()),
-				(2, (2, [3], [0], [2]).into()),
-				(3, (3, [], [1, 2], [3, 4, 5, 6]).into()),
+				(1, (1, [4], [0], [1]).into()),
+				(2, (2, [4], [0], [2]).into()),
+				(4, (4, [], [1, 2], [4, 5, 6, 3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -1301,11 +1303,11 @@ mod test {
 		);
 		let expected = Graph::with_nodes(
 			[
-				(0, (0, [2], [], [0]).into()),
-				(1, (1, [2], [], [1]).into()),
-				(2, (2, [4, 5], [0, 1], [2, 3]).into()),
-				(4, (4, [], [2], [4]).into()),
-				(5, (5, [], [2], [5]).into()),
+				(0, (0, [3], [], [0]).into()),
+				(1, (1, [3], [], [1]).into()),
+				(3, (3, [4, 5], [0, 1], [3, 2]).into()),
+				(4, (4, [], [3], [4]).into()),
+				(5, (5, [], [3], [5]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -1366,7 +1368,7 @@ mod test {
 			.collect(),
 		);
 		let expected = Graph::with_nodes(
-			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+			[(1, (1, [1], [1], [1, 0, 3, 2]).into())]
 				.into_iter()
 				.collect(),
 		);
