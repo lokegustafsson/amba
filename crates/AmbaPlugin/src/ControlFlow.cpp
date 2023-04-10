@@ -3,6 +3,18 @@
 
 namespace control_flow {
 
+u64 ControlFlow::getBlockId(
+	s2e::S2EExecutionState *state,
+	u64 pc
+) {
+	// 128 bit integers don't have a hash function and can't be used in std::unordered_map.
+	// Neither do random structs or tuples.
+	// Functions have a 16 bit alignment requirement anyway, so for now, let's hope that
+	// self modifying code won't touch the same address more than 16 times.
+	const u64 id = this->m_uuids[state->getID()] & 15;
+	return id | pc;
+}
+
 ControlFlow::ControlFlow(std::string name)
 	: m_name(name)
 	, m_cfg(rust_new_control_flow_graph())
