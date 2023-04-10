@@ -19,14 +19,23 @@ class ControlFlow {
 	amba::StateMergeFunction onStateMerge;
 	amba::TimerFunction onTimer;
 	amba::TimerFunction onEngineShutdown;
-  protected:
-	const std::string m_name;
 
-	u64 m_last_uuid = 0;
+  protected:
+	u64 getBlockId(s2e::S2EExecutionState *, u64);
+
+	const std::string m_name;
+	ControlFlowGraph *const m_cfg;
+
+	/// State uuid → reuses
 	std::unordered_map<i32, u64> m_uuids {};
 
-	std::unordered_map<u64, u64> m_last = {};
-	ControlFlowGraph *const m_cfg;
+	/// (State, pc) → gen
+	std::unordered_map<u64, u64> m_generations {};
+
+	/// Either:
+	/// (State, pc) → (State, pc)
+	/// Alias → Alias
+	std::unordered_map<u64, u64> m_last {};
 };
 
 } // namespace control_flow
