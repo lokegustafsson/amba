@@ -25,18 +25,29 @@ ControlFlow::~ControlFlow() {
 	rust_free_control_flow_graph(this->m_cfg);
 }
 
-void ControlFlow::onBlockStart(
-	s2e::S2EExecutionState *s2e_state,
+void ControlFlow::translateBlockStart(
+	s2e::ExecutionSignal *signal,
+	s2e::S2EExecutionState *state,
+	TranslationBlock *tb,
 	u64 pc
 ) {
+	const auto key = this->getBlockId(state, pc);
+	this->m_generations[key]++;
+}
+
+void ControlFlow::onBlockStart(
+	s2e::S2EExecutionState *state,
+	u64 pc
+) {
+	auto curr = this->getBlockId(state, pc);
 	// Will insert 0 if value doesn't yet exist
-	auto &last = this->m_last[s2e_state->getID()];
+	auto &last = this->m_last[curr];
 	rust_update_control_flow_graph(
 		this->m_cfg,
 		last,
-		pc
+		curr
 	);
-	last = pc;
+	last = curr;
 }
 
 void ControlFlow::onStateFork(
@@ -44,22 +55,26 @@ void ControlFlow::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	const auto old_id = old_state->getID();
-	const auto from = this->m_uuids[old_id];
-	const auto last_raw = this->m_last[old_id];
+	// The symbolic control flow graph ids are 64 bit values where the
+	// lower 32 bits are the uuid of the state and the upper 32 bits
+	// are the generation of reuse of that uuid.
+
+	const i32 old_id = old_state->getID();
+	const u64 from = this->m_uuids[old_id] << 32 | (u64) old_id;
+	const u64 last_raw = this->m_last[from];
 
 	for (auto &new_state : new_states) {
-		const auto new_id = new_state->getID();
+		const i32 new_id = new_state->getID();
 
 		AMBA_ASSERT(new_id != old_id);
 
-		this->m_uuids[new_id] = ++this->m_last_uuid;
-		this->m_last[new_id] = last_raw;
+		const u64 to = (++this->m_uuids[new_id]) << 32 | (u64) new_id;
+		this->m_last[to] = last_raw;
 
 		rust_update_control_flow_graph(
 			this->m_cfg,
 			from,
-			this->m_last_uuid
+			to
 		);
 	}
 }
@@ -68,23 +83,23 @@ void ControlFlow::onStateMerge(
 	s2e::S2EExecutionState *destination_state,
 	s2e::S2EExecutionState *source_state
 ) {
-	const auto dest_id = destination_state->getID();
-	const auto src_id = source_state->getID();
+	const i32 dest_id = destination_state->getID();
+	const i32 src_id = source_state->getID();
 
-	const auto from_left = this->m_uuids[(i32) dest_id];
-	const auto from_right = this->m_uuids[(i32) src_id];
+	const u64 from_left = this->m_uuids[dest_id] << 32 | (u64) dest_id;
+	const u64 from_right = this->m_uuids[src_id] << 32 | (u64) src_id;
 
-	this->m_uuids[(i32) dest_id] = ++this->m_last_uuid;
+	const u64 to = (++this->m_uuids[dest_id]) << 32 | (u64) dest_id;
 
 	rust_update_control_flow_graph(
 		this->m_cfg,
 		from_left,
-		this->m_last_uuid
+		to
 	);
 	rust_update_control_flow_graph(
 		this->m_cfg,
 		from_right,
-		this->m_last_uuid
+		to
 	);
 }
 
