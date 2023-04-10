@@ -6,7 +6,7 @@
 -Wconversion
 -Wno-c99-extensions
 -I
-crates/libamba/inc
+crates/AmbaPlugin/inc
 -I
 s2e/klee/include
 -I
