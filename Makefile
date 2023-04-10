@@ -32,5 +32,8 @@ demo-control-flow:
 	nix build '.#control-flow'
 	nix run . -- run "$$(nix path-info '.#control-flow')""/control-flow.recipe.json"
 
+hello:
+	nix-shell -p musl gnumake --run "make -C demos hello"
+
 compile_flags.txt:
 	make -C crates/AmbaPlugin ../../compile_flags.txt
