@@ -9,6 +9,7 @@ group_64_project_report.pdf: \
   problem.tex \
   metod.tex \
   amba.tex \
+  avgransningar.tex \
   resultat.tex \
   diskussion.tex \
   slutsatser.tex \
