@@ -14,15 +14,16 @@ ControlFlow::~ControlFlow() {
 }
 
 u64 ControlFlow::getBlockId(
-	s2e::S2EExecutionState *state,
+	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
-	// 128 bit integers don't have a hash function and can't be used in std::unordered_map.
-	// Neither do random structs or tuples.
-	// Functions have a 16 bit alignment requirement anyway, so for now, let's hope that
-	// self modifying code won't touch the same address more than 16 times.
-	const u64 id = this->m_uuids[state->getID()] & 15;
-	return id | pc;
+	const i32 state = s2e_state->getID();
+	const u64 gen = this->m_uuids[state];
+	const u64 vaddr = pc;
+
+	return (0x0000'FFFF'FFFF'FFFF & vaddr)
+		| (0x000F'0000'0000'0000 & (gen << 48))
+		| (0xFFF0'0000'0000'0000 & ((u64) state << (48 + 4)));
 }
 
 void ControlFlow::translateBlockStart(
