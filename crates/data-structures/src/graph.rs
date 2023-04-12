@@ -1,7 +1,8 @@
 use std::{collections::BTreeSet, default::Default, mem};
 
+use smallvec::{smallvec, SmallVec};
+
 use crate::small_set::SmallU64Set;
-use smallvec::{SmallVec, smallvec};
 
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::BTreeSet<T>;
@@ -80,7 +81,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let to = [to].into_iter().collect::<SmallU64Set>();
-				let of: SmallVec<[u64;6]> = smallvec![from]; //.into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<[u64; 6]> = smallvec![from]; //.into_iter().collect::<SmallU64Set>();
 				Node {
 					id: from,
 					to,
@@ -96,7 +97,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let from = [from].into_iter().collect::<SmallU64Set>();
-				let of: SmallVec<[u64;6]> = smallvec![to];//.into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<[u64; 6]> = smallvec![to]; //.into_iter().collect::<SmallU64Set>();
 				Node {
 					id: to,
 					to: Default::default(),
@@ -198,8 +199,18 @@ impl Graph {
 
 				//let tos = node.to.iter().filter(|&&n| n != this);
 				//let froms = node.from.iter().filter(|&&n| n != this);
-				let tos = node.to.iter().filter(|&&n| n != this).copied().map(move |t| (this, t));
-				let froms = node.from.iter().filter(|&&n| n != this).copied().map(move |f| (f, this));
+				let tos = node
+					.to
+					.iter()
+					.filter(|&&n| n != this)
+					.copied()
+					.map(move |t| (this, t));
+				let froms = node
+					.from
+					.iter()
+					.filter(|&&n| n != this)
+					.copied()
+					.map(move |f| (f, this));
 
 				for connection in tos.chain(froms) {
 					queued.insert(connection);
@@ -261,30 +272,27 @@ impl Graph {
 
 	/// Returns the id of the merged node
 	pub fn merge_nodes(&mut self, l: u64, r: u64) -> u64 {
-
 		if l == r {
 			return l;
 		}
-        let leftmerge = l < r;
-        
-        assert!(self.nodes.contains_key(&l));
+		let leftmerge = l < r;
+
+		assert!(self.nodes.contains_key(&l));
 		assert!(self.nodes.contains_key(&r));
 
-        let are_loop; 
+		let are_loop;
 		if leftmerge {
-            are_loop = self.are_loop(l, r);
-        }else{
-            are_loop = self.are_loop(r, l);
-        }
-        
-        // Must be after are_loop
+			are_loop = self.are_loop(l, r);
+		} else {
+			are_loop = self.are_loop(r, l);
+		}
+
+		// Must be after are_loop
 		//self.merges.insert(r, l);
 		//self.merges.remove(&l);
 
+		let map = &mut self.nodes;
 
-        let map = &mut self.nodes;
-
-		
 		let combine_sets = |mut left_set: SmallU64Set, mut right_set: SmallU64Set| -> SmallU64Set {
 			if left_set.len() < right_set.len() {
 				mem::swap(&mut left_set, &mut right_set);
@@ -298,78 +306,74 @@ impl Graph {
 
 		// Take the union of both nodes' input and then remove
 		// the nodes themselves
-        let r_;
-        if leftmerge {
-            // Must be after are_loop
-		    self.merges.insert(r, l);
-		    self.merges.remove(&l);
-		    
-            r_ = map.get_mut(&r).unwrap();
-        }else{
-            // Must be after are_loop
-		    self.merges.insert(l, r);
-		    self.merges.remove(&r);
-		
-            r_ = map.get_mut(&l).unwrap();
-        }
-		
-        let to_r = mem::take(&mut r_.to);
+		let r_;
+		if leftmerge {
+			// Must be after are_loop
+			self.merges.insert(r, l);
+			self.merges.remove(&l);
+
+			r_ = map.get_mut(&r).unwrap();
+		} else {
+			// Must be after are_loop
+			self.merges.insert(l, r);
+			self.merges.remove(&r);
+
+			r_ = map.get_mut(&l).unwrap();
+		}
+
+		let to_r = mem::take(&mut r_.to);
 		let from_r = mem::take(&mut r_.from);
 		let mut of_r = mem::take(&mut r_.of);
-        let l_;
-        
-        if leftmerge{
-		    l_ = map.get_mut(&l).unwrap();
-        }else{
-		    l_ = map.get_mut(&r).unwrap();
-        }
+		let l_;
+
+		if leftmerge {
+			l_ = map.get_mut(&l).unwrap();
+		} else {
+			l_ = map.get_mut(&r).unwrap();
+		}
 		let to_l = mem::take(&mut l_.to);
 		let from_l = mem::take(&mut l_.from);
 		let mut of_l = mem::take(&mut l_.of);
-        
+
 		l_.to = combine_sets(to_l, to_r);
 		l_.from = combine_sets(from_l, from_r);
-		
-        if leftmerge{
-            l_.of.append(&mut of_l);// = combine_sets(of_l, of_r);
-            l_.of.append(&mut of_r);
-        }else{
-            l_.of.append(&mut of_r);// = combine_sets(of_l, of_r);
-            l_.of.append(&mut of_l);
-        }
 
-        for parent in l_.of.iter() {
-		    l_.to.remove(parent);
-		    l_.from.remove(parent);
+		if leftmerge {
+			l_.of.append(&mut of_l); // = combine_sets(of_l, of_r);
+			l_.of.append(&mut of_r);
+		} else {
+			l_.of.append(&mut of_r); // = combine_sets(of_l, of_r);
+			l_.of.append(&mut of_l);
+		}
+
+		for parent in l_.of.iter() {
+			l_.to.remove(parent);
+			l_.from.remove(parent);
 		}
 
 		if leftmerge {
+			// Restore loop if they were a loop beforehand
+			if are_loop {
+				l_.from.insert(l);
+				l_.to.insert(l);
+			}
 
-		    // Restore loop if they were a loop beforehand
-		    if are_loop {
-		        l_.from.insert(l);
-			    l_.to.insert(l);
-	    	}
+			// Remove the right node from the graph
+			map.remove(&r);
 
-		    // Remove the right node from the graph
-		    map.remove(&r);
-                
-            l
+			l
+		} else {
+			// Restore loop if they were a loop beforehand
+			if are_loop {
+				l_.from.insert(r);
+				l_.to.insert(r);
+			}
 
-        }else{
-		    
-            // Restore loop if they were a loop beforehand
-		    if are_loop {
-		         l_.from.insert(r);
-			     l_.to.insert(r);
-	    	}
+			// Remove the right node from the graph
+			map.remove(&l);
 
-		    // Remove the right node from the graph
-		    map.remove(&l);
-
-            r
-        }
-
+			r
+		}
 	}
 
 	fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
@@ -455,7 +459,7 @@ impl Graph {
 						break;
 					}
 				}
-                new_node.of.sort_unstable();
+				new_node.of.sort_unstable();
 				state.out.insert(v, new_node);
 			}
 		}
@@ -465,9 +469,9 @@ impl Graph {
 				strong_connect(self, &mut state, node.id);
 			}
 		}
-        /*for node in state.out.keys(){
-            state.out.get_mut(&node).unwrap().of.sort_unstable();
-        }*/
+		/*for node in state.out.keys(){
+			state.out.get_mut(&node).unwrap().of.sort_unstable();
+		}*/
 		state.out
 	}
 
@@ -530,8 +534,8 @@ impl Graph {
 				return;
 			}
 			let u_ref = graph.nodes.get(&u).unwrap();
-            let mut ofcopy = u_ref.of.clone();
-            let node = acc
+			let mut ofcopy = u_ref.of.clone();
+			let node = acc
 				.entry(root)
 				.and_modify(|Node { to, from, of, id }| {
 					of.append(&mut ofcopy);
@@ -555,17 +559,16 @@ impl Graph {
 		for u in l.into_iter().rev() {
 			assign(self, &mut acc, &mut assigned, u, u);
 		}
-        let keys = acc.keys().cloned().collect::<Vec<_>>();//clone();
-        for key in keys{
-            let res = acc.get_mut(&key);
-            match res {
-                Some(node) => {
-                    node.of.sort_unstable();
-                }
-                None => {
-                }
-            }
-        }
+		let keys = acc.keys().cloned().collect::<Vec<_>>(); //clone();
+		for key in keys {
+			let res = acc.get_mut(&key);
+			match res {
+				Some(node) => {
+					node.of.sort_unstable();
+				}
+				None => {}
+			}
+		}
 		acc
 	}
 
@@ -900,10 +903,9 @@ mod test {
 		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [1, 2], [6, 5, 4, 0]).into()),
-                (1, (1, [0], [3], [1]).into()),
+				(1, (1, [0], [3], [1]).into()),
 				(2, (2, [0], [3], [2]).into()),
 				(3, (3, [1, 2], [], [3]).into()),
-
 			]
 			.into_iter()
 			.collect(),
@@ -1248,10 +1250,9 @@ mod test {
 		let expected = Graph::with_nodes(
 			[
 				(0, (0, [], [1, 2], [6, 5, 4, 0]).into()),
-                (1, (1, [0], [3], [1]).into()),
+				(1, (1, [0], [3], [1]).into()),
 				(2, (2, [0], [3], [2]).into()),
 				(3, (3, [1, 2], [], [3]).into()),
-
 			]
 			.into_iter()
 			.collect(),
