@@ -11,6 +11,10 @@
 #include "Numbers.h"
 #include "Zydis.h"
 
+namespace s2e {
+class ModuleDescriptor;
+}
+
 namespace amba {
 
 extern std::function<llvm::raw_ostream *()> debug_stream;
@@ -19,21 +23,23 @@ extern std::function<llvm::raw_ostream *()> warning_stream;
 
 using TranslationFunction = void (
 	s2e::ExecutionSignal *,
-	s2e::S2EExecutionState *state,
-	TranslationBlock *tb,
-	u64 p
+	s2e::S2EExecutionState *,
+	TranslationBlock *,
+	u64
 );
-using ExecutionFunction = void (s2e::S2EExecutionState *state, u64 pc);
+using ExecutionFunction = void (s2e::S2EExecutionState *, u64);
 using SymbolicExecutionFunction = void (
-	s2e::S2EExecutionState *state,
+	s2e::S2EExecutionState *,
 	const std::vector<s2e::S2EExecutionState *> &,
 	const std::vector<klee::ref<klee::Expr>> &
 );
 using StateMergeFunction = void (
-	s2e::S2EExecutionState *dest,
-	s2e::S2EExecutionState *source
+	s2e::S2EExecutionState *,
+	s2e::S2EExecutionState *
 );
 using TimerFunction = void ();
+using ModuleFunction = void (s2e::S2EExecutionState *, const s2e::ModuleDescriptor &);
+using ProcessFunction = void (s2e::S2EExecutionState *, const u64, const u64, const u64);
 
 struct AddressLengthPair {
 	target_phys_addr_t adr;

@@ -13,6 +13,10 @@
 **#
 **~
 
+# Other editors
+**/.vscode
+**/.intellij
+
 # latex compiler stuff
 **/*.aux
 **/*.fdb_latexmk

@@ -168,6 +168,8 @@ void AmbaPlugin::translateBlockStart(
 		<< (ok ? ", native addr " + hexval(native_addr).str() : "")
 		<< '\n';
 
+	this->m_assembly_graph.translateBlockStart(signal, state, tb, pc);
+
 	signal->connect(sigc::mem_fun(
 		this->m_assembly_graph,
 		&control_flow::ControlFlow::onBlockStart

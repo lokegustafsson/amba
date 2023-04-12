@@ -108,6 +108,10 @@ tags: inc/* src/*
 
 compile_flags.txt: ../../compile_flags.txt
 
+test:
+	cd ../.. && \
+	time impure-amba run demos/hello.recipe.json --no-gui
+
 clean:
 	-rm *.o
 	-rm *.a
@@ -119,4 +123,4 @@ clean:
 	-rm libamba_impure
 	-cargo clean
 
-.PHONY: clean libamba.a
+.PHONY: clean libamba.a test

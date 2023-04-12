@@ -6,9 +6,6 @@
 #include "Numbers.h"
 #include "ControlFlow.h"
 
-class ModuleMap;
-class ModuleDescriptor;
-
 namespace s2e {
 namespace plugins {
 
@@ -17,23 +14,13 @@ class AmbaPlugin : public Plugin {
   public:
 	explicit AmbaPlugin(S2E *s2e);
 
-	using TranslationFunction = void (
-		s2e::ExecutionSignal *,
-		s2e::S2EExecutionState *state,
-		TranslationBlock *tb,
-		u64 p
-	);
-	using ExecutionFunction = void (s2e::S2EExecutionState *state, u64 pc);
-	using ModuleFunction = void (S2EExecutionState *state, const ModuleDescriptor &module);
-	using ProcessFunction = void (S2EExecutionState *state, const u64 cr3, const u64 pid, const u64 return_code);
-
 	void initialize();
 
-	TranslationFunction translateInstructionStart;
-	TranslationFunction translateBlockStart;
-	ModuleFunction onModuleLoad;
-	ModuleFunction onModuleUnload;
-	ProcessFunction onProcessUnload;
+	amba::TranslationFunction translateInstructionStart;
+	amba::TranslationFunction translateBlockStart;
+	amba::ModuleFunction onModuleLoad;
+	amba::ModuleFunction onModuleUnload;
+	amba::ProcessFunction onProcessUnload;
 
 
   protected:
