@@ -79,20 +79,21 @@ hela spektrummet.
 För att klargöra distinktionen mellan manuell och automatiska metoder för
 binäranalys används följande use cases:
 
-\begin{lstlisting}[
-    label={list:first},
-    language=Python,
-    caption=Use case manuella metoder,
-    frame=single
-    ]
-# Givet sträng-input från stdin
-s = input()
-if sha256(s) == "välkänd hash":
-  print("Winner winner chicken dinner")
-else:
-  print("you lose")
-
-\end{lstlisting}
+\begin{figure}
+  \begin{lstlisting}[
+      label={list:first},
+      language=Python,
+      frame=single
+      ]
+  # Givet sträng-input från stdin
+  s = input()
+  if sha256(s) == "välkänd hash":
+    print("Winner winner chicken dinner")
+  else:
+    print("you lose")
+  \end{lstlisting}
+  \caption{Use case manuella metoder}
+\end{figure}
 
 I use cases där det existerar kända konstanter, något som är typiskt i fall som
 involverar kryptografi i olika utsträckning, är det rimligt att tillämpa
