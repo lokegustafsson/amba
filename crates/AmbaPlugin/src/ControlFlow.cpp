@@ -106,10 +106,16 @@ void ControlFlow::onStateMerge(
 
 void ControlFlow::onTimer() {
 	rust_ipc_send_graph(this->m_name.c_str(), nullptr, this->m_cfg);
+const char *ControlFlow::getName() const {
+	return this->m_name.c_str();
+}
 }
 
 void ControlFlow::onEngineShutdown() {
 	rust_ipc_send_graph(this->m_name.c_str(), nullptr, this->m_cfg);
+ControlFlowGraph *ControlFlow::cfg() {
+	return this->m_cfg;
+}
 }
 
 } // namespace control_flow

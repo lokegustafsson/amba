@@ -20,6 +20,9 @@ class ControlFlow {
 	amba::TimerFunction onTimer;
 	amba::TimerFunction onEngineShutdown;
 
+	const char *getName() const;
+	ControlFlowGraph *cfg();
+
   protected:
 	u64 getBlockId(s2e::S2EExecutionState *, u64);
 
