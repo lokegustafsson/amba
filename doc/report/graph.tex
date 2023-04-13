@@ -11,12 +11,12 @@ av ett beslut baserat på ett symboliskt uttryck.
     frame=single
     ]
 def f(x):
-    y = 0
-    if x == 0:
-        y = 1
-    else:
-        y = 2
-    return y
+  y = 0
+  if x == 0:
+    y = 1
+  else:
+    y = 2
+  return y
 
 f(0)
 f(1)
@@ -39,12 +39,12 @@ resulterar i grafen bredvid.
     frame=single
     ]
 def f(x):
-    y = 0
-    if x % 2 == 0:
-        y = 1
-    else:
-        y = 2
-    return y
+  y = 0
+  if x % 2 == 0:
+    y = 1
+  else:
+    y = 2
+  return y
 
 f(4)
 f(2)
@@ -64,12 +64,12 @@ upp i grafen.
     frame=single
     ]
 def f(x):
-    y = 0
-    if x % 2 == 0:
-        y = 1
-    else:
-        y = 2
-    return y
+  y = 0
+  if x % 2 == 0:
+    y = 1
+  else:
+    y = 2
+  return y
 
 s = input()
 f(s)
@@ -86,15 +86,15 @@ endast ett anrop krävs för att populera alla möjliga vägar.
     frame=single
     ]
 def f(x):
-    y = 0
-    if x % 4 == 0:
-        if x % 2 == 0:
-            y = 1
-        else:
-            y = 2
+  y = 0
+  if x % 4 == 0:
+    if x % 2 == 0:
+      y = 1
     else:
-        y = 3
-    return y
+      y = 2
+  else:
+    y = 3
+  return y
 
 s = input()
 f(s)
