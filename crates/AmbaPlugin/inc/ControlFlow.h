@@ -17,8 +17,6 @@ class ControlFlow {
 	amba::ExecutionFunction onBlockStart;
 	amba::SymbolicExecutionFunction onStateFork;
 	amba::StateMergeFunction onStateMerge;
-	amba::TimerFunction onTimer;
-	amba::TimerFunction onEngineShutdown;
 
 	const char *getName() const;
 	ControlFlowGraph *cfg();
