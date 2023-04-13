@@ -23,6 +23,7 @@ class AmbaPlugin : public Plugin {
 	amba::ProcessFunction onProcessUnload;
 
   protected:
+	IpcTx *const m_ipc;
 	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;
