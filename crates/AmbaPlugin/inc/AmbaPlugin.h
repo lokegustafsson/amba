@@ -22,7 +22,6 @@ class AmbaPlugin : public Plugin {
 	amba::ModuleFunction onModuleUnload;
 	amba::ProcessFunction onProcessUnload;
 
-
   protected:
 	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
