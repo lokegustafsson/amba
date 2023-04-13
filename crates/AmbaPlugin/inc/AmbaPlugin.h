@@ -21,6 +21,8 @@ class AmbaPlugin : public Plugin {
 	amba::ModuleFunction onModuleLoad;
 	amba::ModuleFunction onModuleUnload;
 	amba::ProcessFunction onProcessUnload;
+	amba::TimerFunction onTimer;
+	amba::TimerFunction onEngineShutdown;
 
   protected:
 	IpcTx *const m_ipc;
