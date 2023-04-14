@@ -128,6 +128,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT STRUCTURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+\pagenumbering{gobble} % turn off page numbers
 
 \input{cover.tex}
 \newpage
@@ -145,6 +146,8 @@
 \input{begreppslista.tex}
 
 \newpage
+
+\pagenumbering{arabic} % turn on page numbers
 
 \chapter{Inledning}
 \input{inledning/main.tex}
