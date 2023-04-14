@@ -38,7 +38,7 @@ let
       export RUST_BACKTRACE=full
       # Amba skips unnecessary download internally
       ${amba.amba}/bin/amba init --download
-      # Run musl hello world
+      # Run musl control flow
       time ${amba.amba}/bin/amba run ${control-flow}/control-flow.recipe.json --no-gui
     '';
   };
