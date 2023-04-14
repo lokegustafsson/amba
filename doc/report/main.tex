@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[12pt, a4paper]{report}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[swedish]{babel}
@@ -126,48 +126,48 @@
 \newpage
 
 \addcontentsline{toc}{section}{Begreppslista}
-\section*{Begreppslista}
+\chapter*{Begreppslista}
 \input{begreppslista.tex}
 
 \newpage
 
-\section{Inledning}
+\chapter{Inledning}
 \input{inledning/main.tex}
-\subsection{Tidigare arbete}
+\section{Tidigare arbete}
 \input{inledning/tidigarearbete.tex}
-\subsection{Syfte}
+\section{Syfte}
 \input{inledning/syfte.tex}
-\subsection{Avgränsningar}
+\section{Avgränsningar}
 \input{inledning/avgransningar.tex}
 
-\section{Bakgrund}
+\chapter{Bakgrund}
 \input{bakgrund/main.tex}
-\subsubsection{Symbolisk Exekvering}
+\section{Symbolisk Exekvering}
 \input{bakgrund/symbolisk_exekvering.tex}
-\subsubsection{Statisk och dynamisk binäranalys}
+\section{Statisk och dynamisk binäranalys}
 \input{bakgrund/statisk_dynamisk_binaranalys.tex}
-\subsubsection{Existerande verktyg}
+\section{Existerande verktyg}
 \input{bakgrund/existerande_verktyg.tex}
 
-\section{Binäranalys}
+\chapter{Binäranalys}
 \input{binaranalys/main.tex}
-\subsection{Problem}
+\section{Problem}
 \input{binaranalys/problem.tex}
-\subsection{Metod}
+\section{Metod}
 \input{binaranalys/metod.tex}
 
-\section{AMBA}
+\chapter{AMBA}
 \input{amba/main.tex}
 
-\section{Implementation}
+\chapter{Implementation}
 \input{implementation/main.tex}
 
-\section{Evaluering}
+\chapter{Evaluering}
 \input{evaluering/main.tex}
 
-\section{Diskussion}
+\chapter{Diskussion}
 \input{diskussion/main.tex}
-\subsection{Begränsningar}
+\section{Begränsningar}
 \input{diskussion/begransningar.tex}
 
 
