@@ -5,8 +5,13 @@
 #include "Numbers.h"
 #include "Amba.h"
 #include "LibambaRs.h"
+#include "HashableWrapper.h"
 
 namespace control_flow {
+
+using UidS2E = hashable_wrapper::HashableWrapper<i32, 0>;
+using AmbaId = hashable_wrapper::HashableWrapper<u64, 1>;
+using Generation = hashable_wrapper::HashableWrapper<u64, 2>;
 
 class ControlFlow {
   public:
