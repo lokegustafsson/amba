@@ -9,22 +9,23 @@
   amssymb,
   caption,
   color,
+  csquotes,
   float,
   graphicx,
   listings,
-  siunitx,
-  tikz,
   parskip,
   pdflscape,
   pgfgantt,
   scrextend,
+  siunitx,
+  tikz,
+  titlesec,
 }
 \usepackage[
     backend=biber,
     style=ieee,
     sorting=none
 ]{biblatex}
-\usepackage{csquotes}
 \addbibresource{refs.bib}
 \usetikzlibrary{positioning}
 
@@ -93,6 +94,20 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  COVER PAGE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HACKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Remove "Chapter n" from chapter titles
+% START: Copied from https://tex.stackexchange.com/a/48012
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{}{0pt}{\Huge}
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\huge\bfseries}{}{0pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{0pt}{*2}
+% END: Copied from https://tex.stackexchange.com/a/48012
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  TITLE PAGE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
