@@ -21,9 +21,12 @@ u64 ControlFlow::getBlockId(
 	const u64 gen = this->m_uuids[state];
 	const u64 vaddr = pc;
 
-	return (0x0000'FFFF'FFFF'FFFF & vaddr)
-		| (0x000F'0000'0000'0000 & (gen << 48))
-		| (0xFFF0'0000'0000'0000 & ((u64) state << (48 + 4)));
+	const u64 packed
+		= (0x0000'FFFF'FFFF'FFFF & vaddr)
+		| (0x000F'0000'0000'0000 & (gen.val << 48))
+		| (0xFFF0'0000'0000'0000 & ((u64) state.val << (48 + 4)));
+
+	return packed;
 }
 
 void ControlFlow::translateBlockStart(
