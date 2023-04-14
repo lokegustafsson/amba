@@ -93,21 +93,27 @@
 \definecolor{jean}{RGB}{90,104,104}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  COVER PAGE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HACKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Remove "Chapter n" from chapter titles
-% START: Copied from https://tex.stackexchange.com/a/48012
-\titleformat{\chapter}[display]
-  {\normalfont\huge\bfseries}{}{0pt}{\Huge}
-\titleformat{name=\chapter,numberless}[display]
-  {\normalfont\huge\bfseries}{}{0pt}{\Huge}
-\titlespacing*{\chapter}{0pt}{0pt}{*2}
-% END: Copied from https://tex.stackexchange.com/a/48012
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Change \chapter format
+\titleformat{\chapter} % command
+    [display] % shape
+  {\normalfont\huge\bfseries} % format
+  {\center\thechapter} % label
+  {0pt} % sep
+  {\center\Huge} % before-code
+  [] % after code
+\titleformat{name=\chapter,numberless} % command
+    [display] % shape
+  {\normalfont\huge\bfseries} % format
+  {} % label
+  {0pt} % sep
+  {\Huge} % bfore-code
+  [] % after-code
+\titlespacing*{\chapter}
+    {0pt}  % left
+    {-1cm} % before
+    {0pt}  % after
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  TITLE PAGE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
