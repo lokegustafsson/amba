@@ -20,8 +20,8 @@ extern "C" {
 	IpcTx *rust_new_ipc();
 	void rust_free_ipc(IpcTx *ptr);
 	void rust_ipc_send_graph(
-		const char *name,
 		IpcTx *ipc,
-		ControlFlowGraph *graph
+		ControlFlowGraph *symbolic,
+		ControlFlowGraph *assembly
 	);
 }

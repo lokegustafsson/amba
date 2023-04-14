@@ -75,8 +75,8 @@ impl IpcRx<'_> {
 pub enum IpcMessage<'a> {
 	Ping,
 	GraphSnapshot {
-		name: Cow<'a, str>,
-		graph: Cow<'a, GraphIpc>,
+		symbolic_state_graph: Cow<'a, GraphIpc>,
+		basic_block_graph: Cow<'a, GraphIpc>,
 	},
 }
 

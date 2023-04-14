@@ -72,17 +72,24 @@ mod ffi {
 	}
 
 	#[no_mangle]
-	pub unsafe extern "C" fn rust_ipc_send_graph(
-		name: *const i8,
+	pub unsafe extern "C" fn rust_ipc_send_graphs(
 		ipc: *mut Mutex<IpcTx<'_>>,
-		graph: *mut Mutex<ControlFlowGraph>,
+		symbolic: *mut Mutex<ControlFlowGraph>,
+		assembly: *mut Mutex<ControlFlowGraph>,
 	) {
-		let name = CStr::from_ptr(name).to_string_lossy();
-		let mut ipc = (&*ipc).lock().unwrap();
-		let graph = (&*graph).lock().unwrap();
+		let mut ipc = (*ipc).lock().unwrap();
+
+		let lock_and_cow = |ptr: *mut Mutex<ControlFlowGraph>| {
+			let r = (*ptr).lock().unwrap();
+			Cow::Owned(GraphIpc::from(&r.graph))
+		};
+
+		let symbolic_state_graph = lock_and_cow(symbolic);
+		let basic_block_graph = lock_and_cow(assembly);
+
 		ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
-			name,
-			graph: Cow::Owned(GraphIpc::from(&graph.graph)),
+			symbolic_state_graph,
+			basic_block_graph,
 		})
 		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 	}
