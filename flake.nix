@@ -103,9 +103,13 @@
                 make -C doc/report
               '');
           };
-          test-amba = {
+          test-amba-hello = {
             type = "app";
-            program = "${test.test-amba}/bin/test-amba";
+            program = "${test.test-amba-hello}/bin/test-amba-hello";
+          };
+          test-amba-control-flow = {
+            type = "app";
+            program = "${test.test-amba-control-flow}/bin/test-amba-control-flow";
           };
         };
       });

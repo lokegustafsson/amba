@@ -22,8 +22,8 @@ let
     '';
     APPEND_CFLAGS = "-static";
   };
-  test-amba = pkgs.writeShellApplication {
-    name = "test-amba";
+  test-amba-hello = pkgs.writeShellApplication {
+    name = "test-amba-hello";
     text = ''
       export RUST_BACKTRACE=full
       # Amba skips unnecessary download internally
@@ -32,4 +32,14 @@ let
       time ${amba.amba}/bin/amba run ${hello}/hello.recipe.json --no-gui
     '';
   };
-in { inherit control-flow test-amba; }
+  test-amba-control-flow = pkgs.writeShellApplication {
+    name = "test-amba-control-flow";
+    text = ''
+      export RUST_BACKTRACE=full
+      # Amba skips unnecessary download internally
+      ${amba.amba}/bin/amba init --download
+      # Run musl control flow
+      time ${amba.amba}/bin/amba run ${control-flow}/control-flow.recipe.json --no-gui
+    '';
+  };
+in { inherit hello control-flow test-amba-hello test-amba-control-flow; }
