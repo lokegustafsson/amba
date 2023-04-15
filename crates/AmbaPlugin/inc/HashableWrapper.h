@@ -10,26 +10,29 @@ namespace hashable_wrapper {
 /// operator.  This is a wrapper class that takes a hashable type and
 /// creates a new hashable type.
 /// Equivalent to ```rust
-/// #[derive(Eq, Hash)]
-/// struct HashableWrapper<T: Eq + Hash>(T);
+/// #[derive(Eq, Hash, Default)]
+/// struct HashableWrapper<T: Eq + Hash + Default>(T);
 /// ```
-template <typename T, int I = 0> class HashableWrapper {
-  public:
+template <typename T, int I> struct HashableWrapper {
 	T val;
+
+	HashableWrapper()
+		: val(T {})
+	{}
 
 	HashableWrapper(T t)
 		: val(t)
-		{};
+	{}
 
-	bool operator==(const HashableWrapper<T> &other) const {
+	bool operator==(const HashableWrapper<T, I> &other) const {
 		return this->val == other.val;
 	}
 };
 
 }
 
-template <typename T> struct std::hash<hashable_wrapper::HashableWrapper<T>> {
-	std::size_t operator()(const hashable_wrapper::HashableWrapper<T>& k) const {
+template <typename T, int I> struct std::hash<hashable_wrapper::HashableWrapper<T, I>> {
+	std::size_t operator()(const hashable_wrapper::HashableWrapper<T, I>& k) const {
 		return hash<T>()(k.val);
 	}
 };
