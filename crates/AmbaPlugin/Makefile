@@ -42,7 +42,7 @@ LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
 
 libamba.so: \
-  Amba.o Zydis.o HeapLeak.o ControlFlow.o AmbaPlugin.o \
+  Amba.o Zydis.o HeapLeak.o ControlFlow.o SymbolicGraph.o AssemblyGraph.o AmbaPlugin.o \
   libamba.a
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
@@ -77,6 +77,16 @@ ControlFlow.o: \
   src/ControlFlow.cpp \
   inc/ControlFlow.h inc/AmbaException.h inc/Numbers.h
 	$(CXX) src/ControlFlow.cpp $(CXX-FLAGS) -c -o $@
+
+SymbolicGraph.o: \
+  src/SymbolicGraph.cpp \
+  inc/SymbolicGraph.h inc/AmbaException.h inc/Numbers.h
+	$(CXX) src/SymbolicGraph.cpp $(CXX-FLAGS) -c -o $@
+
+AssemblyGraph.o: \
+  src/AssemblyGraph.cpp \
+  inc/AssemblyGraph.h inc/AmbaException.h inc/Numbers.h
+	$(CXX) src/AssemblyGraph.cpp $(CXX-FLAGS) -c -o $@
 
 Zydis.o: \
   src/Zydis.cpp \
@@ -118,9 +128,9 @@ clean:
 	-rm *.so
 	-rm *.out
 	-rm Test
-	-rm ../../compile_flags.txt
-	-rm compile_flags.txt
+	# -rm ../../compile_flags.txt
+	# -rm compile_flags.txt
 	-rm libamba_impure
-	-cargo clean
+	# -cargo clean
 
 .PHONY: clean libamba.a test

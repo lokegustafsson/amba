@@ -4,7 +4,8 @@
 
 #include "HeapLeak.h"
 #include "Numbers.h"
-#include "ControlFlow.h"
+#include "AssemblyGraph.h"
+#include "SymbolicGraph.h"
 
 namespace s2e {
 namespace plugins {
@@ -31,8 +32,8 @@ class AmbaPlugin : public Plugin {
 	u64 m_module_pid = 0;
 
 	heap_leak::HeapLeak m_heap_leak;
-	control_flow::ControlFlow m_assembly_graph;
-	control_flow::ControlFlow m_symbolic_graph;
+	assembly_graph::AssemblyGraph m_assembly_graph;
+	symbolic_graph::SymbolicGraph m_symbolic_graph;
 };
 
 } // namespace plugins

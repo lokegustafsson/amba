@@ -7,7 +7,6 @@
 // Our headers
 #include "Amba.h"
 #include "AmbaPlugin.h"
-#include "ControlFlow.h"
 #include "HeapLeak.h"
 
 namespace s2e {
@@ -19,8 +18,8 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_ipc(rust_new_ipc())
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_assembly_graph(control_flow::ControlFlow { "basic blocks" })
-	, m_symbolic_graph(control_flow::ControlFlow { "symbolic states" })
+	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks" })
+	, m_symbolic_graph(symbolic_graph::SymbolicGraph { "symbolic states" })
 {
 	auto self = this;
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
@@ -69,12 +68,12 @@ void AmbaPlugin::initialize() {
 	core.onStateFork
 		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onStateFork
+			&symbolic_graph::SymbolicGraph::onStateFork
 		));
 	core.onStateMerge
 		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onStateMerge
+			&symbolic_graph::SymbolicGraph::onStateMerge
 		));
 	core.onTimer
 		.connect(sigc::mem_fun(
@@ -162,7 +161,7 @@ void AmbaPlugin::translateBlockStart(
 
 	signal->connect(sigc::mem_fun(
 		this->m_assembly_graph,
-		&control_flow::ControlFlow::onBlockStart
+		&assembly_graph::AssemblyGraph::onBlockStart
 	));
 }
 
