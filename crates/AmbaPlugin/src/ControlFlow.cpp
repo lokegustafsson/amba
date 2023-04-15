@@ -21,12 +21,16 @@ ControlFlow::~ControlFlow() {
 	rust_free_control_flow_graph(this->m_cfg);
 }
 
-u64 ControlFlow::getBlockId(
+StatePC ControlFlow::toAlias(UidS2E uid, u64 pc) {
+	return this->m_uuids[uid].val << 32 | (u64) uid.val;
+}
+
+Packed ControlFlow::getBlockId(
 	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
-	const i32 state = s2e_state->getID();
-	const u64 gen = this->m_uuids[state];
+	const UidS2E state = UidS2E(s2e_state->getID());
+	const Generation gen = this->m_generations[state];
 	const u64 vaddr = pc;
 
 	const u64 packed
@@ -42,7 +46,7 @@ u64 ControlFlow::getBlockId(
 	AMBA_ASSERT(gen.val == gen_);
 	AMBA_ASSERT((u64) state.val == state_);
 
-	return packed;
+	return Packed(packed);
 }
 
 void ControlFlow::translateBlockStart(
@@ -59,10 +63,10 @@ void ControlFlow::onBlockStart(
 	s2e::S2EExecutionState *state,
 	u64 pc
 ) {
-	auto curr = this->getBlockId(state, pc);
+	const Packed curr = this->getBlockId(state, pc);
 	// Will insert 0 if value doesn't yet exist
-	auto &last = this->m_last[(u64) state->getID()];
-	rust_update_control_flow_graph(
+	auto &last = this->m_last[curr];
+	updateControlFlowGraph(
 		this->m_cfg,
 		last,
 		curr
@@ -75,23 +79,22 @@ void ControlFlow::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	// The symbolic control flow graph ids are 64 bit values where the
-	// lower 32 bits are the uuid of the state and the upper 32 bits
-	// are the generation of reuse of that uuid.
+	const UidS2E old_id = UidS2E(old_state->getID());
 
-	const i32 old_id = old_state->getID();
-	const u64 from = this->m_uuids[old_id] << 32 | (u64) old_id;
-	const u64 last_raw = this->m_last[from];
+	const Packed from = this->getBlockId(old_state, 0);
+	const u64 last_raw = this->m_last[from.val];
 
 	for (auto &new_state : new_states) {
-		const i32 new_id = new_state->getID();
+		const UidS2E new_id = UidS2E(new_state->getID());
 
-		AMBA_ASSERT(new_id != old_id);
+		if (new_id == old_id) {
+			++this->m_uuids[new_id].val;
+		}
 
-		const u64 to = (++this->m_uuids[new_id]) << 32 | (u64) new_id;
-		this->m_last[to] = last_raw;
+		const Packed to = this->getBlockId(new_state, 0);
+		this->m_last[to.val] = last_raw;
 
-		rust_update_control_flow_graph(
+		updateControlFlowGraph(
 			this->m_cfg,
 			from,
 			to
@@ -103,20 +106,20 @@ void ControlFlow::onStateMerge(
 	s2e::S2EExecutionState *destination_state,
 	s2e::S2EExecutionState *source_state
 ) {
-	const i32 dest_id = destination_state->getID();
-	const i32 src_id = source_state->getID();
+	const UidS2E dest_id = UidS2E(destination_state->getID());
 
-	const u64 from_left = this->m_uuids[dest_id] << 32 | (u64) dest_id;
-	const u64 from_right = this->m_uuids[src_id] << 32 | (u64) src_id;
+	const Packed from_left = this->getBlockId(destination_state, 0);
+	const Packed from_right = this->getBlockId(source_state, 0);
 
-	const u64 to = (++this->m_uuids[dest_id]) << 32 | (u64) dest_id;
+	++this->m_uuids[dest_id].val;
+	const Packed to = this->getBlockId(destination_state, 0);
 
-	rust_update_control_flow_graph(
+	updateControlFlowGraph(
 		this->m_cfg,
 		from_left,
 		to
 	);
-	rust_update_control_flow_graph(
+	updateControlFlowGraph(
 		this->m_cfg,
 		from_right,
 		to

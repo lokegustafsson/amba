@@ -36,16 +36,17 @@ class ControlFlow {
 	ControlFlowGraph *cfg();
 
   protected:
-	u64 getBlockId(s2e::S2EExecutionState *, u64);
+	StatePC toAlias(UidS2E, u64);
+	Packed getBlockId(s2e::S2EExecutionState *, u64);
 
 	const std::string m_name;
 	ControlFlowGraph *const m_cfg;
 
 	/// State uuid → reuses
-	std::unordered_map<i32, u64> m_uuids {};
+	std::unordered_map<UidS2E, Packed> m_uuids {};
 
 	/// (State, pc) → gen
-	std::unordered_map<u64, u64> m_generations {};
+	std::unordered_map<StatePC, Generation> m_generations {};
 
 	/// Either:
 	/// State → (State, pc)
