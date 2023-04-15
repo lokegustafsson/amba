@@ -14,7 +14,7 @@ void updateControlFlowGraph(ControlFlowGraph *cfg, Packed from, Packed to) {
 ControlFlow::ControlFlow(std::string name)
 	: m_name(name)
 	, m_cfg(rust_new_control_flow_graph())
-	{}
+{}
 
 ControlFlow::~ControlFlow() {
 	rust_print_graph_size(this->m_name.c_str(), this->m_cfg);
@@ -52,7 +52,7 @@ void ControlFlow::translateBlockStart(
 	u64 pc
 ) {
 	const auto key = this->getBlockId(state, pc);
-	this->m_generations[key]++;
+	++this->m_generations[key].val;
 }
 
 void ControlFlow::onBlockStart(
