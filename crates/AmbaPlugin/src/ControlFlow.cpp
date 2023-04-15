@@ -31,8 +31,16 @@ u64 ControlFlow::getBlockId(
 
 	const u64 packed
 		= (0x0000'FFFF'FFFF'FFFF & vaddr)
-		| (0x000F'0000'0000'0000 & (gen.val << 48))
-		| (0xFFF0'0000'0000'0000 & ((u64) state.val << (48 + 4)));
+		| (0x000F'0000'0000'0000 & ((u64) gen.val << 48))
+		| (0xFFF0'0000'0000'0000 & ((u64) state.val << 52));
+
+	const u64 vaddr_ =  packed & 0x0000'FFFF'FFFF'FFFF;
+	const u64 gen_   = (packed & 0x000F'0000'0000'0000) >> 48;
+	const u64 state_ = (packed & 0xFFF0'0000'0000'0000) >> 52;
+
+	AMBA_ASSERT(vaddr == vaddr_);
+	AMBA_ASSERT(gen.val == gen_);
+	AMBA_ASSERT((u64) state.val == state_);
 
 	return packed;
 }
