@@ -20,6 +20,13 @@ using StatePC = hashable_wrapper::HashableWrapper<u64, 0>;
 using AmbaId = hashable_wrapper::HashableWrapper<u64, 1>;
 using Generation = hashable_wrapper::HashableWrapper<u8, 2>;
 using Packed = hashable_wrapper::HashableWrapper<u64, 3>;
+
+struct Unpacked {
+	u64 vaddr;
+	u8 gen;
+	u64 state;
+};
+
 }
 
 using namespace types;
