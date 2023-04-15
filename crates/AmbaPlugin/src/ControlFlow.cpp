@@ -3,6 +3,14 @@
 
 namespace control_flow {
 
+void updateControlFlowGraph(ControlFlowGraph *cfg, Packed from, Packed to) {
+	rust_update_control_flow_graph(
+		cfg,
+		from.val,
+		to.val
+	);
+}
+
 ControlFlow::ControlFlow(std::string name)
 	: m_name(name)
 	, m_cfg(rust_new_control_flow_graph())
