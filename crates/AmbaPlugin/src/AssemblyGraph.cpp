@@ -9,7 +9,7 @@ AssemblyGraph::AssemblyGraph(std::string name)
 {}
 
 StatePC AssemblyGraph::toAlias(UidS2E uid, u64 pc) {
-	return this->m_uuids[uid].val << 32 | (u64) uid.val;
+	return pc << 4 | (u64) this->m_uuids[uid].val;
 }
 
 Packed AssemblyGraph::getBlockId(
