@@ -1,5 +1,7 @@
 #pragma once
 
+#include <s2e/S2EExecutionState.h>
+
 #include <unordered_map>
 
 #include "Numbers.h"
