@@ -1,0 +1,23 @@
+# NOTE: Our CI runs on a persistent nix-enabled self hosted server.
+# NOTE: Talk to Loke before/when doing significant changes to the CI workload.
+
+name: report-ci
+
+on:
+  push:
+    paths:
+      - 'doc/report/**'
+      - 'nix/**'
+      - 'flake.lock'
+      - 'flake.nix'
+
+jobs:
+  build-report:
+    name: Build Report
+    runs-on: [self-hosted, nixos, X64]
+    steps:
+      - uses: actions/checkout@v3
+      - name: nix build documents
+        run: |
+          nix run -L --accept-flake-config '.#documents'
+

@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[12pt, a4paper]{report}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[swedish]{babel}
@@ -9,22 +9,23 @@
   amssymb,
   caption,
   color,
+  csquotes,
   float,
   graphicx,
   listings,
-  siunitx,
-  tikz,
   parskip,
   pdflscape,
   pgfgantt,
   scrextend,
+  siunitx,
+  tikz,
+  titlesec,
 }
 \usepackage[
     backend=biber,
     style=ieee,
     sorting=none
 ]{biblatex}
-\usepackage{csquotes}
 \addbibresource{refs.bib}
 \usetikzlibrary{positioning}
 
@@ -92,7 +93,27 @@
 \definecolor{jean}{RGB}{90,104,104}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  COVER PAGE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HACKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Change \chapter format
+\titleformat{\chapter} % command
+    [display] % shape
+  {\normalfont\huge\bfseries} % format
+  {\center\thechapter} % label
+  {0pt} % sep
+  {\center\Huge} % before-code
+  [] % after code
+\titleformat{name=\chapter,numberless} % command
+    [display] % shape
+  {\normalfont\huge\bfseries} % format
+  {} % label
+  {0pt} % sep
+  {\Huge} % bfore-code
+  [] % after-code
+\titlespacing*{\chapter}
+    {0pt}  % left
+    {-1cm} % before
+    {0pt}  % after
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  TITLE PAGE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -113,6 +134,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT STRUCTURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+\pagenumbering{gobble} % turn off page numbers
 
 \input{cover.tex}
 \newpage
@@ -126,24 +148,49 @@
 \newpage
 
 \addcontentsline{toc}{section}{Begreppslista}
-\section*{Begreppslista}
+\chapter*{Begreppslista}
 \input{begreppslista.tex}
 
 \newpage
 
-\input{inledning.tex}
+\pagenumbering{arabic} % turn on page numbers
 
-\input{bakgrund.tex}
+\chapter{Inledning}
+\input{inledning/main.tex}
+\section{Tidigare arbete}
+\input{inledning/tidigarearbete.tex}
+\section{Avgränsningar}
+\input{inledning/avgransningar.tex}
+\section{Syfte}
+\input{inledning/syfte.tex}
 
-\input{binaranalys.tex}
+\chapter{Teori}
+\input{teori/main.tex}
+\section{Symbolisk Exekvering}
+\input{teori/symbolisk_exekvering.tex}
+\section{Statisk och dynamisk binäranalys}
+\input{teori/statisk_dynamisk_binaranalys.tex}
+\section{Arkitektur för binäranalysverktyg}
+\input{teori/arkitektur_for_binaranalysverktyg.tex}
 
-\input{amba.tex}
+\chapter{Existerande verktyg}
+\input{existerande_verktyg/main.tex}
 
-\input{resultat.tex}
+\chapter{AMBA}
+\input{amba/main.tex}
 
-\input{diskussion.tex}
+\chapter{Implementation}
+\input{implementation/main.tex}
 
-\input{slutsatser.tex}
+\chapter{Evaluering}
+\input{evaluering/main.tex}
+\section{Metod}
+\input{evaluering/metod.tex}
+\section{Begränsningar}
+\input{evaluering/begransningar.tex}
+
+\chapter{Slutsats}
+\input{slutsats/main.tex}
 
 \printbibliography
 

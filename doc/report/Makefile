@@ -1,20 +1,24 @@
 group_64_project_report.pdf: \
-  main.tex \
-  cover.tex \
-  titlepage.tex \
+  amba/main.tex \
   begreppslista.tex \
-  inledning.tex \
-  tidigarearbete.tex \
-  bakgrund.tex \
-  syfte.tex \
-  binaranalys.tex \
-  problem.tex \
-  avgransningar.tex \
-  metod.tex \
-  amba.tex \
-  resultat.tex \
-  diskussion.tex \
-  slutsatser.tex \
+  cover.tex \
+  evaluering/begransningar.tex \
+  evaluering/main.tex \
+  evaluering/metod.tex \
+  existerande_verktyg/main.tex \
+  implementation/main.tex \
+  inledning/avgransningar.tex \
+  inledning/main.tex \
+  inledning/syfte.tex \
+  inledning/tidigarearbete.tex \
+  main.tex \
+  slutsats/main.tex \
+  teori/arkitektur_for_binaranalysverktyg.tex \
+  teori/main.tex \
+  teori/statisk_dynamisk_binaranalys.tex \
+  teori/symbolisk_exekvering.tex \
+  titlepage.tex \
   refs.bib
 	tectonic main.tex
 	mv main.pdf group_64_project_report.pdf
+

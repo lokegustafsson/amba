@@ -1,29 +1,3 @@
-\subsection{Metod}
-
-I det här avsnittet beskrivs strategi och tillvägagångssätt för utvecklingen
-samt evaluering av projektets mål och hur det framställda verktyget kommer att
-jämföras med existerande binäranalysverktyg.
-
-\subsubsection{Val av strategi}
-
-För att uppnå och redogöra för möjligheterna i en potentiell applikation
-reflekterades det över två möjliga alternativ att fullfölja. Dels diskuterades
-alternativet att bygga en symbolisk exekveringsmotor från grunden och fokusera
-på dess tekniska detaljer och dels att använda en existerande produkt där
-fokuset istället ligger på att bygga plugin vars syfte är att utöka den
-existerande motorn med fler funktioner. I det senare fallet blir därmed
-slutprodukten ett program som kommunicerar med ett plugin genom \stoe\ via IPC
-eller liknande. 
-
-Med syfte att göra framsteg valdes det att kolla vidare hur \stoe\ kan hjälpa i
-frågan om att utöka funktionalitet i en existerande motor. \stoe\ är utvecklat
-i programspråket C++ och med anledning av valet att utveckla i ett
-annat programmeringsspråk, det vill säga Rust, krävs implementation av
-C++-bindings. I ett första steg valdes det därför att se över hur detta går till
-på lämpligt sätt och hur detta kan automatiseras med hjälp av andra verktyg
-där bland annat autocxx ansågs som ett lovande alternativ.
-
-\subsubsection{Tillvägagångssätt}
 
 I avsikt att utveckla ett binäranalysverktyg, bestämdes det att ta fram demon
 (demonstrationer) som ska leda det kontinuerliga utvecklingsarbetet.
@@ -58,7 +32,7 @@ göra egna beslut gällande förgreningar etc. där användaren själv bestämme
 interaktivt nästa beslut som görs. Även detta arbete styrs av demon som
 framställs och funktionaliteter som önskas.
 
-\subsubsection{Evaluering och jämförelse med andra verktyg}
+\subsection{Evaluering och jämförelse med andra verktyg}
 
 För att det ska gå att testa verktygets förmåga och jämföra med andra
 analysverktyg ska de demon som tas fram bestå av CGC-binärer som analyseras. I
