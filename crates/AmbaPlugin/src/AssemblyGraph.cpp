@@ -97,10 +97,10 @@ PackedNodeData AssemblyGraph::getPacked(
 		| (0xFFF0'0000'0000'0000 & ((u64) amba_id.val << 52));
 
 	{
-		const Unpacked unpacked = unpack(packed);
-		AMBA_ASSERT(vaddr == unpacked.vaddr);
-		AMBA_ASSERT(gen == unpacked.gen);
-		AMBA_ASSERT((u64) amba_id.val == unpacked.state);
+		const auto [vaddr_, gen_, state_] = unpack(packed);
+		AMBA_ASSERT(vaddr == vaddr_);
+		AMBA_ASSERT(gen == gen_);
+		AMBA_ASSERT((u64) amba_id.val == state_);
 	}
 
 	return PackedNodeData(packed);
