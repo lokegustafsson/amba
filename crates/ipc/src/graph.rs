@@ -5,7 +5,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Copy, Debug)]
+#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq)]
 pub struct NodeMetadata {
 	pub symbolic_state_id: u32,
 	pub basic_block_vaddr: Option<NonZeroU64>,
@@ -23,7 +23,7 @@ impl From<u32> for NodeMetadata {
 }
 
 impl NodeMetadata {
-	pub fn unique_id(&self) -> u64 {
+	fn pack(&self) -> u64 {
 		let Self {
 			symbolic_state_id: state,
 			basic_block_vaddr: vaddr,
@@ -39,10 +39,32 @@ impl NodeMetadata {
 		ret |= 0x000F_0000_0000_0000 & (gen << 48);
 		ret |= 0xFFF0_0000_0000_0000 & (state << (48 + 4));
 
+		ret
+	}
+
+	fn unpack(val: u64) -> Self {
+		let vaddr = 0x0000_FFFF_FFFF_FFFF & val;
+		let gen = (0x000F_0000_0000_0000 & val) >> 48;
+		let state = (0xFFF0_0000_0000_0000 & val) >> (48 + 4);
+
+		let symbolic_state_id = state as u32;
+		let basic_block_vaddr = vaddr.try_into().ok();
+		let basic_block_generation = gen.try_into().ok();
+
+		Self {
+			symbolic_state_id,
+			basic_block_vaddr,
+			basic_block_generation,
+		}
+	}
+
+	pub fn unique_id(&self) -> u64 {
+		let ret = self.pack();
+		let unpacked = Self::unpack(ret);
+
 		// Assert that the packing is injective, no data was lost
-		assert_eq!(vaddr, ((ret << 16) as i64 >> 16) as u64);
-		assert_eq!(gen, (ret >> 48) & 0xF);
-		assert_eq!(state, (ret >> (48 + 4)) & 0xFFF);
+		assert_eq!(*self, unpacked);
+
 		ret
 	}
 }
