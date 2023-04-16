@@ -12,14 +12,12 @@
 namespace control_flow {
 
 namespace types {
-// Values used as keys need to have I = 0 or else the default
-// constructor is implicitly deleted?
-using UidS2E = hashable_wrapper::HashableWrapper<i32, 0>;
-using StatePC = hashable_wrapper::HashableWrapper<u64, 0>;
 
-using AmbaUid = hashable_wrapper::HashableWrapper<u64, 1>;
-using Generation = hashable_wrapper::HashableWrapper<u8, 2>;
-using Packed = hashable_wrapper::HashableWrapper<u64, 3>;
+using IdS2E = hashable_wrapper::HashableWrapper<i32, 0>;
+using IdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
+using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
+using Generation = hashable_wrapper::HashableWrapper<u8, 3>;
+using Packed = hashable_wrapper::HashableWrapper<u64, 4>;
 
 struct Unpacked {
 	u64 vaddr;
@@ -32,7 +30,7 @@ struct Unpacked {
 using namespace types;
 
 Unpacked unpack(Packed);
-UidS2E getID(s2e::S2EExecutionState *);
+IdS2E getIdS2E(s2e::S2EExecutionState *);
 
 class ControlFlow {
   public:
@@ -43,17 +41,17 @@ class ControlFlow {
 	ControlFlowGraph *cfg();
 
   protected:
-	StatePC toAlias(UidS2E, u64);
+	StatePC packStatePc(IdS2E, u64);
 	Packed getPacked(s2e::S2EExecutionState *, u64);
-	AmbaUid getAmbaId(UidS2E);
-	void incrementAmbaId(UidS2E);
+	IdAmba getIdAmba(IdS2E);
+	void incrementIdAmba(IdS2E);
 
 	const std::string m_name;
 	ControlFlowGraph *const m_cfg;
 
-	std::unordered_map<UidS2E, AmbaUid> m_states {};
+	std::unordered_map<IdS2E, IdAmba> m_states {};
 	std::unordered_map<StatePC, Generation> m_generations {};
-	std::unordered_map<AmbaUid, Packed> m_last {};
+	std::unordered_map<IdAmba, Packed> m_last {};
 };
 
 } // namespace control_flow

@@ -8,7 +8,7 @@ namespace symbolic_graph {
 
 using namespace control_flow::types;
 
-void updateControlFlowGraph(ControlFlowGraph *, AmbaUid, AmbaUid);
+void updateControlFlowGraph(ControlFlowGraph *, IdAmba, IdAmba);
 
 class SymbolicGraph : public control_flow::ControlFlow {
   public:

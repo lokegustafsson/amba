@@ -21,8 +21,8 @@ Unpacked unpack(Packed packed) {
 	};
 }
 
-UidS2E getID(s2e::S2EExecutionState *state) {
-	return UidS2E(state->getID());
+IdS2E getIdS2E(s2e::S2EExecutionState *state) {
+	return IdS2E(state->getID());
 }
 
 ControlFlow::ControlFlow(std::string name)
@@ -43,11 +43,11 @@ ControlFlowGraph *ControlFlow::cfg() {
 	return this->m_cfg;
 }
 
-StatePC ControlFlow::toAlias(UidS2E uid, u64 pc) {
+StatePC ControlFlow::packStatePc(IdS2E uid, u64 pc) {
 	return pc << 4 | (u64) uid.val;
 }
 
-AmbaUid ControlFlow::getAmbaId(UidS2E id) {
+IdAmba ControlFlow::getIdAmba(IdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id.val == 0) {
 		amba_id.val = (u64) id.val;
@@ -55,7 +55,7 @@ AmbaUid ControlFlow::getAmbaId(UidS2E id) {
 	return amba_id;
 }
 
-void ControlFlow::incrementAmbaId(UidS2E id) {
+void ControlFlow::incrementIdAmba(IdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id.val == 0) {
 		amba_id.val = (u64) id.val;
@@ -67,9 +67,9 @@ Packed ControlFlow::getPacked(
 	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
-	const UidS2E state = UidS2E(s2e_state->getID());
-	const AmbaUid amba_id = this->getAmbaId(state);
-	const StatePC state_pc = this->toAlias(state, pc);
+	const IdS2E state = IdS2E(s2e_state->getID());
+	const IdAmba amba_id = this->getIdAmba(state);
+	const StatePC state_pc = this->packStatePc(state, pc);
 	const Generation gen = this->m_generations[state_pc];
 	const u64 vaddr = pc;
 
