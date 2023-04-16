@@ -5,10 +5,6 @@
 
 namespace assembly_graph {
 
-UidS2E getID(s2e::S2EExecutionState *state) {
-	return UidS2E(state->getID());
-}
-
 AssemblyGraph::AssemblyGraph(std::string name)
 	: ControlFlow(name)
 {}
@@ -54,7 +50,7 @@ void AssemblyGraph::onStateMerge(
 	s2e::S2EExecutionState *destination_state,
 	s2e::S2EExecutionState *source_state
 ) {
-	this->incrementAmbaId(getID(destination_state));
+	this->incrementAmbaId(control_flow::getID(destination_state));
 }
 
 }

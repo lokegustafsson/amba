@@ -29,6 +29,10 @@ Unpacked unpack(Packed packed) {
 	};
 }
 
+UidS2E getID(s2e::S2EExecutionState *state) {
+	return UidS2E(state->getID());
+}
+
 ControlFlow::ControlFlow(std::string name)
 	: m_name(name)
 	, m_cfg(rust_new_control_flow_graph())

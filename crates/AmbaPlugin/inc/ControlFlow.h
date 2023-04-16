@@ -33,6 +33,7 @@ using namespace types;
 
 void updateControlFlowGraph(ControlFlowGraph *, Packed, Packed);
 Unpacked unpack(Packed);
+UidS2E getID(s2e::S2EExecutionState *);
 
 class ControlFlow {
   public:
