@@ -3,8 +3,8 @@
 
 namespace control_flow {
 
-IdS2E getIdS2E(s2e::S2EExecutionState *state) {
-	return IdS2E(state->getGuid());
+StateIdS2E getStateIdS2E(s2e::S2EExecutionState *state) {
+	return StateIdS2E(state->getGuid());
 }
 
 ControlFlow::ControlFlow(std::string name)
@@ -25,7 +25,7 @@ ControlFlowGraph *ControlFlow::cfg() {
 	return this->m_cfg;
 }
 
-IdAmba ControlFlow::getIdAmba(IdS2E id) {
+IdAmba ControlFlow::getIdAmba(StateIdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id.val == 0) {
 		amba_id.val = this->next_id;
@@ -34,7 +34,7 @@ IdAmba ControlFlow::getIdAmba(IdS2E id) {
 	return amba_id;
 }
 
-void ControlFlow::incrementIdAmba(IdS2E id) {
+void ControlFlow::incrementIdAmba(StateIdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id.val == 0) {
 		amba_id.val = this->next_id;

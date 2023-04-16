@@ -21,7 +21,7 @@ class AssemblyGraph : public control_flow::ControlFlow {
 	amba::StateMergeFunction onStateMerge;
 
   protected:
-	StatePC packStatePc(IdS2E, u64);
+	StatePC packStatePc(StateIdS2E, u64);
 	PackedNodeData getPacked(s2e::S2EExecutionState *, u64);
 
 	std::unordered_map<StatePC, BasicBlockGeneration> m_generations {};
