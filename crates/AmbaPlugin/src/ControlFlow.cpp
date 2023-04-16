@@ -27,19 +27,17 @@ ControlFlowGraph *ControlFlow::cfg() {
 
 StateIdAmba ControlFlow::getStateIdAmba(StateIdS2E id) {
 	auto& amba_id = this->m_states[id];
-	if (amba_id.val == 0) {
-		amba_id.val = this->next_id;
+	if (amba_id == 0) {
 		this->next_id++;
+		amba_id.val = this->next_id;
 	}
 	return amba_id;
 }
 
 void ControlFlow::incrementStateIdAmba(StateIdS2E id) {
-	auto& amba_id = this->m_states[id];
-	if (amba_id.val == 0) {
-		amba_id.val = this->next_id;
-	}
 	this->next_id++;
+	auto& amba_id = this->m_states[id];
+	amba_id.val = this->next_id;
 }
 
 } // namespace control_flow
