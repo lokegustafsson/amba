@@ -17,7 +17,7 @@ namespace types {
 using UidS2E = hashable_wrapper::HashableWrapper<i32, 0>;
 using StatePC = hashable_wrapper::HashableWrapper<u64, 0>;
 
-using AmbaId = hashable_wrapper::HashableWrapper<u64, 1>;
+using AmbaUid = hashable_wrapper::HashableWrapper<u64, 1>;
 using Generation = hashable_wrapper::HashableWrapper<u8, 2>;
 using Packed = hashable_wrapper::HashableWrapper<u64, 3>;
 

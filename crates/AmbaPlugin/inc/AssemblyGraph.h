@@ -17,21 +17,18 @@ class AssemblyGraph : public control_flow::ControlFlow {
 
 	amba::TranslationFunction translateBlockStart;
 	amba::ExecutionFunction onBlockStart;
+	amba::SymbolicExecutionFunction onStateFork;
+	amba::StateMergeFunction onStateMerge;
 
   protected:
 	StatePC toAlias(UidS2E, u64);
-	Packed getBlockId(s2e::S2EExecutionState *, u64);
+	Packed getPacked(s2e::S2EExecutionState *, u64);
+	AmbaUid getAmbaId(UidS2E);
+	void incrementAmbaId(UidS2E);
 
-	/// State uuid → reuses
-	std::unordered_map<UidS2E, Packed> m_uuids {};
-
-	/// (State, pc) → gen
+	std::unordered_map<UidS2E, AmbaUid> m_states {};
 	std::unordered_map<StatePC, Generation> m_generations {};
-
-	/// Either:
-	/// State → (State, pc)
-	/// Alias → Alias
-	std::unordered_map<Packed, Packed> m_last {};
+	std::unordered_map<AmbaUid, Packed> m_last {};
 };
 
 }

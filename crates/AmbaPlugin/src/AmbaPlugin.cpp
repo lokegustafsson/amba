@@ -7,6 +7,7 @@
 // Our headers
 #include "Amba.h"
 #include "AmbaPlugin.h"
+#include "AssemblyGraph.h"
 #include "HeapLeak.h"
 
 namespace s2e {
@@ -67,8 +68,18 @@ void AmbaPlugin::initialize() {
 		));
 	core.onStateFork
 		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&assembly_graph::AssemblyGraph::onStateFork
+		));
+	core.onStateFork
+		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
 			&symbolic_graph::SymbolicGraph::onStateFork
+		));
+	core.onStateMerge
+		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&assembly_graph::AssemblyGraph::onStateMerge
 		));
 	core.onStateMerge
 		.connect(sigc::mem_fun(
