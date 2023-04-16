@@ -32,6 +32,7 @@ struct Unpacked {
 using namespace types;
 
 void updateControlFlowGraph(ControlFlowGraph *, Packed, Packed);
+Unpacked unpack(Packed);
 
 class ControlFlow {
   public:
