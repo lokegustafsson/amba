@@ -1,21 +1,7 @@
 use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
 
 use data_structures::{ControlFlowGraph, GraphIpc};
-
-static IPC: Mutex<Option<ipc::IpcTx<'static>>> = Mutex::new(None);
-
-fn with_ipc(f: impl FnOnce(&mut ipc::IpcTx<'static>)) {
-	let mut guard = IPC.lock().unwrap();
-	let ipc = guard.get_or_insert_with(|| match UnixStream::connect("amba-ipc.socket") {
-		Ok(stream) => {
-			let stream = Box::leak(Box::new(stream));
-			let (tx, _rx) = ipc::new_wrapping(&*stream);
-			tx
-		}
-		Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
-	});
-	f(ipc);
-}
+use ipc::IpcTx;
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
@@ -64,19 +50,37 @@ mod ffi {
 	}
 
 	#[no_mangle]
+	pub extern "C" fn rust_new_ipc<'a>() -> *mut Mutex<IpcTx<'a>> {
+		let ipc = match UnixStream::connect("amba-ipc.socket") {
+			Ok(stream) => {
+				let stream = Box::leak(Box::new(stream));
+				let (tx, _rx) = ipc::new_wrapping(&*stream);
+				tx
+			}
+			Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
+		};
+		Box::into_raw(Box::new(Mutex::new(ipc)))
+	}
+
+	#[no_mangle]
+	pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcTx<'_>>) {
+		let _ = Box::from_raw(ptr);
+	}
+
+	#[no_mangle]
 	pub unsafe extern "C" fn rust_ipc_send_graph(
 		name: *const i8,
+		ipc: *mut Mutex<IpcTx<'_>>,
 		graph: *mut Mutex<ControlFlowGraph>,
 	) {
 		let name = CStr::from_ptr(name).to_string_lossy();
-		with_ipc(|ipc| {
-			let graph = (&*graph).lock().unwrap();
-			ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
-				name,
-				graph: Cow::Owned(GraphIpc::from(&graph.graph)),
-			})
-			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
-		});
+		let mut ipc = (&*ipc).lock().unwrap();
+		let graph = (&*graph).lock().unwrap();
+		ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
+			name,
+			graph: Cow::Owned(GraphIpc::from(&graph.graph)),
+		})
+		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 	}
 
 	#[no_mangle]

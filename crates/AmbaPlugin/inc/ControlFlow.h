@@ -1,41 +1,54 @@
 #pragma once
 
+#include <s2e/S2EExecutionState.h>
+
 #include <unordered_map>
 
 #include "Numbers.h"
 #include "Amba.h"
 #include "LibambaRs.h"
+#include "HashableWrapper.h"
 
 namespace control_flow {
+
+namespace types {
+
+using StateIdS2E = hashable_wrapper::HashableWrapper<i32, 0>;
+using StateIdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
+using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
+using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
+using PackedNodeData = hashable_wrapper::HashableWrapper<u64, 4>;
+
+struct Unpacked {
+	u64 vaddr;
+	u8 gen;
+	u64 state;
+};
+
+}
+
+using namespace types;
+
+StateIdS2E getStateIdS2E(s2e::S2EExecutionState *);
 
 class ControlFlow {
   public:
 	ControlFlow(std::string);
 	~ControlFlow();
 
-	amba::TranslationFunction translateBlockStart;
-	amba::ExecutionFunction onBlockStart;
-	amba::SymbolicExecutionFunction onStateFork;
-	amba::StateMergeFunction onStateMerge;
-	amba::TimerFunction onTimer;
-	amba::TimerFunction onEngineShutdown;
+	const char *getName() const;
+	ControlFlowGraph *cfg();
+	u64 states() const;
 
   protected:
-	u64 getBlockId(s2e::S2EExecutionState *, u64);
+	StateIdAmba getStateIdAmba(StateIdS2E);
+	void incrementStateIdAmba(StateIdS2E);
 
 	const std::string m_name;
 	ControlFlowGraph *const m_cfg;
 
-	/// State uuid → reuses
-	std::unordered_map<i32, u64> m_uuids {};
-
-	/// (State, pc) → gen
-	std::unordered_map<u64, u64> m_generations {};
-
-	/// Either:
-	/// State → (State, pc)
-	/// Alias → Alias
-	std::unordered_map<u64, u64> m_last {};
+	u64 state_count = 0;
+	std::unordered_map<StateIdS2E, StateIdAmba> m_states {};
 };
 
 } // namespace control_flow

@@ -92,7 +92,7 @@ let
       chmod -R u+w target/impure-amba-deps
 
       echo 'Making libamba.so'
-      make -sC crates/libamba libamba.so
+      make -sC crates/AmbaPlugin libamba.so
 
       echo 'Patchelfing libs2e-x86_64-*.so (1/3)'
       patchelf --remove-needed libamba.so \
@@ -104,7 +104,7 @@ let
 
       echo 'Patchelfing libs2e-x86_64-*.so (3/3)'
       patchelf --add-needed libamba.so \
-        --add-rpath "$PWD""/crates/libamba" \
+        --add-rpath "$PWD""/crates/AmbaPlugin" \
         target/impure-amba-deps/share/libs2e/libs2e-x86_64-*.so
 
       echo 'Running amba'

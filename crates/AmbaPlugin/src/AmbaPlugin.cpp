@@ -5,10 +5,8 @@
 #include <s2e/Plugins/OSMonitors/OSMonitor.h>
 
 // Our headers
-#include "Amba.h"
 #include "AmbaPlugin.h"
-#include "ControlFlow.h"
-#include "HeapLeak.h"
+#include "Amba.h"
 
 namespace s2e {
 namespace plugins {
@@ -17,9 +15,10 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
+	, m_ipc(rust_new_ipc())
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_assembly_graph(control_flow::ControlFlow {"basic blocks"})
-	, m_symbolic_graph(control_flow::ControlFlow {"symbolic states"})
+	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks" })
+	, m_symbolic_graph(symbolic_graph::SymbolicGraph { "symbolic states" })
 {
 	auto self = this;
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
@@ -55,17 +54,6 @@ void AmbaPlugin::initialize() {
 		<< '\n';
 
         // Set up event callbacks
-	core.onTimer
-		.connect(sigc::mem_fun(
-			this->m_assembly_graph,
-			&control_flow::ControlFlow::onTimer
-		));
-	core.onEngineShutdown
-		.connect(sigc::mem_fun(
-			this->m_assembly_graph,
-			&control_flow::ControlFlow::onEngineShutdown
-		));
-
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -78,23 +66,33 @@ void AmbaPlugin::initialize() {
 		));
 	core.onStateFork
 		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&assembly_graph::AssemblyGraph::onStateFork
+		));
+	core.onStateFork
+		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onStateFork
+			&symbolic_graph::SymbolicGraph::onStateFork
+		));
+	core.onStateMerge
+		.connect(sigc::mem_fun(
+			this->m_assembly_graph,
+			&assembly_graph::AssemblyGraph::onStateMerge
 		));
 	core.onStateMerge
 		.connect(sigc::mem_fun(
 			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onStateMerge
+			&symbolic_graph::SymbolicGraph::onStateMerge
 		));
 	core.onTimer
 		.connect(sigc::mem_fun(
-			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onTimer
+			*this,
+			&AmbaPlugin::onTimer
 		));
 	core.onEngineShutdown
 		.connect(sigc::mem_fun(
-			this->m_symbolic_graph,
-			&control_flow::ControlFlow::onEngineShutdown
+			*this,
+			&AmbaPlugin::onEngineShutdown
 		));
 
 	monitor->onModuleLoad
@@ -172,7 +170,7 @@ void AmbaPlugin::translateBlockStart(
 
 	signal->connect(sigc::mem_fun(
 		this->m_assembly_graph,
-		&control_flow::ControlFlow::onBlockStart
+		&assembly_graph::AssemblyGraph::onBlockStart
 	));
 }
 
@@ -221,6 +219,23 @@ void AmbaPlugin::onProcessUnload(
 		<< " exited with code "
 		<< std::to_string(return_code)
 		<< '\n';
+}
+
+void AmbaPlugin::onTimer() {
+	rust_ipc_send_graph(
+		this->m_assembly_graph.getName(),
+		this->m_ipc,
+		this->m_assembly_graph.cfg()
+	);
+	rust_ipc_send_graph(
+		this->m_symbolic_graph.getName(),
+		this->m_ipc,
+		this->m_symbolic_graph.cfg()
+	);
+}
+
+void AmbaPlugin::onEngineShutdown() {
+	this->onTimer();
 }
 
 } // namespace plugins

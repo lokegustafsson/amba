@@ -32,7 +32,7 @@ impl fmt::Display for ControlFlowGraph {
 			concat!(
 				"Nodes: {} ({})\n",
 				"Edges: {} ({})\n",
-				"Connections: Avg: {}, Max: {}\n",
+				"Connections: Avg from: {}, Avg to: {}, Max: {}\n",
 				"Updates: {}\n",
 				"Rebuilds: {}\n",
 				"Lifetime: {:?}\n",
@@ -59,7 +59,13 @@ impl fmt::Display for ControlFlowGraph {
 			self.compressed_graph
 				.nodes
 				.values()
-				.map(|b| b.from.len())
+				.map(|b| b.to.len())
+				.sum::<usize>() as f64
+				/ self.compressed_graph.len() as f64,
+			self.compressed_graph
+				.nodes
+				.values()
+				.map(|b| b.from.len().max(b.to.len()))
 				.max()
 				.unwrap_or_default(),
 			self.updates,

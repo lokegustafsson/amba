@@ -4,7 +4,8 @@
 
 #include "HeapLeak.h"
 #include "Numbers.h"
-#include "ControlFlow.h"
+#include "AssemblyGraph.h"
+#include "SymbolicGraph.h"
 
 namespace s2e {
 namespace plugins {
@@ -21,16 +22,18 @@ class AmbaPlugin : public Plugin {
 	amba::ModuleFunction onModuleLoad;
 	amba::ModuleFunction onModuleUnload;
 	amba::ProcessFunction onProcessUnload;
-
+	amba::TimerFunction onTimer;
+	amba::TimerFunction onEngineShutdown;
 
   protected:
+	IpcTx *const m_ipc;
 	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;
 
 	heap_leak::HeapLeak m_heap_leak;
-	control_flow::ControlFlow m_assembly_graph;
-	control_flow::ControlFlow m_symbolic_graph;
+	assembly_graph::AssemblyGraph m_assembly_graph;
+	symbolic_graph::SymbolicGraph m_symbolic_graph;
 };
 
 } // namespace plugins
