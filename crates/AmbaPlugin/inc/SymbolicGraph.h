@@ -15,8 +15,6 @@ class SymbolicGraph : public control_flow::ControlFlow {
   public:
 	SymbolicGraph(std::string);
 
-	amba::TranslationFunction translateBlockStart;
-	amba::ExecutionFunction onBlockStart;
 	amba::SymbolicExecutionFunction onStateFork;
 	amba::StateMergeFunction onStateMerge;
 };
