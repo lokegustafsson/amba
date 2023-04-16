@@ -9,6 +9,8 @@ namespace symbolic_graph {
 
 using namespace control_flow::types;
 
+void updateControlFlowGraph(ControlFlowGraph *, AmbaUid, AmbaUid);
+
 class SymbolicGraph : public control_flow::ControlFlow {
   public:
 	SymbolicGraph(std::string);

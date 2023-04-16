@@ -31,7 +31,6 @@ struct Unpacked {
 
 using namespace types;
 
-void updateControlFlowGraph(ControlFlowGraph *, Packed, Packed);
 Unpacked unpack(Packed);
 UidS2E getID(s2e::S2EExecutionState *);
 
@@ -56,7 +55,5 @@ class ControlFlow {
 	std::unordered_map<StatePC, Generation> m_generations {};
 	std::unordered_map<AmbaUid, Packed> m_last {};
 };
-
-
 
 } // namespace control_flow

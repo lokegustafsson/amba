@@ -3,14 +3,6 @@
 
 namespace control_flow {
 
-void updateControlFlowGraph(ControlFlowGraph *cfg, Packed from, Packed to) {
-	rust_update_control_flow_graph(
-		cfg,
-		from.val,
-		to.val
-	);
-}
-
 Unpacked unpack(Packed packed) {
 	const u64 val = packed.val;
 	// Addresses either live at the bottom or top of the address

@@ -5,6 +5,14 @@
 
 namespace assembly_graph {
 
+void updateControlFlowGraph(ControlFlowGraph *cfg, Packed from, Packed to) {
+	rust_update_control_flow_graph(
+		cfg,
+		from.val,
+		to.val
+	);
+}
+
 AssemblyGraph::AssemblyGraph(std::string name)
 	: ControlFlow(name)
 {}
@@ -30,7 +38,7 @@ void AssemblyGraph::onBlockStart(
 	const Packed curr = this->getPacked(state, pc);
 	// Will insert 0 if value doesn't yet exist
 	auto &last = this->m_last[amba_id];
-	control_flow::updateControlFlowGraph(
+	updateControlFlowGraph(
 		this->m_cfg,
 		last,
 		curr

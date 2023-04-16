@@ -4,6 +4,14 @@
 
 namespace symbolic_graph {
 
+void updateControlFlowGraph(ControlFlowGraph *cfg, AmbaUid from, AmbaUid to) {
+	rust_update_control_flow_graph(
+		cfg,
+		from.val,
+		to.val
+	);
+}
+
 SymbolicGraph::SymbolicGraph(std::string name)
 	: ControlFlow(name)
 {}
@@ -48,12 +56,12 @@ void SymbolicGraph::onStateMerge(
 	++this->m_uuids[dest_id].val;
 	const Packed to = this->getBlockId(destination_state, 0);
 
-	control_flow::updateControlFlowGraph(
+	updateControlFlowGraph(
 		this->m_cfg,
 		from_left,
 		to
 	);
-	control_flow::updateControlFlowGraph(
+	updateControlFlowGraph(
 		this->m_cfg,
 		from_right,
 		to
