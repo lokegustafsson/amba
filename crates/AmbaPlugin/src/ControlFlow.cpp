@@ -22,7 +22,7 @@ Unpacked unpack(Packed packed) {
 }
 
 IdS2E getIdS2E(s2e::S2EExecutionState *state) {
-	return IdS2E(state->getID());
+	return IdS2E(state->getGuid());
 }
 
 ControlFlow::ControlFlow(std::string name)
