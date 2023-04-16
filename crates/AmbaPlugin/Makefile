@@ -128,9 +128,9 @@ clean:
 	-rm *.so
 	-rm *.out
 	-rm Test
-	# -rm ../../compile_flags.txt
-	# -rm compile_flags.txt
+	-rm ../../compile_flags.txt
+	-rm compile_flags.txt
 	-rm libamba_impure
-	# -cargo clean
+	-cargo clean
 
 .PHONY: clean libamba.a test
