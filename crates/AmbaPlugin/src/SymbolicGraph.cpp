@@ -1,5 +1,4 @@
 #include "SymbolicGraph.h"
-#include "ControlFlow.h"
 #include "AmbaException.h"
 
 namespace symbolic_graph {

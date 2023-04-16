@@ -5,10 +5,8 @@
 #include <s2e/Plugins/OSMonitors/OSMonitor.h>
 
 // Our headers
-#include "Amba.h"
 #include "AmbaPlugin.h"
-#include "AssemblyGraph.h"
-#include "HeapLeak.h"
+#include "Amba.h"
 
 namespace s2e {
 namespace plugins {
