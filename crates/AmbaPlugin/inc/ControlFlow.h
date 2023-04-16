@@ -41,8 +41,6 @@ class ControlFlow {
 	ControlFlowGraph *cfg();
 
   protected:
-	StatePC packStatePc(IdS2E, u64);
-	Packed getPacked(s2e::S2EExecutionState *, u64);
 	IdAmba getIdAmba(IdS2E);
 	void incrementIdAmba(IdS2E);
 
@@ -51,7 +49,6 @@ class ControlFlow {
 
 	u64 next_id = 0;
 	std::unordered_map<IdS2E, IdAmba> m_states {};
-	std::unordered_map<StatePC, Generation> m_generations {};
 	std::unordered_map<IdAmba, Packed> m_last {};
 };
 

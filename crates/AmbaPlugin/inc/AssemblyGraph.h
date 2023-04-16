@@ -18,6 +18,12 @@ class AssemblyGraph : public control_flow::ControlFlow {
 	amba::ExecutionFunction onBlockStart;
 	amba::SymbolicExecutionFunction onStateFork;
 	amba::StateMergeFunction onStateMerge;
+
+  protected:
+	StatePC packStatePc(IdS2E, u64);
+	Packed getPacked(s2e::S2EExecutionState *, u64);
+
+	std::unordered_map<StatePC, Generation> m_generations {};
 };
 
 }

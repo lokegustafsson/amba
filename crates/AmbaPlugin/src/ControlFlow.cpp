@@ -43,10 +43,6 @@ ControlFlowGraph *ControlFlow::cfg() {
 	return this->m_cfg;
 }
 
-StatePC ControlFlow::packStatePc(IdS2E uid, u64 pc) {
-	return pc << 4 | (u64) uid.val;
-}
-
 IdAmba ControlFlow::getIdAmba(IdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id.val == 0) {
@@ -63,31 +59,5 @@ void ControlFlow::incrementIdAmba(IdS2E id) {
 	}
 	this->next_id++;
 }
-
-Packed ControlFlow::getPacked(
-	s2e::S2EExecutionState *s2e_state,
-	u64 pc
-) {
-	const IdS2E state = IdS2E(s2e_state->getID());
-	const IdAmba amba_id = this->getIdAmba(state);
-	const StatePC state_pc = this->packStatePc(state, pc);
-	const Generation gen = this->m_generations[state_pc];
-	const u64 vaddr = pc;
-
-	const u64 packed
-		= (0x0000'FFFF'FFFF'FFFF & vaddr)
-		| (0x000F'0000'0000'0000 & ((u64) gen.val << 48))
-		| (0xFFF0'0000'0000'0000 & ((u64) amba_id.val << 52));
-
-	{
-		const Unpacked unpacked = control_flow::unpack(packed);
-		AMBA_ASSERT(vaddr == unpacked.vaddr);
-		AMBA_ASSERT(gen == unpacked.gen);
-		AMBA_ASSERT((u64) amba_id.val == unpacked.state);
-	}
-
-	return Packed(packed);
-}
-
 
 } // namespace control_flow
