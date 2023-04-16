@@ -43,7 +43,15 @@ impl NodeMetadata {
 	}
 
 	fn unpack(val: u64) -> Self {
-		let vaddr = 0x0000_FFFF_FFFF_FFFF & val;
+		let vaddr = {
+			let base = 0x0000_FFFF_FFFF_FFFF & val;
+			// Sign extend from 48 bits
+			if val & (1 << 47) != 0 {
+				base | (0xFFFF << 48)
+			} else {
+				base
+			}
+		};
 		let gen = (0x000F_0000_0000_0000 & val) >> 48;
 		let state = (0xFFF0_0000_0000_0000 & val) >> (48 + 4);
 
