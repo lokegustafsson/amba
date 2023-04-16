@@ -50,7 +50,8 @@ StatePC ControlFlow::packStatePc(IdS2E uid, u64 pc) {
 IdAmba ControlFlow::getIdAmba(IdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id.val == 0) {
-		amba_id.val = (u64) id.val;
+		amba_id.val = this->next_id;
+		this->next_id++;
 	}
 	return amba_id;
 }
@@ -58,9 +59,9 @@ IdAmba ControlFlow::getIdAmba(IdS2E id) {
 void ControlFlow::incrementIdAmba(IdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id.val == 0) {
-		amba_id.val = (u64) id.val;
+		amba_id.val = this->next_id;
 	}
-	++amba_id.val;
+	this->next_id++;
 }
 
 Packed ControlFlow::getPacked(

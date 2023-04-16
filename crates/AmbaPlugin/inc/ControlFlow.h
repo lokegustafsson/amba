@@ -49,6 +49,7 @@ class ControlFlow {
 	const std::string m_name;
 	ControlFlowGraph *const m_cfg;
 
+	u64 next_id = 0;
 	std::unordered_map<IdS2E, IdAmba> m_states {};
 	std::unordered_map<StatePC, Generation> m_generations {};
 	std::unordered_map<IdAmba, Packed> m_last {};
