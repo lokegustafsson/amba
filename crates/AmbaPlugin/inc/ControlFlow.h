@@ -16,8 +16,8 @@ namespace types {
 using IdS2E = hashable_wrapper::HashableWrapper<i32, 0>;
 using IdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
 using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
-using Generation = hashable_wrapper::HashableWrapper<u8, 3>;
-using Packed = hashable_wrapper::HashableWrapper<u64, 4>;
+using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
+using PackedNodeData = hashable_wrapper::HashableWrapper<u64, 4>;
 
 struct Unpacked {
 	u64 vaddr;
@@ -29,7 +29,6 @@ struct Unpacked {
 
 using namespace types;
 
-Unpacked unpack(Packed);
 IdS2E getIdS2E(s2e::S2EExecutionState *);
 
 class ControlFlow {

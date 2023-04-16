@@ -3,12 +3,30 @@
 
 namespace assembly_graph {
 
-void updateControlFlowGraph(ControlFlowGraph *cfg, Packed from, Packed to) {
+void updateControlFlowGraph(ControlFlowGraph *cfg, PackedNodeData from, PackedNodeData to) {
 	rust_update_control_flow_graph(
 		cfg,
 		from.val,
 		to.val
 	);
+}
+
+Unpacked unpack(PackedNodeData packed) {
+	const u64 val = packed.val;
+	// Addresses either live at the bottom or top of the address
+	// space, so we sign extend from the 48 bits we have kept
+	u64 vaddr =  val & 0x0000'FFFF'FFFF'FFFF;
+	if (vaddr & 1L << 47) {
+		vaddr |= 0xFFFF'0000'0000'0000;
+	}
+	const u64 gen   = (val & 0x000F'0000'0000'0000) >> 48;
+	const u64 state = (val & 0xFFF0'0000'0000'0000) >> 52;
+
+	return (Unpacked) {
+		.vaddr = vaddr,
+		.gen = (u8) gen,
+		.state = state,
+	};
 }
 
 AssemblyGraph::AssemblyGraph(std::string name)
@@ -33,7 +51,7 @@ void AssemblyGraph::onBlockStart(
 	u64 pc
 ) {
 	const IdAmba amba_id = this->getIdAmba(control_flow::getIdS2E(state));
-	const Packed curr = this->getPacked(state, pc);
+	const PackedNodeData curr = this->getPacked(state, pc);
 	// Will insert 0 if value doesn't yet exist
 	auto &last = this->m_last[amba_id];
 	updateControlFlowGraph(
@@ -63,14 +81,14 @@ StatePC AssemblyGraph::packStatePc(IdS2E uid, u64 pc) {
 	return pc << 4 | (u64) uid.val;
 }
 
-Packed AssemblyGraph::getPacked(
+PackedNodeData AssemblyGraph::getPacked(
 	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
 	const IdS2E state = IdS2E(s2e_state->getID());
 	const IdAmba amba_id = this->getIdAmba(state);
 	const StatePC state_pc = this->packStatePc(state, pc);
-	const Generation gen = this->m_generations[state_pc];
+	const BasicBlockGeneration gen = this->m_generations[state_pc];
 	const u64 vaddr = pc;
 
 	const u64 packed
@@ -79,13 +97,13 @@ Packed AssemblyGraph::getPacked(
 		| (0xFFF0'0000'0000'0000 & ((u64) amba_id.val << 52));
 
 	{
-		const Unpacked unpacked = control_flow::unpack(packed);
+		const Unpacked unpacked = unpack(packed);
 		AMBA_ASSERT(vaddr == unpacked.vaddr);
 		AMBA_ASSERT(gen == unpacked.gen);
 		AMBA_ASSERT((u64) amba_id.val == unpacked.state);
 	}
 
-	return Packed(packed);
+	return PackedNodeData(packed);
 }
 
 }
