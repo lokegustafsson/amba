@@ -75,6 +75,16 @@ impl NodeMetadata {
 
 		ret
 	}
+
+	pub fn from_unique_id(id: u64) -> Self {
+		let ret = Self::unpack(id);
+		let packed = ret.pack();
+
+		// Assert that the packing is injective, no data was lost
+		assert_eq!(id, packed);
+
+		ret
+	}
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
