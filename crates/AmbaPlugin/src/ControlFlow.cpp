@@ -26,22 +26,22 @@ ControlFlowGraph *ControlFlow::cfg() {
 }
 
 u64 ControlFlow::states() const {
-	return this->next_id;
+	return this->state_count;
 }
 
 StateIdAmba ControlFlow::getStateIdAmba(StateIdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id == 0) {
-		this->next_id++;
-		amba_id.val = this->next_id;
+		this->state_count++;
+		amba_id.val = this->state_count;
 	}
 	return amba_id;
 }
 
 void ControlFlow::incrementStateIdAmba(StateIdS2E id) {
-	this->next_id++;
+	this->state_count++;
 	auto& amba_id = this->m_states[id];
-	amba_id.val = this->next_id;
+	amba_id.val = this->state_count;
 }
 
 } // namespace control_flow

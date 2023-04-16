@@ -47,7 +47,7 @@ class ControlFlow {
 	const std::string m_name;
 	ControlFlowGraph *const m_cfg;
 
-	u64 next_id = 0;
+	u64 state_count = 0;
 	std::unordered_map<StateIdS2E, StateIdAmba> m_states {};
 };
 
