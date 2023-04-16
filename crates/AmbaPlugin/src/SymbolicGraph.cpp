@@ -3,7 +3,7 @@
 
 namespace symbolic_graph {
 
-void updateControlFlowGraph(ControlFlowGraph *cfg, IdAmba from, IdAmba to) {
+void updateControlFlowGraph(ControlFlowGraph *cfg, StateIdAmba from, StateIdAmba to) {
 	rust_update_control_flow_graph(
 		cfg,
 		from.val,
@@ -20,14 +20,14 @@ void SymbolicGraph::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	const IdAmba from = this->getIdAmba(control_flow::getStateIdS2E(old_state));
+	const StateIdAmba from = this->getStateIdAmba(control_flow::getStateIdS2E(old_state));
 
 	for (auto &new_state : new_states) {
 		if (new_state == old_state) {
-			this->incrementIdAmba(control_flow::getStateIdS2E(old_state));
+			this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
 		}
 
-		const IdAmba to = this->getIdAmba(control_flow::getStateIdS2E(old_state));
+		const StateIdAmba to = this->getStateIdAmba(control_flow::getStateIdS2E(old_state));
 
 		updateControlFlowGraph(
 			this->m_cfg,
@@ -44,11 +44,11 @@ void SymbolicGraph::onStateMerge(
 	const StateIdS2E dest_id = control_flow::getStateIdS2E(destination_state);
 	const StateIdS2E src_id = control_flow::getStateIdS2E(source_state);
 
-	const IdAmba from_left = this->getIdAmba(dest_id);
-	const IdAmba from_right = this->getIdAmba(src_id);
+	const StateIdAmba from_left = this->getStateIdAmba(dest_id);
+	const StateIdAmba from_right = this->getStateIdAmba(src_id);
 
-	this->incrementIdAmba(dest_id);
-	const IdAmba to = this->getIdAmba(dest_id);
+	this->incrementStateIdAmba(dest_id);
+	const StateIdAmba to = this->getStateIdAmba(dest_id);
 
 	updateControlFlowGraph(
 		this->m_cfg,

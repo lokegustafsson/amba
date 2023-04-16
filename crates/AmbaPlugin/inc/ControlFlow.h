@@ -14,7 +14,7 @@ namespace control_flow {
 namespace types {
 
 using StateIdS2E = hashable_wrapper::HashableWrapper<i32, 0>;
-using IdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
+using StateIdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
 using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
 using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
 using PackedNodeData = hashable_wrapper::HashableWrapper<u64, 4>;
@@ -40,14 +40,14 @@ class ControlFlow {
 	ControlFlowGraph *cfg();
 
   protected:
-	IdAmba getIdAmba(StateIdS2E);
-	void incrementIdAmba(StateIdS2E);
+	StateIdAmba getStateIdAmba(StateIdS2E);
+	void incrementStateIdAmba(StateIdS2E);
 
 	const std::string m_name;
 	ControlFlowGraph *const m_cfg;
 
 	u64 next_id = 0;
-	std::unordered_map<StateIdS2E, IdAmba> m_states {};
+	std::unordered_map<StateIdS2E, StateIdAmba> m_states {};
 };
 
 } // namespace control_flow

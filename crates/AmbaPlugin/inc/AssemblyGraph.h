@@ -25,7 +25,7 @@ class AssemblyGraph : public control_flow::ControlFlow {
 	PackedNodeData getPacked(s2e::S2EExecutionState *, u64);
 
 	std::unordered_map<StatePC, BasicBlockGeneration> m_generations {};
-	std::unordered_map<IdAmba, PackedNodeData> m_last {};
+	std::unordered_map<StateIdAmba, PackedNodeData> m_last {};
 };
 
 }

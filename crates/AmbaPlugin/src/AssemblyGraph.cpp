@@ -50,7 +50,7 @@ void AssemblyGraph::onBlockStart(
 	s2e::S2EExecutionState *state,
 	u64 pc
 ) {
-	const IdAmba amba_id = this->getIdAmba(control_flow::getStateIdS2E(state));
+	const StateIdAmba amba_id = this->getStateIdAmba(control_flow::getStateIdS2E(state));
 	const PackedNodeData curr = this->getPacked(state, pc);
 	// Will insert 0 if value doesn't yet exist
 	auto &last = this->m_last[amba_id];
@@ -67,14 +67,14 @@ void AssemblyGraph::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	this->incrementIdAmba(control_flow::getStateIdS2E(old_state));
+	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
 }
 
 void AssemblyGraph::onStateMerge(
 	s2e::S2EExecutionState *destination_state,
 	s2e::S2EExecutionState *source_state
 ) {
-	this->incrementIdAmba(control_flow::getStateIdS2E(destination_state));
+	this->incrementStateIdAmba(control_flow::getStateIdS2E(destination_state));
 }
 
 StatePC AssemblyGraph::packStatePc(StateIdS2E uid, u64 pc) {
@@ -86,7 +86,7 @@ PackedNodeData AssemblyGraph::getPacked(
 	u64 pc
 ) {
 	const StateIdS2E state = StateIdS2E(s2e_state->getID());
-	const IdAmba amba_id = this->getIdAmba(state);
+	const StateIdAmba amba_id = this->getStateIdAmba(state);
 	const StatePC state_pc = this->packStatePc(state, pc);
 	const BasicBlockGeneration gen = this->m_generations[state_pc];
 	const u64 vaddr = pc;
