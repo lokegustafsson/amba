@@ -38,6 +38,7 @@ class ControlFlow {
 
 	const char *getName() const;
 	ControlFlowGraph *cfg();
+	u64 states() const;
 
   protected:
 	StateIdAmba getStateIdAmba(StateIdS2E);

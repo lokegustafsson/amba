@@ -25,6 +25,10 @@ ControlFlowGraph *ControlFlow::cfg() {
 	return this->m_cfg;
 }
 
+u64 ControlFlow::states() const {
+	return this->next_id;
+}
+
 StateIdAmba ControlFlow::getStateIdAmba(StateIdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id == 0) {
