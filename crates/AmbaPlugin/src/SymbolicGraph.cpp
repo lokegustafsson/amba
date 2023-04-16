@@ -24,10 +24,11 @@ void SymbolicGraph::onStateFork(
 
 	for (auto &new_state : new_states) {
 		if (new_state == old_state) {
-			this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
+			this->incrementStateIdAmba(control_flow::getStateIdS2E(new_state));
 		}
 
-		const StateIdAmba to = this->getStateIdAmba(control_flow::getStateIdS2E(old_state));
+		const StateIdAmba to = this->getStateIdAmba(control_flow::getStateIdS2E(new_state));
+		AMBA_ASSERT(from != to);
 
 		updateControlFlowGraph(
 			this->m_cfg,
