@@ -21,22 +21,18 @@ void SymbolicGraph::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	const UidS2E old_id = UidS2E(old_state->getID());
-
-	const Packed from = this->getBlockId(old_state, 0);
-	const u64 last_raw = this->m_last[from.val];
+	const AmbaUid from = this->getAmbaId(control_flow::getID(old_state));
+	const auto last_raw = this->m_last[from.val];
 
 	for (auto &new_state : new_states) {
-		const UidS2E new_id = UidS2E(new_state->getID());
-
-		if (new_id == old_id) {
-			++this->m_uuids[new_id].val;
+		if (new_state == old_state) {
+			this->incrementAmbaId(control_flow::getID(old_state));
 		}
 
-		const Packed to = this->getBlockId(new_state, 0);
-		this->m_last[to.val] = last_raw;
+		const AmbaUid to = this->getAmbaId(control_flow::getID(old_state));
+		this->m_last[to] = last_raw;
 
-		control_flow::updateControlFlowGraph(
+		updateControlFlowGraph(
 			this->m_cfg,
 			from,
 			to
@@ -48,13 +44,14 @@ void SymbolicGraph::onStateMerge(
 	s2e::S2EExecutionState *destination_state,
 	s2e::S2EExecutionState *source_state
 ) {
-	const UidS2E dest_id = UidS2E(destination_state->getID());
+	const UidS2E dest_id = control_flow::getID(destination_state);
+	const UidS2E src_id = control_flow::getID(source_state);
 
-	const Packed from_left = this->getBlockId(destination_state, 0);
-	const Packed from_right = this->getBlockId(source_state, 0);
+	const AmbaUid from_left = this->getAmbaId(dest_id);
+	const AmbaUid from_right = this->getAmbaId(src_id);
 
-	++this->m_uuids[dest_id].val;
-	const Packed to = this->getBlockId(destination_state, 0);
+	this->incrementAmbaId(dest_id);
+	const AmbaUid to = this->getAmbaId(dest_id);
 
 	updateControlFlowGraph(
 		this->m_cfg,

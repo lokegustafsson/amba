@@ -24,7 +24,7 @@ void AssemblyGraph::translateBlockStart(
 	u64 pc
 ) {
 	const StatePC key = this->toAlias(
-		getID(state),
+		control_flow::getID(state),
 		pc
 	);
 	++this->m_generations[key].val;
@@ -34,7 +34,7 @@ void AssemblyGraph::onBlockStart(
 	s2e::S2EExecutionState *state,
 	u64 pc
 ) {
-	const AmbaUid amba_id = this->getAmbaId(getID(state));
+	const AmbaUid amba_id = this->getAmbaId(control_flow::getID(state));
 	const Packed curr = this->getPacked(state, pc);
 	// Will insert 0 if value doesn't yet exist
 	auto &last = this->m_last[amba_id];
@@ -51,7 +51,7 @@ void AssemblyGraph::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	this->incrementAmbaId(getID(old_state));
+	this->incrementAmbaId(control_flow::getID(old_state));
 }
 
 void AssemblyGraph::onStateMerge(
