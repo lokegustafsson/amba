@@ -8,35 +8,6 @@ SymbolicGraph::SymbolicGraph(std::string name)
 	: ControlFlow(name)
 {}
 
-StatePC SymbolicGraph::toAlias(UidS2E uid, u64 pc) {
-	return this->m_uuids[uid].val << 32 | (u64) uid.val;
-}
-
-Packed SymbolicGraph::getBlockId(
-	s2e::S2EExecutionState *s2e_state,
-	u64 pc
-) {
-	const UidS2E state = UidS2E(s2e_state->getID());
-	const StatePC state_pc = this->toAlias(state, pc);
-	const Generation gen = this->m_generations[state_pc];
-	const u64 vaddr = pc;
-
-	const u64 packed
-		= (0x0000'FFFF'FFFF'FFFF & vaddr)
-		| (0x000F'0000'0000'0000 & ((u64) gen.val << 48))
-		| (0xFFF0'0000'0000'0000 & ((u64) state.val << 52));
-
-	const u64 vaddr_ =  packed & 0x0000'FFFF'FFFF'FFFF;
-	const u64 gen_   = (packed & 0x000F'0000'0000'0000) >> 48;
-	const u64 state_ = (packed & 0xFFF0'0000'0000'0000) >> 52;
-
-	AMBA_ASSERT(vaddr == vaddr_);
-	AMBA_ASSERT(gen.val == gen_);
-	AMBA_ASSERT((u64) state.val == state_);
-
-	return Packed(packed);
-}
-
 void SymbolicGraph::onStateFork(
 	s2e::S2EExecutionState *old_state,
 	const std::vector<s2e::S2EExecutionState *> &new_states,
