@@ -48,7 +48,6 @@ class ControlFlow {
 
 	u64 next_id = 0;
 	std::unordered_map<IdS2E, IdAmba> m_states {};
-	std::unordered_map<IdAmba, Packed> m_last {};
 };
 
 } // namespace control_flow

@@ -21,7 +21,6 @@ void SymbolicGraph::onStateFork(
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
 	const IdAmba from = this->getIdAmba(control_flow::getIdS2E(old_state));
-	const Packed last_raw = this->m_last[from.val];
 
 	for (auto &new_state : new_states) {
 		if (new_state == old_state) {
@@ -29,7 +28,6 @@ void SymbolicGraph::onStateFork(
 		}
 
 		const IdAmba to = this->getIdAmba(control_flow::getIdS2E(old_state));
-		this->m_last[to] = last_raw;
 
 		updateControlFlowGraph(
 			this->m_cfg,
