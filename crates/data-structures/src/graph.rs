@@ -341,7 +341,7 @@ impl Graph {
 		l
 	}
 
-	fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
+	pub fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
 		self.nodes
 			.values()
 			.flat_map(|n| n.to.iter().map(|&m| (n.id, m)))

@@ -21,8 +21,20 @@ pub struct ControlFlowGraph {
 }
 
 impl From<&ControlFlowGraph> for ipc::GraphIpc {
-	fn from(value: &ControlFlowGraph) -> Self {
-		todo!()
+	fn from(cfg: &ControlFlowGraph) -> Self {
+		let edges = cfg
+			.graph
+			.edges()
+			.map(|(x, y)| {
+				(
+					cfg.meta_mapping_unique_id_to_index[&x],
+					cfg.meta_mapping_unique_id_to_index[&y],
+				)
+			})
+			.collect();
+		let metadata = cfg.metadata.clone();
+
+		Self { metadata, edges }
 	}
 }
 
