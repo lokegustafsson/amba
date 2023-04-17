@@ -1,4 +1,7 @@
-.PHONY: upload upload-amba upload-s2e get-libamba-symbols
+.PHONY: build upload upload-amba upload-s2e get-libamba-symbols
+
+build:
+	nix build -L
 
 upload: upload-amba upload-s2e upload-libamba
 
