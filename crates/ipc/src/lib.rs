@@ -1,6 +1,6 @@
 mod graph;
-mod metadata;
 mod ipc;
+mod metadata;
 
-pub use metadata::{NodeMetadata, NodeMetadataFFI};
 pub use ipc::*;
+pub use metadata::{NodeMetadata, NodeMetadataFFI};
