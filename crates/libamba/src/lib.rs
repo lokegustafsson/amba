@@ -78,7 +78,7 @@ mod ffi {
 
 		let lock_and_cow = |ptr: *mut Mutex<ControlFlowGraph>| {
 			let r = (*ptr).lock().unwrap();
-			Cow::Owned(GraphIpc::from(&r.graph))
+			Cow::Owned(GraphIpc::from(&*r))
 		};
 
 		let symbolic_state_graph = lock_and_cow(symbolic);

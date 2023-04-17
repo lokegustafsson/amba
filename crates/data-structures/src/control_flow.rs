@@ -20,6 +20,12 @@ pub struct ControlFlowGraph {
 	pub(crate) meta_mapping_unique_id_to_index: BTreeMap<u64, usize>,
 }
 
+impl From<&ControlFlowGraph> for ipc::GraphIpc {
+	fn from(value: &ControlFlowGraph) -> Self {
+		todo!()
+	}
+}
+
 impl Default for ControlFlowGraph {
 	fn default() -> Self {
 		Self::new()
