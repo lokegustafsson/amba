@@ -1,7 +1,21 @@
-.PHONY: build upload upload-amba upload-s2e get-libamba-symbols
+.PHONY: build test upload upload-amba upload-s2e get-libamba-symbols
 
 build:
 	nix build -L
+
+test:
+	nix run .#test-amba-hello
+	nix run .#test-amba-control-flow
+	cargo test -r \
+		-p amba \
+		-p bootstrap \
+		-p data-structures \
+		-p disassembler \
+		-p ipc \
+		-p libamba \
+		-p mitm-debug-stream \
+		-p qmp-client \
+		-p recipe
 
 upload: upload-amba upload-s2e upload-libamba
 
