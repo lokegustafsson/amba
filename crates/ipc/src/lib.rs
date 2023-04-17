@@ -2,5 +2,5 @@ mod graph;
 mod ipc;
 mod metadata;
 
-pub use ipc::*;
+pub use crate::ipc::*;
 pub use metadata::{NodeMetadata, NodeMetadataFFI};
