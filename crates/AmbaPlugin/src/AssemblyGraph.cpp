@@ -4,24 +4,6 @@
 
 namespace assembly_graph {
 
-Unpacked unpack(PackedNodeData packed) {
-	const u64 val = packed.val;
-	// Addresses either live at the bottom or top of the address
-	// space, so we sign extend from the 48 bits we have kept
-	u64 vaddr =  val & 0x0000'FFFF'FFFF'FFFF;
-	if (vaddr & 1L << 47) {
-		vaddr |= 0xFFFF'0000'0000'0000;
-	}
-	const u64 gen   = (val & 0x000F'0000'0000'0000) >> 48;
-	const u64 state = (val & 0xFFF0'0000'0000'0000) >> 52;
-
-	return (Unpacked) {
-		.vaddr = vaddr,
-		.gen = (u8) gen,
-		.state = state,
-	};
-}
-
 AssemblyGraph::AssemblyGraph(std::string name)
 	: ControlFlow(name)
 {}

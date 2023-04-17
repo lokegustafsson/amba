@@ -17,7 +17,6 @@ using StateIdS2E = hashable_wrapper::HashableWrapper<i32, 0>;
 using StateIdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
 using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
 using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
-using PackedNodeData = hashable_wrapper::HashableWrapper<u64, 4>;
 
 struct Unpacked {
 	u64 vaddr;

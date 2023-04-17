@@ -8,8 +8,6 @@ namespace assembly_graph {
 
 using namespace control_flow::types;
 
-Unpacked unpack(PackedNodeData);
-
 class AssemblyGraph : public control_flow::ControlFlow {
   public:
 	AssemblyGraph(std::string);
