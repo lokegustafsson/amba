@@ -13,15 +13,23 @@ void SymbolicGraph::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
-	const StateIdAmba from = this->getStateIdAmba(control_flow::getStateIdS2E(old_state));
+	const auto from = (Metadata) {
+		.symbolic_state_id = this->getStateIdAmba(control_flow::getStateIdS2E(old_state)),
+		.basic_block_vaddr = 0,
+		.basic_block_generation = 0,
+	};
 
 	for (auto &new_state : new_states) {
 		if (new_state == old_state) {
 			this->incrementStateIdAmba(control_flow::getStateIdS2E(new_state));
 		}
 
-		const StateIdAmba to = this->getStateIdAmba(control_flow::getStateIdS2E(new_state));
-		AMBA_ASSERT(from != to);
+		const auto to = (Metadata) {
+			.symbolic_state_id = this->getStateIdAmba(control_flow::getStateIdS2E(new_state)),
+			.basic_block_vaddr = 0,
+			.basic_block_generation = 0,
+		};
+		AMBA_ASSERT(from.symbolic_state_id != to.symbolic_state_id);
 
 		control_flow::updateControlFlowGraph(
 			this->m_cfg,
@@ -38,11 +46,23 @@ void SymbolicGraph::onStateMerge(
 	const StateIdS2E dest_id = control_flow::getStateIdS2E(destination_state);
 	const StateIdS2E src_id = control_flow::getStateIdS2E(source_state);
 
-	const StateIdAmba from_left = this->getStateIdAmba(dest_id);
-	const StateIdAmba from_right = this->getStateIdAmba(src_id);
+	const auto from_left = (Metadata) {
+		.symbolic_state_id = this->getStateIdAmba(dest_id),
+		.basic_block_vaddr = 0,
+		.basic_block_generation = 0,
+	};
+	const auto from_right = (Metadata) {
+		.symbolic_state_id = this->getStateIdAmba(src_id),
+		.basic_block_vaddr = 0,
+		.basic_block_generation = 0,
+	};
 
 	this->incrementStateIdAmba(dest_id);
-	const StateIdAmba to = this->getStateIdAmba(dest_id);
+	const auto to = (Metadata) {
+		.symbolic_state_id = this->getStateIdAmba(dest_id),
+		.basic_block_vaddr = 0,
+		.basic_block_generation = 0,
+	};
 
 	control_flow::updateControlFlowGraph(
 		this->m_cfg,
