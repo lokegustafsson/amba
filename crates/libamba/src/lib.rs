@@ -1,7 +1,7 @@
 use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
 
-use data_structures::{ControlFlowGraph, GraphIpc};
-use ipc::IpcTx;
+use data_structures::ControlFlowGraph;
+use ipc::{GraphIpc, IpcTx, NodeMetadataFFI};
 
 #[allow(unsafe_code, clippy::missing_safety_doc)]
 mod ffi {
@@ -30,16 +30,13 @@ mod ffi {
 	#[no_mangle]
 	pub unsafe extern "C" fn rust_update_control_flow_graph(
 		ptr: *mut Mutex<ControlFlowGraph>,
-		from: u64,
-		to: u64,
+		from: NodeMetadataFFI,
+		to: NodeMetadataFFI,
 	) -> bool {
 		let mutex = &*ptr;
 		let mut cfg = mutex.lock().unwrap();
 
-		let from_meta = (from as u32).into();
-		let to_meta = (to as u32).into();
-
-		cfg.update(from_meta, to_meta)
+		cfg.update(from.into(), to.into())
 	}
 
 	#[no_mangle]
