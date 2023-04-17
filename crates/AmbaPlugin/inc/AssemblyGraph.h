@@ -8,7 +8,6 @@ namespace assembly_graph {
 
 using namespace control_flow::types;
 
-void updateControlFlowGraph(ControlFlowGraph *, PackedNodeData, PackedNodeData);
 Unpacked unpack(PackedNodeData);
 
 class AssemblyGraph : public control_flow::ControlFlow {

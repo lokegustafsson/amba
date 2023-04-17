@@ -25,11 +25,18 @@ struct Unpacked {
 	u64 state;
 };
 
+struct Metadata {
+	StateIdAmba symbolic_state_id;
+	u64 basic_block_vaddr;
+	u64 basic_block_generation;
+};
+
 }
 
 using namespace types;
 
 StateIdS2E getStateIdS2E(s2e::S2EExecutionState *);
+void updateControlFlowGraph(ControlFlowGraph *cfg, Metadata from, Metadata to);
 
 class ControlFlow {
   public:

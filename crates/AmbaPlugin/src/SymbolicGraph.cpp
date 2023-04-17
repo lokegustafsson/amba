@@ -1,15 +1,8 @@
 #include "SymbolicGraph.h"
 #include "AmbaException.h"
+#include "ControlFlow.h"
 
 namespace symbolic_graph {
-
-void updateControlFlowGraph(ControlFlowGraph *cfg, StateIdAmba from, StateIdAmba to) {
-	rust_update_control_flow_graph(
-		cfg,
-		from.val,
-		to.val
-	);
-}
 
 SymbolicGraph::SymbolicGraph(std::string name)
 	: ControlFlow(name)
@@ -30,7 +23,7 @@ void SymbolicGraph::onStateFork(
 		const StateIdAmba to = this->getStateIdAmba(control_flow::getStateIdS2E(new_state));
 		AMBA_ASSERT(from != to);
 
-		updateControlFlowGraph(
+		control_flow::updateControlFlowGraph(
 			this->m_cfg,
 			from,
 			to
@@ -51,12 +44,12 @@ void SymbolicGraph::onStateMerge(
 	this->incrementStateIdAmba(dest_id);
 	const StateIdAmba to = this->getStateIdAmba(dest_id);
 
-	updateControlFlowGraph(
+	control_flow::updateControlFlowGraph(
 		this->m_cfg,
 		from_left,
 		to
 	);
-	updateControlFlowGraph(
+	control_flow::updateControlFlowGraph(
 		this->m_cfg,
 		from_right,
 		to

@@ -3,14 +3,6 @@
 
 namespace assembly_graph {
 
-void updateControlFlowGraph(ControlFlowGraph *cfg, PackedNodeData from, PackedNodeData to) {
-	rust_update_control_flow_graph(
-		cfg,
-		from.val,
-		to.val
-	);
-}
-
 Unpacked unpack(PackedNodeData packed) {
 	const u64 val = packed.val;
 	// Addresses either live at the bottom or top of the address
@@ -54,7 +46,7 @@ void AssemblyGraph::onBlockStart(
 	const PackedNodeData curr = this->getPacked(state, pc);
 	// Will insert 0 if value doesn't yet exist
 	auto &last = this->m_last[amba_id];
-	updateControlFlowGraph(
+	control_flow::updateControlFlowGraph(
 		this->m_cfg,
 		last,
 		curr
