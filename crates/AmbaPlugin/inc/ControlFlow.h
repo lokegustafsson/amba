@@ -18,12 +18,6 @@ using StateIdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
 using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
 using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
 
-struct Unpacked {
-	u64 vaddr;
-	u8 gen;
-	u64 state;
-};
-
 struct Metadata {
 	StateIdAmba symbolic_state_id;
 	u64 basic_block_vaddr;
