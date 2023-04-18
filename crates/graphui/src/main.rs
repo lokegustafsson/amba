@@ -28,6 +28,9 @@ impl eframe::App for GraphTestGui {
 }
 
 fn main() {
+	// Pinned version of winit crashes on wayland
+	std::env::remove_var("WAYLAND_DISPLAY");
+
 	tracing::subscriber::set_global_default(
 		Targets::new()
 			.with_target("eframe::native::run", tracing::Level::DEBUG)
