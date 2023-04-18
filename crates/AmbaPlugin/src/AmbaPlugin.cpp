@@ -222,15 +222,10 @@ void AmbaPlugin::onProcessUnload(
 }
 
 void AmbaPlugin::onTimer() {
-	rust_ipc_send_graph(
-		this->m_assembly_graph.getName(),
+	rust_ipc_send_graphs(
 		this->m_ipc,
+		this->m_symbolic_graph.cfg(),
 		this->m_assembly_graph.cfg()
-	);
-	rust_ipc_send_graph(
-		this->m_symbolic_graph.getName(),
-		this->m_ipc,
-		this->m_symbolic_graph.cfg()
 	);
 }
 

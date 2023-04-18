@@ -853,6 +853,7 @@ dependencies = [
  "arrayvec",
  "fastrand",
  "glam",
+ "ipc",
  "itertools 0.10.5",
  "proptest",
  "serde",
@@ -1638,7 +1639,6 @@ name = "ipc"
 version = "0.1.0"
 dependencies = [
  "bincode",
- "data-structures",
  "serde",
  "tracing",
 ]

@@ -17,12 +17,11 @@ using StateIdS2E = hashable_wrapper::HashableWrapper<i32, 0>;
 using StateIdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
 using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
 using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
-using PackedNodeData = hashable_wrapper::HashableWrapper<u64, 4>;
 
-struct Unpacked {
-	u64 vaddr;
-	u8 gen;
-	u64 state;
+struct Metadata {
+	StateIdAmba symbolic_state_id;
+	u64 basic_block_vaddr;
+	u64 basic_block_generation;
 };
 
 }
@@ -30,6 +29,7 @@ struct Unpacked {
 using namespace types;
 
 StateIdS2E getStateIdS2E(s2e::S2EExecutionState *);
+void updateControlFlowGraph(ControlFlowGraph *cfg, Metadata from, Metadata to);
 
 class ControlFlow {
   public:

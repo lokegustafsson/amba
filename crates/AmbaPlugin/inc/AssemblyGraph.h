@@ -8,9 +8,6 @@ namespace assembly_graph {
 
 using namespace control_flow::types;
 
-void updateControlFlowGraph(ControlFlowGraph *, PackedNodeData, PackedNodeData);
-Unpacked unpack(PackedNodeData);
-
 class AssemblyGraph : public control_flow::ControlFlow {
   public:
 	AssemblyGraph(std::string);
@@ -22,10 +19,10 @@ class AssemblyGraph : public control_flow::ControlFlow {
 
   protected:
 	StatePC packStatePc(StateIdS2E, u64);
-	PackedNodeData getPacked(s2e::S2EExecutionState *, u64);
+	Metadata getMetadata(s2e::S2EExecutionState *, u64);
 
 	std::unordered_map<StatePC, BasicBlockGeneration> m_generations {};
-	std::unordered_map<StateIdAmba, PackedNodeData> m_last {};
+	std::unordered_map<StateIdAmba, Metadata> m_last {};
 };
 
 }

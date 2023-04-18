@@ -20,6 +20,26 @@ pub struct Graph {
 	pub merges: Map<u64, u64>,
 }
 
+impl From<&Graph> for ipc::GraphIpc {
+	fn from(graph: &Graph) -> Self {
+		let metadata = graph
+			.nodes
+			.values()
+			.map(|node| ipc::NodeMetadata {
+				symbolic_state_id: node.id as u32,
+				basic_block_vaddr: None,
+				basic_block_generation: None,
+			})
+			.collect();
+		let edges = graph
+			.edges()
+			.map(|(x, y)| (x as usize, y as usize))
+			.collect();
+
+		Self { metadata, edges }
+	}
+}
+
 impl Graph {
 	pub fn new() -> Self {
 		Default::default()
@@ -321,7 +341,7 @@ impl Graph {
 		l
 	}
 
-	fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
+	pub fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
 		self.nodes
 			.values()
 			.flat_map(|n| n.to.iter().map(|&m| (n.id, m)))

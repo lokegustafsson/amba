@@ -1,33 +1,8 @@
 #include "AssemblyGraph.h"
 #include "AmbaException.h"
+#include "ControlFlow.h"
 
 namespace assembly_graph {
-
-void updateControlFlowGraph(ControlFlowGraph *cfg, PackedNodeData from, PackedNodeData to) {
-	rust_update_control_flow_graph(
-		cfg,
-		from.val,
-		to.val
-	);
-}
-
-Unpacked unpack(PackedNodeData packed) {
-	const u64 val = packed.val;
-	// Addresses either live at the bottom or top of the address
-	// space, so we sign extend from the 48 bits we have kept
-	u64 vaddr =  val & 0x0000'FFFF'FFFF'FFFF;
-	if (vaddr & 1L << 47) {
-		vaddr |= 0xFFFF'0000'0000'0000;
-	}
-	const u64 gen   = (val & 0x000F'0000'0000'0000) >> 48;
-	const u64 state = (val & 0xFFF0'0000'0000'0000) >> 52;
-
-	return (Unpacked) {
-		.vaddr = vaddr,
-		.gen = (u8) gen,
-		.state = state,
-	};
-}
 
 AssemblyGraph::AssemblyGraph(std::string name)
 	: ControlFlow(name)
@@ -51,10 +26,10 @@ void AssemblyGraph::onBlockStart(
 	u64 pc
 ) {
 	const StateIdAmba amba_id = this->getStateIdAmba(control_flow::getStateIdS2E(state));
-	const PackedNodeData curr = this->getPacked(state, pc);
+	const Metadata curr = this->getMetadata(state, pc);
 	// Will insert 0 if value doesn't yet exist
 	auto &last = this->m_last[amba_id];
-	updateControlFlowGraph(
+	control_flow::updateControlFlowGraph(
 		this->m_cfg,
 		last,
 		curr
@@ -81,7 +56,7 @@ StatePC AssemblyGraph::packStatePc(StateIdS2E uid, u64 pc) {
 	return pc << 4 | (u64) uid.val;
 }
 
-PackedNodeData AssemblyGraph::getPacked(
+Metadata AssemblyGraph::getMetadata(
 	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
@@ -89,21 +64,12 @@ PackedNodeData AssemblyGraph::getPacked(
 	const StateIdAmba amba_id = this->getStateIdAmba(state);
 	const StatePC state_pc = this->packStatePc(state, pc);
 	const BasicBlockGeneration gen = this->m_generations[state_pc];
-	const u64 vaddr = pc;
 
-	const u64 packed
-		= (0x0000'FFFF'FFFF'FFFF & vaddr)
-		| (0x000F'0000'0000'0000 & ((u64) gen.val << 48))
-		| (0xFFF0'0000'0000'0000 & ((u64) amba_id.val << 52));
-
-	{
-		const auto [vaddr_, gen_, state_] = unpack(packed);
-		AMBA_ASSERT(vaddr == vaddr_);
-		AMBA_ASSERT(gen == gen_);
-		AMBA_ASSERT((u64) amba_id.val == state_);
-	}
-
-	return PackedNodeData(packed);
+	return (Metadata) {
+		.symbolic_state_id = amba_id,
+		.basic_block_vaddr = pc,
+		.basic_block_generation = gen.val,
+	};
 }
 
 }
