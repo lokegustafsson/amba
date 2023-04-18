@@ -91,3 +91,17 @@ fn main() {
 	)
 	.unwrap()
 }
+
+#[cfg(test)]
+mod test {
+	use std::time::Duration;
+
+	#[test]
+	fn open_window() {
+		use std::thread;
+
+		thread::spawn(crate::main);
+		// 10 seconds to let the OS find libraries, wait for X to be slow and so on
+		thread::sleep(Duration::from_secs(10));
+	}
+}
