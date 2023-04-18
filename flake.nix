@@ -52,6 +52,7 @@
             packages = let p = pkgs;
             in [
               amba.impure-amba
+              p.nixgl.nixGLIntel
               cargo2nix.outputs.packages.${system}.cargo2nix
               p.clang-tools_14
               p.ctags
