@@ -5,12 +5,12 @@ args@{
   release ? true,
   rootFeatures ? [
     "amba/default"
-    "graphui/default"
+    "data-structures/default"
     "ipc/default"
+    "graphui/default"
     "qmp-client/default"
     "recipe/default"
     "bootstrap/default"
-    "data-structures/default"
     "disassembler/default"
     "libamba/default"
     "mitm-debug-stream/default"
@@ -49,12 +49,12 @@ in
   cargo2nixVersion = "0.11.0";
   workspace = {
     amba = rustPackages.unknown.amba."0.1.0";
-    graphui = rustPackages.unknown.graphui."0.1.0";
+    data-structures = rustPackages.unknown.data-structures."0.1.0";
     ipc = rustPackages.unknown.ipc."0.1.0";
+    graphui = rustPackages.unknown.graphui."0.1.0";
     qmp-client = rustPackages.unknown.qmp-client."0.1.0";
     recipe = rustPackages.unknown.recipe."0.1.0";
     bootstrap = rustPackages.unknown.bootstrap."0.1.0";
-    data-structures = rustPackages.unknown.data-structures."0.1.0";
     disassembler = rustPackages.unknown.disassembler."0.1.0";
     libamba = rustPackages.unknown.libamba."0.1.0";
     mitm-debug-stream = rustPackages.unknown.mitm-debug-stream."0.1.0";
@@ -191,6 +191,7 @@ in
       chrono = rustPackages."registry+https://github.com/rust-lang/crates.io-index".chrono."0.4.23" { inherit profileName; };
       clap = rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.1.6" { inherit profileName; };
       ctrlc = rustPackages."registry+https://github.com/rust-lang/crates.io-index".ctrlc."3.2.5" { inherit profileName; };
+      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       dirs = rustPackages."registry+https://github.com/rust-lang/crates.io-index".dirs."4.0.0" { inherit profileName; };
       eframe = rustPackages."registry+https://github.com/rust-lang/crates.io-index".eframe."0.21.3" { inherit profileName; };
       glam = rustPackages."registry+https://github.com/rust-lang/crates.io-index".glam."0.23.0" { inherit profileName; };
