@@ -3,6 +3,7 @@ use std::{
 	thread,
 };
 
+use data_structures::Graph;
 use eframe::{
 	egui::{self, Context},
 	App, CreationContext, Frame,
@@ -28,16 +29,20 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 }
 
 pub struct Model {
-	pub state_graph: RwLock<Graph2D>,
-	pub block_graph: RwLock<Graph2D>,
+	pub state_graph: RwLock<Graph>,
+	pub block_graph: RwLock<Graph>,
+	pub drawable_state_graph: RwLock<Graph2D>,
+	pub drawable_block_graph: RwLock<Graph2D>,
 	pub embedding_parameters: Mutex<EmbeddingParameters>,
 }
 
 impl Model {
 	pub fn new() -> Self {
 		Self {
-			state_graph: RwLock::new(Graph2D::empty()),
-			block_graph: RwLock::new(Graph2D::empty()),
+			state_graph: RwLock::new(Graph::new()),
+			block_graph: RwLock::new(Graph::new()),
+			drawable_state_graph: RwLock::new(Graph2D::empty()),
+			drawable_block_graph: RwLock::new(Graph2D::empty()),
 			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
 		}
 	}
@@ -87,9 +92,9 @@ impl Gui {
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
 		let graph = if self.show_symbolic {
-			self.model.state_graph.read().unwrap()
+			self.model.drawable_state_graph.read().unwrap()
 		} else {
-			self.model.block_graph.read().unwrap()
+			self.model.drawable_block_graph.read().unwrap()
 		};
 		let active = self.graph_widget.active_node_id();
 
@@ -102,10 +107,16 @@ impl App for Gui {
 						.send(ControllerMsg::EmbeddingParamsUpdated)
 						.unwrap();
 				}
-				ui.add(egui::Checkbox::new(
-					&mut self.show_symbolic,
-					"Show symbolic",
-				));
+				ui.vertical(|ui| {
+					let simplify_button = ui.add(egui::Button::new("Simplify graph"));
+					if simplify_button.clicked() {
+						println!("Click");
+					}
+					ui.add(egui::Checkbox::new(
+						&mut self.show_symbolic,
+						"Show symbolic",
+					));
+				});
 			})
 		});
 		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {

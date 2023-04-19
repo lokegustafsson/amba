@@ -82,8 +82,8 @@ impl Controller {
 				.name("embedder".to_owned())
 				.spawn_scoped(s, || {
 					run_embedder(
-						&embedder_model.state_graph,
-						&embedder_model.block_graph,
+						&embedder_model.drawable_state_graph,
+						&embedder_model.drawable_block_graph,
 						&embedder_model.embedding_parameters,
 						embedder_rx,
 						embedder_gui_context,
