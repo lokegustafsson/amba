@@ -47,6 +47,7 @@ struct Gui {
 	controller_tx: mpsc::Sender<ControllerMsg>,
 	model: Arc<Model>,
 	graph_widget: GraphWidget,
+	show_symbolic: bool,
 }
 
 impl Gui {
@@ -78,13 +79,18 @@ impl Gui {
 			controller_tx,
 			model,
 			graph_widget: GraphWidget::default(),
+			show_symbolic: false,
 		}
 	}
 }
 
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
-		let graph = &self.model.block_graph.read().unwrap();
+		let graph = if self.show_symbolic {
+			self.model.state_graph.read().unwrap()
+		} else {
+			self.model.block_graph.read().unwrap()
+		};
 		let active = self.graph_widget.active_node_id();
 
 		egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
@@ -96,6 +102,10 @@ impl App for Gui {
 						.send(ControllerMsg::EmbeddingParamsUpdated)
 						.unwrap();
 				}
+				ui.add(egui::Checkbox::new(
+					&mut self.show_symbolic,
+					"Show symbolic",
+				));
 			})
 		});
 		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {
@@ -109,7 +119,7 @@ impl App for Gui {
 				}
 			})
 		});
-		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, graph));
+		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, &graph));
 	}
 
 	fn on_exit(&mut self, _: Option<&eframe::glow::Context>) {
