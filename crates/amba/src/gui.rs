@@ -12,7 +12,7 @@ use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
 
 use crate::{
 	cmd::Cmd,
-	run::{Controller, ControllerMsg},
+	run::control::{Controller, ControllerMsg},
 	SessionConfig,
 };
 

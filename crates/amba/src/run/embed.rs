@@ -25,7 +25,7 @@ use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
 
-fn run_embedder(
+pub fn run_embedder(
 	model: &Model,
 	rx: mpsc::Receiver<Option<[GraphIpc; 2]>>,
 	gui_context: Option<Context>,

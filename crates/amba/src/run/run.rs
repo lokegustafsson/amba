@@ -23,9 +23,9 @@ use graphui::{EmbeddingParameters, Graph2D};
 use ipc::{GraphIpc, IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
-use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
+use crate::{cmd::Cmd, gui::Model, run::{session::S2EConfig, control::ControllerMsg}, SessionConfig};
 
-fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {
 		let version_file = &data_dir.join("version.txt");
 		let version = version_file
@@ -79,7 +79,7 @@ fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	Ok(())
 }
 
-fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
+pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
 	let ipc_listener = UnixListener::bind(ipc_socket).unwrap();
 	let stream = ipc_listener.accept().unwrap().0;
 	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
@@ -109,7 +109,7 @@ fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Res
 	Ok(())
 }
 
-fn run_qemu(
+pub fn run_qemu(
 	cmd: &mut Cmd,
 	config: &SessionConfig,
 	qmp_socket: &Path,
@@ -157,7 +157,7 @@ fn run_qemu(
 	}
 }
 
-fn run_qemu_inner(
+pub fn run_qemu_inner(
 	cmd: &mut Cmd,
 	sigstop_qemu_on_fork: bool,
 	qemu: &Path,
@@ -252,7 +252,7 @@ fn run_qemu_inner(
 	cmd.command_spawn_wait_with_pid(&mut command, with_pid)
 }
 
-fn run_qmp(socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
+pub fn run_qmp(socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
 	let stream = 'outer: {
 		let mut attempt = 0;
 		let result = loop {

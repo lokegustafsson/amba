@@ -123,7 +123,7 @@ fn main() -> ExitCode {
 			if args.no_gui {
 				let (tx, rx) = mpsc::channel();
 				SessionConfig::new(cmd, base, &args).and_then(|config| {
-					(run::Controller {
+					(run::control::Controller {
 						tx,
 						rx,
 						model: Arc::new(Model::new()),

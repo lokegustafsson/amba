@@ -23,7 +23,12 @@ use graphui::{EmbeddingParameters, Graph2D};
 use ipc::{GraphIpc, IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
-use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
+use crate::{
+	cmd::Cmd,
+	gui::Model,
+	run::{embed, run, session::S2EConfig},
+	SessionConfig,
+};
 
 pub enum ControllerMsg {
 	GuiShutdown,
@@ -52,7 +57,7 @@ impl Controller {
 	///
 	/// TODO: support more guests than just `ubuntu-22.04-x86_64`
 	pub fn run(mut self, cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
-		prepare_run(cmd, config)?;
+		run::prepare_run(cmd, config)?;
 
 		let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
 		let qmp_socket = &config.temp_dir.join("qmp.socket");
@@ -67,26 +72,26 @@ impl Controller {
 		let res = thread::scope(|s| {
 			let ipc = thread::Builder::new()
 				.name("ipc".to_owned())
-				.spawn_scoped(s, || run_ipc(ipc_socket, controller_tx_from_ipc))
+				.spawn_scoped(s, || {
+					run::run_ipc(ipc_socket, controller_tx_from_ipc)
+				})
 				.unwrap();
 			let qemu = thread::Builder::new()
 				.name("qemu".to_owned())
 				.spawn_scoped(s, || {
-					run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
+					run::run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
 				})
 				.unwrap();
 			let qmp = thread::Builder::new()
 				.name("qmp".to_owned())
-				.spawn_scoped(s, || run_qmp(qmp_socket, controller_tx_from_qmp))
+				.spawn_scoped(s, || {
+					run::run_qmp(qmp_socket, controller_tx_from_qmp)
+				})
 				.unwrap();
 			let embedder = thread::Builder::new()
 				.name("embedder".to_owned())
 				.spawn_scoped(s, || {
-					run_embedder(
-						&embedder_model,
-						embedder_rx,
-						embedder_gui_context,
-					)
+					embed::run_embedder(&embedder_model, embedder_rx, embedder_gui_context)
 				})
 				.unwrap();
 			self.run_controller();
