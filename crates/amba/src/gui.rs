@@ -110,7 +110,13 @@ impl App for Gui {
 				ui.vertical(|ui| {
 					let simplify_button = ui.add(egui::Button::new("Simplify graph"));
 					if simplify_button.clicked() {
-						println!("Click");
+						self.model.block_graph.write().unwrap().compress();
+						self.model.state_graph.write().unwrap().compress();
+
+						let graph_ipc: GraphIpc = self.model.block_graph.read().unwrap().into();
+						let graph_2d: Graph2D = graph_ipc.into();
+
+						*self.model.drawable_block_graph.write() = graph_2d;
 					}
 					ui.add(egui::Checkbox::new(
 						&mut self.show_symbolic,
