@@ -47,6 +47,12 @@ impl From<&Graph> for ipc::GraphIpc {
 	}
 }
 
+impl From<Graph> for ipc::GraphIpc {
+	fn from(graph: Graph) -> Self {
+		(&graph).into()
+	}
+}
+
 impl Graph {
 	pub fn new() -> Self {
 		Default::default()

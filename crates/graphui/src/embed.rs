@@ -34,6 +34,12 @@ impl From<GraphIpc> for Graph2D {
 	}
 }
 
+impl From<&GraphIpc> for Graph2D {
+	fn from(value: &GraphIpc) -> Self {
+		value.clone().into()
+	}
+}
+
 #[derive(Clone, Copy)]
 pub struct EmbeddingParameters {
 	pub noise: f64,
