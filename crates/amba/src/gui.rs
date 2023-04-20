@@ -139,7 +139,7 @@ impl App for Gui {
 		match self.controller_tx.send(ControllerMsg::GuiShutdown) {
 			Ok(()) => tracing::info!("gui telling controller to exit"),
 			Err(mpsc::SendError(ControllerMsg::GuiShutdown)) => {
-				tracing::warn!("controller already exited")
+				tracing::warn!("controller already exited");
 			}
 			Err(mpsc::SendError(_)) => unreachable!(),
 		}
