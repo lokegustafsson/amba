@@ -13,34 +13,34 @@ description of AMBA.
 
 ```md
 ├── crates
-│   ├── AmbaPlugin
-│   │   ├── inc
-│   │   └── src
-│   ├── amba
-│   │   ├── data
-│   │   ├── src
-│   │   │   ├── init
-│   │   │   └── run
-│   │   └── templates
-│   ├── amba-gui
-│   │   └── src
-│   ├── bootstrap
-│   │   └── src
-│   ├── data-structures
-│   │   └── src
-│   ├── ipc
-│   │   └── src
-│   ├── libamba
-│   │   └── src
-│   ├── mitm-debug-stream
-│   │   └── src
-│   ├── qmp-client
-│   │   └── src
-│   ├── recipe
-│   │   └── src
-│   └── s2e-rs
-│       ├── cpp_src
-│       └── src
+│   ├── AmbaPlugin
+│   │   ├── inc
+│   │   └── src
+│   ├── amba
+│   │   ├── data
+│   │   ├── src
+│   │   │   ├── init
+│   │   │   └── run
+│   │   └── templates
+│   ├── amba-gui
+│   │   └── src
+│   ├── bootstrap
+│   │   └── src
+│   ├── data-structures
+│   │   └── src
+│   ├── ipc
+│   │   └── src
+│   ├── libamba
+│   │   └── src
+│   ├── mitm-debug-stream
+│   │   └── src
+│   ├── qmp-client
+│   │   └── src
+│   ├── recipe
+│   │   └── src
+│   └── s2e-rs
+│       ├── cpp_src
+│       └── src
 ... 
 ```
 
