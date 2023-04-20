@@ -53,6 +53,7 @@ struct Gui {
 	model: Arc<Model>,
 	graph_widget: GraphWidget,
 	show_symbolic: bool,
+	show_compressed: bool,
 }
 
 impl Gui {
@@ -85,6 +86,7 @@ impl Gui {
 			model,
 			graph_widget: GraphWidget::default(),
 			show_symbolic: false,
+			show_compressed: false,
 		}
 	}
 }
@@ -108,16 +110,10 @@ impl App for Gui {
 						.unwrap();
 				}
 				ui.vertical(|ui| {
-					let simplify_button = ui.add(egui::Button::new("Simplify graph"));
-					if simplify_button.clicked() {
-						self.model.block_graph.write().unwrap().compress();
-						self.model.state_graph.write().unwrap().compress();
-
-						let graph_ipc: GraphIpc = self.model.block_graph.read().unwrap().into();
-						let graph_2d: Graph2D = graph_ipc.into();
-
-						*self.model.drawable_block_graph.write() = graph_2d;
-					}
+					ui.add(egui::Checkbox::new(
+						&mut self.show_compressed,
+						"Show compressed",
+					));
 					ui.add(egui::Checkbox::new(
 						&mut self.show_symbolic,
 						"Show symbolic",
