@@ -29,20 +29,20 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 }
 
 pub struct Model {
-	pub state_graph: RwLock<Graph>,
-	pub block_graph: RwLock<Graph>,
-	pub drawable_state_graph: RwLock<Graph2D>,
-	pub drawable_block_graph: RwLock<Graph2D>,
+	pub raw_state_graph: RwLock<Graph2D>,
+	pub raw_block_graph: RwLock<Graph2D>,
+	pub compressed_state_graph: RwLock<Graph2D>,
+	pub compressed_block_graph: RwLock<Graph2D>,
 	pub embedding_parameters: Mutex<EmbeddingParameters>,
 }
 
 impl Model {
 	pub fn new() -> Self {
 		Self {
-			state_graph: RwLock::new(Graph::new()),
-			block_graph: RwLock::new(Graph::new()),
-			drawable_state_graph: RwLock::new(Graph2D::empty()),
-			drawable_block_graph: RwLock::new(Graph2D::empty()),
+			raw_state_graph: RwLock::new(Graph2D::empty()),
+			raw_block_graph: RwLock::new(Graph2D::empty()),
+			compressed_state_graph: RwLock::new(Graph2D::empty()),
+			compressed_block_graph: RwLock::new(Graph2D::empty()),
 			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
 		}
 	}
