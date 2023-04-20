@@ -27,3 +27,4 @@ use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
 mod session;
 mod run;
 mod control;
+pub mod embed;
