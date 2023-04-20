@@ -22,6 +22,13 @@ pub struct Graph {
 
 impl From<&Graph> for ipc::GraphIpc {
 	fn from(graph: &Graph) -> Self {
+		let node_id_renamings = graph
+			.nodes
+			.keys()
+			.copied()
+			.enumerate()
+			.map(|(x, y)| (y, x))
+			.collect::<Map<_, _>>();
 		let metadata = graph
 			.nodes
 			.values()
@@ -33,7 +40,7 @@ impl From<&Graph> for ipc::GraphIpc {
 			.collect();
 		let edges = graph
 			.edges()
-			.map(|(x, y)| (x as usize, y as usize))
+			.map(|(x, y)| (node_id_renamings[&x], node_id_renamings[&y]))
 			.collect();
 
 		Self { metadata, edges }
