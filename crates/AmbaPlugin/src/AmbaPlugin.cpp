@@ -4,9 +4,13 @@
 #include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
 #include <s2e/Plugins/OSMonitors/OSMonitor.h>
 
+#include <memory.h>
+#include <thread>
+
 // Our headers
 #include "AmbaPlugin.h"
 #include "Amba.h"
+#include "StatePrioritisation.h"
 
 namespace s2e {
 namespace plugins {
@@ -16,6 +20,8 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_ipc(rust_new_ipc())
+	, m_alive(std::make_shared<bool>(true))
+	, m_ipc_receiver_thread(std::jthread {})
 	, m_heap_leak(heap_leak::HeapLeak {})
 	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks", s2e->getPlugin<ModuleMap>() })
 	, m_symbolic_graph(symbolic_graph::SymbolicGraph { "symbolic states" })
@@ -24,6 +30,10 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
 	amba::info_stream = [=](){ return &self->getInfoStream(); };
 	amba::warning_stream = [=](){ return &self->getWarningsStream(); };
+}
+
+AmbaPlugin::~AmbaPlugin() {
+	*this->m_alive = false;
 }
 
 void AmbaPlugin::initialize() {
@@ -120,6 +130,10 @@ void AmbaPlugin::initialize() {
 	(void) core.onStateKill;
 	(void) core.onStateSwitch;
 
+	auto self = this;
+	this->m_ipc_receiver_thread = std::jthread([=]() {
+		state_prioritisation::ipcReceiver(self->m_ipc.rx, self->m_alive, self->s2e());
+	});
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
 

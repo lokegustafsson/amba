@@ -1,6 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <s2e/S2EExecutionState.h>
+
+#include <thread>
 
 #include "HeapLeak.h"
 #include "Numbers.h"
@@ -15,6 +18,7 @@ class AmbaPlugin : public Plugin {
 	S2E_PLUGIN
   public:
 	explicit AmbaPlugin(S2E *s2e);
+	~AmbaPlugin();
 
 	void initialize();
 
@@ -33,6 +37,8 @@ class AmbaPlugin : public Plugin {
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;
 
+	std::shared_ptr<bool> m_alive;
+	std::jthread m_ipc_receiver_thread;
 	heap_leak::HeapLeak m_heap_leak;
 	assembly_graph::AssemblyGraph m_assembly_graph;
 	symbolic_graph::SymbolicGraph m_symbolic_graph;

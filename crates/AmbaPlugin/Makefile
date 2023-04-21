@@ -42,7 +42,8 @@ LDFLAGS = -Wl,-soname,$@
 S2E_PATH ?= ../../s2e
 
 libamba.so: \
-  Amba.o Zydis.o HeapLeak.o ControlFlow.o SymbolicGraph.o AssemblyGraph.o AmbaPlugin.o \
+  Amba.o Zydis.o StatePrioritisation.o HeapLeak.o ControlFlow.o \
+  SymbolicGraph.o AssemblyGraph.o AmbaPlugin.o \
   libamba.a
 	$(CXX) -shared $^ $(ARCHIVES) $(LDFLAGS) -o $@
 
@@ -67,6 +68,11 @@ AmbaPlugin.o: \
   src/AmbaPlugin.cpp \
   inc/AmbaPlugin.h inc/Numbers.h
 	$(CXX) src/AmbaPlugin.cpp $(CXX-FLAGS) -c -o $@
+
+StatePrioritisation.o: \
+  src/StatePrioritisation.cpp \
+  inc/StatePrioritisation.h inc/AmbaException.h inc/Numbers.h
+	$(CXX) src/StatePrioritisation.cpp $(CXX-FLAGS) -c -o $@
 
 HeapLeak.o: \
   src/HeapLeak.cpp \
