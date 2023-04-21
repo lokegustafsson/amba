@@ -110,6 +110,8 @@ impl Graph2D {
 		}
 		let mut node_velocity = vec![DVec2::ZERO; self.node_positions.len()];
 		let mut node_accel = vec![DVec2::ZERO; self.node_positions.len()];
+		let mut tree_buffer =
+			vec![BarnesHutRTree::default(); 2 * self.node_positions.len().next_power_of_two()];
 		let rng = &Rng::new();
 		let mut total_delta_pos: f64 = 0.0;
 
@@ -129,13 +131,17 @@ impl Graph2D {
 			}
 			// Nodes repell with `F \propto D^-2`
 			if params.repulsion_approximation > 0.0 {
-				let tree = BarnesHutRTree::new(&mut self.node_positions.clone());
+				BarnesHutRTree::build_in(&mut tree_buffer, &mut self.node_positions.clone());
 				node_accel
 					.par_iter_mut()
 					.zip_eq(&self.node_positions)
 					.for_each(|(accel, &pos)| {
 						*accel += params.repulsion
-							* tree.force_on(pos, params.repulsion_approximation.powi(2));
+							* BarnesHutRTree::force_on(
+								pos,
+								&tree_buffer,
+								params.repulsion_approximation.powi(2),
+							);
 					});
 			} else {
 				node_accel
@@ -221,6 +227,7 @@ fn random_dvec2(rng: &Rng) -> DVec2 {
 }
 
 /// Barnes-Hut implemented with a 2D R-tree
+#[derive(Clone, Copy)]
 enum BarnesHutRTree {
 	Leaf {
 		point_mass: DVec2,
@@ -229,16 +236,26 @@ enum BarnesHutRTree {
 		mass: f64,
 		center_of_mass: DVec2,
 		tight_bounding_box: [DVec2; 2],
-		children: [Box<Self>; 2],
 	},
 }
+
+impl Default for BarnesHutRTree {
+	fn default() -> Self {
+		Self::Leaf {
+			point_mass: DVec2::ZERO,
+		}
+	}
+}
+
 impl BarnesHutRTree {
-	fn new(positions: &mut [DVec2]) -> Self {
+	fn build_in(buf: &mut [Self], positions: &mut [DVec2]) {
 		assert!(!positions.is_empty());
+		assert!(!buf.is_empty());
 		if positions.len() == 1 {
-			return Self::Leaf {
+			buf[0] = Self::Leaf {
 				point_mass: positions[0],
 			};
+			return;
 		}
 		let tight_bounding_box = positions.iter().fold(
 			[DVec2::splat(f64::INFINITY), DVec2::splat(f64::NEG_INFINITY)],
@@ -252,27 +269,33 @@ impl BarnesHutRTree {
 			|v| v.y
 		};
 		// Partition by median along the `split_extractor`:s direction using quickselect.
-		positions.select_nth_unstable_by(positions.len() / 2, |&a, &b| {
+		let len = positions.len();
+		positions.select_nth_unstable_by(len / 2, |&a, &b| {
 			f64::total_cmp(&split_extractor(a), &split_extractor(b))
 		});
 
-		let (before, after) = positions.split_at_mut(positions.len() / 2);
-		let children = {
-			let (a, b) = rayon::join(
-				|| Box::new(Self::new(before)),
-				|| Box::new(Self::new(after)),
-			);
-			[a, b]
-		};
+		let (buf_self, buf_children) = buf.split_at_mut(1);
+		let (buf_left, buf_right) = buf_children.split_at_mut(buf_children.len() / 2);
 
-		let center_of_mass = (children[0].center_of_mass() * children[0].mass()
-			+ children[1].center_of_mass() * children[1].mass())
+		let (before, after) = positions.split_at_mut(len / 2);
+		const FORK_JOIN_THRESHOLD: usize = 20;
+		if len > FORK_JOIN_THRESHOLD {
+			rayon::join(
+				|| Self::build_in(buf_left, before),
+				|| Self::build_in(buf_right, after),
+			);
+		} else {
+			Self::build_in(buf_left, before);
+			Self::build_in(buf_right, after);
+		}
+
+		let center_of_mass = (buf_left[0].center_of_mass() * buf_left[0].mass()
+			+ buf_right[0].center_of_mass() * buf_right[0].mass())
 			/ positions.len() as f64;
-		Self::Split {
+		buf_self[0] = Self::Split {
 			mass: positions.len() as f64,
 			center_of_mass,
 			tight_bounding_box,
-			children,
 		}
 	}
 
@@ -290,22 +313,23 @@ impl BarnesHutRTree {
 		}
 	}
 
-	fn force_on(&self, pos: DVec2, approximation2: f64) -> DVec2 {
-		match self {
-			Self::Leaf { point_mass } => Self::force_on_from_source(*point_mass, pos),
+	fn force_on(pos: DVec2, tree: &[Self], approximation2: f64) -> DVec2 {
+		match tree[0] {
+			Self::Leaf { point_mass } => Self::force_on_from_source(point_mass, pos),
 			Self::Split {
 				mass,
 				center_of_mass,
 				tight_bounding_box,
-				children,
 			} => {
 				let mid = (tight_bounding_box[0] + tight_bounding_box[1]) / 2.0;
 				let long_side = (tight_bounding_box[1] - tight_bounding_box[0]).max_element();
 				if approximation2 * mid.distance_squared(pos) > long_side * long_side {
-					*mass * Self::force_on_from_source(*center_of_mass, pos)
+					mass * Self::force_on_from_source(center_of_mass, pos)
 				} else {
-					children[0].force_on(pos, approximation2)
-						+ children[1].force_on(pos, approximation2)
+					let (_, tree_children) = tree.split_at(1);
+					let (tree_left, tree_right) = tree_children.split_at(tree_children.len() / 2);
+					Self::force_on(pos, tree_left, approximation2)
+						+ Self::force_on(pos, tree_right, approximation2)
 				}
 			}
 		}
