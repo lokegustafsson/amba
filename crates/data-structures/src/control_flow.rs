@@ -11,7 +11,7 @@ use crate::Graph;
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
 	pub graph: Graph,
-	pub(crate) compressed_graph: Graph,
+	pub compressed_graph: Graph,
 	pub(crate) updates: usize,
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
