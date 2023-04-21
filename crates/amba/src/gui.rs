@@ -93,11 +93,13 @@ impl Gui {
 
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
-		let graph = if self.show_symbolic {
-			self.model.drawable_state_graph.read().unwrap()
-		} else {
-			self.model.drawable_block_graph.read().unwrap()
-		};
+		let graph = match (self.show_symbolic, self.show_compressed) {
+			(true, _) => &self.model.raw_state_graph,
+			(false, true) => &self.model.compressed_block_graph,
+			(false, false) => &self.model.raw_block_graph,
+		}
+		.read()
+		.unwrap();
 		let active = self.graph_widget.active_node_id();
 
 		egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
