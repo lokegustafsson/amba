@@ -49,8 +49,10 @@ pub fn run_embedder(
 				};
 				*raw_state_graph.write().unwrap() = Graph2D::new(state, start_params);
 				*raw_block_graph.write().unwrap() = Graph2D::new(block, start_params);
-				*compressed_state_graph.write().unwrap() = Graph2D::new(compressed_state, start_params);
-				*compressed_block_graph.write().unwrap() = Graph2D::new(compressed_block, start_params);
+				*compressed_state_graph.write().unwrap() =
+					Graph2D::new(compressed_state, start_params);
+				*compressed_block_graph.write().unwrap() =
+					Graph2D::new(compressed_block, start_params);
 				blocking = false;
 				continue;
 			}
