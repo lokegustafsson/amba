@@ -2,28 +2,13 @@
 
 #![allow(unsafe_code)]
 
-use std::{
-	ffi::{OsStr, OsString},
-	mem,
-	net::Shutdown,
-	os::unix::{
-		net::{UnixListener, UnixStream},
-		process::CommandExt,
-	},
-	path::Path,
-	process::{self, Command, ExitStatus},
-	sync::{mpsc, Arc, Mutex, RwLock},
-	thread::{self, ScopedJoinHandle},
-	time::{Duration, Instant},
-};
+use std::{sync::mpsc, time::Instant};
 
-use data_structures::{ControlFlowGraph, Graph};
 use eframe::egui::Context;
-use graphui::{EmbeddingParameters, Graph2D};
-use ipc::{GraphIpc, IpcError, IpcMessage};
-use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
+use graphui::Graph2D;
+use ipc::GraphIpc;
 
-use crate::{cmd::Cmd, gui::Model, run::session::S2EConfig, SessionConfig};
+use crate::gui::Model;
 
 pub fn run_embedder(
 	model: &Model,

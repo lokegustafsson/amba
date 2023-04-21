@@ -4,7 +4,6 @@
 
 use std::{
 	ffi::{OsStr, OsString},
-	mem,
 	net::Shutdown,
 	os::unix::{
 		net::{UnixListener, UnixStream},
@@ -12,18 +11,19 @@ use std::{
 	},
 	path::Path,
 	process::{self, Command, ExitStatus},
-	sync::{mpsc, Arc, Mutex, RwLock},
-	thread::{self, ScopedJoinHandle},
-	time::{Duration, Instant},
+	sync::mpsc,
+	thread,
+	time::Duration,
 };
 
-use data_structures::{ControlFlowGraph, Graph};
-use eframe::egui::Context;
-use graphui::{EmbeddingParameters, Graph2D};
-use ipc::{GraphIpc, IpcError, IpcMessage};
+use ipc::{IpcError, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
-use crate::{cmd::Cmd, gui::Model, run::{session::S2EConfig, control::ControllerMsg}, SessionConfig};
+use crate::{
+	cmd::Cmd,
+	run::{control::ControllerMsg, session::S2EConfig},
+	SessionConfig,
+};
 
 pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	fn data_dir_has_been_initialized(cmd: &mut Cmd, data_dir: &Path) -> bool {

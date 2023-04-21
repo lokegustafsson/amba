@@ -3,30 +3,21 @@
 #![allow(unsafe_code)]
 
 use std::{
-	ffi::{OsStr, OsString},
 	mem,
 	net::Shutdown,
-	os::unix::{
-		net::{UnixListener, UnixStream},
-		process::CommandExt,
-	},
+	os::unix::net::UnixStream,
 	path::Path,
-	process::{self, Command, ExitStatus},
-	sync::{mpsc, Arc, Mutex, RwLock},
+	sync::{mpsc, Arc},
 	thread::{self, ScopedJoinHandle},
-	time::{Duration, Instant},
 };
 
-use data_structures::{ControlFlowGraph, Graph};
 use eframe::egui::Context;
-use graphui::{EmbeddingParameters, Graph2D};
-use ipc::{GraphIpc, IpcError, IpcMessage};
-use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
+use ipc::GraphIpc;
 
 use crate::{
 	cmd::Cmd,
 	gui::Model,
-	run::{embed, run, session::S2EConfig},
+	run::{embed, run},
 	SessionConfig,
 };
 

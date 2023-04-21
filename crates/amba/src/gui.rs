@@ -3,7 +3,6 @@ use std::{
 	thread,
 };
 
-use data_structures::Graph;
 use eframe::{
 	egui::{self, Context},
 	App, CreationContext, Frame,
