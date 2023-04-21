@@ -133,12 +133,11 @@ impl Graph2D {
 					*accel += params.repulsion * tree.force_on(pos, params.repulsion_approximation);
 				}
 			} else {
-				for a in 0..self.node_positions.len() {
-					for b in 0..self.node_positions.len() {
-						let a_to_b = self.node_positions[b] - self.node_positions[a];
+				for (a_accel, &a_pos) in node_accel.iter_mut().zip(&self.node_positions) {
+					for &b_pos in &self.node_positions {
+						let a_to_b = b_pos - a_pos;
 						let push = params.repulsion * a_to_b / (1.0 + a_to_b.length().powi(3));
-						node_accel[a] -= push;
-						node_accel[b] += push;
+						*a_accel -= push;
 					}
 				}
 			}
@@ -148,6 +147,7 @@ impl Graph2D {
 				.iter_mut()
 				.zip(&mut node_velocity)
 				.zip(&node_accel)
+				.skip(1)
 			{
 				// Gravity
 				accel += DVec2::Y * params.gravity;
