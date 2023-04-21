@@ -61,11 +61,11 @@ running all components.
 
 ```md
 ├── amba
-│   ├── data
-│   ├── src
-│   │   ├── init
-│   │   └── run
-│   └── templates
+│   ├── data
+│   ├── src
+│   │   ├── init
+│   │   └── run
+│   └── templates
 ```
 
 ### Creating your own subcommand
