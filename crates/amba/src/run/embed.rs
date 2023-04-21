@@ -40,11 +40,11 @@ pub fn run_embedder(
 				let mut start_params = params;
 				start_params.noise = 0.1;
 				let compressed_state = {
-					let mut g: ControlFlowGraph = (&state).into();
+					let g: ControlFlowGraph = (&state).into();
 					g.compressed_graph.into()
 				};
 				let compressed_block = {
-					let mut g: ControlFlowGraph = (&block).into();
+					let g: ControlFlowGraph = (&block).into();
 					g.compressed_graph.into()
 				};
 				*raw_state_graph.write().unwrap() = Graph2D::new(state, start_params);
