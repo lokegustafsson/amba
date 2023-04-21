@@ -29,14 +29,12 @@ pub enum ControllerMsg {
 		symbolic_state_graph: GraphIpc,
 		basic_block_graph: GraphIpc,
 	},
-	Compress,
 	EmbeddingParamsUpdated,
 }
 
 pub enum EmbedderMsg {
 	ReplaceGraph([GraphIpc; 2]),
 	Recalculate,
-	Compress,
 }
 
 pub struct Controller {
@@ -121,11 +119,6 @@ impl Controller {
 					});
 					if let Some(ctx) = self.gui_context.as_ref() {
 						ctx.request_repaint();
-					}
-				}
-				ControllerMsg::Compress => {
-					if let Some(tx) = self.embedder_tx.as_ref() {
-						tx.send(EmbedderMsg::Compress);
 					}
 				}
 				ControllerMsg::EmbeddingParamsUpdated => {

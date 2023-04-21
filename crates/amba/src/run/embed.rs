@@ -49,9 +49,6 @@ pub fn run_embedder(
 				blocking = false;
 				continue;
 			}
-			Ok(EmbedderMsg::Compress) => {
-				continue;
-			}
 			Err(mpsc::TryRecvError::Empty) => {}
 			Err(mpsc::TryRecvError::Disconnected) => {
 				tracing::info!("exiting");
