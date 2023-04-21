@@ -2,7 +2,7 @@ use std::{
 	env,
 	path::PathBuf,
 	process::ExitCode,
-	sync::{mpsc, Arc, Mutex},
+	sync::{mpsc, Arc},
 	time::Instant,
 };
 
@@ -126,9 +126,10 @@ fn main() -> ExitCode {
 					(run::Controller {
 						tx,
 						rx,
-						model: Arc::new(Mutex::new(Model::new())),
+						model: Arc::new(Model::new()),
 						gui_context: None,
 						qemu_pid: None,
+						embedder_tx: None,
 					})
 					.run(cmd, &config)
 				})
