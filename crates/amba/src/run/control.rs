@@ -33,13 +33,19 @@ pub enum ControllerMsg {
 	EmbeddingParamsUpdated,
 }
 
+pub enum EmbedderMsg {
+	ReplaceGraph([GraphIpc; 2]),
+	Recalculate,
+	Compress,
+}
+
 pub struct Controller {
 	pub tx: mpsc::Sender<ControllerMsg>,
 	pub rx: mpsc::Receiver<ControllerMsg>,
 	pub model: Arc<Model>,
 	pub gui_context: Option<Context>,
 	pub qemu_pid: Option<u32>,
-	pub embedder_tx: Option<mpsc::Sender<Option<[GraphIpc; 2]>>>,
+	pub embedder_tx: Option<mpsc::Sender<EmbedderMsg>>,
 }
 impl Controller {
 	/// Launch QEMU+S2E. That is, we do the equivalent of
@@ -107,17 +113,24 @@ impl Controller {
 					symbolic_state_graph,
 					basic_block_graph,
 				} => {
-					self.embedder_tx
-						.as_ref()
-						.map(|tx| tx.send(Some([symbolic_state_graph, basic_block_graph])));
+					self.embedder_tx.as_ref().map(|tx| {
+						tx.send(EmbedderMsg::ReplaceGraph([
+							symbolic_state_graph,
+							basic_block_graph,
+						]))
+					});
 					if let Some(ctx) = self.gui_context.as_ref() {
 						ctx.request_repaint();
 					}
 				}
-				ControllerMsg::Compress => {}
+				ControllerMsg::Compress => {
+					if let Some(tx) = self.embedder_tx.as_ref() {
+						tx.send(EmbedderMsg::Compress);
+					}
+				}
 				ControllerMsg::EmbeddingParamsUpdated => {
 					if let Some(tx) = self.embedder_tx.as_ref() {
-						let (Ok(_) | Err(_)) = tx.send(None);
+						let (Ok(_) | Err(_)) = tx.send(EmbedderMsg::Recalculate);
 					}
 				}
 			}

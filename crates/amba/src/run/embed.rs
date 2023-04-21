@@ -6,13 +6,12 @@ use std::{sync::mpsc, time::Instant};
 
 use eframe::egui::Context;
 use graphui::Graph2D;
-use ipc::GraphIpc;
 
-use crate::gui::Model;
+use crate::{gui::Model, run::control::EmbedderMsg};
 
 pub fn run_embedder(
 	model: &Model,
-	rx: mpsc::Receiver<Option<[GraphIpc; 2]>>,
+	rx: mpsc::Receiver<EmbedderMsg>,
 	gui_context: Option<Context>,
 ) -> Result<(), ()> {
 	let Model {
@@ -36,7 +35,7 @@ pub fn run_embedder(
 			.then(|| rx.recv().map_err(Into::into))
 			.unwrap_or_else(|| rx.try_recv())
 		{
-			Ok(Some([state, block])) => {
+			Ok(EmbedderMsg::ReplaceGraph([state, block])) => {
 				let mut start_params = params;
 				start_params.noise = 0.1;
 				*raw_state_graph.write().unwrap() = Graph2D::new(state.clone(), start_params);
@@ -46,8 +45,11 @@ pub fn run_embedder(
 				blocking = false;
 				continue;
 			}
-			Ok(None) => {
+			Ok(EmbedderMsg::Recalculate) => {
 				blocking = false;
+				continue;
+			}
+			Ok(EmbedderMsg::Compress) => {
 				continue;
 			}
 			Err(mpsc::TryRecvError::Empty) => {}
