@@ -59,7 +59,12 @@ pub fn run_embedder(
 		let timer = Instant::now();
 		let mut total_delta_pos = 0.0;
 
-		for graph in [raw_state_graph, raw_block_graph, compressed_block_graph, compressed_state_graph] {
+		for graph in [
+			raw_state_graph,
+			raw_block_graph,
+			compressed_block_graph,
+			compressed_state_graph,
+		] {
 			let mut graph_lock = graph.write().unwrap();
 			let mut working_copy = graph_lock.clone();
 			total_delta_pos += working_copy.run_layout_iterations(iterations, params);
