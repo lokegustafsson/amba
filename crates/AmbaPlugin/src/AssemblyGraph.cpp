@@ -28,7 +28,7 @@ void AssemblyGraph::onBlockStart(
 	const StateIdAmba amba_id = this->getStateIdAmba(control_flow::getStateIdS2E(state));
 	const Metadata curr = this->getMetadata(state, pc);
 	// Will insert 0 if value doesn't yet exist
-	auto &last = this->m_last[amba_id];
+	Metadata &last = this->m_last[amba_id];
 	control_flow::updateControlFlowGraph(
 		this->m_cfg,
 		last,
