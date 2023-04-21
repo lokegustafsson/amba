@@ -52,14 +52,15 @@
             packages = let p = pkgs;
             in [
               amba.impure-amba
-              p.nixgl.nixGLIntel
               cargo2nix.outputs.packages.${system}.cargo2nix
+              p.cargo-flamegraph
               p.clang-tools_14
               p.ctags
               p.gdb
-              p.nixfmt
               p.gnumake
               p.mold
+              p.nixfmt
+              p.nixgl.nixGLIntel
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.clippy
               p.rust-bin.stable.latest.default
@@ -113,7 +114,8 @@
           };
           test-amba-control-flow = {
             type = "app";
-            program = "${test.test-amba-control-flow}/bin/test-amba-control-flow";
+            program =
+              "${test.test-amba-control-flow}/bin/test-amba-control-flow";
           };
         };
       });

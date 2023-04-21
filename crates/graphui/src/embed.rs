@@ -3,6 +3,7 @@ use std::mem;
 use fastrand::Rng;
 use glam::DVec2;
 use ipc::{GraphIpc, NodeMetadata};
+use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 #[derive(Clone, Debug)]
 pub struct Graph2D {
@@ -129,17 +130,24 @@ impl Graph2D {
 			// Nodes repell with `F \propto D^-2`
 			if params.repulsion_approximation > 0.0 {
 				let tree = BarnesHutRTree::new(&mut self.node_positions.clone());
-				for (accel, &pos) in node_accel.iter_mut().zip(&self.node_positions) {
-					*accel += params.repulsion * tree.force_on(pos, params.repulsion_approximation);
-				}
+				node_accel
+					.par_iter_mut()
+					.zip_eq(&self.node_positions)
+					.for_each(|(accel, &pos)| {
+						*accel += params.repulsion
+							* tree.force_on(pos, params.repulsion_approximation.powi(2));
+					});
 			} else {
-				for (a_accel, &a_pos) in node_accel.iter_mut().zip(&self.node_positions) {
-					for &b_pos in &self.node_positions {
-						let a_to_b = b_pos - a_pos;
-						let push = params.repulsion * a_to_b / (1.0 + a_to_b.length().powi(3));
-						*a_accel -= push;
-					}
-				}
+				node_accel
+					.par_iter_mut()
+					.zip_eq(&self.node_positions)
+					.for_each(|(a_accel, &a_pos)| {
+						for &b_pos in &self.node_positions {
+							let a_to_b = b_pos - a_pos;
+							let push = params.repulsion * a_to_b / (1.0 + a_to_b.length().powi(3));
+							*a_accel -= push;
+						}
+					});
 			}
 			let a0 = node_accel[0];
 			for ((pos, vel), &(mut accel)) in self
@@ -232,11 +240,10 @@ impl BarnesHutRTree {
 				point_mass: positions[0],
 			};
 		}
-		let tight_bounding_box = {
-			let min = positions.iter().copied().reduce(DVec2::min).unwrap();
-			let max = positions.iter().copied().reduce(DVec2::max).unwrap();
-			[min, max]
-		};
+		let tight_bounding_box = positions.iter().fold(
+			[DVec2::splat(f64::INFINITY), DVec2::splat(f64::NEG_INFINITY)],
+			|[min, max], &pos| [min.min(pos), max.max(pos)],
+		);
 		let split_extractor: fn(DVec2) -> f64 = if tight_bounding_box[1].x - tight_bounding_box[0].x
 			> tight_bounding_box[1].y - tight_bounding_box[0].y
 		{
@@ -244,10 +251,19 @@ impl BarnesHutRTree {
 		} else {
 			|v| v.y
 		};
-		positions.sort_by(|&a, &b| f64::total_cmp(&split_extractor(a), &split_extractor(b)));
+		// Partition by median along the `split_extractor`:s direction using quickselect.
+		positions.select_nth_unstable_by(positions.len() / 2, |&a, &b| {
+			f64::total_cmp(&split_extractor(a), &split_extractor(b))
+		});
 
 		let (before, after) = positions.split_at_mut(positions.len() / 2);
-		let children = [Box::new(Self::new(before)), Box::new(Self::new(after))];
+		let children = {
+			let (a, b) = rayon::join(
+				|| Box::new(Self::new(before)),
+				|| Box::new(Self::new(after)),
+			);
+			[a, b]
+		};
 
 		let center_of_mass = (children[0].center_of_mass() * children[0].mass()
 			+ children[1].center_of_mass() * children[1].mass())
@@ -274,7 +290,7 @@ impl BarnesHutRTree {
 		}
 	}
 
-	fn force_on(&self, pos: DVec2, approximation: f64) -> DVec2 {
+	fn force_on(&self, pos: DVec2, approximation2: f64) -> DVec2 {
 		match self {
 			Self::Leaf { point_mass } => Self::force_on_from_source(*point_mass, pos),
 			Self::Split {
@@ -285,11 +301,11 @@ impl BarnesHutRTree {
 			} => {
 				let mid = (tight_bounding_box[0] + tight_bounding_box[1]) / 2.0;
 				let long_side = (tight_bounding_box[1] - tight_bounding_box[0]).max_element();
-				if approximation * mid.distance(pos) > long_side {
+				if approximation2 * mid.distance_squared(pos) > long_side * long_side {
 					*mass * Self::force_on_from_source(*center_of_mass, pos)
 				} else {
-					children[0].force_on(pos, approximation)
-						+ children[1].force_on(pos, approximation)
+					children[0].force_on(pos, approximation2)
+						+ children[1].force_on(pos, approximation2)
 				}
 			}
 		}
