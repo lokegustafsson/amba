@@ -19,11 +19,8 @@ void SymbolicGraph::onStateFork(
 		.basic_block_generation = 0,
 	};
 
+	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
 	for (auto &new_state : new_states) {
-		if (new_state == old_state) {
-			this->incrementStateIdAmba(control_flow::getStateIdS2E(new_state));
-		}
-
 		const auto to = (Metadata) {
 			.symbolic_state_id = this->getStateIdAmba(control_flow::getStateIdS2E(new_state)),
 			.basic_block_vaddr = 0,
