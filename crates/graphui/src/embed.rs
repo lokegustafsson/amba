@@ -97,8 +97,9 @@ impl Graph2D {
 			}
 		}
 
-		(0..metadata.len())
-			.map(|i| (random_dvec2(rng) + DVec2::Y) * node_depth[i] as f64)
+		node_depth
+			.into_iter()
+			.map(|d| (random_dvec2(rng) + DVec2::Y) * d as f64)
 			.collect()
 	}
 
@@ -128,12 +129,8 @@ impl Graph2D {
 			// Nodes repell with `F \propto D^-2`
 			if params.repulsion_approximation > 0.0 {
 				let tree = BarnesHutRTree::new(&mut self.node_positions.clone());
-				for (i, accel) in node_accel.iter_mut().enumerate() {
-					*accel += params.repulsion
-						* tree.force_on(
-							self.node_positions[i],
-							params.repulsion_approximation,
-						);
+				for (accel, &pos) in node_accel.iter_mut().zip(&self.node_positions) {
+					*accel += params.repulsion * tree.force_on(pos, params.repulsion_approximation);
 				}
 			} else {
 				for a in 0..self.node_positions.len() {
@@ -146,23 +143,28 @@ impl Graph2D {
 				}
 			}
 			let a0 = node_accel[0];
-			for i in 1..self.node_positions.len() {
+			for ((pos, vel), &(mut accel)) in self
+				.node_positions
+				.iter_mut()
+				.zip(&mut node_velocity)
+				.zip(&node_accel)
+			{
 				// Gravity
-				node_accel[i] += DVec2::Y * params.gravity;
-				node_accel[i] -= a0;
+				accel += DVec2::Y * params.gravity;
+				accel -= a0;
 				// Opposite accel and velocity => exponentially reduce velocity
-				if node_accel[i].dot(node_velocity[i]) > 0.0 {
+				if accel.dot(*vel) > 0.0 {
 					const VELOCITY_SPEEDUP: f64 = 1.1;
-					node_velocity[i] *= VELOCITY_SPEEDUP;
+					*vel *= VELOCITY_SPEEDUP;
 				} else {
 					const VELOCITY_SLOWDOWN: f64 = 0.9;
-					node_velocity[i] *= VELOCITY_SLOWDOWN;
+					*vel *= VELOCITY_SLOWDOWN;
 				}
-				node_velocity[i] += node_accel[i];
-				let delta_pos = node_velocity[i] + random_dvec2(rng) * (params.noise * temperature);
-				self.node_positions[i] += delta_pos;
+				*vel += accel;
+				let delta_pos = *vel + random_dvec2(rng) * (params.noise * temperature);
+				*pos += delta_pos;
 				total_delta_pos += delta_pos.length_squared();
-				if !self.node_positions[i].is_finite() {
+				if !pos.is_finite() {
 					tracing::warn!("infinite node position; resetting graph");
 					*self = Self {
 						node_positions: Self::initial_node_positions(
@@ -193,18 +195,12 @@ impl Graph2D {
 				*vel = rotate_down_center_of_mass.rotate(*vel);
 			}
 		}
-		self.min = self
+		(self.min, self.max) = self
 			.node_positions
 			.iter()
-			.copied()
-			.reduce(DVec2::min)
-			.unwrap_or(DVec2::ZERO);
-		self.max = self
-			.node_positions
-			.iter()
-			.copied()
-			.reduce(DVec2::max)
-			.unwrap_or(DVec2::ZERO);
+			.fold((DVec2::ZERO, DVec2::ZERO), |(min, max), &val| {
+				(min.min(val), max.max(val))
+			});
 		total_delta_pos
 	}
 }
@@ -253,11 +249,12 @@ impl BarnesHutRTree {
 		let (before, after) = positions.split_at_mut(positions.len() / 2);
 		let children = [Box::new(Self::new(before)), Box::new(Self::new(after))];
 
+		let center_of_mass = (children[0].center_of_mass() * children[0].mass()
+			+ children[1].center_of_mass() * children[1].mass())
+			/ positions.len() as f64;
 		Self::Split {
 			mass: positions.len() as f64,
-			center_of_mass: (children[0].center_of_mass() * children[0].mass()
-				+ children[1].center_of_mass() * children[1].mass())
-				/ positions.len() as f64,
+			center_of_mass,
 			tight_bounding_box,
 			children,
 		}

@@ -22,7 +22,8 @@ impl Widget for &mut EmbeddingParameters {
 					ui.add(
 						egui::Slider::new(
 							&mut self.attraction,
-							0.0..=EmbeddingParameters::MAX_ATTRACTION,
+							(EmbeddingParameters::MAX_ATTRACTION / STEPS)
+								..=EmbeddingParameters::MAX_ATTRACTION,
 						)
 						.step_by(EmbeddingParameters::MAX_ATTRACTION / STEPS)
 						.text("attraction"),
@@ -32,7 +33,8 @@ impl Widget for &mut EmbeddingParameters {
 					ui.add(
 						egui::Slider::new(
 							&mut self.repulsion,
-							0.0..=EmbeddingParameters::MAX_REPULSION,
+							(EmbeddingParameters::MAX_REPULSION / STEPS)
+								..=EmbeddingParameters::MAX_REPULSION,
 						)
 						.step_by(EmbeddingParameters::MAX_REPULSION / STEPS)
 						.text("repulsion"),
@@ -111,7 +113,7 @@ impl GraphWidget {
 					clip
 				});
 
-				let scrollarea = egui::ScrollArea::both()
+				let scroll_area = egui::ScrollArea::both()
 					.auto_shrink([false, false])
 					.scroll_offset(self.pos)
 					.show_viewport(ui, |ui, viewport| {
@@ -130,7 +132,7 @@ impl GraphWidget {
 						input.pointer.interact_pos(),
 					)
 				});
-				let background_drag = scrollarea.inner.drag_delta();
+				let background_drag = scroll_area.inner.drag_delta();
 
 				let real_zoom_delta = if let (true, Some(hover_pos)) =
 					(ui.ui_contains_pointer(), latest_pointer_pos)
@@ -144,9 +146,9 @@ impl GraphWidget {
 						.active_node_and_pan
 						.map_or(false, |(_, pan)| pan != PanState::Off)
 					{
-						scrollarea.inner_rect.size() / 2.0
+						scroll_area.inner_rect.size() / 2.0
 					} else {
-						hover_pos - scrollarea.inner_rect.min
+						hover_pos - scroll_area.inner_rect.min
 					};
 					let new_offset = (self.pos + hover_pos) * real_zoom_delta - hover_pos;
 					self.pos = new_offset;
@@ -169,9 +171,9 @@ impl GraphWidget {
 							graph.node_positions[*active],
 							graph,
 							self.zoom,
-							scrollarea.inner_rect.size(),
+							scroll_area.inner_rect.size(),
 						)
-						.to_vec2() - scrollarea.inner_rect.size() / 2.0;
+						.to_vec2() - scroll_area.inner_rect.size() / 2.0;
 
 						match pan {
 							PanState::Centering => {
@@ -189,10 +191,9 @@ impl GraphWidget {
 				}
 
 				//  Clip scrollarea position to content size
-				self.pos = self
-					.pos
-					.max(emath::Vec2::ZERO)
-					.min(scrollarea.content_size * real_zoom_delta - scrollarea.inner_rect.size());
+				self.pos = self.pos.max(emath::Vec2::ZERO).min(
+					scroll_area.content_size * real_zoom_delta - scroll_area.inner_rect.size(),
+				);
 			});
 	}
 }
