@@ -53,12 +53,14 @@
             in [
               amba.impure-amba
               cargo2nix.outputs.packages.${system}.cargo2nix
+              p.cargo-flamegraph
               p.clang-tools_14
               p.ctags
               p.gdb
-              p.nixfmt
               p.gnumake
               p.mold
+              p.nixfmt
+              p.nixgl.nixGLIntel
               p.rust-bin.nightly.latest.rustfmt
               p.rust-bin.stable.latest.clippy
               p.rust-bin.stable.latest.default
@@ -69,6 +71,9 @@
             IMPURE_RUST = 1;
             inherit (amba)
               COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
+
+            LD_LIBRARY_PATH =
+              lib.strings.makeLibraryPath (amba.gui-native-dependencies pkgs);
 
             meta.description =
               "Rust, C++ and LaTeX tooling for developing AMBA";
@@ -109,7 +114,8 @@
           };
           test-amba-control-flow = {
             type = "app";
-            program = "${test.test-amba-control-flow}/bin/test-amba-control-flow";
+            program =
+              "${test.test-amba-control-flow}/bin/test-amba-control-flow";
           };
         };
       });

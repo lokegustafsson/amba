@@ -54,3 +54,8 @@ compile_flags.txt
 **/tags
 /crates/libamba/libamba_rs_impure
 /crates/AmbaPlugin/libamba_impure
+
+# cargo flamegraph
+flamegraph.svg
+perf.data
+perf.data.old

@@ -59,6 +59,9 @@ pub struct RunArgs {
 const AMBA_BUILD_GUEST_IMAGES_SCRIPT: &str = env!("AMBA_BUILD_GUEST_IMAGES_SCRIPT");
 
 fn main() -> ExitCode {
+	// Pinned version of winit crashes on wayland
+	std::env::remove_var("WAYLAND_DISPLAY");
+
 	tracing::subscriber::set_global_default(
 		Targets::new()
 			.with_target("h2", tracing::Level::INFO)
