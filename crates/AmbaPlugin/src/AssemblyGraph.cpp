@@ -42,7 +42,16 @@ void AssemblyGraph::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
+	const StateIdAmba old_amba_id = this->getStateIdAmba(control_flow::getStateIdS2E(old_state));
+	const Metadata old_last = this->m_last[old_amba_id];
+
 	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
+
+	for (auto& new_state : new_states) {
+		const StateIdAmba new_amba_id = this->getStateIdAmba(control_flow::getStateIdS2E(new_state));
+		this->m_last[new_amba_id] = old_last;
+
+	}
 }
 
 void AssemblyGraph::onStateMerge(
