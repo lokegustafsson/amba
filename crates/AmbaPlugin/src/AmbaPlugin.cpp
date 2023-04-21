@@ -153,7 +153,8 @@ void AmbaPlugin::translateBlockStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	if (!this->m_module_pid) {
+	auto mod = this->m_modules->getModule(state);
+	if (mod.get() == nullptr || mod->Path != this->m_module_path) {
 		return;
 	}
 
