@@ -5,7 +5,7 @@ körningar eftersom de (symboliska) värden som används representerar grupper a
 konkreta värden vilka har gemensamt hur de påverkar programmets flöde. 
 
 Vägar i programmets kontrollflöde utforskas med symboliska uttryck för de 
-begränsningar som finns på programmets variablar - vilka egenskaper de måste uppnå 
+begränsningar som finns på programmets variabler -- vilka egenskaper de måste uppnå 
 för att just denna väg ska kunna följas. Eftersom de symboliska värdena har kapacitet 
 att representera grupperingar av konkreta värden istället för enskilda sådana, 
 utförs en generaliserad testning av programmet, som ger insikt i hur programmet 
@@ -14,12 +14,12 @@ gemensamma egenskaper, orsakar gemensamma beteenden i programmet.
 
 En symbolisk exekveringsmotor arbetar genom att först representera programmets input 
 som symboliska variablar, vilka vid starten inte har några begränsningar, och när 
-programflödet når en förgrening som baseras på någon av de symboliska variablerna, 
+programflödet når en branch som baseras på någon av de symboliska variablerna, 
 så väljer motorn en gren och tillsätter den grenens restriktioner på den symboliska 
-variabeln för alla vägar som fortsätter utefter förgreningen. Operationer på värden 
+variabeln för alla vägar som fortsätter utefter branchen. Operationer på värden 
 under körningens väg översätts till symboliska operationer på motsvarande symboliska 
 variabler. \cite{klee} När körning utefter grenen är slutförd så kan motorn börja om 
-vid förgreningen och utforska andra alternativ med samma metodik. De tillståndsvillkor 
+vid branchen och utforska andra alternativ med samma metodik. De tillståndsvillkor 
 som en viss väg visas ha byggs därför successivt upp genom att motorn utökar de 
 symboliska variablerna till villkorliga uttryck allt eftersom vägen följs. 
 
@@ -34,5 +34,7 @@ beroende på grupperingar av input. För program där få värden tar gemensamma
 fördelen över att istället använda dynamisk testning av konkret data dock låg. 
 
 Eftersom symbolisk exekvering kan leda till \emph{path explosion} är det inte effektivt 
-att alltid undersöka alla förgreningar i ett program. Exempel på metoder för att undvika 
+att alltid undersöka alla branchar i ett program. Exempel på metoder för att undvika 
 path explosion är \emph{state-merging} och \emph{heuristics}. 
+
+
