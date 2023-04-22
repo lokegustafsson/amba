@@ -32,7 +32,7 @@ pub enum ControllerMsg {
 
 pub enum EmbedderMsg {
 	ReplaceGraph([GraphIpc; 2]),
-	StopMessagesUntilGraphIsStable,
+	WakeUp,
 }
 
 pub struct Controller {
@@ -118,7 +118,7 @@ impl Controller {
 				}
 				ControllerMsg::EmbeddingParamsUpdated => {
 					if let Some(tx) = self.embedder_tx.as_ref() {
-						let (Ok(_) | Err(_)) = tx.send(EmbedderMsg::StopMessagesUntilGraphIsStable);
+						let (Ok(_) | Err(_)) = tx.send(EmbedderMsg::WakeUp);
 					}
 				}
 			}
