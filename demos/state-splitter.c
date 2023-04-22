@@ -22,6 +22,5 @@ int main() {
 	};
 
 	const int res = check_step(guess, 0);
-
-	printf("%X\n", res);
+	return res;
 }
