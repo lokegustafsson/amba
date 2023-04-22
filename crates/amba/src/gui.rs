@@ -47,18 +47,18 @@ impl Model {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum View {
+pub enum GraphToView {
 	RawBlock,
 	CompressedBlock,
 	State,
 }
 
-impl fmt::Display for View {
+impl fmt::Display for GraphToView {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		let s = match self {
-			View::RawBlock => "Raw Basic Block Graph",
-			View::CompressedBlock => "Compressed Block Graph",
-			View::State => "State Graph",
+			GraphToView::RawBlock => "Raw Basic Block Graph",
+			GraphToView::CompressedBlock => "Compressed Block Graph",
+			GraphToView::State => "State Graph",
 		};
 		write!(f, "{s}")
 	}
@@ -68,7 +68,7 @@ struct Gui {
 	controller_tx: mpsc::Sender<ControllerMsg>,
 	model: Arc<Model>,
 	graph_widget: GraphWidget,
-	view: View,
+	view: GraphToView,
 }
 
 impl Gui {
@@ -100,7 +100,7 @@ impl Gui {
 			controller_tx,
 			model,
 			graph_widget: GraphWidget::default(),
-			view: View::RawBlock,
+			view: GraphToView::RawBlock,
 		}
 	}
 }
@@ -108,9 +108,9 @@ impl Gui {
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
 		let graph = match self.view {
-			View::RawBlock => &self.model.raw_block_graph,
-			View::CompressedBlock => &self.model.compressed_block_graph,
-			View::State => &self.model.raw_state_graph,
+			GraphToView::RawBlock => &self.model.raw_block_graph,
+			GraphToView::CompressedBlock => &self.model.compressed_block_graph,
+			GraphToView::State => &self.model.raw_state_graph,
 		}
 		.read()
 		.unwrap();
@@ -130,15 +130,16 @@ impl App for Gui {
 					.show_ui(ui, |ui| {
 						let first = ui.selectable_value(
 							&mut self.view,
-							View::RawBlock,
+							GraphToView::RawBlock,
 							"Raw Basic Block Graph",
 						);
 						let second = ui.selectable_value(
 							&mut self.view,
-							View::CompressedBlock,
+							GraphToView::CompressedBlock,
 							"Compressed Block Graph",
 						);
-						let third = ui.selectable_value(&mut self.view, View::State, "State Graph");
+						let third =
+							ui.selectable_value(&mut self.view, GraphToView::State, "State Graph");
 
 						if first.clicked() || second.clicked() || third.clicked() {
 							self.graph_widget.deselect();
