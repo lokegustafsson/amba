@@ -60,4 +60,7 @@ let
       time ${amba.amba}/bin/amba run ${state-splitter}/state-splitter.recipe.json --no-gui
     '';
   };
-in { inherit hello control-flow state-splitter test-amba-hello test-amba-control-flow test-amba-state-splitter; }
+in {
+  inherit hello control-flow state-splitter test-amba-hello
+    test-amba-control-flow test-amba-state-splitter;
+}
