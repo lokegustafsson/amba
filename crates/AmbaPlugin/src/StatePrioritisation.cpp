@@ -5,7 +5,9 @@
 
 namespace state_prioritisation {
 
-void ipcReceiver(IpcRx *ipc, std::shared_ptr<bool> active, s2e::S2E *s2e) {
+// These pointers are not a race condition because the thread has to
+// join before the AmbaPlugin fields can be destructed
+void ipcReceiver(IpcRx *ipc, bool *active, s2e::S2E *s2e) {
 	std::vector<u32> receive_buffer {};
 	while (*active) {
 		receive_buffer.clear();

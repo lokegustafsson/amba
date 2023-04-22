@@ -36,8 +36,8 @@ class AmbaPlugin : public Plugin {
 	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;
+	bool m_alive = true;
 
-	std::shared_ptr<bool> m_alive;
 	std::jthread m_ipc_receiver_thread;
 	heap_leak::HeapLeak m_heap_leak;
 	assembly_graph::AssemblyGraph m_assembly_graph;

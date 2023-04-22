@@ -20,7 +20,6 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_ipc(rust_new_ipc())
-	, m_alive(std::make_shared<bool>(true))
 	, m_ipc_receiver_thread(std::jthread {})
 	, m_heap_leak(heap_leak::HeapLeak {})
 	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks", s2e->getPlugin<ModuleMap>() })
@@ -33,10 +32,8 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 }
 
 AmbaPlugin::~AmbaPlugin() {
-	*this->m_alive = false;
-	*amba::debug_stream() << "Trying to kill\n";
-	this->m_ipc_receiver_thread.request_stop();
-	*amba::debug_stream() << "Killed\n";
+	this->m_alive = false;
+	this->m_ipc_receiver_thread.join();
 }
 
 void AmbaPlugin::initialize() {
@@ -135,7 +132,7 @@ void AmbaPlugin::initialize() {
 
 	auto self = this;
 	this->m_ipc_receiver_thread = std::jthread([=]() {
-		state_prioritisation::ipcReceiver(self->m_ipc.rx, self->m_alive, self->s2e());
+		state_prioritisation::ipcReceiver(self->m_ipc.rx, &self->m_alive, self->s2e());
 	});
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
