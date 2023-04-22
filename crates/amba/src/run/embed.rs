@@ -16,7 +16,6 @@ pub fn run_embedder(
 	let Model {
 		raw_state_graph,
 		raw_block_graph,
-		compressed_state_graph,
 		compressed_block_graph,
 		embedding_parameters,
 	} = model;
@@ -41,18 +40,12 @@ pub fn run_embedder(
 			Ok(EmbedderMsg::ReplaceGraph([state, block])) => {
 				let mut start_params = params;
 				start_params.noise = 0.1;
-				let compressed_state = {
-					let g: ControlFlowGraph = (&state).into();
-					g.compressed_graph.into()
-				};
 				let compressed_block = {
 					let g: ControlFlowGraph = (&block).into();
 					g.compressed_graph.into()
 				};
 				*raw_state_graph.write().unwrap() = Graph2D::new(state, start_params);
 				*raw_block_graph.write().unwrap() = Graph2D::new(block, start_params);
-				*compressed_state_graph.write().unwrap() =
-					Graph2D::new(compressed_state, start_params);
 				*compressed_block_graph.write().unwrap() =
 					Graph2D::new(compressed_block, start_params);
 				blocking = false;
@@ -71,12 +64,7 @@ pub fn run_embedder(
 		let timer = Instant::now();
 		let mut total_delta_pos = 0.0;
 
-		for graph in [
-			raw_state_graph,
-			raw_block_graph,
-			compressed_block_graph,
-			compressed_state_graph,
-		] {
+		for graph in [raw_state_graph, raw_block_graph, compressed_block_graph] {
 			let mut graph_lock = graph.write().unwrap();
 			let mut working_copy = graph_lock.clone();
 			total_delta_pos += working_copy.run_layout_iterations(iterations, params);
