@@ -29,6 +29,7 @@ let
     src = ../crates/AmbaPlugin;
 
     OPT-LEVEL = "-O3 -g0";
+    enableParallelBuilding = true;
     buildInputs = let p = pkgs; in [ p.boost p.zydis ];
 
     installPhase = ''

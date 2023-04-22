@@ -1,4 +1,5 @@
 use std::{
+	fmt,
 	sync::{mpsc, Arc, Mutex, RwLock},
 	thread,
 };
@@ -11,7 +12,7 @@ use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
 
 use crate::{
 	cmd::Cmd,
-	run::{Controller, ControllerMsg},
+	run::control::{Controller, ControllerMsg},
 	SessionConfig,
 };
 
@@ -28,18 +29,38 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 }
 
 pub struct Model {
-	pub state_graph: RwLock<Graph2D>,
-	pub block_graph: RwLock<Graph2D>,
+	pub raw_state_graph: RwLock<Graph2D>,
+	pub raw_block_graph: RwLock<Graph2D>,
+	pub compressed_block_graph: RwLock<Graph2D>,
 	pub embedding_parameters: Mutex<EmbeddingParameters>,
 }
 
 impl Model {
 	pub fn new() -> Self {
 		Self {
-			state_graph: RwLock::new(Graph2D::empty()),
-			block_graph: RwLock::new(Graph2D::empty()),
+			raw_state_graph: RwLock::new(Graph2D::empty()),
+			raw_block_graph: RwLock::new(Graph2D::empty()),
+			compressed_block_graph: RwLock::new(Graph2D::empty()),
 			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
 		}
+	}
+}
+
+#[derive(Debug, PartialEq)]
+pub enum GraphToView {
+	RawBlock,
+	CompressedBlock,
+	State,
+}
+
+impl fmt::Display for GraphToView {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let s = match self {
+			GraphToView::RawBlock => "Raw Basic Block Graph",
+			GraphToView::CompressedBlock => "Compressed Block Graph",
+			GraphToView::State => "State Graph",
+		};
+		write!(f, "{s}")
 	}
 }
 
@@ -47,6 +68,7 @@ struct Gui {
 	controller_tx: mpsc::Sender<ControllerMsg>,
 	model: Arc<Model>,
 	graph_widget: GraphWidget,
+	view: GraphToView,
 }
 
 impl Gui {
@@ -78,13 +100,20 @@ impl Gui {
 			controller_tx,
 			model,
 			graph_widget: GraphWidget::default(),
+			view: GraphToView::RawBlock,
 		}
 	}
 }
 
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
-		let graph = &self.model.block_graph.read().unwrap();
+		let graph = match self.view {
+			GraphToView::RawBlock => &self.model.raw_block_graph,
+			GraphToView::CompressedBlock => &self.model.compressed_block_graph,
+			GraphToView::State => &self.model.raw_state_graph,
+		}
+		.read()
+		.unwrap();
 		let active = self.graph_widget.active_node_id();
 
 		egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
@@ -96,6 +125,26 @@ impl App for Gui {
 						.send(ControllerMsg::EmbeddingParamsUpdated)
 						.unwrap();
 				}
+				egui::ComboBox::from_label("")
+					.selected_text(format!("{}", self.view))
+					.show_ui(ui, |ui| {
+						let first = ui.selectable_value(
+							&mut self.view,
+							GraphToView::RawBlock,
+							"Raw Basic Block Graph",
+						);
+						let second = ui.selectable_value(
+							&mut self.view,
+							GraphToView::CompressedBlock,
+							"Compressed Block Graph",
+						);
+						let third =
+							ui.selectable_value(&mut self.view, GraphToView::State, "State Graph");
+
+						if first.clicked() || second.clicked() || third.clicked() {
+							self.graph_widget.deselect();
+						}
+					});
 			})
 		});
 		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {
@@ -109,14 +158,14 @@ impl App for Gui {
 				}
 			})
 		});
-		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, graph));
+		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, &graph));
 	}
 
 	fn on_exit(&mut self, _: Option<&eframe::glow::Context>) {
 		match self.controller_tx.send(ControllerMsg::GuiShutdown) {
 			Ok(()) => tracing::info!("gui telling controller to exit"),
 			Err(mpsc::SendError(ControllerMsg::GuiShutdown)) => {
-				tracing::warn!("controller already exited")
+				tracing::warn!("controller already exited");
 			}
 			Err(mpsc::SendError(_)) => unreachable!(),
 		}

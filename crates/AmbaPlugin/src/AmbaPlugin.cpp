@@ -153,18 +153,10 @@ void AmbaPlugin::translateBlockStart(
 	TranslationBlock *tb,
 	u64 pc
 ) {
-	if (!this->m_module_pid) {
+	auto mod = this->m_modules->getModule(state);
+	if (mod.get() == nullptr || mod->Path != this->m_module_path) {
 		return;
 	}
-
-	auto mod = this->m_modules->getModule(state);
-	u64 native_addr = 0;
-	bool ok = mod ? mod->ToNativeBase(pc, native_addr) : false;
-	*amba::debug_stream()
-		<< "Translating instruction at " << hexval(pc)
-		<< (mod ? " in " + mod->Name + " (" + mod->Path + ")" : "")
-		<< (ok ? ", native addr " + hexval(native_addr).str() : "")
-		<< '\n';
 
 	this->m_assembly_graph.translateBlockStart(signal, state, tb, pc);
 
@@ -183,14 +175,6 @@ void AmbaPlugin::onModuleLoad(
 	}
 
 	this->m_module_pid = module.Pid;
-	*amba::debug_stream() << "Loaded module " << this->m_module_path << '\n';
-	for (const auto& section : module.Sections) {
-		*amba::debug_stream()
-			<< "Found section (" << section.name << ")"
-			<< " at " << hexval(section.nativeLoadBase)
-			<< " with size " << std::to_string(section.size)
-			<< '\n';
-	};
 }
 
 void AmbaPlugin::onModuleUnload(

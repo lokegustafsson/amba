@@ -16,6 +16,24 @@ pub struct Graph2D {
 	pub gui_pos: emath::Vec2,
 }
 
+impl From<GraphIpc> for Graph2D {
+	fn from(graph: GraphIpc) -> Self {
+		if graph.metadata.is_empty() {
+			return Self::empty();
+		}
+
+		Self {
+			node_positions: Self::initial_node_positions(&graph.metadata, &graph.edges),
+			node_metadata: graph.metadata,
+			edges: graph.edges,
+			min: DVec2::ZERO,
+			max: DVec2::ZERO,
+			gui_zoom: 1.0,
+			gui_pos: emath::Vec2::ZERO,
+		}
+	}
+}
+
 #[derive(Clone, Copy)]
 pub struct EmbeddingParameters {
 	pub noise: f64,
@@ -58,19 +76,7 @@ impl Graph2D {
 	}
 
 	pub fn new(graph: GraphIpc, params: EmbeddingParameters) -> Self {
-		if graph.metadata.is_empty() {
-			return Self::empty();
-		}
-
-		let mut ret = Self {
-			node_positions: Self::initial_node_positions(&graph.metadata, &graph.edges),
-			node_metadata: graph.metadata,
-			edges: graph.edges,
-			min: DVec2::ZERO,
-			max: DVec2::ZERO,
-			gui_zoom: 1.0,
-			gui_pos: emath::Vec2::ZERO,
-		};
+		let mut ret: Graph2D = graph.into();
 		ret.run_layout_iterations(100, params);
 		ret
 	}

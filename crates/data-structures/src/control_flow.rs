@@ -11,13 +11,21 @@ use crate::Graph;
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
 	pub graph: Graph,
-	pub(crate) compressed_graph: Graph,
+	pub compressed_graph: Graph,
 	pub(crate) updates: usize,
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
 	pub(crate) metadata: Vec<NodeMetadata>,
 	pub(crate) meta_mapping_unique_id_to_index: BTreeMap<u64, usize>,
+}
+
+impl From<&ipc::GraphIpc> for ControlFlowGraph {
+	fn from(value: &ipc::GraphIpc) -> Self {
+		let ipc::GraphIpc { metadata, edges } = value;
+		let f = |i: &usize| metadata[*i];
+		edges.iter().map(|(x, y)| (f(x), f(y))).collect()
+	}
 }
 
 impl From<&ControlFlowGraph> for ipc::GraphIpc {
@@ -27,6 +35,16 @@ impl From<&ControlFlowGraph> for ipc::GraphIpc {
 		let metadata = cfg.metadata.clone();
 
 		Self { metadata, edges }
+	}
+}
+
+impl FromIterator<(NodeMetadata, NodeMetadata)> for ControlFlowGraph {
+	fn from_iter<T: IntoIterator<Item = (NodeMetadata, NodeMetadata)>>(iter: T) -> Self {
+		let mut ret = ControlFlowGraph::new();
+		for (from, to) in iter.into_iter() {
+			ret.update(from, to);
+		}
+		ret
 	}
 }
 

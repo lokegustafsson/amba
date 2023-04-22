@@ -96,6 +96,10 @@ impl Default for GraphWidget {
 }
 
 impl GraphWidget {
+	pub fn deselect(&mut self) {
+		self.active_node_and_pan = None;
+	}
+
 	pub fn active_node_id(&self) -> Option<usize> {
 		self.active_node_and_pan.map(|(node, _)| node)
 	}
