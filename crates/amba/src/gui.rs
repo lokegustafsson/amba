@@ -128,17 +128,21 @@ impl App for Gui {
 				egui::ComboBox::from_label("")
 					.selected_text(format!("{}", self.view))
 					.show_ui(ui, |ui| {
-						ui.selectable_value(
+						let first = ui.selectable_value(
 							&mut self.view,
 							View::RawBlock,
 							"Raw Basic Block Graph",
 						);
-						ui.selectable_value(
+						let second = ui.selectable_value(
 							&mut self.view,
 							View::CompressedBlock,
 							"Compressed Block Graph",
 						);
-						ui.selectable_value(&mut self.view, View::State, "State Graph");
+						let third = ui.selectable_value(&mut self.view, View::State, "State Graph");
+
+						if first.clicked() || second.clicked() || third.clicked() {
+							self.graph_widget.deselect();
+						}
 					});
 			})
 		});
