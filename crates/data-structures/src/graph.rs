@@ -20,8 +20,8 @@ pub struct Graph {
 	pub merges: Map<u64, u64>,
 }
 
-impl From<&Graph> for ipc::GraphIpc {
-	fn from(graph: &Graph) -> Self {
+impl From<Graph> for ipc::GraphIpc {
+	fn from(graph: Graph) -> Self {
 		let node_id_renamings = graph
 			.nodes
 			.keys()
@@ -44,12 +44,6 @@ impl From<&Graph> for ipc::GraphIpc {
 			.collect();
 
 		Self { metadata, edges }
-	}
-}
-
-impl From<Graph> for ipc::GraphIpc {
-	fn from(graph: Graph) -> Self {
-		(&graph).into()
 	}
 }
 
