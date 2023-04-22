@@ -54,7 +54,7 @@ pub fn run_embedder(
 				blocking = false;
 				continue;
 			}
-			Ok(EmbedderMsg::Recalculate) => {
+			Ok(EmbedderMsg::StopMessagesUntilGraphIsStable) => {
 				blocking = false;
 				continue;
 			}
