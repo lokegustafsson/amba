@@ -1,4 +1,4 @@
-//! The run subcommand
+//! Runner functions for the run subcommand
 
 #![allow(unsafe_code)]
 

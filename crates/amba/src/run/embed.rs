@@ -1,6 +1,4 @@
-//! The run subcommand
-
-#![allow(unsafe_code)]
+//! The worker thread for the gui
 
 use std::{sync::mpsc, time::Instant};
 

@@ -1,6 +1,4 @@
-//! The run subcommand
-
-#![allow(unsafe_code)]
+//! The Gui controller
 
 use std::{
 	mem,
