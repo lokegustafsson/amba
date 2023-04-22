@@ -30,10 +30,14 @@ pub fn run_embedder(
 			guard.statistic_updates_per_second = iterations as f64 * updates_per_second;
 			*guard
 		};
-		match blocking
-			.then(|| rx.recv().map_err(Into::into))
-			.unwrap_or_else(|| rx.try_recv())
-		{
+		let message = if blocking {
+			// Will wait
+			rx.recv().map_err(Into::into)
+		} else {
+			// Will merely check if there are pending messages
+			rx.try_recv()
+		};
+		match message {
 			Ok(EmbedderMsg::ReplaceGraph([state, block])) => {
 				let mut start_params = params;
 				start_params.noise = 0.1;
