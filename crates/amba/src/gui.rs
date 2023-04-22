@@ -1,4 +1,5 @@
 use std::{
+	fmt,
 	sync::{mpsc, Arc, Mutex, RwLock},
 	thread,
 };
@@ -47,12 +48,29 @@ impl Model {
 	}
 }
 
+#[derive(Debug, PartialEq)]
+pub enum View {
+	RawBlock,
+	CompressedBlock,
+	State,
+}
+
+impl fmt::Display for View {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let s = match self {
+			View::RawBlock => "Raw Basic Block Graph",
+			View::CompressedBlock => "Compressed Block Graph",
+			View::State => "State Graph",
+		};
+		write!(f, "{s}")
+	}
+}
+
 struct Gui {
 	controller_tx: mpsc::Sender<ControllerMsg>,
 	model: Arc<Model>,
 	graph_widget: GraphWidget,
-	show_symbolic: bool,
-	show_compressed: bool,
+	view: View,
 }
 
 impl Gui {
@@ -84,18 +102,17 @@ impl Gui {
 			controller_tx,
 			model,
 			graph_widget: GraphWidget::default(),
-			show_symbolic: false,
-			show_compressed: false,
+			view: View::RawBlock,
 		}
 	}
 }
 
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
-		let graph = match (self.show_symbolic, self.show_compressed) {
-			(true, _) => &self.model.raw_state_graph,
-			(false, true) => &self.model.compressed_block_graph,
-			(false, false) => &self.model.raw_block_graph,
+		let graph = match self.view {
+			View::RawBlock => &self.model.raw_block_graph,
+			View::CompressedBlock => &self.model.compressed_block_graph,
+			View::State => &self.model.raw_state_graph,
 		}
 		.read()
 		.unwrap();
@@ -110,16 +127,21 @@ impl App for Gui {
 						.send(ControllerMsg::EmbeddingParamsUpdated)
 						.unwrap();
 				}
-				ui.vertical(|ui| {
-					ui.add(egui::Checkbox::new(
-						&mut self.show_compressed,
-						"Show compressed",
-					));
-					ui.add(egui::Checkbox::new(
-						&mut self.show_symbolic,
-						"Show symbolic",
-					));
-				});
+				egui::ComboBox::from_label("")
+					.selected_text(format!("{}", self.view))
+					.show_ui(ui, |ui| {
+						ui.selectable_value(
+							&mut self.view,
+							View::RawBlock,
+							"Raw Basic Block Graph",
+						);
+						ui.selectable_value(
+							&mut self.view,
+							View::CompressedBlock,
+							"Compressed Block Graph",
+						);
+						ui.selectable_value(&mut self.view, View::State, "State Graph");
+					});
 			})
 		});
 		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {
