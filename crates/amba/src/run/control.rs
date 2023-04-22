@@ -115,9 +115,6 @@ impl Controller {
 							basic_block_graph,
 						]))
 					});
-					if let Some(ctx) = self.gui_context.as_ref() {
-						ctx.request_repaint();
-					}
 				}
 				ControllerMsg::EmbeddingParamsUpdated => {
 					if let Some(tx) = self.embedder_tx.as_ref() {
