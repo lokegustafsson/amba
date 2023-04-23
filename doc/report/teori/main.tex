@@ -103,10 +103,10 @@ hela spektrummet.
 För att klargöra distinktionen mellan manuell och automatiska metoder för
 binäranalys används följande use cases:
 
+\begin{figure}
 \begin{lstlisting}[
     label={list:first},
     language=Python,
-    caption=Use case manuella metoder,
     frame=single
     ]
 # Givet sträng-input från stdin
@@ -115,8 +115,9 @@ if sha256(s) = "välkänd hash":
   print("Winner winner chicken dinner")
 else:
   print("you lose")
-
 \end{lstlisting}
+\caption{Use case manuella metoder}
+\end{figure}
 
 I use cases där det existerar kända konstanter, något som är typiskt i fall som
 involverar kryptografi i olika utsträckning, är det rimligt att tillämpa
@@ -130,10 +131,10 @@ representationer och hade i det ovan exemplet krävt att det går att hitta
 inversen till en given SHA-256 hash vilket idag är omöjligt och leder därmed
 till att alla paths inte undersöks.
 
+\begin{figure}
 \begin{lstlisting}[
     label={list:first},
     language=Python,
-    caption=Use case manuella metoder,
     frame=single
     ]
 # Givet sträng-input från stdin
@@ -143,6 +144,8 @@ if s == "secret":
 else:
   print("you lost")
 \end{lstlisting}
+\caption{Use case manuella metoder}
+\end{figure}
 
 Ett motsatt fall är ovan och lämpas väl att undersökas med automatiska
 metoder eftersom det är tidskrävande att manuellt välja slumpvalda värden på s
@@ -153,5 +156,3 @@ värden som följer den givna branchen, t.ex. om \lstinline{s == "hej"} vilket
 motsvarar att programmet väljer else-branchen och printar \lstinline{"you lost"}. 
 Detta upprepas med nya exekveringsvägar och till slut hittas vilken input som ger
 \lstinline{print("you won")}-branchen. 
-
-
