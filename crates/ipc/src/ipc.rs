@@ -82,7 +82,7 @@ pub enum IpcMessage<'a> {
 	NewEdges {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
-	}
+	},
 }
 
 #[derive(Debug)]
