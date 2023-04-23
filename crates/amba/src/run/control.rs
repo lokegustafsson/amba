@@ -23,6 +23,10 @@ pub enum ControllerMsg {
 	GuiShutdown,
 	QemuShutdown,
 	TellQemuPid(u32),
+	UpdateEdges {
+		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
+		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
+	},
 	ReplaceGraph {
 		symbolic_state_graph: GraphIpc,
 		basic_block_graph: GraphIpc,
@@ -109,6 +113,17 @@ impl Controller {
 					}
 				}
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
+				ControllerMsg::UpdateEdges {
+					block_edges,
+					state_edges,
+				} => {
+					self.embedder_tx.as_ref().map(|tx| {
+						tx.send(EmbedderMsg::UpdateEdges {
+							block_edges,
+							state_edges,
+						})
+					});
+				}
 				ControllerMsg::ReplaceGraph {
 					symbolic_state_graph,
 					basic_block_graph,
