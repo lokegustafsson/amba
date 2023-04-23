@@ -1,3 +1,6 @@
+#include <vector>
+#include <tuple>
+
 #include "SymbolicGraph.h"
 #include "AmbaException.h"
 #include "ControlFlow.h"
@@ -33,6 +36,12 @@ void SymbolicGraph::onStateFork(
 			from,
 			to
 		);
+		this->m_new_edges.push_back(
+			std::make_tuple(
+				from.into_ffi(),
+				to.into_ffi()
+			)
+		);
 	}
 }
 
@@ -66,10 +75,22 @@ void SymbolicGraph::onStateMerge(
 		from_left,
 		to
 	);
+	this->m_new_edges.push_back(
+		std::make_tuple(
+			from_left.into_ffi(),
+			to.into_ffi()
+		)
+	);
 	control_flow::updateControlFlowGraph(
 		this->m_cfg,
 		from_right,
 		to
+	);
+	this->m_new_edges.push_back(
+		std::make_tuple(
+			from_right.into_ffi(),
+			to.into_ffi()
+		)
 	);
 }
 

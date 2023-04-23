@@ -1,3 +1,6 @@
+#include <vector>
+#include <tuple>
+
 #include "AssemblyGraph.h"
 #include "AmbaException.h"
 #include "ControlFlow.h"
@@ -33,6 +36,12 @@ void AssemblyGraph::onBlockStart(
 		this->m_cfg,
 		last,
 		curr
+	);
+	this->m_new_edges.push_back(
+		std::make_tuple(
+			last.into_ffi(),
+			curr.into_ffi()
+		)
 	);
 	last = curr;
 }
