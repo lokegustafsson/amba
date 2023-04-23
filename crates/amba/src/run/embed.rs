@@ -2,7 +2,7 @@
 
 use std::{sync::mpsc, time::Instant};
 
-use data_structures::ControlFlowGraph;
+use data_structures::{ControlFlowGraph, Graph, GraphIpc};
 use eframe::egui::Context;
 use graphui::Graph2D;
 
@@ -43,18 +43,33 @@ pub fn run_embedder(
 				block_edges,
 				state_edges,
 			}) => {
+				let mut start_params = params;
+				start_params.noise = 0.1;
+
+				let to_graph_2d = |g: &Graph| {
+					let g_: GraphIpc = g.clone().into();
+					Graph2D::new(g_, start_params)
+				};
+
 				{
 					let mut block_control_flow = block_control_flow.write().unwrap();
 					for (from, to) in block_edges.into_iter() {
 						block_control_flow.update(from, to);
 					}
+					*raw_block_graph.write().unwrap() = to_graph_2d(&block_control_flow.graph);
+					*compressed_block_graph.write().unwrap() =
+						to_graph_2d(&block_control_flow.compressed_graph);
 				}
 				{
 					let mut state_control_flow = state_control_flow.write().unwrap();
 					for (from, to) in state_edges.into_iter() {
 						state_control_flow.update(from, to);
 					}
+					*raw_state_graph.write().unwrap() = to_graph_2d(&state_control_flow.graph);
 				}
+
+				blocking = false;
+				continue;
 			}
 			Ok(EmbedderMsg::ReplaceGraph([state, block])) => {
 				let mut start_params = params;
