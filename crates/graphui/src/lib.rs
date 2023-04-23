@@ -81,6 +81,7 @@ pub struct GraphWidget {
 	zoom: f32,
 	pos: Vec2,
 	active_node_and_pan: Option<(usize, PanState)>,
+	priority_node: Option<usize>,
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum PanState {
@@ -94,6 +95,7 @@ impl Default for GraphWidget {
 			zoom: 1.0,
 			pos: Vec2::ZERO,
 			active_node_and_pan: None,
+			priority_node: None,
 		}
 	}
 }
@@ -128,6 +130,7 @@ impl GraphWidget {
 							ui,
 							self.zoom,
 							&mut self.active_node_and_pan,
+							&mut self.priority_node,
 							viewport,
 							graph,
 						)
@@ -209,6 +212,7 @@ fn draw_graph(
 	ui: &mut Ui,
 	zoom_level: f32,
 	active_node_and_pan: &mut Option<(usize, PanState)>,
+	priority_node: &mut Option<usize>,
 	viewport: Rect,
 	graph: &Graph2D,
 ) -> egui::Response {
@@ -263,6 +267,9 @@ fn draw_graph(
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);
+			if node.double_clicked() {
+				*priority_node = Some(i);
+			}
 			if node.drag_started() {
 				*active_node_and_pan = Some((i, PanState::Centering));
 			}
