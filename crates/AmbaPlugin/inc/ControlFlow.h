@@ -53,7 +53,7 @@ class ControlFlow {
 
 	u64 state_count = 0;
 	std::unordered_map<StateIdS2E, StateIdAmba> m_states {};
-	std::vector<std::tuple<NodeMetadataFFI, NodeMetadataFFI>> m_new_edges {};
+	std::vector<NodeMetadataFFIPair> m_new_edges {};
 };
 
 } // namespace control_flow

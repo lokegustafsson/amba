@@ -38,10 +38,10 @@ void AssemblyGraph::onBlockStart(
 		curr
 	);
 	this->m_new_edges.push_back(
-		std::make_tuple(
-			last.into_ffi(),
-			curr.into_ffi()
-		)
+		(NodeMetadataFFIPair) {
+			.fst = last.into_ffi(),
+			.snd = curr.into_ffi()
+		}
 	);
 	last = curr;
 }

@@ -37,10 +37,10 @@ void SymbolicGraph::onStateFork(
 			to
 		);
 		this->m_new_edges.push_back(
-			std::make_tuple(
-				from.into_ffi(),
-				to.into_ffi()
-			)
+			(NodeMetadataFFIPair) {
+				.fst = from.into_ffi(),
+				.snd = to.into_ffi()
+			}
 		);
 	}
 }
@@ -76,10 +76,10 @@ void SymbolicGraph::onStateMerge(
 		to
 	);
 	this->m_new_edges.push_back(
-		std::make_tuple(
-			from_left.into_ffi(),
-			to.into_ffi()
-		)
+		(NodeMetadataFFIPair) {
+			.fst = from_left.into_ffi(),
+			.snd = to.into_ffi()
+		}
 	);
 	control_flow::updateControlFlowGraph(
 		this->m_cfg,
@@ -87,10 +87,10 @@ void SymbolicGraph::onStateMerge(
 		to
 	);
 	this->m_new_edges.push_back(
-		std::make_tuple(
-			from_right.into_ffi(),
-			to.into_ffi()
-		)
+		(NodeMetadataFFIPair) {
+			.fst = from_right.into_ffi(),
+			.snd = to.into_ffi()
+		}
 	);
 }
 
