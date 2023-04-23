@@ -4,21 +4,21 @@
 namespace control_flow {
 
 void updateControlFlowGraph(ControlFlowGraph *cfg, Metadata from, Metadata to) {
-	const auto from_ = (NodeMetadataFFI) {
-		.symbolic_state_id = (u32) from.symbolic_state_id.val,
-		.basic_block_vaddr = from.basic_block_vaddr,
-		.basic_block_generation = from.basic_block_generation
-	};
-	const auto to_ = (NodeMetadataFFI) {
-		.symbolic_state_id = (u32) to.symbolic_state_id.val,
-		.basic_block_vaddr = to.basic_block_vaddr,
-		.basic_block_generation = to.basic_block_generation
-	};
+	const auto from_ = from.into_ffi();
+	const auto to_ = to.into_ffi();
 	rust_update_control_flow_graph(
 		cfg,
 		from_,
 		to_
 	);
+}
+
+NodeMetadataFFI Metadata::into_ffi() const {
+	return (NodeMetadataFFI) {
+		.symbolic_state_id = (u32) this->symbolic_state_id.val,
+		.basic_block_vaddr = this->basic_block_vaddr,
+		.basic_block_generation = this->basic_block_generation
+	};
 }
 
 StateIdS2E getStateIdS2E(s2e::S2EExecutionState *state) {

@@ -22,6 +22,8 @@ struct Metadata {
 	StateIdAmba symbolic_state_id;
 	u64 basic_block_vaddr;
 	u64 basic_block_generation;
+
+	NodeMetadataFFI into_ffi() const;
 };
 
 }
