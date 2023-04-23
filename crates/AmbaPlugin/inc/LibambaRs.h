@@ -10,6 +10,11 @@ struct NodeMetadataFFI {
 	u64 basic_block_generation;
 };
 
+struct NodeMetadataFFIPair {
+	NodeMetadataFFI fst;
+	NodeMetadataFFI snd;
+};
+
 extern "C" {
 	ControlFlowGraph *rust_new_control_flow_graph();
 	void rust_free_control_flow_graph(ControlFlowGraph *ptr);
@@ -29,5 +34,12 @@ extern "C" {
 		IpcTx *ipc,
 		ControlFlowGraph *symbolic,
 		ControlFlowGraph *assembly
+	);
+	void rust_ipc_send_edges(
+		IpcTx *ipc,
+		const NodeMetadataFFIPair *state_data,
+		u64 state_len,
+		const NodeMetadataFFIPair *block_data,
+		u64 block_len
 	);
 }

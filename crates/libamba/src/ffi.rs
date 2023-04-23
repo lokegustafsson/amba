@@ -1,9 +1,9 @@
-use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
+use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, slice, sync::Mutex};
 
 use data_structures::ControlFlowGraph;
 use ipc::{GraphIpc, IpcTx};
 
-use crate::node_metadata::NodeMetadataFFI;
+use crate::node_metadata::{NodeMetadataFFI, NodeMetadataFFIPair};
 
 /// Create a newly allocated `ControlFlowGraph` and return an
 /// owning raw pointer. This pointer may only be freed with
@@ -86,6 +86,30 @@ pub unsafe extern "C" fn rust_ipc_send_graphs(
 	let msg = ipc::IpcMessage::GraphSnapshot {
 		symbolic_state_graph,
 		basic_block_graph,
+	};
+
+	send_ipc_message(ipc, &msg);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rust_ipc_send_edges(
+	ipc: *mut Mutex<IpcTx<'_>>,
+	state_data: *const NodeMetadataFFIPair,
+	state_len: u64,
+	block_data: *const NodeMetadataFFIPair,
+	block_len: u64,
+) {
+	let state_edges = slice::from_raw_parts(state_data, state_len as _)
+		.iter()
+		.map(Into::into)
+		.collect();
+	let block_edges = slice::from_raw_parts(block_data, block_len as _)
+		.iter()
+		.map(Into::into)
+		.collect();
+	let msg = ipc::IpcMessage::NewEdges {
+		state_edges,
+		block_edges,
 	};
 
 	send_ipc_message(ipc, &msg);
