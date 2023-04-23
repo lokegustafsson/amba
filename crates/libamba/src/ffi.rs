@@ -63,14 +63,18 @@ pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcTx<'_>>) {
 	let _ = Box::from_raw(ptr);
 }
 
+unsafe fn send_ipc_message(ipc: *mut Mutex<IpcTx<'_>>, msg: &ipc::IpcMessage<'_>) {
+	let mut ipc = (*ipc).lock().unwrap();
+	ipc.blocking_send(msg)
+		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn rust_ipc_send_graphs(
 	ipc: *mut Mutex<IpcTx<'_>>,
 	symbolic: *mut Mutex<ControlFlowGraph>,
 	assembly: *mut Mutex<ControlFlowGraph>,
 ) {
-	let mut ipc = (*ipc).lock().unwrap();
-
 	let lock_and_cow = |ptr: *mut Mutex<ControlFlowGraph>| {
 		let r = (*ptr).lock().unwrap();
 		Cow::Owned(GraphIpc::from(&*r))
@@ -79,11 +83,12 @@ pub unsafe extern "C" fn rust_ipc_send_graphs(
 	let symbolic_state_graph = lock_and_cow(symbolic);
 	let basic_block_graph = lock_and_cow(assembly);
 
-	ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
+	let msg = ipc::IpcMessage::GraphSnapshot {
 		symbolic_state_graph,
 		basic_block_graph,
-	})
-	.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+	};
+
+	send_ipc_message(ipc, &msg);
 }
 
 #[no_mangle]
