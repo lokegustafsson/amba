@@ -39,6 +39,23 @@ pub fn run_embedder(
 			rx.try_recv()
 		};
 		match message {
+			Ok(EmbedderMsg::UpdateEdges {
+				block_edges,
+				state_edges,
+			}) => {
+				{
+					let mut block_control_flow = block_control_flow.write().unwrap();
+					for (from, to) in block_edges.into_iter() {
+						block_control_flow.update(from, to);
+					}
+				}
+				{
+					let mut state_control_flow = state_control_flow.write().unwrap();
+					for (from, to) in state_edges.into_iter() {
+						state_control_flow.update(from, to);
+					}
+				}
+			}
 			Ok(EmbedderMsg::ReplaceGraph([state, block])) => {
 				let mut start_params = params;
 				start_params.noise = 0.1;

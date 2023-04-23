@@ -10,7 +10,7 @@ use std::{
 };
 
 use eframe::egui::Context;
-use ipc::GraphIpc;
+use ipc::{GraphIpc, NodeMetadata};
 
 use crate::{
 	cmd::Cmd,
@@ -31,6 +31,10 @@ pub enum ControllerMsg {
 }
 
 pub enum EmbedderMsg {
+	UpdateEdges {
+		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
+		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
+	},
 	ReplaceGraph([GraphIpc; 2]),
 	WakeUp,
 }
