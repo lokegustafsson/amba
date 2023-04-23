@@ -35,7 +35,9 @@ Symbolisk exekvering är användbart för att resonera kring hur programmet bete
 beroende på grupperingar av input. För program där få värden tar gemensamma vägar blir 
 fördelen försumbar av att använda dynamisk testning av konkret data. 
 
-Eftersom symbolisk exekvering kan leda till \emph{path explosion} är det inte effektivt 
+Eftersom symbolisk exekvering kan leda till \emph{path explosion}, vilket
+uppstår i program vars branches växer exponentiellt och resulterar i att en
+symbolisk exekvering aldrig terminerar \cite{path_explo}, är det inte effektivt 
 att alltid undersöka alla branchar i ett program. Exempel på metoder för att undvika 
 path explosion är \emph{state-merging} och \emph{heuristics}. 
 
