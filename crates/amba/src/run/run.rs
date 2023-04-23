@@ -99,6 +99,19 @@ pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) ->
 						tracing::warn!("ipc failed messaging controller: already shut down");
 					});
 			}
+			Ok(IpcMessage::NewEdges {
+				state_edges,
+				block_edges,
+			}) => {
+				controller_tx
+					.send(ControllerMsg::UpdateEdges {
+						state_edges,
+						block_edges,
+					})
+					.unwrap_or_else(|mpsc::SendError(_)| {
+						tracing::warn!("ipc failed messaging controller: already shut down");
+					});
+			}
 			Ok(msg) => tracing::info!(?msg),
 			Err(IpcError::EndOfFile) => break,
 			Err(other) => panic!("ipc error: {other:?}"),

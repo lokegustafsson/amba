@@ -79,6 +79,10 @@ pub enum IpcMessage<'a> {
 		symbolic_state_graph: Cow<'a, GraphIpc>,
 		basic_block_graph: Cow<'a, GraphIpc>,
 	},
+	NewEdges {
+		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
+		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
+	}
 }
 
 #[derive(Debug)]
