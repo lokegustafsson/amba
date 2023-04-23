@@ -14,6 +14,8 @@ pub fn run_embedder(
 	gui_context: Option<Context>,
 ) -> Result<(), ()> {
 	let Model {
+		block_control_flow,
+		state_control_flow,
 		raw_state_graph,
 		raw_block_graph,
 		compressed_block_graph,
