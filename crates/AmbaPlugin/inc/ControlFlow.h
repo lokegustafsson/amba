@@ -43,6 +43,7 @@ class ControlFlow {
 	const char *getName() const;
 	ControlFlowGraph *cfg();
 	u64 states() const;
+	std::vector<NodeMetadataFFIPair> &edges();
 
   protected:
 	StateIdAmba getStateIdAmba(StateIdS2E);

@@ -47,6 +47,10 @@ u64 ControlFlow::states() const {
 	return this->state_count;
 }
 
+std::vector<NodeMetadataFFIPair> &ControlFlow::edges() {
+	return this->m_new_edges;
+}
+
 StateIdAmba ControlFlow::getStateIdAmba(StateIdS2E id) {
 	auto& amba_id = this->m_states[id];
 	if (amba_id == 0) {

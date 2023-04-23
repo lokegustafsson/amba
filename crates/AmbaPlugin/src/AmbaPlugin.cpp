@@ -206,11 +206,23 @@ void AmbaPlugin::onProcessUnload(
 }
 
 void AmbaPlugin::onTimer() {
-	rust_ipc_send_graphs(
+	/*rust_ipc_send_graphs(
 		this->m_ipc,
 		this->m_symbolic_graph.cfg(),
 		this->m_assembly_graph.cfg()
+	);*/
+	auto &symbolic_edges = this->m_symbolic_graph.edges();
+	auto &assembly_edges = this->m_assembly_graph.edges();
+	rust_ipc_send_edges(
+		this->m_ipc,
+		symbolic_edges.data(),
+		(u64) symbolic_edges.size(),
+		assembly_edges.data(),
+		(u64) assembly_edges.size()
 	);
+	symbolic_edges.clear();
+	assembly_edges.clear();
+
 }
 
 void AmbaPlugin::onEngineShutdown() {
