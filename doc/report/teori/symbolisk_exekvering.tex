@@ -13,16 +13,17 @@ generaliserad testning av programmet, som ger insikt i hur programmet beter sig
 givet en grupp av parametrar som alla på grund av någon eller några gemensamma
 egenskaper, orsakar gemensamma beteenden i programmet. 
 
-En symbolisk exekveringsmotor arbetar genom att först representera programmets input 
-som symboliska variablar, vilka vid starten inte har några begränsningar, och när 
-programflödet når en branch som baseras på någon av de symboliska variablerna, 
-så väljer motorn en gren och tillsätter den grenens restriktioner på den symboliska 
-variabeln för alla vägar som fortsätter utefter branchen. Operationer på värden 
-under körningens väg översätts till symboliska operationer på motsvarande symboliska 
-variabler. \cite{klee} När körning utefter grenen är slutförd så kan motorn börja om 
-vid branchen och utforska andra alternativ med samma metodik. De tillståndsvillkor 
-som en viss väg visas ha byggs därför successivt upp genom att motorn utökar de 
-symboliska variablerna till villkorliga uttryck allt eftersom vägen följs. 
+En symbolisk exekveringsmotor arbetar genom att först representera programmets
+input som symboliska variablar, vilka vid starten inte har några begränsningar,
+och när programflödet når en branch som baseras på någon av de symboliska
+variablerna, väljer motorn en branch och tillsätter dess path constraint på den
+symboliska variabeln för alla vägar som fortsätter utefter branchen. Operationer
+på värden under körningens väg översätts till symboliska operationer på
+motsvarande symboliska variabler \cite{klee}. När körning utefter branchen är
+slutförd repeterar motorn samma metodik på samma branch för att utforska andra
+alternativ. De tillståndsvillkor som en viss väg visas ha byggs därför
+successivt upp genom att motorn utökar de symboliska variablerna till
+villkorliga uttryck allt eftersom vägen följs. 
 
 De fel som hittas genom symbolisk exekvering är tillförlitliga då metoden ej ger falskt 
 positiva resultat. Huruvida villkorsblock av program är nårbara kan evalueras med 
@@ -32,7 +33,7 @@ som en automatiserad teoremlösare (SMT solver) kan appliceras på.
 
 Symbolisk exekvering är användbart för att resonera kring hur programmet beter sig 
 beroende på grupperingar av input. För program där få värden tar gemensamma vägar blir 
-fördelen över att istället använda dynamisk testning av konkret data dock låg. 
+fördelen försumbar av att använda dynamisk testning av konkret data. 
 
 Eftersom symbolisk exekvering kan leda till \emph{path explosion} är det inte effektivt 
 att alltid undersöka alla branchar i ett program. Exempel på metoder för att undvika 
