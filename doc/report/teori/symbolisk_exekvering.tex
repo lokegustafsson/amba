@@ -1,16 +1,17 @@
 Att exekvera ett program symboliskt innebär att representera värden utefter 
-programflödet som symboliska restriktioner, vilka kan lösas av automatiserade 
+programflödet som symboliska restriktioner (jfr en. constraint), vilka kan lösas av automatiserade 
 teoremlösare (\emph{SMT solver}). En symbolisk körning representerar flera konkreta 
 körningar eftersom de (symboliska) värden som används representerar grupper av 
 konkreta värden vilka har gemensamt hur de påverkar programmets flöde. 
 
-Vägar i programmets kontrollflöde utforskas med symboliska uttryck för de 
-begränsningar som finns på programmets variabler -- vilka egenskaper de måste uppnå 
-för att just denna väg ska kunna följas. Eftersom de symboliska värdena har kapacitet 
-att representera grupperingar av konkreta värden istället för enskilda sådana, 
-utförs en generaliserad testning av programmet, som ger insikt i hur programmet 
-beteer sig givet en grupp av parametrar som alla på grund av någon eller några 
-gemensamma egenskaper, orsakar gemensamma beteenden i programmet. 
+Vägar i programmets kontrollflöde utforskas med symboliska uttryck som kallas
+för path constraint (jfr sv. vägvillkor) för de begränsningar som finns på
+programmets variabler -- vilka egenskaper de måste uppnå för att just denna väg
+ska kunna följas. Eftersom de symboliska värdena har kapacitet att representera
+grupperingar av konkreta värden istället för enskilda sådana, utförs en
+generaliserad testning av programmet, som ger insikt i hur programmet beter sig
+givet en grupp av parametrar som alla på grund av någon eller några gemensamma
+egenskaper, orsakar gemensamma beteenden i programmet. 
 
 En symbolisk exekveringsmotor arbetar genom att först representera programmets input 
 som symboliska variablar, vilka vid starten inte har några begränsningar, och när 
@@ -64,7 +65,7 @@ Exemplet ovan använder symbolisk exekvering för att hitta vilken input som led
 till de olika vägarna. I många fall är det intressant att göra en uttömmande
 sökning och hitta alla möjliga vägar i ett program, något som är möjligt i detta
 program men inte alla program. Variablerna x och y sätts till symboliska
-värden som sedan används för att beräkna path constraint (jfr sv. vägvillkoret) och de symboliska
+värden som sedan används för att beräkna path constraint och de symboliska
 uttryck som variablerna utvecklas till för en vald branch. Därefter används
 dessa uttryck och path constraint tillsammans för att bilda en ekvation som kan
 lösas med hjälp av en SMT-solver och därmed få ut ett konkret värde. Figur 2.4
