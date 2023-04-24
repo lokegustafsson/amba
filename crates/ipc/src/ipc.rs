@@ -1,8 +1,9 @@
 use std::{
-	io::{self, BufReader, BufWriter, Read, Write},
+	io::{self, BufRead, BufReader, BufWriter, Read, Write},
 	mem,
 	net::Shutdown,
 	os::unix::net::UnixStream,
+	time::Duration,
 };
 
 use serde::{Deserialize, Serialize};
@@ -10,6 +11,7 @@ use serde::{Deserialize, Serialize};
 pub use crate::{graph::GraphIpc, metadata::NodeMetadata};
 
 pub fn new_wrapping(stream: &UnixStream) -> (IpcTx<'_>, IpcRx<'_>) {
+	stream.set_read_timeout(Some(Duration::ZERO)).unwrap();
 	(
 		IpcTx {
 			tx: BufWriter::new(stream),
@@ -58,13 +60,51 @@ impl Drop for IpcRx<'_> {
 
 impl IpcRx<'_> {
 	pub fn blocking_receive(&mut self) -> Result<IpcMessage, IpcError> {
-		let size = {
-			let mut size = [0u8; mem::size_of::<u64>()];
-			self.rx.read_exact(&mut size)?;
-			u64::from_le_bytes(size)
-		};
-		let ret = bincode::deserialize_from((&mut self.rx).take(size))?;
-		Ok(ret)
+		self.rx.get_ref().set_read_timeout(None).unwrap();
+		let ret = (|| {
+			let size = {
+				let mut size = [0u8; mem::size_of::<u64>()];
+				self.rx.read_exact(&mut size)?;
+				u64::from_le_bytes(size)
+			};
+			bincode::deserialize_from((&mut self.rx).take(size)).map_err(Into::into)
+		})();
+		self.rx
+			.get_ref()
+			.set_read_timeout(Some(Duration::ZERO))
+			.unwrap();
+		ret
+	}
+
+	/// Breaks when receiving the following, recover by calling `blocking_receive`:
+	/// * An incomplete packet (`IpcError::PollingReceiveFragmented`)
+	/// * An packet larger than the buffer size (`IpcError::PollingReceiveTooLarge`)
+	pub fn polling_receive(&mut self) -> Result<Option<IpcMessage, IpcError>> {
+		let buf_capacity = self.rx.capacity();
+
+		match self.rx.fill_buf() {
+			Err(err) if err.kind() == io::ErrorKind::WouldBlock => Ok(None),
+			Err(err) => Err(IpcError::from(err)),
+			Ok(&[]) => Err(IpcError::EndOfFile),
+			Ok(view) => {
+				if view.len() < mem::size_of::<u64>() {
+					return Err(IpcError::PollingReceiveFragmented);
+				}
+				let header_size = mem::size_of::<u64>();
+				let size = u64::from_le_bytes(view[..header_size].try_into().unwrap());
+				let packet_size =
+					usize::try_from(size + u64::try_from(header_size).unwrap()).unwrap();
+				if packet_size > buf_capacity {
+					return Err(IpcError::PollingReceiveTooLarge);
+				}
+				if view.len() < packet_size {
+					return Err(IpcError::PollingReceiveFragmented);
+				}
+				let ret = bincode::deserialize(&view[header_size..packet_size])?;
+				self.rx.consume(packet_size as usize);
+				Ok(Some(ret))
+			}
+		}
 	}
 }
 
@@ -83,6 +123,8 @@ pub enum IpcMessage {
 pub enum IpcError {
 	EndOfFile,
 	Interrupted,
+	PollingReceiveFragmented,
+	PollingReceiveTooLarge,
 	Io(io::Error),
 }
 
