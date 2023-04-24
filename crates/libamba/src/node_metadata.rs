@@ -21,6 +21,10 @@ impl From<NodeMetadataFFI> for ipc::NodeMetadata {
 	}
 }
 
+/// An FFI-safe `(NodeMetadataFFI, NodeMetadataFFI)` tuple.  Directly
+/// represents the delayed input to
+/// `data_structures::ControlFlowGraph::update` which in turn
+/// represents an Edge
 #[repr(C)]
 #[derive(Clone)]
 pub struct NodeMetadataFFIPair {
