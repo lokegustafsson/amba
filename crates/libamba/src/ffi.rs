@@ -1,9 +1,8 @@
-use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, slice, sync::Mutex};
+use std::{os::unix::net::UnixStream, slice, sync::Mutex};
 
-use data_structures::ControlFlowGraph;
-use ipc::{GraphIpc, IpcTx};
+use ipc::IpcTx;
 
-use crate::node_metadata::{NodeMetadataFFI, NodeMetadataFFIPair};
+use crate::node_metadata::NodeMetadataFFIPair;
 
 #[no_mangle]
 pub extern "C" fn rust_new_ipc<'a>() -> *mut Mutex<IpcTx<'a>> {
@@ -23,7 +22,7 @@ pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcTx<'_>>) {
 	let _ = Box::from_raw(ptr);
 }
 
-unsafe fn send_ipc_message(ipc: *mut Mutex<IpcTx<'_>>, msg: &ipc::IpcMessage<'_>) {
+unsafe fn send_ipc_message(ipc: *mut Mutex<IpcTx<'_>>, msg: &ipc::IpcMessage) {
 	let mut ipc = (*ipc).lock().unwrap();
 	ipc.blocking_send(msg)
 		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));

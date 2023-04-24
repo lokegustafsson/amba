@@ -10,7 +10,7 @@ use std::{
 };
 
 use eframe::egui::Context;
-use ipc::{GraphIpc, NodeMetadata};
+use ipc::NodeMetadata;
 
 use crate::{
 	cmd::Cmd,
@@ -27,10 +27,6 @@ pub enum ControllerMsg {
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
-	ReplaceGraph {
-		symbolic_state_graph: GraphIpc,
-		basic_block_graph: GraphIpc,
-	},
 	EmbeddingParamsUpdated,
 }
 
@@ -39,7 +35,6 @@ pub enum EmbedderMsg {
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
-	ReplaceGraph([GraphIpc; 2]),
 	WakeUp,
 }
 
@@ -122,17 +117,6 @@ impl Controller {
 							block_edges,
 							state_edges,
 						})
-					});
-				}
-				ControllerMsg::ReplaceGraph {
-					symbolic_state_graph,
-					basic_block_graph,
-				} => {
-					self.embedder_tx.as_ref().map(|tx| {
-						tx.send(EmbedderMsg::ReplaceGraph([
-							symbolic_state_graph,
-							basic_block_graph,
-						]))
 					});
 				}
 				ControllerMsg::EmbeddingParamsUpdated => {

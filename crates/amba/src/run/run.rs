@@ -86,19 +86,6 @@ pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) ->
 	tracing::info!("IPC initialized");
 	loop {
 		match ipc_rx.blocking_receive() {
-			Ok(IpcMessage::GraphSnapshot {
-				symbolic_state_graph,
-				basic_block_graph,
-			}) => {
-				controller_tx
-					.send(ControllerMsg::ReplaceGraph {
-						symbolic_state_graph: symbolic_state_graph.into_owned(),
-						basic_block_graph: basic_block_graph.into_owned(),
-					})
-					.unwrap_or_else(|mpsc::SendError(_)| {
-						tracing::warn!("ipc failed messaging controller: already shut down");
-					});
-			}
 			Ok(IpcMessage::NewEdges {
 				state_edges,
 				block_edges,

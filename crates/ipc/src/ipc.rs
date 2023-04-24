@@ -1,5 +1,4 @@
 use std::{
-	borrow::Cow,
 	io::{self, BufReader, BufWriter, Read, Write},
 	mem,
 	net::Shutdown,
@@ -38,7 +37,7 @@ impl Drop for IpcTx<'_> {
 }
 
 impl IpcTx<'_> {
-	pub fn blocking_send(&mut self, msg: &IpcMessage<'_>) -> Result<(), IpcError> {
+	pub fn blocking_send(&mut self, msg: &IpcMessage) -> Result<(), IpcError> {
 		let size = bincode::serialized_size(msg).unwrap();
 		self.tx.write_all(&size.to_le_bytes())?;
 		bincode::serialize_into(&mut self.tx, msg)?;
@@ -61,7 +60,7 @@ impl Drop for IpcRx<'_> {
 }
 
 impl IpcRx<'_> {
-	pub fn blocking_receive(&mut self) -> Result<IpcMessage<'static>, IpcError> {
+	pub fn blocking_receive(&mut self) -> Result<IpcMessage, IpcError> {
 		let size = {
 			let mut size = [0u8; mem::size_of::<u64>()];
 			self.rx.read_exact(&mut size)?;
@@ -73,12 +72,8 @@ impl IpcRx<'_> {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum IpcMessage<'a> {
+pub enum IpcMessage {
 	Ping,
-	GraphSnapshot {
-		symbolic_state_graph: Cow<'a, GraphIpc>,
-		basic_block_graph: Cow<'a, GraphIpc>,
-	},
 	NewEdges {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,

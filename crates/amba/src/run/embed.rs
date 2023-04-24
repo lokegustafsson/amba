@@ -2,7 +2,6 @@
 
 use std::{sync::mpsc, time::Instant};
 
-use data_structures::ControlFlowGraph;
 use eframe::egui::Context;
 
 use crate::{gui::Model, run::control::EmbedderMsg};
@@ -69,28 +68,6 @@ pub fn run_embedder(
 					.unwrap()
 					.into_new(state_control_flow.graph.clone(), start_params);
 
-				blocking = false;
-				continue;
-			}
-			Ok(EmbedderMsg::ReplaceGraph([state, block])) => {
-				let mut start_params = params;
-				start_params.noise = 0.1;
-				let compressed_block = {
-					let g: ControlFlowGraph = (&block).into();
-					g.compressed_graph
-				};
-				raw_state_graph
-					.write()
-					.unwrap()
-					.into_new(state, start_params);
-				raw_block_graph
-					.write()
-					.unwrap()
-					.into_new(block, start_params);
-				compressed_block_graph
-					.write()
-					.unwrap()
-					.into_new(compressed_block, start_params);
 				blocking = false;
 				continue;
 			}
