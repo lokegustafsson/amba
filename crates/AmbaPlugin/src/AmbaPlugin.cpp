@@ -34,6 +34,9 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 
 AmbaPlugin::~AmbaPlugin() {
 	*this->m_alive = false;
+	*amba::debug_stream() << "Trying to kill\n";
+	this->m_ipc_receiver_thread.request_stop();
+	*amba::debug_stream() << "Killed\n";
 }
 
 void AmbaPlugin::initialize() {

@@ -1,9 +1,10 @@
 #![allow(unsafe_code, clippy::missing_safety_doc)]
 
-use std::{os::unix::net::UnixStream, slice, sync::Mutex};
+use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, pin::Pin, slice, sync::Mutex};
+
+use ipc::{IpcMessage, IpcRx, IpcTx};
 
 use crate::node_metadata::NodeMetadataFFIPair;
-use ipc::{IpcRx, IpcTx};
 
 #[repr(C)]
 pub struct IpcPair<'a> {
@@ -60,4 +61,28 @@ pub unsafe extern "C" fn rust_ipc_send_edges(
 		ipc.blocking_send(msg)
 			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 	}
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rust_ipc_receive_message(
+	ipc: *mut Mutex<IpcRx<'_>>,
+	vec: *mut cxx::CxxVector<u32>,
+) -> bool {
+	let mut ipc = (*ipc).lock().unwrap();
+	let res = match ipc.blocking_receive() {
+		Ok(IpcMessage::PrioritiseStates(states)) => {
+			for state in states.into_iter() {
+				Pin::new_unchecked(&mut *vec).push(state);
+			}
+			true
+		}
+		Ok(IpcMessage::ResetPriority) => false,
+		Ok(_) => {
+			panic!("Invalid IPC message");
+		}
+		Err(err) => {
+			panic!("{err:?}");
+		}
+	};
+	res
 }

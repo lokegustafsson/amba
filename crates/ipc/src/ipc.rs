@@ -75,6 +75,8 @@ pub enum IpcMessage {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
+	PrioritiseStates(Vec<u32>),
+	ResetPriority,
 }
 
 #[derive(Debug)]
