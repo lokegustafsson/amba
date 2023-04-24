@@ -2,9 +2,7 @@
 
 use std::{sync::mpsc, time::Instant};
 
-use data_structures::ControlFlowGraph;
 use eframe::egui::Context;
-use graphui::Graph2D;
 
 use crate::{gui::Model, run::control::EmbedderMsg};
 
@@ -14,6 +12,8 @@ pub fn run_embedder(
 	gui_context: Option<Context>,
 ) -> Result<(), ()> {
 	let Model {
+		block_control_flow,
+		state_control_flow,
 		raw_state_graph,
 		raw_block_graph,
 		compressed_block_graph,
@@ -37,17 +37,37 @@ pub fn run_embedder(
 			rx.try_recv()
 		};
 		match message {
-			Ok(EmbedderMsg::ReplaceGraph([state, block])) => {
+			Ok(EmbedderMsg::UpdateEdges {
+				block_edges,
+				state_edges,
+			}) => {
 				let mut start_params = params;
 				start_params.noise = 0.1;
-				let compressed_block = {
-					let g: ControlFlowGraph = (&block).into();
-					g.compressed_graph.into()
-				};
-				*raw_state_graph.write().unwrap() = Graph2D::new(state, start_params);
-				*raw_block_graph.write().unwrap() = Graph2D::new(block, start_params);
-				*compressed_block_graph.write().unwrap() =
-					Graph2D::new(compressed_block, start_params);
+
+				let mut block_control_flow = block_control_flow.write().unwrap();
+				for (from, to) in block_edges.into_iter() {
+					block_control_flow.update(from, to);
+				}
+
+				raw_block_graph
+					.write()
+					.unwrap()
+					.into_new(block_control_flow.graph.clone(), start_params);
+				compressed_block_graph.write().unwrap().into_new(
+					block_control_flow.compressed_graph.clone(),
+					start_params,
+				);
+
+				let mut state_control_flow = state_control_flow.write().unwrap();
+				for (from, to) in state_edges.into_iter() {
+					state_control_flow.update(from, to);
+				}
+
+				raw_state_graph
+					.write()
+					.unwrap()
+					.into_new(state_control_flow.graph.clone(), start_params);
+
 				blocking = false;
 				continue;
 			}

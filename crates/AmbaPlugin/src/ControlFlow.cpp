@@ -3,22 +3,12 @@
 
 namespace control_flow {
 
-void updateControlFlowGraph(ControlFlowGraph *cfg, Metadata from, Metadata to) {
-	const auto from_ = (NodeMetadataFFI) {
-		.symbolic_state_id = (u32) from.symbolic_state_id.val,
-		.basic_block_vaddr = from.basic_block_vaddr,
-		.basic_block_generation = from.basic_block_generation
+NodeMetadataFFI Metadata::into_ffi() const {
+	return (NodeMetadataFFI) {
+		.symbolic_state_id = (u32) this->symbolic_state_id.val,
+		.basic_block_vaddr = this->basic_block_vaddr,
+		.basic_block_generation = this->basic_block_generation
 	};
-	const auto to_ = (NodeMetadataFFI) {
-		.symbolic_state_id = (u32) to.symbolic_state_id.val,
-		.basic_block_vaddr = to.basic_block_vaddr,
-		.basic_block_generation = to.basic_block_generation
-	};
-	rust_update_control_flow_graph(
-		cfg,
-		from_,
-		to_
-	);
 }
 
 StateIdS2E getStateIdS2E(s2e::S2EExecutionState *state) {
@@ -27,24 +17,18 @@ StateIdS2E getStateIdS2E(s2e::S2EExecutionState *state) {
 
 ControlFlow::ControlFlow(std::string name)
 	: m_name(name)
-	, m_cfg(rust_new_control_flow_graph())
 {}
-
-ControlFlow::~ControlFlow() {
-	rust_print_graph_size(this->m_name.c_str(), this->m_cfg);
-	rust_free_control_flow_graph(this->m_cfg);
-}
 
 const char *ControlFlow::getName() const {
 	return this->m_name.c_str();
 }
 
-ControlFlowGraph *ControlFlow::cfg() {
-	return this->m_cfg;
-}
-
 u64 ControlFlow::states() const {
 	return this->state_count;
+}
+
+std::vector<NodeMetadataFFIPair> &ControlFlow::edges() {
+	return this->m_new_edges;
 }
 
 StateIdAmba ControlFlow::getStateIdAmba(StateIdS2E id) {

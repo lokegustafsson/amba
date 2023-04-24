@@ -1,49 +1,8 @@
-use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex};
+use std::{os::unix::net::UnixStream, slice, sync::Mutex};
 
-use data_structures::ControlFlowGraph;
-use ipc::{GraphIpc, IpcTx};
+use ipc::IpcTx;
 
-use crate::node_metadata::NodeMetadataFFI;
-
-/// Create a newly allocated `ControlFlowGraph` and return an
-/// owning raw pointer. This pointer may only be freed with
-/// the `rust_free_control_flow_graph` function.
-#[no_mangle]
-pub extern "C" fn rust_new_control_flow_graph() -> *mut Mutex<ControlFlowGraph> {
-	Box::into_raw(Box::new(Mutex::new(ControlFlowGraph::new())))
-}
-
-/// Free a `ControlFlowGraph` allocated by
-/// `rust_new_control_flow_graph`. After this fuction has been
-/// called the pointer may not be used again.
-#[no_mangle]
-pub unsafe extern "C" fn rust_free_control_flow_graph(ptr: *mut Mutex<ControlFlowGraph>) {
-	let _ = Box::from_raw(ptr);
-}
-
-/// Wrapper around `ControlFlowGraph::update`. May only be
-/// called with a pointer allocated by
-/// `rust_new_control_flow_graph`. Returns true if the graph
-/// has changed.
-#[no_mangle]
-pub unsafe extern "C" fn rust_update_control_flow_graph(
-	ptr: *mut Mutex<ControlFlowGraph>,
-	from: NodeMetadataFFI,
-	to: NodeMetadataFFI,
-) -> bool {
-	let mutex = &*ptr;
-	let mut cfg = mutex.lock().unwrap();
-
-	cfg.update(from.into(), to.into())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn rust_print_graph_size(name: *const i8, ptr: *mut Mutex<ControlFlowGraph>) {
-	let name = CStr::from_ptr(name).to_string_lossy();
-	let mutex = &*ptr;
-	let cfg = mutex.lock().unwrap();
-	println!("\nGraph of: {name}\n{cfg}");
-}
+use crate::node_metadata::NodeMetadataFFIPair;
 
 #[no_mangle]
 pub extern "C" fn rust_new_ipc<'a>() -> *mut Mutex<IpcTx<'a>> {
@@ -63,27 +22,34 @@ pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcTx<'_>>) {
 	let _ = Box::from_raw(ptr);
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn rust_ipc_send_graphs(
-	ipc: *mut Mutex<IpcTx<'_>>,
-	symbolic: *mut Mutex<ControlFlowGraph>,
-	assembly: *mut Mutex<ControlFlowGraph>,
-) {
+unsafe fn send_ipc_message(ipc: *mut Mutex<IpcTx<'_>>, msg: &ipc::IpcMessage) {
 	let mut ipc = (*ipc).lock().unwrap();
+	ipc.blocking_send(msg)
+		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+}
 
-	let lock_and_cow = |ptr: *mut Mutex<ControlFlowGraph>| {
-		let r = (*ptr).lock().unwrap();
-		Cow::Owned(GraphIpc::from(&*r))
+#[no_mangle]
+pub unsafe extern "C" fn rust_ipc_send_edges(
+	ipc: *mut Mutex<IpcTx<'_>>,
+	state_data: *const NodeMetadataFFIPair,
+	state_len: u64,
+	block_data: *const NodeMetadataFFIPair,
+	block_len: u64,
+) {
+	let state_edges = slice::from_raw_parts(state_data, state_len as _)
+		.iter()
+		.map(Into::into)
+		.collect();
+	let block_edges = slice::from_raw_parts(block_data, block_len as _)
+		.iter()
+		.map(Into::into)
+		.collect();
+	let msg = ipc::IpcMessage::NewEdges {
+		state_edges,
+		block_edges,
 	};
 
-	let symbolic_state_graph = lock_and_cow(symbolic);
-	let basic_block_graph = lock_and_cow(assembly);
-
-	ipc.blocking_send(&ipc::IpcMessage::GraphSnapshot {
-		symbolic_state_graph,
-		basic_block_graph,
-	})
-	.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+	send_ipc_message(ipc, &msg);
 }
 
 #[no_mangle]

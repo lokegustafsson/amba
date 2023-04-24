@@ -3,6 +3,7 @@
 #include <s2e/S2EExecutionState.h>
 
 #include <unordered_map>
+#include <vector>
 
 #include "Numbers.h"
 #include "Amba.h"
@@ -22,6 +23,8 @@ struct Metadata {
 	StateIdAmba symbolic_state_id;
 	u64 basic_block_vaddr;
 	u64 basic_block_generation;
+
+	NodeMetadataFFI into_ffi() const;
 };
 
 }
@@ -29,26 +32,24 @@ struct Metadata {
 using namespace types;
 
 StateIdS2E getStateIdS2E(s2e::S2EExecutionState *);
-void updateControlFlowGraph(ControlFlowGraph *cfg, Metadata from, Metadata to);
 
 class ControlFlow {
   public:
 	ControlFlow(std::string);
-	~ControlFlow();
 
 	const char *getName() const;
-	ControlFlowGraph *cfg();
 	u64 states() const;
+	std::vector<NodeMetadataFFIPair> &edges();
 
   protected:
 	StateIdAmba getStateIdAmba(StateIdS2E);
 	void incrementStateIdAmba(StateIdS2E);
 
 	const std::string m_name;
-	ControlFlowGraph *const m_cfg;
 
 	u64 state_count = 0;
 	std::unordered_map<StateIdS2E, StateIdAmba> m_states {};
+	std::vector<NodeMetadataFFIPair> m_new_edges {};
 };
 
 } // namespace control_flow
