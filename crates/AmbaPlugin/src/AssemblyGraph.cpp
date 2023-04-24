@@ -1,5 +1,4 @@
 #include <vector>
-#include <tuple>
 
 #include "AssemblyGraph.h"
 #include "AmbaException.h"
