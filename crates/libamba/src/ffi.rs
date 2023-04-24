@@ -1,15 +1,10 @@
 #![allow(unsafe_code, clippy::missing_safety_doc)]
 
-use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, pin::Pin, slice, sync::Mutex};
+use std::{os::unix::net::UnixStream, pin::Pin, slice, sync::Mutex};
 
 use ipc::{IpcMessage, IpcRx, IpcTx};
 
 use crate::node_metadata::NodeMetadataFFIPair;
-<<<<<<< HEAD
-=======
-use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex, pin::Pin};
-use ipc::{IpcRx, IpcTx, IpcMessage, IpcError};
->>>>>>> c37b4f2 (libamba: Use polling receive)
 
 #[repr(C)]
 pub struct IpcPair<'a> {
