@@ -31,11 +31,6 @@ void AssemblyGraph::onBlockStart(
 	const Metadata curr = this->getMetadata(state, pc);
 	// Will insert 0 if value doesn't yet exist
 	Metadata &last = this->m_last[amba_id];
-	control_flow::updateControlFlowGraph(
-		this->m_cfg,
-		last,
-		curr
-	);
 	this->m_new_edges.push_back(
 		(NodeMetadataFFIPair) {
 			.fst = last.into_ffi(),

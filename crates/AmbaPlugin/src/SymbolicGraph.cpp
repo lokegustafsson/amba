@@ -31,11 +31,6 @@ void SymbolicGraph::onStateFork(
 		};
 		AMBA_ASSERT(from.symbolic_state_id != to.symbolic_state_id);
 
-		control_flow::updateControlFlowGraph(
-			this->m_cfg,
-			from,
-			to
-		);
 		this->m_new_edges.push_back(
 			(NodeMetadataFFIPair) {
 				.fst = from.into_ffi(),
@@ -70,21 +65,11 @@ void SymbolicGraph::onStateMerge(
 		.basic_block_generation = 0,
 	};
 
-	control_flow::updateControlFlowGraph(
-		this->m_cfg,
-		from_left,
-		to
-	);
 	this->m_new_edges.push_back(
 		(NodeMetadataFFIPair) {
 			.fst = from_left.into_ffi(),
 			.snd = to.into_ffi()
 		}
-	);
-	control_flow::updateControlFlowGraph(
-		this->m_cfg,
-		from_right,
-		to
 	);
 	this->m_new_edges.push_back(
 		(NodeMetadataFFIPair) {
