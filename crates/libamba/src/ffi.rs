@@ -5,6 +5,11 @@ use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, pin::Pin, slice, sy
 use ipc::{IpcMessage, IpcRx, IpcTx};
 
 use crate::node_metadata::NodeMetadataFFIPair;
+<<<<<<< HEAD
+=======
+use std::{borrow::Cow, ffi::CStr, os::unix::net::UnixStream, sync::Mutex, pin::Pin};
+use ipc::{IpcRx, IpcTx, IpcMessage, IpcError};
+>>>>>>> c37b4f2 (libamba: Use polling receive)
 
 #[repr(C)]
 pub struct IpcPair<'a> {
@@ -69,19 +74,21 @@ pub unsafe extern "C" fn rust_ipc_receive_message(
 	vec: *mut cxx::CxxVector<u32>,
 ) -> bool {
 	let mut ipc = (*ipc).lock().unwrap();
-	let res = match ipc.blocking_receive() {
-		Ok(IpcMessage::PrioritiseStates(states)) => {
+	let message = match ipc.polling_receive() {
+		Ok(m) => m,
+		Err(err) => panic!("{err:?}"),
+	};
+	let res = match message {
+		Some(IpcMessage::PrioritiseStates(states)) => {
 			for state in states.into_iter() {
 				Pin::new_unchecked(&mut *vec).push(state);
 			}
 			true
-		}
-		Ok(IpcMessage::ResetPriority) => false,
-		Ok(_) => {
-			panic!("Invalid IPC message");
-		}
-		Err(err) => {
-			panic!("{err:?}");
+		},
+		Some(IpcMessage::ResetPriority) | None => false,
+
+		Some(_) => {
+			panic!("Invalid IPC message")
 		}
 	};
 	res
