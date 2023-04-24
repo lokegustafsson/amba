@@ -32,7 +32,6 @@ struct Metadata {
 using namespace types;
 
 StateIdS2E getStateIdS2E(s2e::S2EExecutionState *);
-void updateControlFlowGraph(ControlFlowGraph *cfg, Metadata from, Metadata to);
 
 class ControlFlow {
   public:

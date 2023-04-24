@@ -3,16 +3,6 @@
 
 namespace control_flow {
 
-void updateControlFlowGraph(ControlFlowGraph *cfg, Metadata from, Metadata to) {
-	const auto from_ = from.into_ffi();
-	const auto to_ = to.into_ffi();
-	rust_update_control_flow_graph(
-		cfg,
-		from_,
-		to_
-	);
-}
-
 NodeMetadataFFI Metadata::into_ffi() const {
 	return (NodeMetadataFFI) {
 		.symbolic_state_id = (u32) this->symbolic_state_id.val,
