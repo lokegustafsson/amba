@@ -5,7 +5,9 @@ group_64_project_report.pdf: \
   evaluering/begransningar.tex \
   evaluering/main.tex \
   evaluering/metod.tex \
+  existerande_verktyg/dynamiska_binaranalysramverk.tex \
   existerande_verktyg/main.tex \
+  existerande_verktyg/statisk_disassemblering.tex \
   implementation/main.tex \
   inledning/avgransningar.tex \
   inledning/main.tex \
