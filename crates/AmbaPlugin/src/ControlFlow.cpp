@@ -17,20 +17,10 @@ StateIdS2E getStateIdS2E(s2e::S2EExecutionState *state) {
 
 ControlFlow::ControlFlow(std::string name)
 	: m_name(name)
-	, m_cfg(rust_new_control_flow_graph())
 {}
-
-ControlFlow::~ControlFlow() {
-	rust_print_graph_size(this->m_name.c_str(), this->m_cfg);
-	rust_free_control_flow_graph(this->m_cfg);
-}
 
 const char *ControlFlow::getName() const {
 	return this->m_name.c_str();
-}
-
-ControlFlowGraph *ControlFlow::cfg() {
-	return this->m_cfg;
 }
 
 u64 ControlFlow::states() const {

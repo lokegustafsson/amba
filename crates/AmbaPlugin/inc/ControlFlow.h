@@ -36,10 +36,8 @@ StateIdS2E getStateIdS2E(s2e::S2EExecutionState *);
 class ControlFlow {
   public:
 	ControlFlow(std::string);
-	~ControlFlow();
 
 	const char *getName() const;
-	ControlFlowGraph *cfg();
 	u64 states() const;
 	std::vector<NodeMetadataFFIPair> &edges();
 
@@ -48,7 +46,6 @@ class ControlFlow {
 	void incrementStateIdAmba(StateIdS2E);
 
 	const std::string m_name;
-	ControlFlowGraph *const m_cfg;
 
 	u64 state_count = 0;
 	std::unordered_map<StateIdS2E, StateIdAmba> m_states {};
