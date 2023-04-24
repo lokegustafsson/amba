@@ -11,7 +11,9 @@ use serde::{Deserialize, Serialize};
 pub use crate::{graph::GraphIpc, metadata::NodeMetadata};
 
 pub fn new_wrapping(stream: &UnixStream) -> (IpcTx<'_>, IpcRx<'_>) {
-	stream.set_read_timeout(Some(Duration::from_nanos(1))).unwrap();
+	stream
+		.set_read_timeout(Some(Duration::from_nanos(1)))
+		.unwrap();
 	(
 		IpcTx {
 			tx: BufWriter::new(stream),
@@ -79,11 +81,18 @@ impl IpcRx<'_> {
 	/// Breaks when receiving the following, recover by calling `blocking_receive`:
 	/// * An incomplete packet (`IpcError::PollingReceiveFragmented`)
 	/// * An packet larger than the buffer size (`IpcError::PollingReceiveTooLarge`)
-	pub fn polling_receive(&mut self) -> Result<Option<IpcMessage, IpcError>> {
+	pub fn polling_receive(&mut self) -> Result<Option<IpcMessage>, IpcError> {
 		let buf_capacity = self.rx.capacity();
 
 		match self.rx.fill_buf() {
-			Err(err) if matches!(err.kind(), io::ErrorKind::WouldBlock | io::ErrorKind::Interrupted) => Ok(None),
+			Err(err)
+				if matches!(
+					err.kind(),
+					io::ErrorKind::WouldBlock | io::ErrorKind::Interrupted
+				) =>
+			{
+				Ok(None)
+			}
 			Err(err) => Err(IpcError::from(err)),
 			Ok(&[]) => Err(IpcError::EndOfFile),
 			Ok(view) => {

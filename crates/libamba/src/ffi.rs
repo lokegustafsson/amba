@@ -84,7 +84,7 @@ pub unsafe extern "C" fn rust_ipc_receive_message(
 				Pin::new_unchecked(&mut *vec).push(state);
 			}
 			true
-		},
+		}
 		Some(IpcMessage::ResetPriority) | None => false,
 
 		Some(_) => {
