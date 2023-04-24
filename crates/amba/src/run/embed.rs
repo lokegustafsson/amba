@@ -2,9 +2,8 @@
 
 use std::{sync::mpsc, time::Instant};
 
-use data_structures::{ControlFlowGraph, Graph, GraphIpc};
+use data_structures::ControlFlowGraph;
 use eframe::egui::Context;
-use graphui::Graph2D;
 
 use crate::{gui::Model, run::control::EmbedderMsg};
 
@@ -46,27 +45,29 @@ pub fn run_embedder(
 				let mut start_params = params;
 				start_params.noise = 0.1;
 
-				let to_graph_2d = |g: &Graph| {
-					let g_: GraphIpc = g.clone().into();
-					Graph2D::new(g_, start_params)
-				};
+				let mut block_control_flow = block_control_flow.write().unwrap();
+				for (from, to) in block_edges.into_iter() {
+					block_control_flow.update(from, to);
+				}
 
-				{
-					let mut block_control_flow = block_control_flow.write().unwrap();
-					for (from, to) in block_edges.into_iter() {
-						block_control_flow.update(from, to);
-					}
-					*raw_block_graph.write().unwrap() = to_graph_2d(&block_control_flow.graph);
-					*compressed_block_graph.write().unwrap() =
-						to_graph_2d(&block_control_flow.compressed_graph);
+				raw_block_graph
+					.write()
+					.unwrap()
+					.into_new(block_control_flow.graph.clone(), start_params);
+				compressed_block_graph.write().unwrap().into_new(
+					block_control_flow.compressed_graph.clone(),
+					start_params,
+				);
+
+				let mut state_control_flow = state_control_flow.write().unwrap();
+				for (from, to) in state_edges.into_iter() {
+					state_control_flow.update(from, to);
 				}
-				{
-					let mut state_control_flow = state_control_flow.write().unwrap();
-					for (from, to) in state_edges.into_iter() {
-						state_control_flow.update(from, to);
-					}
-					*raw_state_graph.write().unwrap() = to_graph_2d(&state_control_flow.graph);
-				}
+
+				raw_state_graph
+					.write()
+					.unwrap()
+					.into_new(state_control_flow.graph.clone(), start_params);
 
 				blocking = false;
 				continue;
@@ -76,12 +77,20 @@ pub fn run_embedder(
 				start_params.noise = 0.1;
 				let compressed_block = {
 					let g: ControlFlowGraph = (&block).into();
-					g.compressed_graph.into()
+					g.compressed_graph
 				};
-				*raw_state_graph.write().unwrap() = Graph2D::new(state, start_params);
-				*raw_block_graph.write().unwrap() = Graph2D::new(block, start_params);
-				*compressed_block_graph.write().unwrap() =
-					Graph2D::new(compressed_block, start_params);
+				raw_state_graph
+					.write()
+					.unwrap()
+					.into_new(state, start_params);
+				raw_block_graph
+					.write()
+					.unwrap()
+					.into_new(block, start_params);
+				compressed_block_graph
+					.write()
+					.unwrap()
+					.into_new(compressed_block, start_params);
 				blocking = false;
 				continue;
 			}
