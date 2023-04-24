@@ -34,6 +34,12 @@ impl From<GraphIpc> for Graph2D {
 	}
 }
 
+impl Default for Graph2D {
+	fn default() -> Self {
+		Graph2D::empty()
+	}
+}
+
 #[derive(Clone, Copy)]
 pub struct EmbeddingParameters {
 	pub noise: f64,
