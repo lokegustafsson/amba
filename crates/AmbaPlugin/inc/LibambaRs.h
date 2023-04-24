@@ -18,11 +18,6 @@ struct NodeMetadataFFIPair {
 extern "C" {
 	IpcTx *rust_new_ipc();
 	void rust_free_ipc(IpcTx *ptr);
-	void rust_ipc_send_graphs(
-		IpcTx *ipc,
-		ControlFlowGraph *symbolic,
-		ControlFlowGraph *assembly
-	);
 	void rust_ipc_send_edges(
 		IpcTx *ipc,
 		const NodeMetadataFFIPair *state_data,
