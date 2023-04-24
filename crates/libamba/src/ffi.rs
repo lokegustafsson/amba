@@ -5,46 +5,6 @@ use ipc::{GraphIpc, IpcTx};
 
 use crate::node_metadata::{NodeMetadataFFI, NodeMetadataFFIPair};
 
-/// Create a newly allocated `ControlFlowGraph` and return an
-/// owning raw pointer. This pointer may only be freed with
-/// the `rust_free_control_flow_graph` function.
-#[no_mangle]
-pub extern "C" fn rust_new_control_flow_graph() -> *mut Mutex<ControlFlowGraph> {
-	Box::into_raw(Box::new(Mutex::new(ControlFlowGraph::new())))
-}
-
-/// Free a `ControlFlowGraph` allocated by
-/// `rust_new_control_flow_graph`. After this fuction has been
-/// called the pointer may not be used again.
-#[no_mangle]
-pub unsafe extern "C" fn rust_free_control_flow_graph(ptr: *mut Mutex<ControlFlowGraph>) {
-	let _ = Box::from_raw(ptr);
-}
-
-/// Wrapper around `ControlFlowGraph::update`. May only be
-/// called with a pointer allocated by
-/// `rust_new_control_flow_graph`. Returns true if the graph
-/// has changed.
-#[no_mangle]
-pub unsafe extern "C" fn rust_update_control_flow_graph(
-	ptr: *mut Mutex<ControlFlowGraph>,
-	from: NodeMetadataFFI,
-	to: NodeMetadataFFI,
-) -> bool {
-	let mutex = &*ptr;
-	let mut cfg = mutex.lock().unwrap();
-
-	cfg.update(from.into(), to.into())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn rust_print_graph_size(name: *const i8, ptr: *mut Mutex<ControlFlowGraph>) {
-	let name = CStr::from_ptr(name).to_string_lossy();
-	let mutex = &*ptr;
-	let cfg = mutex.lock().unwrap();
-	println!("\nGraph of: {name}\n{cfg}");
-}
-
 #[no_mangle]
 pub extern "C" fn rust_new_ipc<'a>() -> *mut Mutex<IpcTx<'a>> {
 	let ipc = match UnixStream::connect("amba-ipc.socket") {
