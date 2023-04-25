@@ -1,0 +1,77 @@
+Amba has two parallel processes:
+* amba: Runs the interface and any analysis and control
+* QEMU: A modified version of Qemu running S2E and our AmbaPlugin
+
+They speak to each other by sending serde-serialised messages
+(standard rust enums/sum types) over a unix-socket
+
+The plugin registers hooks with S2E on a number of events, primarily
+block start and state forks.
+
+When it hits one of these events it collects information (
+    S2E's id,
+    generation of the block in case of self modifying code,
+    the condition to jump to this block (not really though. But it's supposed to)
+    and our renaming of the state because S2E reuses ids
+)
+on it and the previous event (
+    not actually the previous event as there are a bunch of parallel
+    tasks, but the previous event in this thread
+). These are batched up to be sent to amba on a timer, currently
+one second, though if anyone can be bothered this will be reduced to
+0.1s
+
+The amba process draws the interface using egui. It's an intermediate
+mode UI library = everything is constantly being redrawn on every
+frame.
+
+It receives the edges being sent from AmbaPlugin for both the basic
+block graph and the symbolic graph. They're put into a
+ControlFlowGraph which is a data structure that builds an actual graph
+of the system and a compressed graph of the system. The compressed
+graph is kept as simplified as possible in regards to line graphs and
+can keep this simplified form without recalculating from scratch
+constantly (and will be quite a bit more efficient once Clara gets her
+thing mergable).
+
+Maybe a quick mention of how we had to implement a small set
+optimisation for stuff to run anywhere near a reasonable speed.
+
+These graphs are then converted to Graph2Ds (and this is done from
+scratch because I don't understand what Loke's code does and I can't
+just spawn nodes at the origin. I was hoping that he'd help with that
+but it doesn't look like that's gonna happen now)
+
+Graphs are drawn according to some magic I have no idea how it works
+but it's supposedly just a quadtree though that's not even an
+algorithm for this and I don't know, we need to look into this more or
+ask Loke.
+
+[ALMOST KINDA (NOT REALLY) DONE]
+On double clicking a node in the state graph, it or its children are
+given priority in calulcation in S2E. This looks like it'll be done by
+just entirely suspending everything else.
+
+This functionality allows the user to focus their search on that
+they're interested in, though it's currently kinda impossible to
+understand what each state actually represents.
+
+[WISHFUL THINKING]
+Nodes can be coloured by either function or by strongly connected
+components. This is just visualisation and doesn't really help
+anything. By function requires debug data
+
+Single-clicking a node displays information about it. This should be
+expanded to include source code location and state. We can't represent
+state in text in any useful way though. (yet? We should at least try
+to just ugly-print the entire state expression to get there)
+
+We need something about recipes. I don't really understand them at all
+unfortunately
+
+We also probably need stuff about how to boot everything. This was
+also Loke's domain
+
+Something about the mix of C++ and Rust? Feels irrelevant to me, but
+someone else seemed to want it, at least around the time of the
+planning report
