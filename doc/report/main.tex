@@ -100,9 +100,9 @@
 \titleformat{\chapter} % command
     [display] % shape
   {\normalfont\huge\bfseries} % format
-  {\center\thechapter} % label
+  {} % label
   {0pt} % sep
-  {\center\Huge} % before-code
+  {\Huge\thechapter\quad} % before-code
   [] % after code
 \titleformat{name=\chapter,numberless} % command
     [display] % shape
@@ -141,9 +141,9 @@
 \newpage
 \input{titlepage.tex}
 
-%\maketitle
-
 \newpage
+\pagenumbering{roman} % turn on roman page numbers
+\setcounter{page}{3}
 
 \tableofcontents
 \newpage
@@ -154,7 +154,7 @@
 
 \newpage
 
-\pagenumbering{arabic} % turn on page numbers
+\pagenumbering{arabic} % turn on arabic page numbers
 
 \chapter{Inledning}
 \input{inledning/main.tex}
