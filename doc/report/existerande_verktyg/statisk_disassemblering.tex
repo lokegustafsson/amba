@@ -1,0 +1,23 @@
+En vanlig statisk binäranalys är statisk disassemblering (ofta bara kallat
+disassembering)~\cite{andriesse2018}. Disassembering innebär att man försöker
+återskapa assemblerinstruktioner frän maskinkoden i binären, utan att exekvera
+maskinkoden~\cite{andriesse2018}. En av svårigheterna med att översätta maskinkod
+till assembler är att särskilda instruktioner från data~\cite{andriesse2018}.
+Till exempel kan man inte veta om maskinkoden \verb|0x8E| är värdet 0x8E (jrf.
+142 i decimal) eller x86 intstruktionen \verb|mov|~\cite{andriesse2018}. Det
+finnr i huvudsak två metoder för att översätta maskininstruktioner
+till assembler, \emph{linjär disassemblering}; och \emph{rekursiv
+disassemblering}~\cite{andriesse2018}.
+
+Ett vanligt disassemblerverktyg är Ghidra, ett program utvecklat av NSA
+(National Security Agency~\cite{ghidra_website}. Ghidra har också en debugger
+och funktionsgraf. Debuggern ska underlätta binär debugging genom att
+integrera med andra funktioner i Ghidra. Funktionsgrafen låter användaren se
+hur programmet är uppbyggt visuellt och hur olika funktioner interagerar med
+varandra. Funktionaliteter kan utökas eller andra funktioner utvecklas genom
+plugins till Ghidra~\cite{ghidra_use_cases}. Ghidra tillåter även automatisering
+genom att skriva skript. Ett exempel är ett skript som hittar exempelvis
+sårbarhet i form av funktionsanrop till potentiellt osäkra API-anrop genom
+statisk analys~\cite{ghidra_script}. Andra vanliga disassemblerverktyg är
+\emph{IDA Pro} från Hex rays~\cite{hex_rays} och \emph{Binary Ninja} från Vector
+35~\cite{binary_ninja}.

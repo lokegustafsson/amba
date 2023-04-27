@@ -1,7 +1,10 @@
-Det kan finnas flera metoder för analys av binärprogram och det finns ganska
-många verktyg idag som stödjer ett eller flera av dessa metoder. Det finns
-många tillgängliga binäranalysverktyg men några populära binäranalysverktyg är
-Ghidra~\cite{ghidra_website} och Angr~\cite{angr_web}.
+All form av binäranalys kan delas in i statisk; dynamisk; eller en kombination
+av dem~\cite{andriesse2018}. Statiska metoder bygger på att man översätter
+maskinkod till assembler utan att att exekvera binären, medan dynamiska
+metoder loggar exekverade instuktioner~\cite{andriesse2018}. Dessa analysmetoder
+implementeras av en rad olika verktyg som idag används inom akademin och
+industrin. Listans syfte är att ge läsaren en översikt över fältet, och målet är
+inte att vara komplett.
 
 % Sure I am referencing to the Ghidra website, but this is done by others as
 % well because Ghidra has no report afaik. An example report that uses ghidra
@@ -10,17 +13,6 @@ Ghidra~\cite{ghidra_website} och Angr~\cite{angr_web}.
 % Vidare har angr t.ex. sagt att "om man använder angr som en komponent i sin
 % projekt ska man helst citera en viss rapport", men vi beskriver bara med
 % några ord vad angr är och använder den till inget.
-
-Ghidra är ett \emph{reverse engingeering} ramverk utvecklat av USA:s NSA
-(National Security Agency) och kan disassembla en binär till pseudo-C-kod.
-Ghidra har också en debugger och funktionsgraf. Debuggern ska underlätta binär
-debugging genom att integrera med andra funktioner i Ghidra. Funktionsgrafen
-låter användaren se hur programmet är uppbyggt visuellt och hur olika
-funktioner interagerar med varandra. Funktionaliteter kan utökas eller andra
-funktioner utvecklas genom plugins till Ghidra~\cite{ghidra_use_cases}. Ghidra
-tillåter även automatisering genom att skriva skript. Ett exempel är ett skript
-som hittar exempelvis sårbarhet i form av funktionsanrop till potentiellt
-osäkra API-anrop genom statisk analys~\cite{ghidra_script}.
 
 Angr är en binäranalysverktyg med stöd för både statiska och dynamiska analyser
 med hjälp av symbolisk exekvering. Angr har, som Ghidra, stöd för
