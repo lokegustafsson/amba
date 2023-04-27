@@ -34,6 +34,12 @@ impl From<GraphIpc> for Graph2D {
 	}
 }
 
+impl Default for Graph2D {
+	fn default() -> Self {
+		Graph2D::empty()
+	}
+}
+
 #[derive(Clone, Copy)]
 pub struct EmbeddingParameters {
 	pub noise: f64,
@@ -75,8 +81,25 @@ impl Graph2D {
 		}
 	}
 
-	pub fn new(graph: GraphIpc, params: EmbeddingParameters) -> Self {
-		let mut ret: Graph2D = graph.into();
+	pub fn from_old(old: Self, graph: impl Into<GraphIpc>, params: EmbeddingParameters) -> Self {
+		let mut new = Graph2D::new(graph, params);
+		for (from, to) in old.node_positions.iter().zip(new.node_positions.iter_mut()) {
+			*to = *from;
+		}
+		new
+	}
+
+	/// Create a new `Graph2D` with as many node positions as possible stolen from the old graph.
+	/// Not perfect by any means, but a cheap hack to minimise jumpiness during updates
+	pub fn into_new(&mut self, graph: impl Into<GraphIpc>, params: EmbeddingParameters) {
+		let old = mem::take(self);
+		let new = Graph2D::from_old(old, graph, params);
+		*self = new;
+	}
+
+	pub fn new(graph: impl Into<GraphIpc>, params: EmbeddingParameters) -> Self {
+		let graph_: GraphIpc = graph.into();
+		let mut ret: Graph2D = graph_.into();
 		ret.run_layout_iterations(100, params);
 		ret
 	}

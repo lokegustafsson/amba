@@ -4,6 +4,7 @@ use std::{
 	thread,
 };
 
+use data_structures::ControlFlowGraph;
 use eframe::{
 	egui::{self, Context},
 	App, CreationContext, Frame,
@@ -29,6 +30,8 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 }
 
 pub struct Model {
+	pub block_control_flow: RwLock<ControlFlowGraph>,
+	pub state_control_flow: RwLock<ControlFlowGraph>,
 	pub raw_state_graph: RwLock<Graph2D>,
 	pub raw_block_graph: RwLock<Graph2D>,
 	pub compressed_block_graph: RwLock<Graph2D>,
@@ -38,6 +41,8 @@ pub struct Model {
 impl Model {
 	pub fn new() -> Self {
 		Self {
+			block_control_flow: RwLock::new(ControlFlowGraph::new()),
+			state_control_flow: RwLock::new(ControlFlowGraph::new()),
 			raw_state_graph: RwLock::new(Graph2D::empty()),
 			raw_block_graph: RwLock::new(Graph2D::empty()),
 			compressed_block_graph: RwLock::new(Graph2D::empty()),

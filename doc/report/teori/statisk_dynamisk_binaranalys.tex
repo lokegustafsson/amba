@@ -1,17 +1,17 @@
 En annan typ av kategorisering av olika analysmetoder som fokuserar på hur
-analysen genomförs delar metoderna i två grupper: statisk och dynamisk analys
-\cite{dynamic_bin_analysis}.
+analysen genomförs delar metoderna i två grupper: statisk och dynamisk
+analys~\cite{dynamic_bin_analysis}.
 
 Statisk analys syftar på analys som går att göra utan att exekvera programmet
 som analyseras. Exempel på statisk binäranalys är metod 1-2, alltså att
-disassembla binären och/eller visualisera kod \cite{dynamic_bin_analysis}.
+disassembla binären och/eller visualisera kod~\cite{dynamic_bin_analysis}.
 
-Dynamisk analys går ut på att analysera ett program under exekvering
-\cite{dynamic_bin_analysis}. Exempel på dynamisk binäranalys är metod 3-6. I
-alla fall krävs någon typ av injektion av kod eller data i programmet i syfte
-att kunna extrahera viktig information under programmets körning
-\cite{dynamic_bin_analysis}. Många avancerade dynamiska metoder som t.ex.
-concolic testing kräver symbolisk exekvering som går ut på att tilldela
+Dynamisk analys går ut på att analysera ett program under
+exekvering~\cite{dynamic_bin_analysis}. Exempel på dynamisk binäranalys är
+metod 3-6. I alla fall krävs någon typ av injektion av kod eller data i
+programmet i syfte att kunna extrahera viktig information under programmets
+körning~\cite{dynamic_bin_analysis}. Många avancerade dynamiska metoder som
+t.ex. concolic testing kräver symbolisk exekvering som går ut på att tilldela
 symboliska värden till variabler och se hur dessa påverkar programhopp och
 förgreningar och vad för möjliga värden som denna symbol kan inneha under
 exekvering. I fallet med concolic testing används denna information för att,

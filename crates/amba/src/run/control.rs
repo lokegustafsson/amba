@@ -10,7 +10,7 @@ use std::{
 };
 
 use eframe::egui::Context;
-use ipc::GraphIpc;
+use ipc::NodeMetadata;
 
 use crate::{
 	cmd::Cmd,
@@ -23,15 +23,18 @@ pub enum ControllerMsg {
 	GuiShutdown,
 	QemuShutdown,
 	TellQemuPid(u32),
-	ReplaceGraph {
-		symbolic_state_graph: GraphIpc,
-		basic_block_graph: GraphIpc,
+	UpdateEdges {
+		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
+		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
 	EmbeddingParamsUpdated,
 }
 
 pub enum EmbedderMsg {
-	ReplaceGraph([GraphIpc; 2]),
+	UpdateEdges {
+		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
+		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
+	},
 	WakeUp,
 }
 
@@ -105,15 +108,15 @@ impl Controller {
 					}
 				}
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
-				ControllerMsg::ReplaceGraph {
-					symbolic_state_graph,
-					basic_block_graph,
+				ControllerMsg::UpdateEdges {
+					block_edges,
+					state_edges,
 				} => {
 					self.embedder_tx.as_ref().map(|tx| {
-						tx.send(EmbedderMsg::ReplaceGraph([
-							symbolic_state_graph,
-							basic_block_graph,
-						]))
+						tx.send(EmbedderMsg::UpdateEdges {
+							block_edges,
+							state_edges,
+						})
 					});
 				}
 				ControllerMsg::EmbeddingParamsUpdated => {
