@@ -1,15 +1,20 @@
-Detta projekt ämnar utveckla ett binäranalysverktyg för generell reverse
-engineering, det vill säga en applikation vars uppgift är att analysera binära
-program utan kännedom om källkoden utifrån ett datorsäkerhetsperspektiv.
+%Detta projekt ämnar utveckla ett binäranalysverktyg för generell reverse
+%engineering, det vill säga en applikation vars uppgift är att analysera binära
+%program utan kännedom om källkoden utifrån ett datorsäkerhetsperspektiv.
+
+Projektet ämnar utveckla ett verktyg för interaktiv visualisering av symbolisk
+fuzzing. Detta innebär att utveckla en applikation vars uppgift är att analysera
+binärer med inkluderade debug symboler för att hitta input som leder till
+buggar eller minnessårbarheter.
 
 \subsection{Mål}
 Verktyget ska ha en korrekt och testbar förståelse av det analyserade programmet
 och ska samtidigt kunna kommunicera denna till användaren genom visualisering.
+
 Visualiseringen ska presenteras i ett grafiskt användargränssnitt där användaren
-kan interaktivt stega igenom det binära programmet och själv välja vilka beslut
-som görs gällande exempelvis programhopp. Funktionaliteten i verktyget uppnås
-med hjälp av symbolisk exekvering, och därigenom kombineras fördelarna i
-automatiska och manuella analysmetoder.
+kan interaktivt stega igenom det binära programmet och själv välja vilka states
+som ska prioriteras. Funktionaliteten i verktyget uppnås
+med hjälp av symbolisk exekvering vilket tillgängliggör symbolisk fuzzing.
 
 % Utveckla syfte (förstå nyttan och det akademiskt relevanta i arbetet)
 Verktyget ämnar att genom mänskligt läsbara representationer av programmets 
@@ -25,16 +30,10 @@ dess källkod oftast är okänd. För att upptäcka pågående, och motverka
 framtida attacker är det viktigt att förstå hur attackerna är utformade och
 hur de beteer sig. 
 
-Binär analys är också användbart då tredje-parts bibliotek används.
-Att analysera säkerheten hos ett program kan behöva ske utan att involvera 
-dess utgivare. Då är det användbart att kunna dra slutsatser om programmet 
-endast ifrån dess maskinkod. 
-
-Förutom att analysera program där källkoden inte är tillgänglig så är det även 
-användbart att analysera ett programs maskinkod för att undersöka kompilatorbuggar.
-
-%\section{akademisk relevans}
-
-
-
-
+Användbarheten kommer från kombinationen av datorns fördel i beräkningskraft
+och människans intuition. Symbolisk fuzzing löser problemet av att inte behöva godtyckligt
+gissa input som leder till att en specifik väg tas i ett program, och nyttan från människans
+intuition nyttjas på samma sätt som med en dekompilator -- genom analys som
+leder till ökad förståelse och insikt. Denna kombinationen gör det möjligt att på ett
+användarvänligt sätt dra analytiska slutsatser om en binär och öka ens abstrakta
+förståelse av det och därmed potentiellt hitta minnessårbarheter.
