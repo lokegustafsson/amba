@@ -1,0 +1,47 @@
+Här presenteras verktyget AMBA. Det är byggt ovanpå \stoe. AMBA är ett
+verktyg för att visualisera och styra symbolisk exekvering i \stoe.
+AMBA kör program med symbolisk indata och visar ett antal grafer över
+exekveringen. Dessa grafer visar inte hela programmet från början,
+utan uppdateras kontinuerligt under programmets exekvering.
+
+Graferna är byggda av ett antal noder som alla representerar olika
+tillstånd och kan visa vidare information om sitt tillstånd vid klick.
+
+Den första grafen är en basic-block-graf. Här representerar varje
+tillstånd i grafen ett basic block i maskinkoden. Vidare information i
+den här grafen är blockets minnesadress, hur många gånger det här
+blocket har tolkats (ifall det är ett självmodifierande program som
+tolkas), dess motsvarande rader i källkoden ifall debugdata finns och
+en disassemblering av blocket.
+
+Den andra grafen är en komprimerad basic-block-graf. Den visar samma
+graf som den första, men med linjesubgrafer sammanslagna till samma
+nod. Informationen här visar spannet av sammanslagna noder.
+% ^ THIS IS NOT IMPLEMENTED
+
+Den tredje grafen visar symboliska tillstånd. Ett tillstånd här är
+mellan varje branch som görs baserat på ett symboliskt
+uttryck. Den vidare informationen i den här grafen är tillståndets
+namn, dess sammanhörande (återanvända) id i \stoe, och uttrycket som
+ledde till att den branchen togs.
+
+Utöver att visa dessa grafer går det också att välja noder i den
+symboliska tillståndsgrafen för att prioritera deras fortsatta
+evaulering. Detta gör det möjligt att nå resultat i program som annars
+inte nödvändigtvis skulle nå ett slut.
+
+Grafnodernas placering i 2D hittas genom iterativ lösning för lägst
+energi i ett system av attraktion-, repulsion- och externa
+krafter. Utplaceringsalgoritmens parametrar kan konfigureras i realtid
+vid körning av användaren.
+
+\subsection{Begränsningar}
+
+Alla program kan inte hanteras av AMBA. Programmen som AMBA kör måste
+vara byggda för Ubuntu-22.04-x86\_64. Detta görs lättast med att
+antingen bygga direkt för Ubuntu, eller för bredare support, fullt
+statiskt länkad mot t.ex. musl.
+
+Den symboliska indatan är också begränsad till att komma ifrån
+stdin. Alltså kan inte programargument (argc, argv) eller filer på
+disk användas.
