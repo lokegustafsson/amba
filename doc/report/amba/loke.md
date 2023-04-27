@@ -1,4 +1,6 @@
-AMBA (funktionalitet)
+% Lokes råtext
+
+# AMBA (funktionalitet)
 
 Presenterar verktyget AMBA. Är byggt ovanpå S2E som är byggt ovanpå
 QEMU. Verktyg för dynamisk analys för x86\_64 linux host, kan köra
@@ -35,17 +37,17 @@ vid körning av användaren.
 
 Nånting nånting om tillståndsprioritering.
 
-Implementation
+# Implementation
 
-Exekveringsmotor S2E/SymQemu/angr
+## Exekveringsmotor S2E/SymQemu/angr
 
 nånting nånting
 
-Blah
+## Blah
 
-Mer Blah
+## Mer Blah
 
-Slutsats / trevlig lista på funktionalitet att lägga till
+# Slutsats / trevlig lista på funktionalitet att lägga till
 
 - kontinuerlig sökning efter magiska strängar och tal i
     programminnet. Hitta ctf-flaggor och dylikt

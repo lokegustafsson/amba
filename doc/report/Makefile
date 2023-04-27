@@ -1,6 +1,5 @@
 group_64_project_report.pdf: \
   amba/main.tex \
-  amba/spec.tex \
   begreppslista.tex \
   cover.tex \
   evaluering/begransningar.tex \
