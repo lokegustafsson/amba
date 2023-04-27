@@ -63,8 +63,8 @@ else:
   run_important_code()
 
 \end{lstlisting}
-\caption{}
-\label{}
+\caption{Pseudokod för att visualisera symbolisk exekvering.}
+\label{symbex_example_code}
 \end{figure}
 
 Exemplet ovan använder symbolisk exekvering för att hitta vilken input som leder
@@ -74,17 +74,19 @@ program men inte alla program. Variablerna x och y sätts till symboliska värde
 som sedan används för att beräkna path constraint och de symboliska uttryck som
 variablerna utvecklas till för en vald branch. Därefter används dessa uttryck
 och path constraint tillsammans för att bilda en ekvation som kan lösas med
-hjälp av en SMT-solver och därmed få ut ett konkret värde. Figur 2.4 visar hur
+hjälp av en SMT-solver och därmed få ut ett konkret värde. Figur
+\ref{symbex_example_graph} visar hur
 det symboliska tillståndet förändras för alla möjliga branches i programmet.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{figures/final_symbolic_example_graph.png}
 \caption{Path constraint och symboliskt tillstånd för alla vägar i
-    pseudokoden angett i figur 2.3.}
+    pseudokoden angett i \ref{symbex_example_code}.}
+\label{symbex_example_graph}
 \end{figure}
 
-I figuren ovan används $\pi$ för att ange path constraint vilket är initialt satt
-till $\top$ eftersom villkoret är sant från början och $\phi$ används för att visa
-mappningen för symboliska värden.
+I \ref{symbex_example_graph} används $\pi$ för att ange path constraint vilket
+är initialt satt till $\top$ eftersom villkoret är sant från början och $\phi$
+används för att visa mappningen för symboliska värden.
 
