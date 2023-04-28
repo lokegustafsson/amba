@@ -101,14 +101,14 @@ skickar och bygger de tre graferna nämnda tidigare.
 \section{[WIP] Grafkoden (rename)}
 \begin{lstlisting}[language=Swift]
 struct Node {
-	id: Id,
-	from: Set<Id>,
-	to: Set<Id>,
-	of: Set<Id>,
+    id:    SequentialId,
+    from:  Set<SequentialId>,
+    to:    Set<SequentialId>,
+    of:    Set<SequentialId>,
 }
 
 struct Graph {
-	nodes: Map<Id, Node>
+    nodes: Map<SequentialId, Node>
 }
 \end{lstlisting}
 
