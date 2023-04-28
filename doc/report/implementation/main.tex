@@ -99,30 +99,51 @@ varje bildruta. Processen samlar kantinformation som AmbaPlugin
 skickar och bygger de tre graferna nämnda tidigare.
 
 \section{[WIP] Grafkoden (rename)}
-\begin{lstlisting}[language=Swift]
+I grunden består grafen av en avbildning (jmf map) av id:n till noder,
+där en nod är tre mängder av id:n som representerar kanter in, kanter
+ut och, i den komprimerade grafens fall, vilka noder som slagits
+samman för att bli den här noden, sorterad efter ordningen de har i
+den underliggande linjegrafen.
+
+% This can't be a figure because latex will then move it too far away
+% from the relevant text
+% \begin{figure}
+% Rust isn't supported, Swift is close enough syntactically
+\begin{lstlisting}[label={list:third}, language=Swift]
+// Language question: Translate field names to Swedish?
+// Specify Set and Map? List → Vec?
 struct Node {
-    id:    SequentialId,
-    from:  Set<SequentialId>,
-    to:    Set<SequentialId>,
-    of:    Set<SequentialId>,
+    from:  Set<Id>,
+    to:    Set<Id>,
+    of:    List<Id>,
 }
 
 struct Graph {
-    nodes: Map<SequentialId, Node>
+    nodes: Map<Id, Node>
 }
 \end{lstlisting}
+% \caption{Typsignaturer i pseudokod}
+% \end{figure}
 
-Grafer representeras som en map av nod-idn till noder. En nod här
-representeras som ett id och tre set av idn
+Grafen byggs av en wrappertyp som konverterar från strukter av
+metadata till sekventiella id:n. Id:na är sekventiella för att
+metadatan ska kunna förvaras i en lista bredvid och använda index som
+id. Grafen stödjer byggandet av både råa och komprimerade grafer. När
+en kant läggs till i grafen registreras varandras id:n i nodernas
+from- och to- set. Om det är en komprimerad graf hittas noderna som
+innehåller id:na som ska samman kopplas och bryter dem i två noder var
+efter/före id:t i fråga och kopplar dem samman efter det. När kanten
+är tillagd kollas det om den är en del av en linjegraf och slår sedan
+samman noderna om så är fallet.
 
-Resultatet av att många branches alltid leder ned samma väg är att
-många subgrafer blir linjegrafer. Dessa tillför då inget värde och gör
-det svårare att läsa grafen slås alla dessa noder samman till en kant.
+\subsection{Nodgruppering}
+Noderna i de första två graferna färgas efter starkt anslutna
+komponenter (jmf strongly connected components). En starkt ansluten
+komponent i en riktad graf är den subgrafen där alla noder kan nå alla
+andra noder i subgrafen. Detta beräknas via Tarjan's
+Strongly Connected Components Algorithm.~\cite{tarjan}
 
-Grafen visas under programmets exekvering medan noder läggs till
-allteftersom de upptäcks. Därför görs komprimeringen på två sätt. Ett
-på färdiga grafer som arbetar med hela grafen och en som jobbar på
-ändringar i en redan komprimerad graf som endast jobbar iterativt
-kring de kanter som lagts till.
+Noderna kan också färgas efter funktion enligt debuginformation i
+associerad DWARF-data.
 
 % s2e_website_s2eenv  url: https://s2e.systems/docs/s2e-env.html
