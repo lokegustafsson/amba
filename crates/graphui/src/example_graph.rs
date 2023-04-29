@@ -5,8907 +5,8907 @@ use ipc::{GraphIpc, NodeMetadata};
 pub fn example_graph() -> GraphIpc {
 	GraphIpc {
 		metadata: vec![
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198480).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199603).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199135).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199161).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199163).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199175).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199187).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199206).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199212).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199198).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199227).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199262).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199301).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199330).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199321).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199334).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199318).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199336).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207029).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207059).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207073).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207079).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207108).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207148).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207054).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207117).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207168).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207242).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207299).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207389).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4206908).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207002).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207394).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4206801).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209191).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209206).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4206813).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4206824).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4206826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4206854).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207402).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207407).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199346).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207422).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209150).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207438).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4207450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199359).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199374).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199392).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199516).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199637).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199557).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199525).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198400).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198422).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199531).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199547).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198768).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198592).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198640).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199549).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199538).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199555).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199586).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199060).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199839).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199870).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199886).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208541).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209965).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4210003).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4210043).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208570).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208123).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208216).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208218).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208226).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208251).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208261).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208286).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208294).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(2).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208306).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208327).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208600).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208600).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(2).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4208626).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4199080).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 0,
 				basic_block_vaddr: Some(NonZeroU64::new(4198773).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 2,
 				basic_block_vaddr: Some(NonZeroU64::new(4198797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 2,
 				basic_block_vaddr: Some(NonZeroU64::new(4198837).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 4,
 				basic_block_vaddr: Some(NonZeroU64::new(4198861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 4,
 				basic_block_vaddr: Some(NonZeroU64::new(4198901).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 6,
 				basic_block_vaddr: Some(NonZeroU64::new(4198956).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 6,
 				basic_block_vaddr: Some(NonZeroU64::new(4198996).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199044).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198974).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198879).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198815).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 8,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199052).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198974).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198879).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198815).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 7,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 1,
 				basic_block_vaddr: Some(NonZeroU64::new(4198817).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 1,
 				basic_block_vaddr: Some(NonZeroU64::new(4198901).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 9,
 				basic_block_vaddr: Some(NonZeroU64::new(4198976).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 9,
 				basic_block_vaddr: Some(NonZeroU64::new(4198996).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199052).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 11,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199044).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 12,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 5,
 				basic_block_vaddr: Some(NonZeroU64::new(4198976).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 5,
 				basic_block_vaddr: Some(NonZeroU64::new(4198996).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199044).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198879).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198815).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 14,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 3,
 				basic_block_vaddr: Some(NonZeroU64::new(4198881).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 3,
 				basic_block_vaddr: Some(NonZeroU64::new(4198996).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199044).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198815).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 16,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199052).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198879).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198815).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 13,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199052).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198815).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 15,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 10,
 				basic_block_vaddr: Some(NonZeroU64::new(4198956).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 10,
 				basic_block_vaddr: Some(NonZeroU64::new(4198996).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199044).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198974).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 18,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199052).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198974).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198994).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199098).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199918).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200012).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206104).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206177).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203749).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203835).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203845).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203856).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203889).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203871).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203899).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203929).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203950).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203969).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204009).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204071).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204266).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200521).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200579).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204276).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204288).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204493).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204524).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204584).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204599).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204638).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206058).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206214).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206222).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206254).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206275).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206338).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208497).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206364).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206368).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206378).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203936).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200580).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200595).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208632).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208708).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208720).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208742).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209141).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209170).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209180).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209190).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208760).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208797).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200113).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200147).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200154).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204671).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204682).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204712).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204726).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4204739).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205057).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205082).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205101).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205131).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200485).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200501).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200496).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200517).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205149).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205157).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205167).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205179).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205209).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205554).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205573).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205614).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200604).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200645).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200750).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200774).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205667).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205685).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205714).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208725).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208737).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209185).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205753).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205782).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203826).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203861).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208769).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208347).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208390).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208409).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208414).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209709).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209806).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209232).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209241).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209814).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209819).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209926).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209947).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208439).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208460).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208781).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208786).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4208745).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4203954).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4205787).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206397).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206465).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206503).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4206527).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200084).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4200105).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199126).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199596).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198432).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199663).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198445).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199664).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199681).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198656).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198669).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198544).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198576).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198678).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198698).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199689).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4199691).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4210344).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198450).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209644).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4210072).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4210106).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4210283).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4210085).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209650).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209672).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209566).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209571).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209590).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209610).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209641).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209684).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209696).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4209643).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4198457).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
 			},
-			NodeMetadata {
+			NodeMetadata::BasicBlock {
 				symbolic_state_id: 17,
 				basic_block_vaddr: Some(NonZeroU64::new(4207552).unwrap()),
 				basic_block_generation: Some(NonZeroU64::new(1).unwrap()),
