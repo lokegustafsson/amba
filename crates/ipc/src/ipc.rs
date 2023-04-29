@@ -8,7 +8,7 @@ use std::{
 use serde::{Deserialize, Serialize};
 
 pub use crate::{
-	graph::{GraphIpc, GraphIpcBuilder},
+	graph::GraphIpc,
 	metadata::NodeMetadata,
 };
 
