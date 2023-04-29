@@ -7,10 +7,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
-pub use crate::{
-	graph::GraphIpc,
-	metadata::NodeMetadata,
-};
+pub use crate::{graph::GraphIpc, metadata::NodeMetadata};
 
 pub fn new_wrapping(stream: &UnixStream) -> (IpcTx<'_>, IpcRx<'_>) {
 	(

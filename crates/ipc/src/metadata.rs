@@ -1,7 +1,7 @@
 use std::num::NonZeroU64;
 
-use smallvec::SmallVec;
 use serde::{Deserialize, Serialize};
+use smallvec::SmallVec;
 
 // Arbitrarily picked, not measured
 const SMALL_SIZE: usize = 5;
