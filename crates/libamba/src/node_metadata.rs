@@ -15,10 +15,14 @@ impl From<NodeMetadataFFI> for ipc::NodeMetadata {
 			basic_block_vaddr,
 			basic_block_generation,
 		} = value;
-		ipc::NodeMetadata::BasicBlock {
-			symbolic_state_id,
-			basic_block_vaddr: basic_block_vaddr.try_into().ok(),
-			basic_block_generation: basic_block_generation.try_into().ok(),
+		match metadata_type {
+			0 => ipc::NodeMetadata::State { symbolic_state_id },
+			1 => ipc::NodeMetadata::BasicBlock {
+				symbolic_state_id,
+				basic_block_vaddr: basic_block_vaddr.try_into().ok(),
+				basic_block_generation: basic_block_generation.try_into().ok(),
+			},
+			_ => panic!("Invalid metadata type"),
 		}
 	}
 }
