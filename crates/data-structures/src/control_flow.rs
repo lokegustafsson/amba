@@ -16,7 +16,7 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
-	pub(crate) metadata: Vec<NodeMetadata>,
+	pub metadata: Vec<NodeMetadata>,
 	pub(crate) meta_mapping_unique_id_to_index: HashMap<NodeMetadata, usize>,
 }
 

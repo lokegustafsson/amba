@@ -10,6 +10,7 @@ use eframe::{
 	App, CreationContext, Frame,
 };
 use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
+use ipc::NodeMetadata;
 
 use crate::{
 	cmd::Cmd,
@@ -155,11 +156,27 @@ impl App for Gui {
 		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {
 			ui.horizontal(|ui| {
 				if let Some(active) = active {
+					let metadata = match self.view {
+						GraphToView::RawBlock => {
+							self.model.block_control_flow.read().unwrap().metadata[active].clone()
+						}
+						GraphToView::CompressedBlock => {
+							// let cfg = self.model.block_control_flow.read().unwrap();
+							// let of = &cfg.graph.nodes[&(active as u64)].of;
+
+							NodeMetadata::CompressedBasicBlock {
+								symbolic_state_ids: Default::default(),
+								basic_block_vaddrs: Default::default(),
+								basic_block_generations: Default::default(),
+							}
+						}
+						GraphToView::State => {
+							self.model.state_control_flow.read().unwrap().metadata[active].clone()
+						}
+					};
+
 					ui.heading("Selected node");
-					ui.label(format!(
-						"{}: {:#?}",
-						active, graph.node_metadata[active]
-					));
+					ui.label(format!("{}: {:#?}", active, metadata));
 				}
 			})
 		});
