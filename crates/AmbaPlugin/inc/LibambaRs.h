@@ -5,6 +5,7 @@ struct IpcTx;
 struct IpcRx;
 
 struct NodeMetadataFFI {
+	u32 metadata_type;
 	u32 symbolic_state_id;
 	u64 basic_block_vaddr;
 	u64 basic_block_generation;

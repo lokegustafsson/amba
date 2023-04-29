@@ -1,6 +1,7 @@
 #[repr(C)]
 #[derive(Clone)]
 pub struct NodeMetadataFFI {
+	pub metadata_type: u32,
 	pub symbolic_state_id: u32,
 	pub basic_block_vaddr: u64,
 	pub basic_block_generation: u64,
@@ -9,6 +10,7 @@ pub struct NodeMetadataFFI {
 impl From<NodeMetadataFFI> for ipc::NodeMetadata {
 	fn from(value: NodeMetadataFFI) -> Self {
 		let NodeMetadataFFI {
+			metadata_type,
 			symbolic_state_id,
 			basic_block_vaddr,
 			basic_block_generation,
