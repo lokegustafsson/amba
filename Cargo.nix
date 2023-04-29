@@ -2367,6 +2367,7 @@ in
     dependencies = {
       bincode = rustPackages."registry+https://github.com/rust-lang/crates.io-index".bincode."1.3.3" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
+      smallvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".smallvec."1.10.0" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };
   });
@@ -4248,6 +4249,16 @@ in
     version = "1.10.0";
     registry = "registry+https://github.com/rust-lang/crates.io-index";
     src = fetchCratesIo { inherit name version; sha256 = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"; };
+    features = builtins.concatLists [
+      [ "const_generics" ]
+      [ "const_new" ]
+      [ "serde" ]
+      [ "union" ]
+      [ "write" ]
+    ];
+    dependencies = {
+      serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
+    };
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".smawk."0.3.1" = overridableMkRustCrate (profileName: rec {
