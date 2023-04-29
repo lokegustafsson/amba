@@ -23,7 +23,7 @@ pub struct ControlFlowGraph {
 impl From<&ipc::GraphIpc> for ControlFlowGraph {
 	fn from(value: &ipc::GraphIpc) -> Self {
 		let ipc::GraphIpc { metadata, edges } = value;
-		let f = |i: &usize| metadata[*i];
+		let f = |i: &usize| metadata[*i].clone();
 		edges.iter().map(|(x, y)| (f(x), f(y))).collect()
 	}
 }
@@ -147,7 +147,7 @@ impl ControlFlowGraph {
 	fn update_metadata(&mut self, node: NodeMetadata) -> u64 {
 		*self
 			.meta_mapping_unique_id_to_index
-			.entry(node)
+			.entry(node.clone())
 			.or_insert_with(|| {
 				let seq_index = self.metadata.len();
 				self.metadata.push(node);
@@ -161,10 +161,8 @@ mod test {
 	use crate::control_flow::*;
 
 	fn node(i: u32) -> NodeMetadata {
-		NodeMetadata {
+		NodeMetadata::State {
 			symbolic_state_id: i,
-			basic_block_vaddr: None,
-			basic_block_generation: None,
 		}
 	}
 
