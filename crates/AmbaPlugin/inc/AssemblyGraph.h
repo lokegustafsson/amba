@@ -19,10 +19,10 @@ class AssemblyGraph : public control_flow::ControlFlow {
 
   protected:
 	StatePC packStatePc(StateIdS2E, u64);
-	Metadata getMetadata(s2e::S2EExecutionState *, u64);
+	BasicBlockMetadata getMetadata(s2e::S2EExecutionState *, u64);
 
 	std::unordered_map<StatePC, BasicBlockGeneration> m_generations {};
-	std::unordered_map<StateIdAmba, Metadata> m_last {};
+	std::unordered_map<StateIdAmba, BasicBlockMetadata> m_last {};
 };
 
 }

@@ -4,12 +4,14 @@ use std::{
 	thread,
 };
 
-use data_structures::ControlFlowGraph;
+use data_structures::{ControlFlowGraph, SmallU64Set};
 use eframe::{
 	egui::{self, Context},
 	App, CreationContext, Frame,
 };
 use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
+use ipc::NodeMetadata;
+use smallvec::SmallVec;
 
 use crate::{
 	cmd::Cmd,
@@ -155,11 +157,28 @@ impl App for Gui {
 		egui::TopBottomPanel::bottom("bottom-panel").show(ctx, |ui| {
 			ui.horizontal(|ui| {
 				if let Some(active) = active {
+					let metadata = match self.view {
+						GraphToView::RawBlock => {
+							self.model.block_control_flow.read().unwrap().metadata[active].clone()
+						}
+						GraphToView::CompressedBlock => {
+							// Cloned because even the immutable get requires a mutable reference
+							let mut cfg = self.model.block_control_flow.write().unwrap();
+							let nodes = cfg
+								.compressed_graph
+								.get(active as u64)
+								.map(|x| x.of.clone())
+								.unwrap();
+
+							merge_nodes_into_single_metadata(&nodes, &cfg)
+						}
+						GraphToView::State => {
+							self.model.state_control_flow.read().unwrap().metadata[active].clone()
+						}
+					};
+
 					ui.heading("Selected node");
-					ui.label(format!(
-						"{}: {:#?}",
-						active, graph.node_metadata[active]
-					));
+					ui.label(format!("{}: {:#?}", active, metadata));
 				}
 			})
 		});
@@ -174,5 +193,32 @@ impl App for Gui {
 			}
 			Err(mpsc::SendError(_)) => unreachable!(),
 		}
+	}
+}
+
+fn merge_nodes_into_single_metadata(nodes: &SmallU64Set, cfg: &ControlFlowGraph) -> NodeMetadata {
+	let mut symbolic_state_ids = SmallVec::new();
+	let mut basic_block_vaddrs = SmallVec::new();
+	let mut basic_block_generations = SmallVec::new();
+
+	for metadata in nodes.iter().map(|i| &cfg.metadata[*i as usize]) {
+		if let NodeMetadata::BasicBlock {
+			symbolic_state_id,
+			basic_block_vaddr,
+			basic_block_generation,
+		} = metadata
+		{
+			symbolic_state_ids.push(*symbolic_state_id);
+			basic_block_vaddrs.push(*basic_block_vaddr);
+			basic_block_generations.push(*basic_block_generation);
+		} else {
+			panic!("Basic block graph contained non-basic-block metadata")
+		};
+	}
+
+	NodeMetadata::CompressedBasicBlock {
+		symbolic_state_ids,
+		basic_block_vaddrs,
+		basic_block_generations,
 	}
 }

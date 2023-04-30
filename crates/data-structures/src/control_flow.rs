@@ -1,5 +1,5 @@
 use std::{
-	collections::BTreeMap,
+	collections::HashMap,
 	fmt,
 	time::{Duration, Instant},
 };
@@ -16,14 +16,14 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilds: usize,
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
-	pub(crate) metadata: Vec<NodeMetadata>,
-	pub(crate) meta_mapping_unique_id_to_index: BTreeMap<u64, usize>,
+	pub metadata: Vec<NodeMetadata>,
+	pub(crate) meta_mapping_unique_id_to_index: HashMap<NodeMetadata, usize>,
 }
 
 impl From<&ipc::GraphIpc> for ControlFlowGraph {
 	fn from(value: &ipc::GraphIpc) -> Self {
 		let ipc::GraphIpc { metadata, edges } = value;
-		let f = |i: &usize| metadata[*i];
+		let f = |i: &usize| metadata[*i].clone();
 		edges.iter().map(|(x, y)| (f(x), f(y))).collect()
 	}
 }
@@ -116,7 +116,7 @@ impl ControlFlowGraph {
 			created_at: Instant::now(),
 			rebuilding_time: Duration::new(0, 0),
 			metadata: Vec::new(),
-			meta_mapping_unique_id_to_index: BTreeMap::new(),
+			meta_mapping_unique_id_to_index: HashMap::new(),
 		}
 	}
 
@@ -145,16 +145,14 @@ impl ControlFlowGraph {
 	}
 
 	fn update_metadata(&mut self, node: NodeMetadata) -> u64 {
-		let id = node.unique_id();
-		let index: usize = *self
+		*self
 			.meta_mapping_unique_id_to_index
-			.entry(id)
+			.entry(node.clone())
 			.or_insert_with(|| {
 				let seq_index = self.metadata.len();
 				self.metadata.push(node);
 				seq_index
-			});
-		index as u64
+			}) as u64
 	}
 }
 
@@ -163,10 +161,8 @@ mod test {
 	use crate::control_flow::*;
 
 	fn node(i: u32) -> NodeMetadata {
-		NodeMetadata {
+		NodeMetadata::State {
 			symbolic_state_id: i,
-			basic_block_vaddr: None,
-			basic_block_generation: None,
 		}
 	}
 

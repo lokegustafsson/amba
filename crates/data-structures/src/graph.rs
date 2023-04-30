@@ -32,7 +32,7 @@ impl From<Graph> for ipc::GraphIpc {
 		let metadata = graph
 			.nodes
 			.values()
-			.map(|node| ipc::NodeMetadata {
+			.map(|node| ipc::NodeMetadata::BasicBlock {
 				symbolic_state_id: node.id as u32,
 				basic_block_vaddr: None,
 				basic_block_generation: None,

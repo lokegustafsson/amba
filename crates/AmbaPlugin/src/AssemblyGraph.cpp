@@ -28,9 +28,9 @@ void AssemblyGraph::onBlockStart(
 	u64 pc
 ) {
 	const StateIdAmba amba_id = this->getStateIdAmba(control_flow::getStateIdS2E(state));
-	const Metadata curr = this->getMetadata(state, pc);
+	const BasicBlockMetadata curr = this->getMetadata(state, pc);
 	// Will insert 0 if value doesn't yet exist
-	Metadata &last = this->m_last[amba_id];
+	BasicBlockMetadata &last = this->m_last[amba_id];
 	this->m_new_edges.push_back(
 		(NodeMetadataFFIPair) {
 			.fst = last.into_ffi(),
@@ -46,7 +46,7 @@ void AssemblyGraph::onStateFork(
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
 	const StateIdAmba old_amba_id = this->getStateIdAmba(control_flow::getStateIdS2E(old_state));
-	const Metadata old_last = this->m_last[old_amba_id];
+	const BasicBlockMetadata old_last = this->m_last[old_amba_id];
 
 	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
 
@@ -68,7 +68,7 @@ StatePC AssemblyGraph::packStatePc(StateIdS2E uid, u64 pc) {
 	return pc << 4 | (u64) uid.val;
 }
 
-Metadata AssemblyGraph::getMetadata(
+BasicBlockMetadata AssemblyGraph::getMetadata(
 	s2e::S2EExecutionState *s2e_state,
 	u64 pc
 ) {
@@ -77,7 +77,7 @@ Metadata AssemblyGraph::getMetadata(
 	const StatePC state_pc = this->packStatePc(state, pc);
 	const BasicBlockGeneration gen = this->m_generations[state_pc];
 
-	return (Metadata) {
+	return (BasicBlockMetadata) {
 		.symbolic_state_id = amba_id,
 		.basic_block_vaddr = pc,
 		.basic_block_generation = gen.val,
