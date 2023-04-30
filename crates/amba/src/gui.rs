@@ -170,7 +170,7 @@ impl App for Gui {
 								.map(|x| x.of.clone())
 								.unwrap();
 
-							merge_nodes_into_single_metadata(nodes, &cfg)
+							merge_nodes_into_single_metadata(&nodes, &cfg)
 						}
 						GraphToView::State => {
 							self.model.state_control_flow.read().unwrap().metadata[active].clone()
@@ -196,26 +196,25 @@ impl App for Gui {
 	}
 }
 
-fn merge_nodes_into_single_metadata(nodes: SmallU64Set, cfg: &ControlFlowGraph) -> NodeMetadata {
-	let (symbolic_state_ids, basic_block_vaddrs, basic_block_generations) =
-		nodes.iter().map(|i| &cfg.metadata[*i as usize]).fold(
-			(SmallVec::new(), SmallVec::new(), SmallVec::new()),
-			|(mut ids, mut vaddrs, mut gens), curr| {
-				match curr {
-					NodeMetadata::BasicBlock {
-						symbolic_state_id,
-						basic_block_vaddr,
-						basic_block_generation,
-					} => {
-						ids.push(*symbolic_state_id);
-						vaddrs.push(*basic_block_vaddr);
-						gens.push(*basic_block_generation);
-					}
-					_ => panic!("Basic block graph contained non-basic-block metadata"),
-				};
-				(ids, vaddrs, gens)
-			},
-		);
+fn merge_nodes_into_single_metadata(nodes: &SmallU64Set, cfg: &ControlFlowGraph) -> NodeMetadata {
+	let mut symbolic_state_ids = SmallVec::new();
+	let mut basic_block_vaddrs = SmallVec::new();
+	let mut basic_block_generations = SmallVec::new();
+
+	for metadata in nodes.iter().map(|i| &cfg.metadata[*i as usize]) {
+		if let NodeMetadata::BasicBlock {
+			symbolic_state_id,
+			basic_block_vaddr,
+			basic_block_generation,
+		} = metadata
+		{
+			symbolic_state_ids.push(*symbolic_state_id);
+			basic_block_vaddrs.push(*basic_block_vaddr);
+			basic_block_generations.push(*basic_block_generation);
+		} else {
+			panic!("Basic block graph contained non-basic-block metadata")
+		};
+	}
 
 	NodeMetadata::CompressedBasicBlock {
 		symbolic_state_ids,
