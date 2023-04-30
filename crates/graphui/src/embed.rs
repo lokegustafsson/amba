@@ -2,12 +2,11 @@ use std::mem;
 
 use fastrand::Rng;
 use glam::DVec2;
-use ipc::{GraphIpc, NodeMetadata};
+use ipc::GraphIpc;
 use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 #[derive(Clone, Debug)]
 pub struct Graph2D {
-	pub node_metadata: Vec<NodeMetadata>,
 	pub node_positions: Vec<DVec2>,
 	pub edges: Vec<(usize, usize)>,
 	pub min: DVec2,
@@ -23,8 +22,7 @@ impl From<GraphIpc> for Graph2D {
 		}
 
 		Self {
-			node_positions: Self::initial_node_positions(&graph.metadata, &graph.edges),
-			node_metadata: graph.metadata,
+			node_positions: Self::initial_node_positions(graph.metadata.len(), &graph.edges),
 			edges: graph.edges,
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
@@ -71,7 +69,6 @@ impl Default for EmbeddingParameters {
 impl Graph2D {
 	pub fn empty() -> Self {
 		Self {
-			node_metadata: Vec::new(),
 			node_positions: Vec::new(),
 			edges: Vec::new(),
 			min: DVec2::ZERO,
@@ -104,18 +101,15 @@ impl Graph2D {
 		ret
 	}
 
-	fn initial_node_positions(
-		metadata: &Vec<NodeMetadata>,
-		edges: &Vec<(usize, usize)>,
-	) -> Vec<DVec2> {
+	fn initial_node_positions(node_count: usize, edges: &Vec<(usize, usize)>) -> Vec<DVec2> {
 		let rng = &Rng::with_seed(0);
 
-		let mut adjacency_list = vec![Vec::new(); metadata.len()];
+		let mut adjacency_list = vec![Vec::new(); node_count];
 		for &(a, b) in edges {
 			adjacency_list[a].push(b);
 		}
 
-		let mut node_depth = vec![usize::MAX; metadata.len()];
+		let mut node_depth = vec![usize::MAX; node_count];
 		node_depth[0] = 0;
 		let mut stack = vec![0];
 		while let Some(i) = stack.pop() {
@@ -211,10 +205,9 @@ impl Graph2D {
 					tracing::warn!("infinite node position; resetting graph");
 					*self = Self {
 						node_positions: Self::initial_node_positions(
-							&self.node_metadata,
+							self.node_positions.len(),
 							&self.edges,
 						),
-						node_metadata: mem::take(&mut self.node_metadata),
 						edges: mem::take(&mut self.edges),
 						min: DVec2::ZERO,
 						max: DVec2::ZERO,
