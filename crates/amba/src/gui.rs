@@ -118,6 +118,7 @@ impl App for Gui {
 						});
 				});
 		}
+
 		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, &graph));
 	}
 
