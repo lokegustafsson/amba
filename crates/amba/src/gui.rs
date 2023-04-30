@@ -175,7 +175,11 @@ impl App for Gui {
 									(SmallVec::new(), SmallVec::new(), SmallVec::new()),
 									|(mut ids, mut vaddrs, mut gens), curr| {
 										match curr {
-											NodeMetadata::BasicBlock { symbolic_state_id, basic_block_vaddr, basic_block_generation } => {
+											NodeMetadata::BasicBlock {
+												symbolic_state_id,
+												basic_block_vaddr,
+												basic_block_generation
+											} => {
 												ids.push(*symbolic_state_id);
 												vaddrs.push(*basic_block_vaddr);
 												gens.push(*basic_block_generation);
