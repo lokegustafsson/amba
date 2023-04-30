@@ -206,6 +206,7 @@ in
       reqwest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.11.14" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
       serde_json = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde_json."1.0.92" { inherit profileName; };
+      smallvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".smallvec."1.10.0" { inherit profileName; };
       tar = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tar."0.4.38" { inherit profileName; };
       tera = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tera."1.17.1" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
