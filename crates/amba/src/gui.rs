@@ -11,6 +11,7 @@ use eframe::{
 };
 use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
 use ipc::NodeMetadata;
+use smallvec::SmallVec;
 
 use crate::{
 	cmd::Cmd,
@@ -161,13 +162,34 @@ impl App for Gui {
 							self.model.block_control_flow.read().unwrap().metadata[active].clone()
 						}
 						GraphToView::CompressedBlock => {
-							// let cfg = self.model.block_control_flow.read().unwrap();
-							// let of = &cfg.graph.nodes[&(active as u64)].of;
+							// Cloned because even the immutable get requires a mutable reference
+							let mut cfg = self.model.block_control_flow.write().unwrap();
+							let of = cfg
+								.compressed_graph
+								.get(active as u64)
+								.map(|x| x.of.clone())
+								.unwrap();
+
+							let (symbolic_state_ids, basic_block_vaddrs, basic_block_generations) =
+								of.iter().map(|i| &cfg.metadata[*i as usize]).fold(
+									(SmallVec::new(), SmallVec::new(), SmallVec::new()),
+									|(mut ids, mut vaddrs, mut gens), curr| {
+										match curr {
+											NodeMetadata::BasicBlock { symbolic_state_id, basic_block_vaddr, basic_block_generation } => {
+												ids.push(*symbolic_state_id);
+												vaddrs.push(*basic_block_vaddr);
+												gens.push(*basic_block_generation);
+											}
+											_ => panic!("Basic block graph contained non-basic-block metadata"),
+										};
+										(ids, vaddrs, gens)
+									},
+								);
 
 							NodeMetadata::CompressedBasicBlock {
-								symbolic_state_ids: Default::default(),
-								basic_block_vaddrs: Default::default(),
-								basic_block_generations: Default::default(),
+								symbolic_state_ids,
+								basic_block_vaddrs,
+								basic_block_generations,
 							}
 						}
 						GraphToView::State => {
