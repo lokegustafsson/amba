@@ -28,6 +28,7 @@ pub enum ControllerMsg {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
 	EmbeddingParamsUpdated,
+	NewPriority(usize),
 }
 
 pub enum EmbedderMsg {
@@ -45,6 +46,7 @@ pub struct Controller {
 	pub qemu_pid: Option<u32>,
 	pub embedder_tx: Option<mpsc::Sender<EmbedderMsg>>,
 }
+
 impl Controller {
 	/// Launch QEMU+S2E. That is, we do the equivalent of
 	/// <https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh>
@@ -126,6 +128,14 @@ impl Controller {
 					if let Some(tx) = self.embedder_tx.as_ref() {
 						let (Ok(_) | Err(_)) = tx.send(EmbedderMsg::WakeUp);
 					}
+				}
+				ControllerMsg::NewPriority(prio) => {
+					println!("\n\nSending prio message\n\n");
+					/*ipc_tx
+					.blocking_send(&ipc::IpcMessage::PrioritiseStates(vec![
+						prio as u32,
+					]))
+					.unwrap();*/
 				}
 			}
 		}

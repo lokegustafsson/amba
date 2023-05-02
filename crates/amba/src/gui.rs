@@ -120,6 +120,11 @@ impl App for Gui {
 		}
 
 		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, &graph));
+
+		if let Some(new_priority) = self.graph_widget.new_priority_node {
+			self.graph_widget.new_priority_node = None;
+			self.controller_tx.send(ControllerMsg::NewPriority(new_priority)).unwrap();
+		}
 	}
 
 	fn on_exit(&mut self, _: Option<&eframe::glow::Context>) {

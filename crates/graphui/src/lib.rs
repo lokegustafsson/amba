@@ -81,7 +81,7 @@ pub struct GraphWidget {
 	zoom: f32,
 	pos: Vec2,
 	active_node_and_pan: Option<(usize, PanState)>,
-	priority_node: Option<usize>,
+	pub new_priority_node: Option<usize>,
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum PanState {
@@ -95,7 +95,7 @@ impl Default for GraphWidget {
 			zoom: 1.0,
 			pos: Vec2::ZERO,
 			active_node_and_pan: None,
-			priority_node: None,
+			new_priority_node: None,
 		}
 	}
 }
@@ -130,7 +130,7 @@ impl GraphWidget {
 							ui,
 							self.zoom,
 							&mut self.active_node_and_pan,
-							&mut self.priority_node,
+							&mut self.new_priority_node,
 							viewport,
 							graph,
 						)
