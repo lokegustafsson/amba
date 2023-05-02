@@ -132,7 +132,7 @@ void AmbaPlugin::initialize() {
 
 	auto self = this;
 	this->m_ipc_receiver_thread = std::jthread([=]() {
-		state_prioritisation::ipcReceiver(self->m_ipc.rx, &self->m_alive, self->s2e());
+		state_prioritisation::ipcReceiver(self->m_ipc, &self->m_alive, self->s2e());
 	});
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
@@ -238,7 +238,7 @@ void AmbaPlugin::onTimer() {
 	auto &symbolic_edges = this->m_symbolic_graph.edges();
 	auto &assembly_edges = this->m_assembly_graph.edges();
 	rust_ipc_send_edges(
-		this->m_ipc.tx,
+		this->m_ipc,
 		symbolic_edges.data(),
 		(u64) symbolic_edges.size(),
 		assembly_edges.data(),

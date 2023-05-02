@@ -16,7 +16,7 @@ use std::{
 	time::Duration,
 };
 
-use ipc::{IpcError, IpcMessage};
+use ipc::{IpcError, IpcInstance, IpcMessage};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{
@@ -80,10 +80,9 @@ pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 }
 
 pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
-	let ipc_listener = UnixListener::bind(ipc_socket).unwrap();
-	let stream = ipc_listener.accept().unwrap().0;
-	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
-	tracing::info!("IPC initialized");
+	dbg!(&ipc_socket);
+	let mut ipc = IpcInstance::new(ipc_socket);
+	let (ipc_rx, _ipc_tx) = ipc.get_rx_tx();
 	loop {
 		match ipc_rx.blocking_receive() {
 			Ok(IpcMessage::NewEdges {
@@ -104,8 +103,6 @@ pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) ->
 			Err(other) => panic!("ipc error: {other:?}"),
 		}
 	}
-	stream.shutdown(Shutdown::Both).unwrap();
-	tracing::info!("IPC shut down");
 	Ok(())
 }
 

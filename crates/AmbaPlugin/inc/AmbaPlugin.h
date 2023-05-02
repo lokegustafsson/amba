@@ -32,7 +32,7 @@ class AmbaPlugin : public Plugin {
 	amba::TimerFunction onEngineShutdown;
 
   protected:
-	const IpcPair m_ipc;
+	Ipc *const m_ipc;
 	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;

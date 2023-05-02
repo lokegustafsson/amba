@@ -123,7 +123,9 @@ impl App for Gui {
 
 		if let Some(new_priority) = self.graph_widget.new_priority_node {
 			self.graph_widget.new_priority_node = None;
-			self.controller_tx.send(ControllerMsg::NewPriority(new_priority)).unwrap();
+			self.controller_tx
+				.send(ControllerMsg::NewPriority(new_priority))
+				.unwrap();
 		}
 	}
 

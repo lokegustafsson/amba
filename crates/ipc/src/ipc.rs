@@ -2,9 +2,9 @@ use std::{
 	io::{self, BufRead, BufReader, BufWriter, Read, Write},
 	mem,
 	net::Shutdown,
-	time::Duration,
 	os::unix::net::{UnixListener, UnixStream},
 	path::Path,
+	time::Duration,
 };
 
 use io_arc::IoArc;
@@ -19,7 +19,7 @@ pub struct IpcInstance {
 }
 
 impl IpcInstance {
-	fn new(socket: &Path) -> Self {
+	pub fn new(socket: &Path) -> Self {
 		let ipc_listener = UnixListener::bind(socket).unwrap();
 		let stream = IoArc::new(ipc_listener.accept().unwrap().0);
 		let reader = IpcRx {
@@ -35,7 +35,7 @@ impl IpcInstance {
 		}
 	}
 
-	fn get_rx_tx(&mut self) -> (&mut IpcRx, &mut IpcTx) {
+	pub fn get_rx_tx(&mut self) -> (&mut IpcRx, &mut IpcTx) {
 		(&mut self.reader, &mut self.writer)
 	}
 }
@@ -78,7 +78,7 @@ impl Drop for IpcRx {
 
 impl IpcRx {
 	pub fn blocking_receive(&mut self) -> Result<IpcMessage, IpcError> {
-		self.rx.get_ref().set_read_timeout(None).unwrap();
+		self.rx.get_ref().as_ref().set_read_timeout(None).unwrap();
 		let ret = (|| {
 			let size = {
 				let mut size = [0u8; mem::size_of::<u64>()];
@@ -89,6 +89,7 @@ impl IpcRx {
 		})();
 		self.rx
 			.get_ref()
+			.as_ref()
 			.set_read_timeout(Some(Duration::from_nanos(1)))
 			.unwrap();
 		ret

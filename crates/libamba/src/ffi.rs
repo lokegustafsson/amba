@@ -2,40 +2,33 @@
 
 use std::{os::unix::net::UnixStream, pin::Pin, slice, sync::Mutex};
 
-use ipc::{IpcMessage, IpcRx, IpcTx};
+use ipc::{IpcInstance, IpcMessage};
 
 use crate::node_metadata::NodeMetadataFFIPair;
 
-#[repr(C)]
-pub struct IpcPair<'a> {
-	tx: *mut Mutex<IpcTx<'a>>,
-	rx: *mut Mutex<IpcRx<'a>>,
+#[no_mangle]
+pub extern "C" fn rust_new_ipc() -> *mut Mutex<IpcInstance> {
+	let instance = IpcInstance::new("amba-ipc.socket".as_ref());
+	Box::into_raw(Box::new(Mutex::new(instance)))
 }
 
 #[no_mangle]
-pub extern "C" fn rust_new_ipc<'a>() -> IpcPair<'a> {
-	let (tx, rx) = match UnixStream::connect("amba-ipc.socket") {
-		Ok(stream) => {
-			let stream = Box::leak(Box::new(stream));
-			ipc::new_wrapping(&*stream)
-		}
-		Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
-	};
-	IpcPair {
-		tx: Box::into_raw(Box::new(Mutex::new(tx))),
-		rx: Box::into_raw(Box::new(Mutex::new(rx))),
-	}
+pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcInstance>) {
+	let _ = Box::from_raw(ptr);
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn rust_free_ipc(ptr: IpcPair<'_>) {
-	let _ = Box::from_raw(ptr.tx);
-	let _ = Box::from_raw(ptr.rx);
+unsafe fn send_ipc_message(ipc: *mut Mutex<IpcInstance>, msg: &ipc::IpcMessage) {
+	let mut lock = (*ipc).lock().unwrap();
+	let (_, ipc_tx) = lock.get_rx_tx();
+	ipc_tx
+		.blocking_send(msg)
+		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn rust_ipc_send_edges(
-	ipc: *mut Mutex<IpcTx<'_>>,
+	ipc: *mut Mutex<IpcInstance>,
 	state_data: *const NodeMetadataFFIPair,
 	state_len: u64,
 	block_data: *const NodeMetadataFFIPair,
@@ -55,21 +48,16 @@ pub unsafe extern "C" fn rust_ipc_send_edges(
 	};
 
 	send_ipc_message(ipc, &msg);
-
-	unsafe fn send_ipc_message(ipc: *mut Mutex<IpcTx<'_>>, msg: &ipc::IpcMessage) {
-		let mut ipc = (*ipc).lock().unwrap();
-		ipc.blocking_send(msg)
-			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
-	}
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn rust_ipc_receive_message(
-	ipc: *mut Mutex<IpcRx<'_>>,
+	ipc: *mut Mutex<IpcInstance>,
 	vec: *mut cxx::CxxVector<u32>,
 ) -> bool {
-	let mut ipc = (*ipc).lock().unwrap();
-	let message = match ipc.polling_receive() {
+	let mut lock = (*ipc).lock().unwrap();
+	let (ipc_rx, _) = lock.get_rx_tx();
+	let message = match ipc_rx.polling_receive() {
 		Ok(m) => m,
 		Err(err) => panic!("{err:?}"),
 	};

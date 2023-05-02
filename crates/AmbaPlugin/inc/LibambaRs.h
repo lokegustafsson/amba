@@ -5,13 +5,8 @@
 
 #include "Numbers.h"
 
-struct IpcTx;
-struct IpcRx;
-
-struct IpcPair {
-	IpcTx *tx;
-	IpcRx *rx;
-};
+struct ControlFlowGraph;
+struct Ipc;
 
 struct NodeMetadataFFI {
 	u32 metadata_type;
@@ -28,14 +23,14 @@ struct NodeMetadataFFIPair {
 };
 
 extern "C" {
-	IpcPair rust_new_ipc();
-	void rust_free_ipc(IpcPair *ptr);
+	Ipc *rust_new_ipc();
+	void rust_free_ipc(Ipc *ptr);
 	void rust_ipc_send_edges(
-		IpcTx *ipc,
+		Ipc *ipc,
 		const NodeMetadataFFIPair *state_data,
 		u64 state_len,
 		const NodeMetadataFFIPair *block_data,
 		u64 block_len
 	);
-	bool rust_ipc_receive_message(IpcRx *ipc, std::vector<u32> *vec);
+	bool rust_ipc_receive_message(Ipc *ipc, std::vector<u32> *vec);
 }
