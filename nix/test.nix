@@ -37,7 +37,7 @@ let
       # Amba skips unnecessary download internally
       ${amba.amba}/bin/amba init --download
       # Run musl hello world
-      time ${amba.amba}/bin/amba run ${hello}/hello.recipe.json --no-gui
+      time ${amba.amba}/bin/amba run ${hello}/hello.recipe.json
     '';
   };
   test-amba-control-flow = pkgs.writeShellApplication {
@@ -47,7 +47,7 @@ let
       # Amba skips unnecessary download internally
       ${amba.amba}/bin/amba init --download
       # Run musl control flow
-      time ${amba.amba}/bin/amba run ${control-flow}/control-flow.recipe.json --no-gui
+      time ${amba.amba}/bin/amba run ${control-flow}/control-flow.recipe.json
     '';
   };
   test-amba-state-splitter = pkgs.writeShellApplication {
@@ -57,7 +57,7 @@ let
       # Amba skips unnecessary download internally
       ${amba.amba}/bin/amba init --download
       # Run musl state-splitter
-      time ${amba.amba}/bin/amba run ${state-splitter}/state-splitter.recipe.json --no-gui
+      time ${amba.amba}/bin/amba run ${state-splitter}/state-splitter.recipe.json
     '';
   };
 in {

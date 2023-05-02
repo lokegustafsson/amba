@@ -2,42 +2,58 @@ use std::{
 	io::{self, BufRead, BufReader, BufWriter, Read, Write},
 	mem,
 	net::Shutdown,
-	os::unix::net::UnixStream,
 	time::Duration,
+	os::unix::net::{UnixListener, UnixStream},
+	path::Path,
 };
 
+use io_arc::IoArc;
 use serde::{Deserialize, Serialize};
 
 pub use crate::{graph::GraphIpc, metadata::NodeMetadata};
 
-pub fn new_wrapping(stream: &UnixStream) -> (IpcTx<'_>, IpcRx<'_>) {
-	stream
-		.set_read_timeout(Some(Duration::from_nanos(1)))
-		.unwrap();
-	(
-		IpcTx {
-			tx: BufWriter::new(stream),
-		},
-		IpcRx {
-			rx: BufReader::new(stream),
-		},
-	)
+pub struct IpcInstance {
+	stream: IoArc<UnixStream>,
+	reader: IpcRx,
+	writer: IpcTx,
 }
 
-pub struct IpcTx<'a> {
-	tx: BufWriter<&'a UnixStream>,
+impl IpcInstance {
+	fn new(socket: &Path) -> Self {
+		let ipc_listener = UnixListener::bind(socket).unwrap();
+		let stream = IoArc::new(ipc_listener.accept().unwrap().0);
+		let reader = IpcRx {
+			rx: BufReader::new(stream.clone()),
+		};
+		let writer = IpcTx {
+			tx: BufWriter::new(stream.clone()),
+		};
+		IpcInstance {
+			stream,
+			reader,
+			writer,
+		}
+	}
+
+	fn get_rx_tx(&mut self) -> (&mut IpcRx, &mut IpcTx) {
+		(&mut self.reader, &mut self.writer)
+	}
 }
 
-impl Drop for IpcTx<'_> {
+pub struct IpcTx {
+	tx: BufWriter<IoArc<UnixStream>>,
+}
+
+impl Drop for IpcTx {
 	fn drop(&mut self) {
-		match self.tx.get_ref().shutdown(Shutdown::Write) {
+		match self.tx.get_ref().as_ref().shutdown(Shutdown::Write) {
 			Ok(()) => {}
 			Err(error) => tracing::error!(?error, "failed shutting down IpcTx on drop"),
 		}
 	}
 }
 
-impl IpcTx<'_> {
+impl IpcTx {
 	pub fn blocking_send(&mut self, msg: &IpcMessage) -> Result<(), IpcError> {
 		let size = bincode::serialized_size(msg).unwrap();
 		self.tx.write_all(&size.to_le_bytes())?;
@@ -47,20 +63,20 @@ impl IpcTx<'_> {
 	}
 }
 
-pub struct IpcRx<'a> {
-	rx: BufReader<&'a UnixStream>,
+pub struct IpcRx {
+	rx: BufReader<IoArc<UnixStream>>,
 }
 
-impl Drop for IpcRx<'_> {
+impl Drop for IpcRx {
 	fn drop(&mut self) {
-		match self.rx.get_ref().shutdown(Shutdown::Read) {
+		match self.rx.get_ref().as_ref().shutdown(Shutdown::Read) {
 			Ok(()) => {}
 			Err(error) => tracing::error!(?error, "failed shutting down IpcRx on drop"),
 		}
 	}
 }
 
-impl IpcRx<'_> {
+impl IpcRx {
 	pub fn blocking_receive(&mut self) -> Result<IpcMessage, IpcError> {
 		self.rx.get_ref().set_read_timeout(None).unwrap();
 		let ret = (|| {
