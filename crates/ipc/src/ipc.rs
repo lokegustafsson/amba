@@ -40,6 +40,12 @@ impl IpcInstance {
 	}
 }
 
+impl Drop for IpcInstance {
+	fn drop(&mut self) {
+		self.stream.as_ref().shutdown(Shutdown::Both).unwrap();
+	}
+}
+
 pub struct IpcTx {
 	tx: BufWriter<IoArc<UnixStream>>,
 }
