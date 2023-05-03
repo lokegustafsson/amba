@@ -18,16 +18,25 @@ void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
 		bool received = rust_ipc_receive_message(ipc, &receive_buffer);
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-		continue;
 
 		if (!received) {
 			continue;
 		}
 
+		auto printer = amba::debug_stream();
+		*printer << "Prio states: ";
+		for (auto& state : receive_buffer) {
+			*printer << state << ", ";
+		}
+		*printer << '\n';
+		continue;
+
 		s2e->getExecutor()->suspendState(
 			nullptr
 		);
 	}
+
+	*amba::debug_stream() << "Exited ipc receiver thread\n";
 }
 
 }
