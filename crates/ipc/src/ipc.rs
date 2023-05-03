@@ -13,36 +13,54 @@ use serde::{Deserialize, Serialize};
 pub use crate::{graph::GraphIpc, metadata::NodeMetadata};
 
 pub struct IpcInstance {
-	stream: IoArc<UnixStream>,
 	reader: IpcRx,
 	writer: IpcTx,
 }
 
 impl IpcInstance {
-	pub fn new(socket: &Path) -> Self {
+	pub fn new_plugin(socket: &Path) -> Self {
+		let stream = IoArc::new(UnixStream::connect(socket).unwrap());
+
+		let reader = {
+			let rx = BufReader::new(stream.clone());
+			rx.get_ref()
+				.as_ref()
+				.set_read_timeout(Some(Duration::from_nanos(1)))
+				.unwrap();
+			IpcRx { rx }
+		};
+
+		let writer = IpcTx {
+			tx: BufWriter::new(stream),
+		};
+
+		println!("Plugin IPC setup");
+		IpcInstance { reader, writer }
+	}
+
+	pub fn new_gui(socket: &Path) -> Self {
 		let ipc_listener = UnixListener::bind(socket).unwrap();
 		let stream = IoArc::new(ipc_listener.accept().unwrap().0);
-		let reader = IpcRx {
-			rx: BufReader::new(stream.clone()),
+
+		let reader = {
+			let rx = BufReader::new(stream.clone());
+			rx.get_ref()
+				.as_ref()
+				.set_read_timeout(Some(Duration::from_nanos(1)))
+				.unwrap();
+			IpcRx { rx }
 		};
+
 		let writer = IpcTx {
-			tx: BufWriter::new(stream.clone()),
+			tx: BufWriter::new(stream),
 		};
-		IpcInstance {
-			stream,
-			reader,
-			writer,
-		}
+
+		println!("GUI IPC setup");
+		IpcInstance { reader, writer }
 	}
 
 	pub fn get_rx_tx(&mut self) -> (&mut IpcRx, &mut IpcTx) {
 		(&mut self.reader, &mut self.writer)
-	}
-}
-
-impl Drop for IpcInstance {
-	fn drop(&mut self) {
-		self.stream.as_ref().shutdown(Shutdown::Both).unwrap();
 	}
 }
 

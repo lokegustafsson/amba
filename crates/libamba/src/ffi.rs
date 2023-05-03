@@ -8,7 +8,7 @@ use crate::node_metadata::NodeMetadataFFIPair;
 
 #[no_mangle]
 pub extern "C" fn rust_new_ipc() -> *mut Mutex<IpcInstance> {
-	let instance = IpcInstance::new("amba-ipc.socket".as_ref());
+	let instance = IpcInstance::new_plugin("amba-ipc.socket".as_ref());
 	Box::into_raw(Box::new(Mutex::new(instance)))
 }
 
