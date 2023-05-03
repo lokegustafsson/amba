@@ -123,9 +123,15 @@ impl IpcRx {
 	/// * An incomplete packet (`IpcError::PollingReceiveFragmented`)
 	/// * An packet larger than the buffer size (`IpcError::PollingReceiveTooLarge`)
 	pub fn polling_receive(&mut self) -> Result<Option<IpcMessage>, IpcError> {
-		let buf_capacity = self.rx.capacity();
+		let old_timeout = self.rx.get_ref().as_ref().read_timeout().unwrap();
+		self.rx
+			.get_ref()
+			.as_ref()
+			.set_read_timeout(Some(Duration::from_nanos(1)))
+			.unwrap();
 
-		match self.rx.fill_buf() {
+		let buf_capacity = self.rx.capacity();
+		let res = match self.rx.fill_buf() {
 			Err(err)
 				if matches!(
 					err.kind(),
@@ -154,7 +160,15 @@ impl IpcRx {
 				self.rx.consume(packet_size);
 				Ok(Some(ret))
 			}
-		}
+		};
+
+		self.rx
+			.get_ref()
+			.as_ref()
+			.set_read_timeout(old_timeout)
+			.unwrap();
+
+		res
 	}
 }
 
