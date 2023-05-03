@@ -3,39 +3,33 @@ programflödet som symboliska restriktioner (jfr eng. constraint), vilka kan
 lösas av automatiserade teoremlösare (\emph{SMT solver}). En symbolisk körning
 representerar flera konkreta körningar eftersom de (symboliska) värden som
 används representerar grupper av konkreta värden vilka har gemensamt hur de
-påverkar programmets flöde. 
+påverkar programmets flöde~\cite{klee}. 
 
 Vägar i programmets kontrollflöde utforskas med symboliska uttryck som kallas
 för path constraints (jfr sv. vägvillkor) för de begränsningar som finns på
 programmets variabler -- vilka egenskaper de måste uppnå för att just denna väg
-ska kunna följas. Eftersom de symboliska värdena har kapacitet att representera
-grupperingar av konkreta värden istället för enskilda sådana, utförs en
-generaliserad testning av programmet, som ger insikt i hur programmet beter sig
-givet en grupp av parametrar som alla på grund av någon eller några gemensamma
-egenskaper, orsakar gemensamma beteenden i programmet. 
+ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan 
+evalueras eftersom de krav som måste uppfyllas för att följa vägen dit dokumenteras 
+under den symboliska körningen, och resulterar i fullständiga symboliska representationer 
+som en automatiserad teoremlösare (SMT solver) kan appliceras på.
+
+Eftersom de symboliska värdena har kapacitet att representera grupperingar av konkreta 
+värden istället för enskilda sådana, utförs en generaliserad testning av programmet, 
+som ger insikt i hur programmet beter sig givet en grupp av parametrar som alla 
+på grund av någon eller några gemensamma egenskaper, orsakar gemensamma beteenden 
+i programmet~\cite{cadar}.
 
 En symbolisk exekveringsmotor arbetar genom att först representera programmets
-input som symboliska variablar, vilka vid starten inte har några begränsningar,
-och när programflödet når en branch som baseras på någon av de symboliska
-variablerna, väljer motorn en branch och tillsätter dess path constraint på den
-symboliska variabeln för alla vägar som fortsätter utefter branchen. Operationer
+input som symboliska variablar, vilka vid starten inte har några begränsningar.
+När programflödet når en förgrening som baseras på någon av de symboliska
+variablerna, väljer motorn en gren och tillsätter dess path constraint på den
+symboliska variabeln för alla vägar som fortsätter utefter grenen. Operationer
 på värden under körningens väg översätts till symboliska operationer på
-motsvarande symboliska variabler~\cite{klee}. När körning utefter branchen är
+motsvarande symboliska variabler. När körning utefter branchen är
 slutförd repeterar motorn samma metodik på samma branch för att utforska andra
 alternativ. De tillståndsvillkor som en viss väg visas ha byggs därför
 successivt upp genom att motorn utökar de symboliska variablerna till
-villkorliga uttryck allt eftersom vägen följs. 
-
-De fel som hittas genom symbolisk exekvering är tillförlitliga då metoden ej ger
-falskt positiva resultat. Huruvida villkorsblock av program är nårbara kan
-evalueras med säkerhet eftersom de krav som måste uppfyllas för att följa vägen
-dit dokumenteras under den symboliska körningen, och resulterar i fullständiga
-symboliska representationer som en automatiserad teoremlösare (SMT solver) kan
-appliceras på. 
-
-Symbolisk exekvering är användbart för att resonera kring hur programmet beter
-sig beroende på grupperingar av input. För program där få värden tar gemensamma
-vägar blir fördelen försumbar av att använda dynamisk testning av konkret data. 
+villkorliga uttryck allt eftersom vägen följs~\cite{klee}.  
 
 Eftersom symbolisk exekvering kan leda till \emph{path explosion}, vilket
 uppstår i program vars branches växer exponentiellt och resulterar i att en
