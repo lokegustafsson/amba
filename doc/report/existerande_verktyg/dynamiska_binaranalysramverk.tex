@@ -18,14 +18,3 @@ stora och komplexa system ska undersökas som exempelvis operativsystem. SAGE ha
 använts för att identifiera sårbarheter relaterade till input validation i linux kärnan~\cite{dahse},
 för att identifiera buggar relaterade till minnesallokering i linux kärnmoduler~\cite{avgerinos} och 
 för att hitta buggar relaterade till device driver interaction i Windows kärnan~\cite{dawson}.
-
-En annan metod för dynamisk binäranalys är fuzzing. Fuzzing innebär att testa ett program med en 
-stor mängd olika input. Målet är att simulera oväntade beteenden eller krashar om potentialen för 
-dessa existerar. Fuzzing är därför ett medel för att undersöka om ett program innehåller 
-sårbarheter~\cite{rawat}.
-
-AFL++ är en utveckling av den ursprungliga AFL (American Fuzzy Lop) fuzzern och har 
-förbättrats med fler funktioner och bättre prestanda~\cite{aflplusplus}. AFL++ muterar input för 
-att generera nya inputs från befintliga, och använder feedback från programvaran som fuzzas för att 
-styra fuzzing-processen.  
-
