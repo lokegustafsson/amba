@@ -300,7 +300,7 @@ fn draw_node(
 	let rect =
 		Rect::from_center_size(pos, egui::Vec2::new(node_width, node_width)).translate(offset);
 	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
-	let lod_cutoff = ui.style().spacing.interact_size.y;
+	let lod_cutoff = 0.7 * ui.style().spacing.interact_size.y;
 	let rounding = node_width / 5.0;
 	let (bg_color, stroke) = if selected {
 		(style_selection.bg_fill, style_selection.stroke)
