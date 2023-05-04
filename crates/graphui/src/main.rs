@@ -73,6 +73,9 @@ fn main() {
 				if total_delta_pos < 0.1 {
 					worker_params.lock().unwrap().statistic_updates_per_second = 0.0;
 					let _ = notify_params_changed_rx.recv();
+					worker_params.lock().unwrap().enable_repulsion_approximation = true;
+				} else if total_delta_pos < 100.0 {
+					worker_params.lock().unwrap().enable_repulsion_approximation = false;
 				}
 
 				worker_params.lock().unwrap().statistic_updates_per_second =

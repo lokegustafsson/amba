@@ -23,10 +23,12 @@ pub fn run_embedder(
 	let mut updates_per_second: f64 = 0.0;
 	let iterations = 100;
 	let mut blocking = true;
+	let mut soon_blocking = false;
 	loop {
 		let params = {
 			let mut guard = embedding_parameters.lock().unwrap();
 			guard.statistic_updates_per_second = iterations as f64 * updates_per_second;
+			guard.enable_repulsion_approximation = !soon_blocking;
 			*guard
 		};
 		let message = if blocking {
@@ -69,6 +71,7 @@ pub fn run_embedder(
 					.into_new(state_control_flow.graph.clone(), start_params);
 
 				blocking = false;
+				soon_blocking = false;
 				continue;
 			}
 			Ok(EmbedderMsg::WakeUp) => {
@@ -95,6 +98,7 @@ pub fn run_embedder(
 			updates_per_second = 0.0;
 			blocking = true;
 		}
+		soon_blocking = total_delta_pos < 100.0;
 
 		if let Some(ctx) = gui_context.as_ref() {
 			ctx.request_repaint();

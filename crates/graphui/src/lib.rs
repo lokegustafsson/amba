@@ -41,7 +41,8 @@ impl Widget for &mut EmbeddingParameters {
 					),
 				)
 				.union(
-					ui.add(
+					ui.add_enabled(
+						self.enable_repulsion_approximation,
 						egui::Slider::new(&mut self.repulsion_approximation, 0.0..=0.5)
 							.step_by(0.5 / STEPS)
 							.text("repulsion approximaton"),
