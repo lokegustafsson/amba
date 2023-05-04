@@ -95,7 +95,7 @@ impl Controller {
 					embed::run_embedder(&*model, embedder_rx, embedder_gui_context)
 				})
 				.unwrap();
-			self.run_controller();
+			self.run_controller(ipc_tx);
 			self.shutdown_controller(ipc_socket, ipc, qemu, qmp, embedder)
 		});
 		cmd.try_remove(ipc_socket);
@@ -103,7 +103,7 @@ impl Controller {
 		res
 	}
 
-	fn run_controller(&mut self) {
+	fn run_controller(&mut self, mut ipc_tx: IpcTx) {
 		loop {
 			match self.rx.recv().unwrap() {
 				ControllerMsg::GuiShutdown => return,
@@ -130,12 +130,13 @@ impl Controller {
 					}
 				}
 				ControllerMsg::NewPriority(prio) => {
-					println!("\n\nSending prio message\n\n");
-					/*ipc_tx
-					.blocking_send(&ipc::IpcMessage::PrioritiseStates(vec![
-						prio as u32,
-					]))
-					.unwrap();*/
+					let msg_result =
+						ipc_tx.blocking_send(&ipc::IpcMessage::PrioritiseStates(vec![
+							prio as u32,
+						]));
+					if msg_result.is_err() {
+						tracing::info!("State priority signal sent, but execution has completed");
+					}
 				}
 			}
 		}
