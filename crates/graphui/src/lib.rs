@@ -41,7 +41,8 @@ impl Widget for &mut EmbeddingParameters {
 					),
 				)
 				.union(
-					ui.add(
+					ui.add_enabled(
+						self.enable_repulsion_approximation,
 						egui::Slider::new(&mut self.repulsion_approximation, 0.0..=0.5)
 							.step_by(0.5 / STEPS)
 							.text("repulsion approximaton"),
@@ -223,18 +224,23 @@ fn draw_graph(
 		.map(|&p| translate_embed_to_scrollarea_pos(p, graph, zoom_level, viewport.size()))
 		.collect();
 
-	let node_size = {
+	let (node_size, node_has_self_edge) = {
 		let mut node_size = vec![std::f32::INFINITY; graph.node_positions.len()];
+		let mut node_has_self_edge = vec![false; graph.node_positions.len()];
 		for &(a, b) in &graph.edges {
-			let d = scrollarea_node_pos[a].distance(scrollarea_node_pos[b]);
-			node_size[a] = node_size[a].min(0.6 * d);
-			node_size[b] = node_size[b].min(0.6 * d);
+			if a == b {
+				node_has_self_edge[a] = true;
+			} else {
+				let d = scrollarea_node_pos[a].distance(scrollarea_node_pos[b]);
+				node_size[a] = node_size[a].min(0.6 * d);
+				node_size[b] = node_size[b].min(0.6 * d);
+			}
 		}
 		let avg_size = node_size.iter().copied().sum::<f32>() / node_size.len() as f32;
 		for size in &mut node_size {
 			*size = size.clamp(avg_size / 3.0, avg_size * 2.0);
 		}
-		node_size
+		(node_size, node_has_self_edge)
 	};
 
 	let expanded_viewport = viewport.expand(
@@ -254,7 +260,7 @@ fn draw_graph(
 				style_selection,
 				pos,
 				node_size[i],
-				"A",
+				if node_has_self_edge[i] { "↺" } else { "A" },
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);
@@ -295,7 +301,7 @@ fn draw_node(
 	let rect =
 		Rect::from_center_size(pos, egui::Vec2::new(node_width, node_width)).translate(offset);
 	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
-	let lod_cutoff = ui.style().spacing.interact_size.y;
+	let lod_cutoff = 0.7 * ui.style().spacing.interact_size.y;
 	let rounding = node_width / 5.0;
 	let (bg_color, stroke) = if selected {
 		(style_selection.bg_fill, style_selection.stroke)
