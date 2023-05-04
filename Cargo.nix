@@ -2547,6 +2547,7 @@ in
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/libamba");
     dependencies = {
+      cxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".cxx."1.0.89" { inherit profileName; };
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
     };

@@ -17,7 +17,7 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_ipc(rust_new_ipc())
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks" })
+	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks", s2e->getPlugin<ModuleMap>() })
 	, m_symbolic_graph(symbolic_graph::SymbolicGraph { "symbolic states" })
 {
 	auto self = this;
@@ -53,7 +53,7 @@ void AmbaPlugin::initialize() {
 		<< this->m_module_path
 		<< '\n';
 
-        // Set up event callbacks
+	// Set up event callbacks
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
