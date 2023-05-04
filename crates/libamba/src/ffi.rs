@@ -1,3 +1,5 @@
+#![allow(unsafe_code, clippy::missing_safety_doc)]
+
 use std::{os::unix::net::UnixStream, slice, sync::Mutex};
 
 use ipc::IpcTx;
@@ -22,12 +24,6 @@ pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcTx<'_>>) {
 	let _ = Box::from_raw(ptr);
 }
 
-unsafe fn send_ipc_message(ipc: *mut Mutex<IpcTx<'_>>, msg: &ipc::IpcMessage) {
-	let mut ipc = (*ipc).lock().unwrap();
-	ipc.blocking_send(msg)
-		.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn rust_ipc_send_edges(
 	ipc: *mut Mutex<IpcTx<'_>>,
@@ -50,10 +46,10 @@ pub unsafe extern "C" fn rust_ipc_send_edges(
 	};
 
 	send_ipc_message(ipc, &msg);
-}
 
-#[no_mangle]
-pub extern "C" fn rust_main() -> std::ffi::c_int {
-	println!("Hello world");
-	0
+	unsafe fn send_ipc_message(ipc: *mut Mutex<IpcTx<'_>>, msg: &ipc::IpcMessage) {
+		let mut ipc = (*ipc).lock().unwrap();
+		ipc.blocking_send(msg)
+			.unwrap_or_else(|err| println!("libamba ipc error: {err:?}"));
+	}
 }
