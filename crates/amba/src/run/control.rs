@@ -10,7 +10,7 @@ use std::{
 };
 
 use eframe::egui::Context;
-use ipc::NodeMetadata;
+use ipc::{IpcInstance, IpcTx, NodeMetadata};
 use model::Model;
 
 use crate::{
@@ -71,17 +71,17 @@ impl Controller {
 		let embedder_gui_context = self.gui_context.clone();
 
 		let res = thread::scope(|s| {
-			let ipc = thread::Builder::new()
-				.name("ipc".to_owned())
-				.spawn_scoped(s, || {
-					run::run_ipc(ipc_socket, controller_tx_from_ipc)
-				})
-				.unwrap();
 			let qemu = thread::Builder::new()
 				.name("qemu".to_owned())
 				.spawn_scoped(s, || {
 					run::run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
 				})
+				.unwrap();
+			let ipc_instance = IpcInstance::new_gui(ipc_socket);
+			let (ipc_rx, ipc_tx) = ipc_instance.into();
+			let ipc = thread::Builder::new()
+				.name("ipc".to_owned())
+				.spawn_scoped(s, || run::run_ipc(ipc_rx, controller_tx_from_ipc))
 				.unwrap();
 			let qmp = thread::Builder::new()
 				.name("qmp".to_owned())

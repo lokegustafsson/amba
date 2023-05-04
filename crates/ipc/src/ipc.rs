@@ -17,6 +17,12 @@ pub struct IpcInstance {
 	writer: IpcTx,
 }
 
+impl From<IpcInstance> for (IpcRx, IpcTx) {
+	fn from(val: IpcInstance) -> Self {
+		(val.reader, val.writer)
+	}
+}
+
 impl IpcInstance {
 	pub fn new_plugin(socket: &Path) -> Self {
 		let stream = IoArc::new(UnixStream::connect(socket).unwrap());

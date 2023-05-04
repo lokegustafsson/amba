@@ -16,7 +16,7 @@ use std::{
 	time::Duration,
 };
 
-use ipc::{IpcError, IpcInstance, IpcMessage};
+use ipc::{IpcError, IpcInstance, IpcMessage, IpcRx};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{
@@ -79,10 +79,7 @@ pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	Ok(())
 }
 
-pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
-	dbg!(&ipc_socket);
-	let mut ipc = IpcInstance::new_gui(ipc_socket);
-	let (ipc_rx, _ipc_tx) = ipc.get_rx_tx();
+pub fn run_ipc(mut ipc_rx: IpcRx, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
 	loop {
 		match ipc_rx.blocking_receive() {
 			Ok(IpcMessage::NewEdges {
