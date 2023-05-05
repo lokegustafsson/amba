@@ -1,5 +1,6 @@
 #include <thread>
 #include <chrono>
+#include <tuple>
 #include <vector>
 #include <unordered_set>
 #include <algorithm>
@@ -41,25 +42,27 @@ void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
 		auto searcher = dynamic_cast<klee::DFSSearcher *>(executor.getSearcher());
 
 		const StateSet &all_states = executor.getStates();
-		const StateSet to_prioritise_states = ([&]() {
-			StateSet s {};
+		const auto [to_add, to_remove] = ([&]() {
+			StateSet add {};
+			StateSet remove {};
 
-			for (auto state : all_states) {
-				auto id = (dynamic_cast<s2e::S2EExecutionState *>(state))->getGuid();
-				if (!to_prioritise_ids.contains(id)) {
-					continue;
+			for (const auto state : all_states) {
+				const auto id = (dynamic_cast<s2e::S2EExecutionState *>(state))->getGuid();
+				if (to_prioritise_ids.contains(id)) {
+					add.insert(state);
+				} else {
+					remove.insert(state);
 				}
-				s.insert(state);
 			}
 
-			return s;
+			return std::make_tuple(add, remove);
 		})();
 
 		searcher->update(
 			// No idea where to get this value from, but looking at the source code, it's unused anyway
 			nullptr,
-			{},
-			{}
+			to_add,
+			to_remove
 		);
 
 	}
