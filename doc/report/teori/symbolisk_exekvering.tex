@@ -11,7 +11,7 @@ programmets variabler -- vilka egenskaper de måste uppnå för att just denna v
 ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan 
 evalueras eftersom de krav som måste uppfyllas för att följa vägen dit dokumenteras 
 under den symboliska körningen, och resulterar i fullständiga symboliska representationer 
-som en automatiserad teoremlösare (SMT solver) kan appliceras på.
+som en automatiserad teoremlösare (jmf. engelska SMT solver) kan appliceras på.
 
 Eftersom de symboliska värdena har kapacitet att representera grupperingar av konkreta 
 värden istället för enskilda sådana, utförs en generaliserad testning av programmet, 
@@ -21,9 +21,9 @@ i programmet~\cite{cadar}.
 
 En symbolisk exekveringsmotor arbetar genom att först representera programmets
 input som symboliska variablar, vilka vid starten inte har några begränsningar.
-När programflödet når en förgrening som baseras på någon av de symboliska
-variablerna, väljer motorn en gren och tillsätter dess path constraint på den
-symboliska variabeln för alla vägar som fortsätter utefter grenen. Operationer
+När programflödet når en branch som baseras på någon av de symboliska
+variablerna, väljer motorn en branch och tillsätter dess path constraint på den
+symboliska variabeln för alla vägar som fortsätter utefter branchen. Operationer
 på värden under körningens väg översätts till symboliska operationer på
 motsvarande symboliska variabler. När körning utefter branchen är
 slutförd repeterar motorn samma metodik på samma branch för att utforska andra
