@@ -30,6 +30,7 @@ CXX-FLAGS := \
 	-Wall \
 	-Wextra \
 	-Wno-unused-parameter \
+	-Werror=missing-field-initializers \
 	$(OPT-LEVEL) \
 	-U _FORTIFY_SOURCE \
 	-I inc \
