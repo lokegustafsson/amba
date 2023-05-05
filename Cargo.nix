@@ -7,11 +7,11 @@ args@{
     "amba/default"
     "data-structures/default"
     "ipc/default"
+    "disassembler/default"
     "graphui/default"
     "qmp-client/default"
     "recipe/default"
     "bootstrap/default"
-    "disassembler/default"
     "libamba/default"
     "mitm-debug-stream/default"
     "s2e/default"
@@ -51,11 +51,11 @@ in
     amba = rustPackages.unknown.amba."0.1.0";
     data-structures = rustPackages.unknown.data-structures."0.1.0";
     ipc = rustPackages.unknown.ipc."0.1.0";
+    disassembler = rustPackages.unknown.disassembler."0.1.0";
     graphui = rustPackages.unknown.graphui."0.1.0";
     qmp-client = rustPackages.unknown.qmp-client."0.1.0";
     recipe = rustPackages.unknown.recipe."0.1.0";
     bootstrap = rustPackages.unknown.bootstrap."0.1.0";
-    disassembler = rustPackages.unknown.disassembler."0.1.0";
     libamba = rustPackages.unknown.libamba."0.1.0";
     mitm-debug-stream = rustPackages.unknown.mitm-debug-stream."0.1.0";
     s2e = rustPackages.unknown.s2e."0.1.0";
@@ -193,6 +193,7 @@ in
       ctrlc = rustPackages."registry+https://github.com/rust-lang/crates.io-index".ctrlc."3.2.5" { inherit profileName; };
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       dirs = rustPackages."registry+https://github.com/rust-lang/crates.io-index".dirs."4.0.0" { inherit profileName; };
+      disassembler = rustPackages."unknown".disassembler."0.1.0" { inherit profileName; };
       eframe = rustPackages."registry+https://github.com/rust-lang/crates.io-index".eframe."0.21.3" { inherit profileName; };
       glam = rustPackages."registry+https://github.com/rust-lang/crates.io-index".glam."0.23.0" { inherit profileName; };
       graphui = rustPackages."unknown".graphui."0.1.0" { inherit profileName; };
@@ -742,6 +743,36 @@ in
       slotmap = rustPackages."registry+https://github.com/rust-lang/crates.io-index".slotmap."1.0.6" { inherit profileName; };
       thiserror = rustPackages."registry+https://github.com/rust-lang/crates.io-index".thiserror."1.0.38" { inherit profileName; };
       vec_map = rustPackages."registry+https://github.com/rust-lang/crates.io-index".vec_map."0.8.2" { inherit profileName; };
+    };
+  });
+  
+  "registry+https://github.com/rust-lang/crates.io-index".capstone."0.11.0" = overridableMkRustCrate (profileName: rec {
+    name = "capstone";
+    version = "0.11.0";
+    registry = "registry+https://github.com/rust-lang/crates.io-index";
+    src = fetchCratesIo { inherit name version; sha256 = "1097e608594dad3bad608295567f757742b883606fe150faf7a9740b849730d8"; };
+    features = builtins.concatLists [
+      [ "default" ]
+    ];
+    dependencies = {
+      capstone_sys = rustPackages."registry+https://github.com/rust-lang/crates.io-index".capstone-sys."0.15.0" { inherit profileName; };
+      libc = rustPackages."registry+https://github.com/rust-lang/crates.io-index".libc."0.2.139" { inherit profileName; };
+    };
+  });
+  
+  "registry+https://github.com/rust-lang/crates.io-index".capstone-sys."0.15.0" = overridableMkRustCrate (profileName: rec {
+    name = "capstone-sys";
+    version = "0.15.0";
+    registry = "registry+https://github.com/rust-lang/crates.io-index";
+    src = fetchCratesIo { inherit name version; sha256 = "2e7f651d5ec4c2a2e6c508f2c8032655003cd728ec85663e9796616990e25b5a"; };
+    features = builtins.concatLists [
+      [ "default" ]
+    ];
+    dependencies = {
+      libc = rustPackages."registry+https://github.com/rust-lang/crates.io-index".libc."0.2.139" { inherit profileName; };
+    };
+    buildDependencies = {
+      cc = buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.0.79" { profileName = "__noProfile"; };
     };
   });
   
@@ -1332,6 +1363,7 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/disassembler");
     dependencies = {
       addr2line = rustPackages."registry+https://github.com/rust-lang/crates.io-index".addr2line."0.19.0" { inherit profileName; };
+      capstone = rustPackages."registry+https://github.com/rust-lang/crates.io-index".capstone."0.11.0" { inherit profileName; };
       elsa = rustPackages."registry+https://github.com/rust-lang/crates.io-index".elsa."1.8.0" { inherit profileName; };
       thiserror = rustPackages."registry+https://github.com/rust-lang/crates.io-index".thiserror."1.0.38" { inherit profileName; };
     };
