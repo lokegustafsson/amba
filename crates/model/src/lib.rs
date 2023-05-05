@@ -205,8 +205,8 @@ fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
 	let marker = if has_self_edge { "↺" } else { "" };
 
 	match metadata {
-		NodeMetadata::State { amba_state_id } => {
-			ret.coarser(amba_state_id.to_string());
+		NodeMetadata::State { amba_state_id , s2e_state_id} => {
+			ret.coarser(format!("{amba_state_id} ({s2e_state_id})"));
 		}
 		NodeMetadata::BasicBlock {
 			symbolic_state_id: state,

@@ -20,8 +20,6 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_ipc(rust_new_ipc())
-	, m_ipc_receiver_thread(std::jthread {})
-	, m_heap_leak(heap_leak::HeapLeak {})
 	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks", s2e->getPlugin<ModuleMap>() })
 	, m_symbolic_graph(symbolic_graph::SymbolicGraph { "symbolic states" })
 {
