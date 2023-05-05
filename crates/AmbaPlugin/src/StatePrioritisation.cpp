@@ -21,7 +21,7 @@ namespace state_prioritisation {
 // join before the AmbaPlugin fields can be destructed
 void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
 	using IdSet = std::unordered_set<i32>;
-	using StateSet = klee::StateSet;
+	using StateSet = std::unordered_set<klee::ExecutionState *>;
 
 	std::vector<i32> receive_buffer {};
 	StateSet prioritised_states;
