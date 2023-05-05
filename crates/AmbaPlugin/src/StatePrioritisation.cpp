@@ -3,14 +3,9 @@
 #include <tuple>
 #include <vector>
 #include <unordered_set>
-#include <algorithm>
-#include <ranges>
 
 #include <s2e/S2E.h>
-#include <s2e/S2EExecutionState.h>
-#include <klee/Common.h>
 #include <klee/Searcher.h>
-#include <klee/SolverImpl.h>
 
 #include "StatePrioritisation.h"
 #include "Amba.h"
