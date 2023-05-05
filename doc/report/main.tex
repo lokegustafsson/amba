@@ -20,6 +20,7 @@
   siunitx,
   tikz,
   titlesec,
+  parskip,
 }
 \usepackage[
     backend=biber,
@@ -116,18 +117,30 @@
     {-1cm} % before
     {0pt}  % after
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  TITLE PAGE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% THE fontspace ENVIRONMENT %%%%%%%%%%%%%%%%%%%%%%%
+% https://tex.stackexchange.com/a/284775
+% Use like \begin{fontspace}{1.5}{2} ... \end{fontspace}
+% Changes word spacing according to arguments
+% TODO: figure out what the two arguments exactly do, so far used it blindly.
 
-%\title{Projektrapport - Binäranalys med en hybrid av automatiska och manuella metoder}
-%\author{
-%    Loke Gustafsson \and
-%    Samuel Kyletoft \and
-%    Enayatullah Norozi \and
-%    Albin Otterhäll \and
-%    Clara Salberg \and
-%    Linus Wallman
-%}
-%\date{2023-02-20}
+% declare new dimensions
+\newdimen\origiwspc
+\newdimen\origiwstr
+
+\newenvironment{fontspace}[2]
+    {\par
+        % set default value of new dimensions
+        \origiwspc=\fontdimen2\font% original inter word space
+        \origiwstr=\fontdimen3\font% original inter word stretch
+        % set dimensions to arguments given
+        \fontdimen2\font=#1\origiwspc
+        \fontdimen3\font=#2\origiwstr
+    }
+    {\par
+        % reset original dimensions
+        \fontdimen2\font=\origiwspc
+        \fontdimen3\font=\origiwstr
+    }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COMMANDS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\stoe}{S$^2$E}
