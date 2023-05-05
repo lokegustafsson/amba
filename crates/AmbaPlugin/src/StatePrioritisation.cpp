@@ -44,14 +44,14 @@ void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
 		})();
 
 		auto &executor = *s2e->getExecutor();
-		auto searcher = (klee::DFSSearcher *) executor.getSearcher(); // Is this kind of downcast even safe?
+		auto searcher = dynamic_cast<klee::DFSSearcher *>(executor.getSearcher());
 
 		const StateSet &all_states = executor.getStates();
 		const StateSet to_prioritise_states = ([&]() {
 			StateSet s {};
 
 			for (auto state : all_states) {
-				auto id = ((s2e::S2EExecutionState *) state)->getGuid();
+				auto id = (dynamic_cast<s2e::S2EExecutionState *>(state))->getGuid();
 				if (!to_prioritise_ids.contains(id)) {
 					continue;
 				}
