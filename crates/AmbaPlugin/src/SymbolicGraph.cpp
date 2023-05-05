@@ -16,16 +16,18 @@ void SymbolicGraph::onStateFork(
 	const std::vector<s2e::S2EExecutionState *> &new_states,
 	const std::vector<klee::ref<klee::Expr>> &conditions
 ) {
+	const auto s2e_state_id = control_flow::getStateIdS2E(old_state);
+	const auto amba_state_id = this->getStateIdAmba(s2e_state_id);
 	const auto from = (StateMetadata) {
-		.symbolic_state_id = this->getStateIdAmba(control_flow::getStateIdS2E(old_state)),
+		.amba_state_id = amba_state_id,
 	};
 
 	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
 	for (auto &new_state : new_states) {
 		const auto to = (StateMetadata) {
-			.symbolic_state_id = this->getStateIdAmba(control_flow::getStateIdS2E(new_state)),
+			.amba_state_id = this->getStateIdAmba(control_flow::getStateIdS2E(new_state)),
 		};
-		AMBA_ASSERT(from.symbolic_state_id != to.symbolic_state_id);
+		AMBA_ASSERT(from.amba_state_id != to.amba_state_id);
 
 		this->m_new_edges.push_back(
 			(NodeMetadataFFIPair) {
@@ -44,15 +46,15 @@ void SymbolicGraph::onStateMerge(
 	const StateIdS2E src_id = control_flow::getStateIdS2E(source_state);
 
 	const auto from_left = (StateMetadata) {
-		.symbolic_state_id = this->getStateIdAmba(dest_id),
+		.amba_state_id = this->getStateIdAmba(dest_id),
 	};
 	const auto from_right = (StateMetadata) {
-		.symbolic_state_id = this->getStateIdAmba(src_id),
+		.amba_state_id = this->getStateIdAmba(src_id),
 	};
 
 	this->incrementStateIdAmba(dest_id);
 	const auto to = (StateMetadata) {
-		.symbolic_state_id = this->getStateIdAmba(dest_id),
+		.amba_state_id = this->getStateIdAmba(dest_id),
 	};
 
 	this->m_new_edges.push_back(

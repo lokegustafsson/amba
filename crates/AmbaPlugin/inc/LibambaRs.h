@@ -10,7 +10,7 @@ struct Ipc;
 
 struct NodeMetadataFFI {
 	u32 metadata_type;
-	u32 symbolic_state_id;
+	u32 amba_state_id;
 	u64 basic_block_vaddr;
 	u64 basic_block_generation;
 	u64 basic_block_elf_vaddr;

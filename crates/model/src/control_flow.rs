@@ -235,7 +235,7 @@ mod test {
 
 	fn node(i: u32) -> NodeMetadata {
 		NodeMetadata::State {
-			symbolic_state_id: i,
+			amba_state_id: i,
 		}
 	}
 

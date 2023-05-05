@@ -18,7 +18,7 @@ const SMALL_SIZE_U8: usize = {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum NodeMetadata {
 	State {
-		symbolic_state_id: u32,
+		amba_state_id: u32,
 	},
 	BasicBlock {
 		symbolic_state_id: u32,
