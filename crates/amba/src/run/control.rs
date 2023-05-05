@@ -1,6 +1,7 @@
 //! The Gui controller
 
 use std::{
+	collections::BTreeSet,
 	mem,
 	net::Shutdown,
 	os::unix::net::UnixStream,
@@ -9,6 +10,7 @@ use std::{
 	thread::{self, ScopedJoinHandle},
 };
 
+use data_structures::ControlFlowGraph;
 use eframe::egui::Context;
 use ipc::{IpcInstance, IpcTx, NodeMetadata};
 use model::Model;
@@ -132,10 +134,28 @@ impl Controller {
 					}
 				}
 				ControllerMsg::NewPriority(prio) => {
+					fn get_neighbours(
+						idx: u64,
+						state_cfg: &ControlFlowGraph,
+						out: &mut BTreeSet<i32>,
+					) {
+						let NodeMetadata::State { s2e_state_id , .. } = state_cfg.metadata[idx as usize] else {panic!()};
+						out.insert(s2e_state_id);
+						let to = &state_cfg.graph.nodes[&idx].to;
+						for &link in to.iter() {
+							get_neighbours(link, state_cfg, out);
+						}
+					}
+
+					let state_cfg = self.model.state_control_flow.read().unwrap();
+					let mut states_set = BTreeSet::new();
+					get_neighbours(prio as u64, &state_cfg, &mut states_set);
+					let states = states_set.into_iter().collect();
+
+					tracing::info!("Sending state prio: {states:#?}");
+
 					let msg_result =
-						ipc_tx.blocking_send(&ipc::IpcMessage::PrioritiseStates(vec![
-							prio as i32,
-						]));
+						ipc_tx.blocking_send(&ipc::IpcMessage::PrioritiseStates(states));
 					if msg_result.is_err() {
 						tracing::info!("State priority signal sent, but execution has completed");
 					}
