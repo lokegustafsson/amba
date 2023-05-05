@@ -4,10 +4,7 @@
 
 use std::{
 	ffi::{OsStr, OsString},
-	os::unix::{
-		net::UnixStream,
-		process::CommandExt,
-	},
+	os::unix::{net::UnixStream, process::CommandExt},
 	path::Path,
 	process::{self, Command, ExitStatus},
 	sync::mpsc,

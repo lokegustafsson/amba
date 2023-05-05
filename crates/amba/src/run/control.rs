@@ -81,7 +81,9 @@ impl Controller {
 			let (ipc_rx, ipc_tx) = ipc_instance.into();
 			let ipc = thread::Builder::new()
 				.name("ipc".to_owned())
-				.spawn_scoped(s, || runners::run_ipc(ipc_rx, controller_tx_from_ipc))
+				.spawn_scoped(s, || {
+					runners::run_ipc(ipc_rx, controller_tx_from_ipc)
+				})
 				.unwrap();
 			let qmp = thread::Builder::new()
 				.name("qmp".to_owned())
