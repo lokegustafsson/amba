@@ -15,7 +15,7 @@ use model::Model;
 
 use crate::{
 	cmd::Cmd,
-	run::{embed, run},
+	run::{embed, runners},
 	SessionConfig,
 };
 
@@ -59,7 +59,7 @@ impl Controller {
 		config: &SessionConfig,
 		model: Arc<Model>,
 	) -> Result<(), ()> {
-		run::prepare_run(cmd, config)?;
+		runners::prepare_run(cmd, config)?;
 
 		let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
 		let qmp_socket = &config.temp_dir.join("qmp.socket");
@@ -74,19 +74,19 @@ impl Controller {
 			let qemu = thread::Builder::new()
 				.name("qemu".to_owned())
 				.spawn_scoped(s, || {
-					run::run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
+					runners::run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
 				})
 				.unwrap();
 			let ipc_instance = IpcInstance::new_gui(ipc_socket);
 			let (ipc_rx, ipc_tx) = ipc_instance.into();
 			let ipc = thread::Builder::new()
 				.name("ipc".to_owned())
-				.spawn_scoped(s, || run::run_ipc(ipc_rx, controller_tx_from_ipc))
+				.spawn_scoped(s, || runners::run_ipc(ipc_rx, controller_tx_from_ipc))
 				.unwrap();
 			let qmp = thread::Builder::new()
 				.name("qmp".to_owned())
 				.spawn_scoped(s, || {
-					run::run_qmp(qmp_socket, controller_tx_from_qmp)
+					runners::run_qmp(qmp_socket, controller_tx_from_qmp)
 				})
 				.unwrap();
 			let embedder = thread::Builder::new()
