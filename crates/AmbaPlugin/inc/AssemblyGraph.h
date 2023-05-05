@@ -1,8 +1,9 @@
 #pragma once
 
+#include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
+
 #include <string>
 #include <vector>
-#include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
 
 #include "ControlFlow.h"
 
@@ -13,7 +14,8 @@ using namespace control_flow::types;
 struct TranslationBlockMetadata {
 	BasicBlockGeneration generation;
 	u64 elf_vaddr;
-	// NOTE: These are a lot of tiny allocations. Removing these is low-hanging fruit for later.
+	// NOTE: These are a lot of allocations (and per-block-execute copying).
+	// Removing these is low-hanging fruit for later.
 	std::vector<u8> content;
 };
 

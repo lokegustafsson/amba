@@ -1,7 +1,8 @@
-#include <vector>
 #include <s2e/Plugins/OSMonitors/ModuleDescriptor.h>
 #include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
 #include <tcg/tb.h>
+
+#include <vector>
 
 #include "AssemblyGraph.h"
 #include "AmbaException.h"
@@ -32,8 +33,7 @@ void AssemblyGraph::translateBlockStart(
 	std::vector<u8> cached_tb_content(tb_len);
 	bool ok = state->mem()->read(tb_vaddr, cached_tb_content.data(), tb_len);
 	if (!ok) {
-		// TODO: Write to the standard warning stream
-		std::cerr << "TODO: Failed tb read tb_vaddr=" << tb_vaddr << " tb_len=" << tb_len << "\n";
+		*amba::warning_stream() << "TODO: Failed tb read tb_vaddr=" << tb_vaddr << " tb_len=" << tb_len << "\n";
 		// TODO: This causes "silent concretizing". We should read memory in a way that
 		// fails if it is symbolic. But on the other hand, how can a newly translated
 		// TranslationBlock possibly be non-concrete?
