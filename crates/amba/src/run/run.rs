@@ -4,9 +4,8 @@
 
 use std::{
 	ffi::{OsStr, OsString},
-	net::Shutdown,
 	os::unix::{
-		net::{UnixListener, UnixStream},
+		net::UnixStream,
 		process::CommandExt,
 	},
 	path::Path,
@@ -16,7 +15,7 @@ use std::{
 	time::Duration,
 };
 
-use ipc::{IpcError, IpcInstance, IpcMessage, IpcRx};
+use ipc::{IpcError, IpcMessage, IpcRx};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{
