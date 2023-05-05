@@ -35,13 +35,7 @@ void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
 			continue;
 		}
 
-		const IdSet to_prioritise_ids = ([&]() {
-			IdSet s {};
-			for (auto id : receive_buffer) {
-				s.insert(id);
-			}
-			return s;
-		})();
+		const IdSet to_prioritise_ids = IdSet(receive_buffer.begin(), receive_buffer.end());
 
 		auto &executor = *s2e->getExecutor();
 		auto searcher = dynamic_cast<klee::DFSSearcher *>(executor.getSearcher());
