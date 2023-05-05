@@ -40,7 +40,7 @@ impl IpcInstance {
 			tx: BufWriter::new(stream),
 		};
 
-		println!("Plugin IPC setup");
+		tracing::info!("Plugin IPC setup");
 		IpcInstance { reader, writer }
 	}
 
@@ -61,7 +61,7 @@ impl IpcInstance {
 			tx: BufWriter::new(stream),
 		};
 
-		println!("GUI IPC setup");
+		tracing::info!("GUI IPC setup");
 		IpcInstance { reader, writer }
 	}
 
