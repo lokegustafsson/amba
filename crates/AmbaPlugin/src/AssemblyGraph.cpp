@@ -1,5 +1,6 @@
 #include <s2e/Plugins/OSMonitors/ModuleDescriptor.h>
 #include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
+#include <s2e/Utils.h>
 #include <tcg/tb.h>
 
 #include <vector>
@@ -15,33 +16,41 @@ AssemblyGraph::AssemblyGraph(std::string name, s2e::plugins::ModuleMap *module_m
 	, m_module_map(module_map)
 {}
 
-void AssemblyGraph::translateBlockStart(
-	s2e::ExecutionSignal *signal,
+void AssemblyGraph::translateBlockComplete(
 	s2e::S2EExecutionState *state,
 	TranslationBlock *tb,
-	u64 pc
+	u64 final_instruction_pc
 ) {
+	const u64 tb_vaddr = tb->pc;
+	const u64 tb_len = tb->size;
+
 	u64 elf_vaddr = 0;
 	s2e::ModuleDescriptorConstPtr mod = this->m_module_map->getModule(state);
 	if (mod != nullptr) {
-		bool ok = mod->ToNativeBase(pc, elf_vaddr);
+		bool ok = mod->ToNativeBase(tb_vaddr, elf_vaddr);
 		assert(ok);
 	}
 
-	const u64 tb_vaddr = tb->pc;
-	const u64 tb_len = tb->size;
 	std::vector<u8> cached_tb_content(tb_len);
+	// BEWARE: Extracting information from the TranslationBlock and other S2E
+	// callback data has a lot of subtle complexity. Tread carefully. If this memory
+	// read leads to "KLEE: WARNING: silently concretizing", you have a bug.
 	bool ok = state->mem()->read(tb_vaddr, cached_tb_content.data(), tb_len);
 	if (!ok) {
-		*amba::warning_stream() << "TODO: Failed tb read tb_vaddr=" << tb_vaddr << " tb_len=" << tb_len << "\n";
-		// TODO: This causes "silent concretizing". We should read memory in a way that
-		// fails if it is symbolic. But on the other hand, how can a newly translated
-		// TranslationBlock possibly be non-concrete?
+		*amba::warning_stream()
+			<< "Failed TB read: pc=" << s2e::hexval(tb->pc)
+			<< " cs_base=" << s2e::hexval(tb->cs_base)
+			<< " flags=" << s2e::hexval(tb->flags)
+			<< " size=" << s2e::hexval(tb->size)
+			<< " cflags=" << s2e::hexval(tb->cflags)
+			<< " tc.ptr=" << s2e::hexval(tb->tc.ptr)
+			<< " tc.size=" << s2e::hexval(tb->tc.size)
+			<< "\n";
 	}
 
 	const StatePC key = this->packStatePc(
 		control_flow::getStateIdS2E(state),
-		pc
+		tb_vaddr
 	);
 	++this->m_translation_block_metadata[key].generation.val;
 	this->m_translation_block_metadata[key].elf_vaddr = elf_vaddr;

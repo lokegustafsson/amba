@@ -64,6 +64,11 @@ void AmbaPlugin::initialize() {
 			*this,
 			&AmbaPlugin::translateBlockStart
 		));
+	core.onTranslateBlockComplete
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::translateBlockComplete
+		));
 	core.onStateFork
 		.connect(sigc::mem_fun(
 			this->m_assembly_graph,
@@ -158,12 +163,22 @@ void AmbaPlugin::translateBlockStart(
 		return;
 	}
 
-	this->m_assembly_graph.translateBlockStart(signal, state, tb, pc);
-
 	signal->connect(sigc::mem_fun(
 		this->m_assembly_graph,
 		&assembly_graph::AssemblyGraph::onBlockStart
 	));
+}
+void AmbaPlugin::translateBlockComplete(
+	S2EExecutionState *state,
+	TranslationBlock *tb,
+	u64 final_instruction_pc
+) {
+	auto mod = this->m_modules->getModule(state);
+	if (mod.get() == nullptr || mod->Path != this->m_module_path) {
+		return;
+	}
+
+	this->m_assembly_graph.translateBlockComplete(state, tb, final_instruction_pc);
 }
 
 void AmbaPlugin::onModuleLoad(

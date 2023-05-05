@@ -27,6 +27,11 @@ using TranslationFunction = void (
 	TranslationBlock *,
 	u64
 );
+using TranslationCompleteFunction = void (
+	s2e::S2EExecutionState *,
+	TranslationBlock *,
+	u64
+);
 using ExecutionFunction = void (s2e::S2EExecutionState *, u64);
 using SymbolicExecutionFunction = void (
 	s2e::S2EExecutionState *,

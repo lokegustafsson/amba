@@ -23,7 +23,7 @@ class AssemblyGraph : public control_flow::ControlFlow {
   public:
 	AssemblyGraph(std::string name, s2e::plugins::ModuleMap *module_map);
 
-	amba::TranslationFunction translateBlockStart;
+	amba::TranslationCompleteFunction translateBlockComplete;
 	amba::ExecutionFunction onBlockStart;
 	amba::SymbolicExecutionFunction onStateFork;
 	amba::StateMergeFunction onStateMerge;
