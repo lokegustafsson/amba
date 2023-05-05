@@ -25,8 +25,11 @@ void SymbolicGraph::onStateFork(
 
 	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
 	for (auto &new_state : new_states) {
+		const auto to_s2e_state_id = control_flow::getStateIdS2E(new_state);
+		const auto to_amba_state_id = this->getStateIdAmba(to_s2e_state_id);
 		const auto to = (StateMetadata) {
-			.amba_state_id = this->getStateIdAmba(control_flow::getStateIdS2E(new_state)),
+			.amba_state_id = to_amba_state_id,
+			.s2e_state_id = to_s2e_state_id,
 		};
 		AMBA_ASSERT(from.amba_state_id != to.amba_state_id);
 
