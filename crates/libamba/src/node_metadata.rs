@@ -24,7 +24,10 @@ impl From<&NodeMetadataFFI> for ipc::NodeMetadata {
 		}: &NodeMetadataFFI,
 	) -> Self {
 		match metadata_type {
-			0 => ipc::NodeMetadata::State { amba_state_id, s2e_state_id },
+			0 => ipc::NodeMetadata::State {
+				amba_state_id,
+				s2e_state_id,
+			},
 			1 => ipc::NodeMetadata::BasicBlock {
 				symbolic_state_id: amba_state_id,
 				basic_block_vaddr: NonZeroU64::new(basic_block_vaddr),
