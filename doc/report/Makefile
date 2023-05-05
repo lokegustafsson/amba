@@ -19,6 +19,7 @@ group_64_project_report.pdf: \
   teori/main.tex \
   teori/statisk_dynamisk_binaranalys.tex \
   teori/symbolisk_exekvering.tex \
+  teori/symbolisk_fuzzing.tex \
   titlepage.tex \
   refs.bib
 	tectonic main.tex
