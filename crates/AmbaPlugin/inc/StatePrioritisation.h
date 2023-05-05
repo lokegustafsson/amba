@@ -2,9 +2,6 @@
 
 #include <s2e/S2E.h>
 
-#include <memory>
-#include <thread>
-
 #include "LibambaRs.h"
 
 namespace state_prioritisation {
