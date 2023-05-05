@@ -19,6 +19,7 @@ const SMALL_SIZE_U8: usize = {
 pub enum NodeMetadata {
 	State {
 		amba_state_id: u32,
+		s2e_state_id: i32,
 	},
 	BasicBlock {
 		symbolic_state_id: u32,

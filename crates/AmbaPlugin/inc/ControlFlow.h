@@ -21,6 +21,7 @@ using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
 
 struct StateMetadata {
 	StateIdAmba amba_state_id;
+	StateIdS2E s2e_state_id;
 
 	NodeMetadataFFI into_ffi()  const;
 };

@@ -20,6 +20,7 @@ void SymbolicGraph::onStateFork(
 	const auto amba_state_id = this->getStateIdAmba(s2e_state_id);
 	const auto from = (StateMetadata) {
 		.amba_state_id = amba_state_id,
+		.s2e_state_id = s2e_state_id,
 	};
 
 	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
@@ -47,14 +48,17 @@ void SymbolicGraph::onStateMerge(
 
 	const auto from_left = (StateMetadata) {
 		.amba_state_id = this->getStateIdAmba(dest_id),
+		.s2e_state_id = dest_id,
 	};
 	const auto from_right = (StateMetadata) {
 		.amba_state_id = this->getStateIdAmba(src_id),
+		.s2e_state_id = src_id,
 	};
 
 	this->incrementStateIdAmba(dest_id);
 	const auto to = (StateMetadata) {
 		.amba_state_id = this->getStateIdAmba(dest_id),
+		.s2e_state_id = dest_id,
 	};
 
 	this->m_new_edges.push_back(
