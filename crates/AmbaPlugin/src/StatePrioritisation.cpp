@@ -27,11 +27,11 @@ void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
 	StateSet prioritised_states;
 
 	while (*active) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		receive_buffer.clear();
 
 		bool received = rust_ipc_receive_message(ipc, &receive_buffer);
 		if (!received) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 			continue;
 		}
 
