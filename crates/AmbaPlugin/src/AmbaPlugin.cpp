@@ -134,7 +134,6 @@ void AmbaPlugin::initialize() {
 	(void) core.onStateKill;
 	(void) core.onStateSwitch;
 
-	s2e->getExecutor()->setSearcher(new klee::DFSSearcher {});
 	auto self = this;
 	this->m_ipc_receiver_thread = std::jthread([=]() {
 		state_prioritisation::ipcReceiver(self->m_ipc, &self->m_alive, self->s2e());
