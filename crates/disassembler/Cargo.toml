@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 addr2line = "0.19"
+capstone = "0.11"
 elsa = "1"
 thiserror = "1"
