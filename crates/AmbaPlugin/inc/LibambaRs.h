@@ -33,5 +33,5 @@ extern "C" {
 		const NodeMetadataFFIPair *block_data,
 		u64 block_len
 	);
-	bool rust_ipc_receive_message(Ipc *ipc, std::vector<u32> *vec);
+	bool rust_ipc_receive_message(Ipc *ipc, std::vector<i32> *vec);
 }

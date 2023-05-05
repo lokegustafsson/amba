@@ -53,7 +53,7 @@ pub unsafe extern "C" fn rust_ipc_send_edges(
 #[no_mangle]
 pub unsafe extern "C" fn rust_ipc_receive_message(
 	ipc: *mut Mutex<IpcInstance>,
-	vec: *mut cxx::CxxVector<u32>,
+	vec: *mut cxx::CxxVector<i32>,
 ) -> bool {
 	let mut lock = (*ipc).lock().unwrap();
 	let (ipc_rx, _) = lock.get_rx_tx();

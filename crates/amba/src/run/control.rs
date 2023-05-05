@@ -134,7 +134,7 @@ impl Controller {
 				ControllerMsg::NewPriority(prio) => {
 					let msg_result =
 						ipc_tx.blocking_send(&ipc::IpcMessage::PrioritiseStates(vec![
-							prio as u32,
+							prio as i32,
 						]));
 					if msg_result.is_err() {
 						tracing::info!("State priority signal sent, but execution has completed");
