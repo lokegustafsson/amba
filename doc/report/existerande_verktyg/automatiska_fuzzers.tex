@@ -1,0 +1,17 @@
+Ytterligare en metod för binäranalys är fuzzing. Fuzzing innebär att testa ett program med en 
+stor mängd olika input. Målet är att simulera oväntade beteenden eller krashar om potentialen för 
+dessa existerar. Fuzzing är därför ett effektivt medel för att undersöka om ett program innehåller 
+sårbarheter~\cite{rawat}.
+
+AFL++ är en utveckling av den ursprungliga AFL (American Fuzzy Lop) fuzzern och har 
+förbättrats med fler funktioner och bättre prestanda. AFL använder täckningsstyrd fuzzing 
+(jmf. engelska coverage-guided fuzzing) för att generera testfall som är troliga att utlösa buggar 
+och sårbarheter. AFL spårar kodtäckningen vid varje testfall och använder denna informationen för att 
+styra hur tidigare testfall mutateras till nya. Även AFL++ muterar input för att generera nya inputs 
+från befintliga, och använder feedback från programvaran som fuzzas för att styra 
+fuzzing-processen~\cite{aflplusplus}.  
+
+
+
+
+
