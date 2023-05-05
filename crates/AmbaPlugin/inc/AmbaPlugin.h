@@ -5,6 +5,7 @@
 
 #include <thread>
 
+#include "Amba.h"
 #include "HeapLeak.h"
 #include "Numbers.h"
 #include "AssemblyGraph.h"
@@ -30,6 +31,7 @@ class AmbaPlugin : public Plugin {
 	amba::ProcessFunction onProcessUnload;
 	amba::TimerFunction onTimer;
 	amba::TimerFunction onEngineShutdown;
+	amba::StateKillFunction onStateKill;
 
   protected:
 	Ipc *const m_ipc;

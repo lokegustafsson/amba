@@ -98,6 +98,11 @@ void AmbaPlugin::initialize() {
 			this->m_symbolic_graph,
 			&symbolic_graph::SymbolicGraph::onStateMerge
 		));
+	core.onStateKill
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onStateKill
+		));
 	core.onTimer
 		.connect(sigc::mem_fun(
 			*this,
@@ -135,6 +140,10 @@ void AmbaPlugin::initialize() {
 		state_prioritisation::ipcReceiver(self->m_ipc, &self->m_alive, self->s2e());
 	});
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
+}
+
+void AmbaPlugin::onStateKill(S2EExecutionState *state) {
+	*amba::warning_stream() << "Killing " << state << "\n\n";
 }
 
 void AmbaPlugin::translateInstructionStart(

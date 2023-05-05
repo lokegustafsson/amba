@@ -42,6 +42,7 @@ using StateMergeFunction = void (
 	s2e::S2EExecutionState *,
 	s2e::S2EExecutionState *
 );
+using StateKillFunction = void (s2e::S2EExecutionState *);
 using TimerFunction = void ();
 using ModuleFunction = void (s2e::S2EExecutionState *, const s2e::ModuleDescriptor &);
 using ProcessFunction = void (s2e::S2EExecutionState *, const u64, const u64, const u64);
