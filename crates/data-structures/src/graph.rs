@@ -36,6 +36,8 @@ impl From<Graph> for ipc::GraphIpc {
 				symbolic_state_id: node.id as u32,
 				basic_block_vaddr: None,
 				basic_block_generation: None,
+				basic_block_elf_vaddr: None,
+				basic_block_content: Vec::new().into(),
 			})
 			.collect();
 		let edges = graph

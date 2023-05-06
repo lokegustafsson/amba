@@ -10,7 +10,7 @@ use eframe::{
 	App, CreationContext, Frame,
 };
 use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
-use ipc::NodeMetadata;
+use ipc::{CompressedBasicBlock, NodeMetadata};
 use smallvec::SmallVec;
 
 use crate::{
@@ -200,25 +200,33 @@ fn merge_nodes_into_single_metadata(nodes: &SmallU64Set, cfg: &ControlFlowGraph)
 	let mut symbolic_state_ids = SmallVec::new();
 	let mut basic_block_vaddrs = SmallVec::new();
 	let mut basic_block_generations = SmallVec::new();
+	let mut basic_block_elf_vaddrs = SmallVec::new();
+	let mut basic_block_contents = SmallVec::new();
 
 	for metadata in nodes.iter().map(|i| &cfg.metadata[*i as usize]) {
 		if let NodeMetadata::BasicBlock {
 			symbolic_state_id,
 			basic_block_vaddr,
 			basic_block_generation,
+			basic_block_elf_vaddr,
+			basic_block_content,
 		} = metadata
 		{
 			symbolic_state_ids.push(*symbolic_state_id);
 			basic_block_vaddrs.push(*basic_block_vaddr);
 			basic_block_generations.push(*basic_block_generation);
+			basic_block_elf_vaddrs.push(*basic_block_elf_vaddr);
+			basic_block_contents.push(basic_block_content.clone());
 		} else {
 			panic!("Basic block graph contained non-basic-block metadata")
 		};
 	}
 
-	NodeMetadata::CompressedBasicBlock {
+	NodeMetadata::CompressedBasicBlock(Box::new(CompressedBasicBlock {
 		symbolic_state_ids,
 		basic_block_vaddrs,
 		basic_block_generations,
-	}
+		basic_block_elf_vaddrs,
+		basic_block_contents,
+	}))
 }
