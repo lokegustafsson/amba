@@ -31,7 +31,11 @@ impl From<&ipc::GraphIpc> for ControlFlowGraph {
 impl From<&ControlFlowGraph> for ipc::GraphIpc {
 	fn from(cfg: &ControlFlowGraph) -> Self {
 		// Edges are already converted to sequential ids on insertion
-		let edges = cfg.graph.edges().map(|(x, y)| (x as _, y as _)).collect();
+		let edges = cfg
+			.graph
+			.edges()
+			.map(|(x, y)| (x as usize, y as usize))
+			.collect();
 		let metadata = cfg.metadata.clone();
 
 		Self { metadata, edges }

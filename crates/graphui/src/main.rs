@@ -45,10 +45,10 @@ fn main() {
 	.expect("enabling global logger");
 
 	let params = Arc::new(Mutex::new(EmbeddingParameters::default()));
-	let graph = Arc::new(RwLock::new(Graph2D::new(
-		example_graph::example_graph(),
-		*params.lock().unwrap(),
-	)));
+	let graph = Arc::new(RwLock::new({
+		let (node_count, edges) = example_graph::example_node_count_and_edges();
+		Graph2D::new(node_count, edges)
+	}));
 
 	let worker_params = Arc::clone(&params);
 	let worker_graph = Arc::clone(&graph);

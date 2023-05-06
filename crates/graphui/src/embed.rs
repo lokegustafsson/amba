@@ -2,7 +2,6 @@ use std::mem;
 
 use fastrand::Rng;
 use glam::DVec2;
-use ipc::GraphIpc;
 use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 #[derive(Clone, Debug)]
@@ -13,23 +12,6 @@ pub struct Graph2D {
 	pub max: DVec2,
 	pub gui_zoom: f32,
 	pub gui_pos: emath::Vec2,
-}
-
-impl From<GraphIpc> for Graph2D {
-	fn from(graph: GraphIpc) -> Self {
-		if graph.metadata.is_empty() {
-			return Self::empty();
-		}
-
-		Self {
-			node_positions: Self::initial_node_positions(graph.metadata.len(), &graph.edges),
-			edges: graph.edges,
-			min: DVec2::ZERO,
-			max: DVec2::ZERO,
-			gui_zoom: 1.0,
-			gui_pos: emath::Vec2::ZERO,
-		}
-	}
 }
 
 impl Default for Graph2D {
@@ -80,30 +62,31 @@ impl Graph2D {
 		}
 	}
 
-	pub fn from_old(old: Self, graph: impl Into<GraphIpc>, params: EmbeddingParameters) -> Self {
-		let mut new = Graph2D::new(graph, params);
-		for (from, to) in old.node_positions.iter().zip(new.node_positions.iter_mut()) {
-			*to = *from;
+	/// Equivalent to `*self = Graph2D::new(node_count, edges)`, but with a better
+	/// initial layout guess.
+	pub fn seeded_replace_self_with(&mut self, node_count: usize, edges: Vec<(usize, usize)>) {
+		let old = mem::replace(self, Self::new(node_count, edges));
+
+		let shared_count = usize::min(old.node_positions.len(), node_count);
+		self.node_positions[..shared_count].copy_from_slice(&old.node_positions[..shared_count]);
+	}
+
+	pub fn new(node_count: usize, edges: Vec<(usize, usize)>) -> Self {
+		if node_count == 0 {
+			return Self::empty();
 		}
-		new
+
+		Self {
+			node_positions: Self::initial_node_positions(node_count, &edges),
+			edges,
+			min: DVec2::ZERO,
+			max: DVec2::ZERO,
+			gui_zoom: 1.0,
+			gui_pos: emath::Vec2::ZERO,
+		}
 	}
 
-	/// Create a new `Graph2D` with as many node positions as possible stolen from the old graph.
-	/// Not perfect by any means, but a cheap hack to minimise jumpiness during updates
-	pub fn into_new(&mut self, graph: impl Into<GraphIpc>, params: EmbeddingParameters) {
-		let old = mem::take(self);
-		let new = Graph2D::from_old(old, graph, params);
-		*self = new;
-	}
-
-	pub fn new(graph: impl Into<GraphIpc>, params: EmbeddingParameters) -> Self {
-		let graph_: GraphIpc = graph.into();
-		let mut ret: Graph2D = graph_.into();
-		ret.run_layout_iterations(100, params);
-		ret
-	}
-
-	fn initial_node_positions(node_count: usize, edges: &Vec<(usize, usize)>) -> Vec<DVec2> {
+	fn initial_node_positions(node_count: usize, edges: &[(usize, usize)]) -> Vec<DVec2> {
 		let rng = &Rng::with_seed(0);
 
 		let mut adjacency_list = vec![Vec::new(); node_count];

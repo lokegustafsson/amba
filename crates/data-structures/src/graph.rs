@@ -1,4 +1,8 @@
-use std::{collections::BTreeSet, default::Default, mem};
+use std::{
+	collections::{BTreeSet, HashMap},
+	default::Default,
+	mem,
+};
 
 use crate::small_set::SmallU64Set;
 
@@ -18,35 +22,6 @@ pub struct Node {
 pub struct Graph {
 	pub nodes: Map<u64, Node>,
 	pub merges: Map<u64, u64>,
-}
-
-impl From<Graph> for ipc::GraphIpc {
-	fn from(graph: Graph) -> Self {
-		let node_id_renamings = graph
-			.nodes
-			.keys()
-			.copied()
-			.enumerate()
-			.map(|(x, y)| (y, x))
-			.collect::<Map<_, _>>();
-		let metadata = graph
-			.nodes
-			.values()
-			.map(|node| ipc::NodeMetadata::BasicBlock {
-				symbolic_state_id: node.id as u32,
-				basic_block_vaddr: None,
-				basic_block_generation: None,
-				basic_block_elf_vaddr: None,
-				basic_block_content: Vec::new().into(),
-			})
-			.collect();
-		let edges = graph
-			.edges()
-			.map(|(x, y)| (node_id_renamings[&x], node_id_renamings[&y]))
-			.collect();
-
-		Self { metadata, edges }
-	}
 }
 
 impl Graph {
@@ -350,10 +325,23 @@ impl Graph {
 		l
 	}
 
-	pub fn edges(&self) -> impl Iterator<Item = (u64, u64)> + '_ {
+	pub fn edges(&self) -> impl '_ + Iterator<Item = (u64, u64)> {
 		self.nodes
 			.values()
 			.flat_map(|n| n.to.iter().map(|&m| (n.id, m)))
+	}
+
+	pub fn edge_list_sequentially_renamed(&self) -> Vec<(usize, usize)> {
+		let node_id_renamings = self
+			.nodes
+			.keys()
+			.copied()
+			.enumerate()
+			.map(|(x, y)| (y, x))
+			.collect::<HashMap<_, _>>();
+		self.edges()
+			.map(|(from, to)| (node_id_renamings[&from], node_id_renamings[&to]))
+			.collect()
 	}
 
 	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes

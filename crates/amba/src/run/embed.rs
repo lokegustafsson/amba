@@ -51,24 +51,29 @@ pub fn run_embedder(
 					block_control_flow.update(from, to);
 				}
 
-				raw_block_graph
+				raw_block_graph.write().unwrap().seeded_replace_self_with(
+					block_control_flow.graph.len(),
+					block_control_flow.graph.edge_list_sequentially_renamed(),
+				);
+				compressed_block_graph
 					.write()
 					.unwrap()
-					.into_new(block_control_flow.graph.clone(), start_params);
-				compressed_block_graph.write().unwrap().into_new(
-					block_control_flow.compressed_graph.clone(),
-					start_params,
-				);
+					.seeded_replace_self_with(
+						block_control_flow.compressed_graph.len(),
+						block_control_flow
+							.compressed_graph
+							.edge_list_sequentially_renamed(),
+					);
 
 				let mut state_control_flow = state_control_flow.write().unwrap();
 				for (from, to) in state_edges.into_iter() {
 					state_control_flow.update(from, to);
 				}
 
-				raw_state_graph
-					.write()
-					.unwrap()
-					.into_new(state_control_flow.graph.clone(), start_params);
+				raw_state_graph.write().unwrap().seeded_replace_self_with(
+					state_control_flow.graph.len(),
+					state_control_flow.graph.edge_list_sequentially_renamed(),
+				);
 
 				blocking = false;
 				soon_blocking = false;

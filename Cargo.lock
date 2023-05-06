@@ -1448,7 +1448,6 @@ dependencies = [
  "emath",
  "fastrand",
  "glam",
- "ipc",
  "rayon",
  "tracing",
  "tracing-subscriber",
