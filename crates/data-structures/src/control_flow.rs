@@ -20,28 +20,6 @@ pub struct ControlFlowGraph {
 	pub(crate) meta_mapping_unique_id_to_index: HashMap<NodeMetadata, usize>,
 }
 
-impl From<&ipc::GraphIpc> for ControlFlowGraph {
-	fn from(value: &ipc::GraphIpc) -> Self {
-		let ipc::GraphIpc { metadata, edges } = value;
-		let f = |i: &usize| metadata[*i].clone();
-		edges.iter().map(|(x, y)| (f(x), f(y))).collect()
-	}
-}
-
-impl From<&ControlFlowGraph> for ipc::GraphIpc {
-	fn from(cfg: &ControlFlowGraph) -> Self {
-		// Edges are already converted to sequential ids on insertion
-		let edges = cfg
-			.graph
-			.edges()
-			.map(|(x, y)| (x as usize, y as usize))
-			.collect();
-		let metadata = cfg.metadata.clone();
-
-		Self { metadata, edges }
-	}
-}
-
 impl FromIterator<(NodeMetadata, NodeMetadata)> for ControlFlowGraph {
 	fn from_iter<T: IntoIterator<Item = (NodeMetadata, NodeMetadata)>>(iter: T) -> Self {
 		let mut ret = ControlFlowGraph::new();
