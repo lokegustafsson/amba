@@ -4,13 +4,16 @@ med konkreta inputs. Både \stoe{} och SymQEMU är kraftfulla verktyg för att a
 med symbolisk exekvering.
 
 SymQEMU är byggt som en förlängning av QEMU, och använder en kombination av dynamisk binär 
-översättning och symbolisk exekvering för att analysera binära program som körs inuti emulatorn~\cite{symqemu}.
-SymQEMU är främst inriktat på att analysera x86- och ARM-binärer och har begränsade instrumenteringsmöjligheter~\cite{symbexec}.
+översättning och symbolisk exekvering för att analysera binära program som körs inuti emulatorn.
+SymQEMU utför kompileringsbaserad symbolisk exekvering, där den mellanliggande representationen först blir modifierad 
+innan den översätts till värdarkitekturen, och är därför arkitekturoberoende utan att påverka prestandan~\cite{symqemu}.
 
 \stoe{} är ett modulärt bibliotek som ger virtuella maskiner symbolisk exekvering. \stoe{} erbjuder 
-redskap för att fokusera utforskningen på delkomponenter av systemet. \stoe{} gör det även 
+redskap för att fokusera utforskningen på delkomponenter av systemet och gör det även 
 möjligt för användare att sätta in kod i målsystemet vid specifika punkter under 
 exekvering. Det gör att användare kan anpassa analysprocessen efter sina behov~\cite{s2e}. 
+\stoe{} kan analysera kod för de flesta processorarkitekturer men betalar för det med ökad 
+komplexitet och prestanda~\cite{symqemu}. 
 
 Ett annat verktyg för att identifiera buggar och sårbarheter med hjälp av dynamisk symbolisk 
 exekvering är SAGE (Scalable Automated Guided Execution).
