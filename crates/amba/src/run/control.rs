@@ -60,7 +60,7 @@ impl Controller {
 		let controller_tx_from_ipc = self.tx.clone();
 		let controller_tx_from_qemu = self.tx.clone();
 		let controller_tx_from_qmp = self.tx.clone();
-		let embedder_model = self.model.clone();
+		let embedder_model = Arc::clone(&self.model);
 		let (embedder_tx, embedder_rx) = mpsc::channel();
 		self.embedder_tx = Some(embedder_tx);
 		let embedder_gui_context = self.gui_context.clone();
