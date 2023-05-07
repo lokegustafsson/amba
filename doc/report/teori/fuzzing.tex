@@ -1,17 +1,23 @@
 Fuzzing är i sig ett användbart automatiskt verktyg för att testa program efter
 ofta svårupptäckta problem som minnesbuggar, krascher, etc. på grund av dess
 enkelhet. Grundprincipen i fuzzing är att attackera en större mängd av möjlig
-indata genom att generera oväntad, godtycklig eller felaktig data. Denna typen
+indata genom att generera oväntad, godtycklig eller felaktig data. Denna typ
 av genererad indata resulterar ofta i syntaktiskt felaktig indata som inte kan
 hanteras av målprogrammet. Således finns det anledning för utvecklingspotential,
 något som lett till bland annat Mutation-Based Fuzzing och Generaton-based
 fuzzing. Mutation-Based Fuzzing muterar känd giltig indata, t.ex. om strängen
-"fuzz" är giltig indata kan det muteras till "fuzzZZZZZ". Detta skiljer sig från
-Generation-Based fuzzing, som genererar indata givet en modell för domänen. 
+"fuzz" är giltig indata kan detta muteras till "fuzzZZZZZ". Detta skiljer sig från
+Generation-Based fuzzing, som genererar indata givet en modell för
+domänen~\cite{fuzzing}.
 
 \subsection{Problemet med fuzzing}
 Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera 
 
+\subsection{Symbolisk fuzzing}
+
+
+
+% skriv om code coverage (räkna kanter vs noder, vilket är bäst)
 % KÄLLORRRRRRRRRr 🙃
 
 
