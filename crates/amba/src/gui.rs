@@ -121,7 +121,6 @@ impl App for Gui {
 		}
 		.read()
 		.unwrap();
-		let active = self.graph_widget.active_node_id();
 
 		egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
 			ui.horizontal(|ui| {
@@ -154,17 +153,14 @@ impl App for Gui {
 					});
 			})
 		});
-		egui::TopBottomPanel::bottom("bottom-panel")
-			.resizable(true)
-			.max_height(match active.is_some() {
-				true => ctx.screen_rect().height() * 0.6,
-				false => 0.0,
-			})
-			.show(ctx, |ui| {
-				egui::ScrollArea::vertical()
-					.auto_shrink([false, true])
-					.show(ui, |ui| {
-						if let Some(active) = active {
+		if let Some(active) = self.graph_widget.active_node_id() {
+			egui::TopBottomPanel::bottom("bottom-panel")
+				.resizable(true)
+				.max_height(ctx.screen_rect().height() * 0.6)
+				.show(ctx, |ui| {
+					egui::ScrollArea::vertical()
+						.auto_shrink([false, true])
+						.show(ui, |ui| {
 							let metadata = match self.view {
 								GraphToView::RawBlock => {
 									self.model.block_control_flow.read().unwrap().metadata[active]
@@ -190,9 +186,9 @@ impl App for Gui {
 							ui.heading("Selected node");
 							ui.label(format!("{}: {:#?}", active, metadata));
 							ui.allocate_space(ui.available_size());
-						}
-					});
-			});
+						});
+				});
+		}
 		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, &graph));
 	}
 
