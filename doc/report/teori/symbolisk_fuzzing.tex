@@ -4,8 +4,10 @@ enkelhet. Grundprincipen i fuzzing är att attackera en större mängd av möjli
 indata genom att generera oväntad, godtycklig eller felaktig data. Denna typen
 av genererad indata resulterar ofta i syntaktiskt felaktig indata som inte kan
 hanteras av målprogrammet. Således finns det anledning för utvecklingspotential,
-något som lett till bland annat Mutation-Based Fuzzing som muterar känd giltig 
-indata.  
+något som lett till bland annat Mutation-Based Fuzzing och Generaton-based
+fuzzing. Mutation-Based Fuzzing muterar känd giltig indata, t.ex. om strängen
+"fuzz" är giltig indata kan det muteras till "fuzzZZZZZ". Detta skiljer sig från
+Generation-Based fuzzing, som genererar indata givet en modell för domänen. 
 
 \subsection{Problemet med fuzzing}
 Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera 
