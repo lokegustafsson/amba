@@ -1,0 +1,13 @@
+[package]
+name = "model"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+arrayvec = { version = "0.7", features = ["serde"] }
+data-structures = { path = "../data-structures" }
+graphui = { path = "../graphui" }
+ipc = { path = "../ipc" }
+smallvec = { version = "1.8", default-features = false, features = [ "union", "const_generics", "const_new", "write", "serde" ] }

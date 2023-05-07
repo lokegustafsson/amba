@@ -2035,6 +2035,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "model"
+version = "0.1.0"
+dependencies = [
+ "arrayvec",
+ "data-structures",
+ "graphui",
+ "ipc",
+ "smallvec",
+]
+
+[[package]]
 name = "moveit"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
