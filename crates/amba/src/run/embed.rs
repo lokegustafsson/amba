@@ -11,22 +11,13 @@ pub fn run_embedder(
 	rx: mpsc::Receiver<EmbedderMsg>,
 	gui_context: Option<Context>,
 ) -> Result<(), ()> {
-	let Model {
-		block_control_flow,
-		state_control_flow,
-		raw_state_graph,
-		raw_block_graph,
-		compressed_block_graph,
-		embedding_parameters,
-	} = model;
-
 	let mut updates_per_second: f64 = 0.0;
 	let iterations = 100;
 	let mut blocking = true;
 	let mut soon_blocking = false;
 	loop {
 		let params = {
-			let mut guard = embedding_parameters.lock().unwrap();
+			let mut guard = model.embedding_parameters.lock().unwrap();
 			guard.statistic_updates_per_second = iterations as f64 * updates_per_second;
 			guard.enable_repulsion_approximation = !soon_blocking;
 			*guard
@@ -46,16 +37,21 @@ pub fn run_embedder(
 				let mut start_params = params;
 				start_params.noise = 0.1;
 
-				let mut block_control_flow = block_control_flow.write().unwrap();
+				let mut block_control_flow = model.block_control_flow.write().unwrap();
 				for (from, to) in block_edges.into_iter() {
 					block_control_flow.update(from, to);
 				}
 
-				raw_block_graph.write().unwrap().seeded_replace_self_with(
-					block_control_flow.graph.len(),
-					block_control_flow.graph.edge_list_sequentially_renamed(),
-				);
-				compressed_block_graph
+				model
+					.raw_block_graph
+					.write()
+					.unwrap()
+					.seeded_replace_self_with(
+						block_control_flow.graph.len(),
+						block_control_flow.graph.edge_list_sequentially_renamed(),
+					);
+				model
+					.compressed_block_graph
 					.write()
 					.unwrap()
 					.seeded_replace_self_with(
@@ -65,15 +61,19 @@ pub fn run_embedder(
 							.edge_list_sequentially_renamed(),
 					);
 
-				let mut state_control_flow = state_control_flow.write().unwrap();
+				let mut state_control_flow = model.state_control_flow.write().unwrap();
 				for (from, to) in state_edges.into_iter() {
 					state_control_flow.update(from, to);
 				}
 
-				raw_state_graph.write().unwrap().seeded_replace_self_with(
-					state_control_flow.graph.len(),
-					state_control_flow.graph.edge_list_sequentially_renamed(),
-				);
+				model
+					.raw_state_graph
+					.write()
+					.unwrap()
+					.seeded_replace_self_with(
+						state_control_flow.graph.len(),
+						state_control_flow.graph.edge_list_sequentially_renamed(),
+					);
 
 				blocking = false;
 				soon_blocking = false;
@@ -92,7 +92,11 @@ pub fn run_embedder(
 		let timer = Instant::now();
 		let mut total_delta_pos = 0.0;
 
-		for graph in [raw_state_graph, raw_block_graph, compressed_block_graph] {
+		for graph in [
+			&model.raw_state_graph,
+			&model.raw_block_graph,
+			&model.compressed_block_graph,
+		] {
 			let mut graph_lock = graph.write().unwrap();
 			let mut working_copy = graph_lock.clone();
 			total_delta_pos += working_copy.run_layout_iterations(iterations, params);
