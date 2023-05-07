@@ -69,6 +69,12 @@ impl Graph2D {
 
 		let shared_count = usize::min(old.node_positions.len(), node_count);
 		self.node_positions[..shared_count].copy_from_slice(&old.node_positions[..shared_count]);
+
+		const INITIAL_NOISE: f64 = 0.1;
+		let rng = &Rng::with_seed(0);
+		self.node_positions
+			.iter_mut()
+			.for_each(|pos| *pos += INITIAL_NOISE * random_dvec2(rng));
 	}
 
 	pub fn new(node_count: usize, edges: Vec<(usize, usize)>) -> Self {

@@ -1,17 +1,14 @@
 use std::{
-	fmt,
-	sync::{mpsc, Arc, Mutex, RwLock},
+	sync::{mpsc, Arc},
 	thread,
 };
 
-use data_structures::{ControlFlowGraph, SmallU64Set};
 use eframe::{
 	egui::{self, Context},
 	App, CreationContext, Frame,
 };
-use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
-use ipc::{CompressedBasicBlock, NodeMetadata};
-use smallvec::SmallVec;
+use graphui::GraphWidget;
+use model::{GraphToView, Model};
 
 use crate::{
 	cmd::Cmd,
@@ -29,46 +26,6 @@ pub fn run_gui(cmd: &'static mut Cmd, config: SessionConfig) -> Result<(), ()> {
 		Box::new(move |cc| Box::new(Gui::new(cc, cmd, config))),
 	)
 	.map_err(|error| tracing::error!(?error, "GUI"))
-}
-
-pub struct Model {
-	pub block_control_flow: RwLock<ControlFlowGraph>,
-	pub state_control_flow: RwLock<ControlFlowGraph>,
-	pub raw_state_graph: RwLock<Graph2D>,
-	pub raw_block_graph: RwLock<Graph2D>,
-	pub compressed_block_graph: RwLock<Graph2D>,
-	pub embedding_parameters: Mutex<EmbeddingParameters>,
-}
-
-impl Model {
-	pub fn new() -> Self {
-		Self {
-			block_control_flow: RwLock::new(ControlFlowGraph::new()),
-			state_control_flow: RwLock::new(ControlFlowGraph::new()),
-			raw_state_graph: RwLock::new(Graph2D::empty()),
-			raw_block_graph: RwLock::new(Graph2D::empty()),
-			compressed_block_graph: RwLock::new(Graph2D::empty()),
-			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
-		}
-	}
-}
-
-#[derive(Debug, PartialEq)]
-pub enum GraphToView {
-	RawBlock,
-	CompressedBlock,
-	State,
-}
-
-impl fmt::Display for GraphToView {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		let s = match self {
-			GraphToView::RawBlock => "Raw Basic Block Graph",
-			GraphToView::CompressedBlock => "Compressed Block Graph",
-			GraphToView::State => "State Graph",
-		};
-		write!(f, "{s}")
-	}
 }
 
 struct Gui {
@@ -93,12 +50,11 @@ impl Gui {
 					(Controller {
 						tx,
 						rx: controller_rx,
-						model,
 						gui_context,
 						qemu_pid: None,
 						embedder_tx: None,
 					})
-					.run(cmd, &config)
+					.run(cmd, &config, model)
 				}
 			})
 			.unwrap();
@@ -114,18 +70,12 @@ impl Gui {
 
 impl App for Gui {
 	fn update(&mut self, ctx: &Context, _: &mut Frame) {
-		let graph = match self.view {
-			GraphToView::RawBlock => &self.model.raw_block_graph,
-			GraphToView::CompressedBlock => &self.model.compressed_block_graph,
-			GraphToView::State => &self.model.raw_state_graph,
-		}
-		.read()
-		.unwrap();
+		let graph = self.model.gui_get_graph(self.view);
 
 		egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
 			ui.horizontal(|ui| {
 				ui.heading("Drawing parameters");
-				let params_widget = ui.add(&mut *self.model.embedding_parameters.lock().unwrap());
+				let params_widget = ui.add(&mut *self.model.gui_lock_params());
 				if params_widget.changed() {
 					self.controller_tx
 						.send(ControllerMsg::EmbeddingParamsUpdated)
@@ -162,30 +112,8 @@ impl App for Gui {
 					egui::ScrollArea::vertical()
 						.auto_shrink([false, true])
 						.show(ui, |ui| {
-							let metadata = match self.view {
-								GraphToView::RawBlock => {
-									self.model.block_control_flow.read().unwrap().metadata[active]
-										.clone()
-								}
-								GraphToView::CompressedBlock => {
-									// Cloned because even the immutable get requires a mutable reference
-									let mut cfg = self.model.block_control_flow.write().unwrap();
-									let nodes = cfg
-										.compressed_graph
-										.get(active as u64)
-										.map(|x| x.of.clone())
-										.unwrap();
-
-									merge_nodes_into_single_metadata(&nodes, &cfg)
-								}
-								GraphToView::State => {
-									self.model.state_control_flow.read().unwrap().metadata[active]
-										.clone()
-								}
-							};
-
 							ui.heading("Selected node");
-							ui.label(format!("{}: {:#?}", active, metadata));
+							ui.label(self.model.gui_get_node_description(self.view, active));
 							ui.allocate_space(ui.available_size());
 						});
 				});
@@ -202,39 +130,4 @@ impl App for Gui {
 			Err(mpsc::SendError(_)) => unreachable!(),
 		}
 	}
-}
-
-fn merge_nodes_into_single_metadata(nodes: &SmallU64Set, cfg: &ControlFlowGraph) -> NodeMetadata {
-	let mut symbolic_state_ids = SmallVec::new();
-	let mut basic_block_vaddrs = SmallVec::new();
-	let mut basic_block_generations = SmallVec::new();
-	let mut basic_block_elf_vaddrs = SmallVec::new();
-	let mut basic_block_contents = SmallVec::new();
-
-	for metadata in nodes.iter().map(|i| &cfg.metadata[*i as usize]) {
-		if let NodeMetadata::BasicBlock {
-			symbolic_state_id,
-			basic_block_vaddr,
-			basic_block_generation,
-			basic_block_elf_vaddr,
-			basic_block_content,
-		} = metadata
-		{
-			symbolic_state_ids.push(*symbolic_state_id);
-			basic_block_vaddrs.push(*basic_block_vaddr);
-			basic_block_generations.push(*basic_block_generation);
-			basic_block_elf_vaddrs.push(*basic_block_elf_vaddr);
-			basic_block_contents.push(basic_block_content.clone());
-		} else {
-			panic!("Basic block graph contained non-basic-block metadata")
-		};
-	}
-
-	NodeMetadata::CompressedBasicBlock(Box::new(CompressedBasicBlock {
-		symbolic_state_ids,
-		basic_block_vaddrs,
-		basic_block_generations,
-		basic_block_elf_vaddrs,
-		basic_block_contents,
-	}))
 }

@@ -99,6 +99,7 @@ dependencies = [
  "graphui",
  "include_dir",
  "ipc",
+ "model",
  "nix 0.26.2",
  "qmp-client",
  "rand",

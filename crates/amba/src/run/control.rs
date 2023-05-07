@@ -11,10 +11,10 @@ use std::{
 
 use eframe::egui::Context;
 use ipc::NodeMetadata;
+use model::Model;
 
 use crate::{
 	cmd::Cmd,
-	gui::Model,
 	run::{embed, run},
 	SessionConfig,
 };
@@ -41,7 +41,6 @@ pub enum EmbedderMsg {
 pub struct Controller {
 	pub tx: mpsc::Sender<ControllerMsg>,
 	pub rx: mpsc::Receiver<ControllerMsg>,
-	pub model: Arc<Model>,
 	pub gui_context: Option<Context>,
 	pub qemu_pid: Option<u32>,
 	pub embedder_tx: Option<mpsc::Sender<EmbedderMsg>>,
@@ -52,7 +51,12 @@ impl Controller {
 	/// but in rust code.
 	///
 	/// TODO: support more guests than just `ubuntu-22.04-x86_64`
-	pub fn run(mut self, cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
+	pub fn run(
+		mut self,
+		cmd: &mut Cmd,
+		config: &SessionConfig,
+		model: Arc<Model>,
+	) -> Result<(), ()> {
 		run::prepare_run(cmd, config)?;
 
 		let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
@@ -60,7 +64,6 @@ impl Controller {
 		let controller_tx_from_ipc = self.tx.clone();
 		let controller_tx_from_qemu = self.tx.clone();
 		let controller_tx_from_qmp = self.tx.clone();
-		let embedder_model = Arc::clone(&self.model);
 		let (embedder_tx, embedder_rx) = mpsc::channel();
 		self.embedder_tx = Some(embedder_tx);
 		let embedder_gui_context = self.gui_context.clone();
@@ -86,8 +89,8 @@ impl Controller {
 				.unwrap();
 			let embedder = thread::Builder::new()
 				.name("embedder".to_owned())
-				.spawn_scoped(s, || {
-					embed::run_embedder(&embedder_model, embedder_rx, embedder_gui_context)
+				.spawn_scoped(s, move || {
+					embed::run_embedder(&*model, embedder_rx, embedder_gui_context)
 				})
 				.unwrap();
 			self.run_controller();

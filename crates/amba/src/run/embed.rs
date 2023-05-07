@@ -1,27 +1,19 @@
 //! The worker thread for the gui
 
-use std::{sync::mpsc, time::Instant};
+use std::sync::mpsc;
 
 use eframe::egui::Context;
+use model::{LayoutMadeProgress, Model};
 
-use crate::{gui::Model, run::control::EmbedderMsg};
+use crate::run::control::EmbedderMsg;
 
 pub fn run_embedder(
 	model: &Model,
 	rx: mpsc::Receiver<EmbedderMsg>,
 	gui_context: Option<Context>,
 ) -> Result<(), ()> {
-	let mut updates_per_second: f64 = 0.0;
-	let iterations = 100;
 	let mut blocking = true;
-	let mut soon_blocking = false;
 	loop {
-		let params = {
-			let mut guard = model.embedding_parameters.lock().unwrap();
-			guard.statistic_updates_per_second = iterations as f64 * updates_per_second;
-			guard.enable_repulsion_approximation = !soon_blocking;
-			*guard
-		};
 		let message = if blocking {
 			// Will wait
 			rx.recv().map_err(Into::into)
@@ -34,49 +26,9 @@ pub fn run_embedder(
 				block_edges,
 				state_edges,
 			}) => {
-				let mut start_params = params;
-				start_params.noise = 0.1;
-
-				let mut block_control_flow = model.block_control_flow.write().unwrap();
-				for (from, to) in block_edges.into_iter() {
-					block_control_flow.update(from, to);
-				}
-
-				model
-					.raw_block_graph
-					.write()
-					.unwrap()
-					.seeded_replace_self_with(
-						block_control_flow.graph.len(),
-						block_control_flow.graph.edge_list_sequentially_renamed(),
-					);
-				model
-					.compressed_block_graph
-					.write()
-					.unwrap()
-					.seeded_replace_self_with(
-						block_control_flow.compressed_graph.len(),
-						block_control_flow
-							.compressed_graph
-							.edge_list_sequentially_renamed(),
-					);
-
-				let mut state_control_flow = model.state_control_flow.write().unwrap();
-				for (from, to) in state_edges.into_iter() {
-					state_control_flow.update(from, to);
-				}
-
-				model
-					.raw_state_graph
-					.write()
-					.unwrap()
-					.seeded_replace_self_with(
-						state_control_flow.graph.len(),
-						state_control_flow.graph.edge_list_sequentially_renamed(),
-					);
+				model.add_new_edges(state_edges, block_edges);
 
 				blocking = false;
-				soon_blocking = false;
 				continue;
 			}
 			Ok(EmbedderMsg::WakeUp) => {
@@ -89,25 +41,10 @@ pub fn run_embedder(
 				return Ok(());
 			}
 		}
-		let timer = Instant::now();
-		let mut total_delta_pos = 0.0;
-
-		for graph in [
-			&model.raw_state_graph,
-			&model.raw_block_graph,
-			&model.compressed_block_graph,
-		] {
-			let mut graph_lock = graph.write().unwrap();
-			let mut working_copy = graph_lock.clone();
-			total_delta_pos += working_copy.run_layout_iterations(iterations, params);
-			*graph_lock = working_copy;
+		match model.run_layout_iterations() {
+			LayoutMadeProgress::YesALot | LayoutMadeProgress::YesALittle => {}
+			LayoutMadeProgress::NoJustTiny => blocking = true,
 		}
-		updates_per_second = timer.elapsed().as_secs_f64().recip();
-		if total_delta_pos < 0.1 {
-			updates_per_second = 0.0;
-			blocking = true;
-		}
-		soon_blocking = total_delta_pos < 100.0;
 
 		if let Some(ctx) = gui_context.as_ref() {
 			ctx.request_repaint();

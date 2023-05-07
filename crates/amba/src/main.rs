@@ -7,11 +7,12 @@ use std::{
 };
 
 use chrono::offset::Local;
+use model::Model;
 use rand::{distributions::Alphanumeric, Rng};
 use recipe::{Recipe, RecipeError};
 use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 
-use crate::{cmd::Cmd, gui::Model};
+use crate::cmd::Cmd;
 
 mod cmd;
 mod gui;
@@ -126,12 +127,11 @@ fn main() -> ExitCode {
 					(run::control::Controller {
 						tx,
 						rx,
-						model: Arc::new(Model::new()),
 						gui_context: None,
 						qemu_pid: None,
 						embedder_tx: None,
 					})
-					.run(cmd, &config)
+					.run(cmd, &config, Arc::new(Model::new()))
 				})
 			} else {
 				SessionConfig::new(cmd, base, &args).and_then(|config| gui::run_gui(cmd, config))

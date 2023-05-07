@@ -20,6 +20,7 @@ glam = "0.23"
 graphui = { path = "../graphui" }
 include_dir = "0.7"
 ipc = { path = "../ipc" }
+model = { path = "../model" }
 nix = "0.26"
 qmp-client = { path = "../qmp-client" }
 rand = "0.8"

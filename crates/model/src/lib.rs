@@ -1,14 +1,15 @@
 use std::{
-	mem,
+	fmt, mem,
 	ops::BitOrAssign,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
 	time::Instant,
 };
 
 use arrayvec::ArrayVec;
-use data_structures::ControlFlowGraph;
+use data_structures::{ControlFlowGraph, SmallU64Set};
 use graphui::{EmbeddingParameters, Graph2D};
 use ipc::{CompressedBasicBlock, NodeMetadata};
+use smallvec::SmallVec;
 
 /// An `Arc<Model>` is shared between the AMBA gui and embedder threads.
 pub struct Model {
@@ -42,12 +43,6 @@ impl Model {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	) {
-		let params = {
-			let mut params: EmbeddingParameters = *self.embedding_parameters.lock().unwrap();
-			const INITIAL_NOISE: f64 = 0.1;
-			params.noise = INITIAL_NOISE;
-			params
-		};
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
 		{
@@ -97,13 +92,14 @@ impl Model {
 
 		let timer = Instant::now();
 		let mut total_delta_pos = 0.0;
+		const SUBSTEPS: usize = 100;
 		for graph in [
 			&self.raw_state_graph,
 			&self.raw_block_graph,
 			&self.compressed_block_graph,
 		] {
 			let mut working_copy: Graph2D = graph.read().unwrap().clone();
-			total_delta_pos += working_copy.run_layout_iterations(100, params);
+			total_delta_pos += working_copy.run_layout_iterations(SUBSTEPS, params);
 			*graph.write().unwrap() = working_copy;
 		}
 		let (ret, updates_per_second, enable_repulsion_approximation) = if total_delta_pos < 0.1 {
@@ -124,8 +120,8 @@ impl Model {
 
 		mem::drop(mutex);
 		{
-			let params = self.embedding_parameters.lock().unwrap();
-			params.statistic_updates_per_second = updates_per_second;
+			let mut params = self.embedding_parameters.lock().unwrap();
+			params.statistic_updates_per_second = SUBSTEPS as f64 * updates_per_second;
 			params.enable_repulsion_approximation = enable_repulsion_approximation;
 		}
 		ret
@@ -138,16 +134,55 @@ impl Model {
 			GraphToView::State => self.raw_state_graph.read().unwrap(),
 		}
 	}
+
+	pub fn gui_lock_params(&self) -> MutexGuard<'_, EmbeddingParameters> {
+		self.embedding_parameters.lock().unwrap()
+	}
+
+	pub fn gui_get_node_description(&self, graph: GraphToView, node_index: usize) -> String {
+		let metadata = match graph {
+			GraphToView::RawBlock => {
+				self.block_control_flow.read().unwrap().metadata[node_index].clone()
+			}
+			GraphToView::CompressedBlock => {
+				// Cloned because even the immutable get requires a mutable reference
+				let mut cfg = self.block_control_flow.write().unwrap();
+				let nodes = cfg
+					.compressed_graph
+					.get(node_index as u64)
+					.map(|x| x.of.clone())
+					.unwrap();
+
+				merge_nodes_into_single_metadata(&nodes, &cfg)
+			}
+			GraphToView::State => {
+				self.state_control_flow.read().unwrap().metadata[node_index].clone()
+			}
+		};
+
+		format!("{}: {:#?}", node_index, metadata)
+	}
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum GraphToView {
 	RawBlock,
 	CompressedBlock,
 	State,
 }
 
-#[derive(Debug, PartialEq)]
+impl fmt::Display for GraphToView {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let s = match self {
+			GraphToView::RawBlock => "Raw Basic Block Graph",
+			GraphToView::CompressedBlock => "Compressed Block Graph",
+			GraphToView::State => "State Graph",
+		};
+		f.write_str(s)
+	}
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LayoutMadeProgress {
 	YesALot,
 	YesALittle,
@@ -155,7 +190,7 @@ pub enum LayoutMadeProgress {
 }
 impl BitOrAssign for LayoutMadeProgress {
 	fn bitor_assign(&mut self, rhs: Self) {
-		match (self, rhs) {
+		match (&self, &rhs) {
 			(Self::NoJustTiny, _) => *self = rhs,
 			(Self::YesALittle, Self::YesALot) => *self = Self::YesALot,
 			(..) => {}
@@ -242,4 +277,39 @@ impl LodText {
 		}
 		""
 	}
+}
+
+fn merge_nodes_into_single_metadata(nodes: &SmallU64Set, cfg: &ControlFlowGraph) -> NodeMetadata {
+	let mut symbolic_state_ids = SmallVec::new();
+	let mut basic_block_vaddrs = SmallVec::new();
+	let mut basic_block_generations = SmallVec::new();
+	let mut basic_block_elf_vaddrs = SmallVec::new();
+	let mut basic_block_contents = SmallVec::new();
+
+	for metadata in nodes.iter().map(|i| &cfg.metadata[*i as usize]) {
+		if let NodeMetadata::BasicBlock {
+			symbolic_state_id,
+			basic_block_vaddr,
+			basic_block_generation,
+			basic_block_elf_vaddr,
+			basic_block_content,
+		} = metadata
+		{
+			symbolic_state_ids.push(*symbolic_state_id);
+			basic_block_vaddrs.push(*basic_block_vaddr);
+			basic_block_generations.push(*basic_block_generation);
+			basic_block_elf_vaddrs.push(*basic_block_elf_vaddr);
+			basic_block_contents.push(basic_block_content.clone());
+		} else {
+			panic!("Basic block graph contained non-basic-block metadata")
+		};
+	}
+
+	NodeMetadata::CompressedBasicBlock(Box::new(CompressedBasicBlock {
+		symbolic_state_ids,
+		basic_block_vaddrs,
+		basic_block_generations,
+		basic_block_elf_vaddrs,
+		basic_block_contents,
+	}))
 }
