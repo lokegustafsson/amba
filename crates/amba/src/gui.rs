@@ -156,6 +156,7 @@ impl App for Gui {
 		if let Some(active) = self.graph_widget.active_node_id() {
 			egui::TopBottomPanel::bottom("bottom-panel")
 				.resizable(true)
+				.default_height(ctx.screen_rect().height() * 0.3)
 				.max_height(ctx.screen_rect().height() * 0.6)
 				.show(ctx, |ui| {
 					egui::ScrollArea::vertical()
