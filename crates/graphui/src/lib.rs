@@ -262,7 +262,7 @@ fn draw_graph(
 				style_selection,
 				pos,
 				node_size[i],
-				if node_has_self_edge[i] { "↺" } else { "A" },
+				&graph.node_lod_texts[i],
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);
@@ -296,14 +296,13 @@ fn draw_node(
 	style_selection: &egui::style::Selection,
 	pos: egui::Pos2,
 	node_width: f32,
-	text: &str,
+	text: &LodText,
 	selected: bool,
 	offset: Vec2,
 ) -> Response {
 	let rect =
 		Rect::from_center_size(pos, egui::Vec2::new(node_width, node_width)).translate(offset);
 	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
-	let lod_cutoff = 0.7 * ui.style().spacing.interact_size.y;
 	let rounding = node_width / 5.0;
 	let (bg_color, stroke) = if selected {
 		(style_selection.bg_fill, style_selection.stroke)
@@ -313,9 +312,15 @@ fn draw_node(
 			style_widgets.hovered.bg_stroke,
 		)
 	};
+	let lod_text = {
+		let font_height = ui.text_style_height(&egui::style::TextStyle::Small);
+		let height = (node_width / font_height) as u32;
+		let width = (2.0 * node_width / font_height) as u32;
+		text.get_given_available_square(width, height)
+	};
 
 	ui.put(rect, move |ui: &mut Ui| {
-		if node_width < lod_cutoff {
+		if lod_text.is_empty() {
 			ui.painter().rect_filled(rect, rounding, bg_color);
 			ui.painter().rect_stroke(rect, rounding, stroke);
 		} else {
@@ -324,7 +329,7 @@ fn draw_node(
 				.fill(bg_color)
 				.stroke(stroke)
 				.show(ui, |ui| {
-					ui.label(egui::RichText::new(text).small());
+					ui.label(egui::RichText::new(lod_text).small());
 				});
 		}
 		resp
