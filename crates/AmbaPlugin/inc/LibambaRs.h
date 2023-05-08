@@ -1,11 +1,17 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "Numbers.h"
 
 struct IpcTx;
 struct IpcRx;
+
+struct IpcPair {
+	IpcTx *tx;
+	IpcRx *rx;
+};
 
 struct NodeMetadataFFI {
 	u32 metadata_type;
@@ -22,8 +28,8 @@ struct NodeMetadataFFIPair {
 };
 
 extern "C" {
-	IpcTx *rust_new_ipc();
-	void rust_free_ipc(IpcTx *ptr);
+	IpcPair rust_new_ipc();
+	void rust_free_ipc(IpcPair *ptr);
 	void rust_ipc_send_edges(
 		IpcTx *ipc,
 		const NodeMetadataFFIPair *state_data,

@@ -6,6 +6,7 @@
 #include "Numbers.h"
 #include "AssemblyGraph.h"
 #include "SymbolicGraph.h"
+#include "LibambaRs.h"
 
 namespace s2e {
 namespace plugins {
@@ -27,7 +28,7 @@ class AmbaPlugin : public Plugin {
 	amba::TimerFunction onEngineShutdown;
 
   protected:
-	IpcTx *const m_ipc;
+	const IpcPair m_ipc;
 	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;

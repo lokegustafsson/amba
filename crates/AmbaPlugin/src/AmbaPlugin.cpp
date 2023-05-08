@@ -224,7 +224,7 @@ void AmbaPlugin::onTimer() {
 	auto &symbolic_edges = this->m_symbolic_graph.edges();
 	auto &assembly_edges = this->m_assembly_graph.edges();
 	rust_ipc_send_edges(
-		this->m_ipc,
+		this->m_ipc.tx,
 		symbolic_edges.data(),
 		(u64) symbolic_edges.size(),
 		assembly_edges.data(),

@@ -2,26 +2,34 @@
 
 use std::{os::unix::net::UnixStream, slice, sync::Mutex};
 
-use ipc::IpcTx;
-
 use crate::node_metadata::NodeMetadataFFIPair;
+use ipc::{IpcRx, IpcTx};
 
-#[no_mangle]
-pub extern "C" fn rust_new_ipc<'a>() -> *mut Mutex<IpcTx<'a>> {
-	let ipc = match UnixStream::connect("amba-ipc.socket") {
-		Ok(stream) => {
-			let stream = Box::leak(Box::new(stream));
-			let (tx, _rx) = ipc::new_wrapping(&*stream);
-			tx
-		}
-		Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
-	};
-	Box::into_raw(Box::new(Mutex::new(ipc)))
+#[repr(C)]
+pub struct IpcPair<'a> {
+	tx: *mut Mutex<IpcTx<'a>>,
+	rx: *mut Mutex<IpcRx<'a>>,
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn rust_free_ipc(ptr: *mut Mutex<IpcTx<'_>>) {
-	let _ = Box::from_raw(ptr);
+pub extern "C" fn rust_new_ipc<'a>() -> IpcPair<'a> {
+	let (tx, rx) = match UnixStream::connect("amba-ipc.socket") {
+		Ok(stream) => {
+			let stream = Box::leak(Box::new(stream));
+			ipc::new_wrapping(&*stream)
+		}
+		Err(err) => panic!("libamba failed to connect to IPC socket: {err:?}"),
+	};
+	IpcPair {
+		tx: Box::into_raw(Box::new(Mutex::new(tx))),
+		rx: Box::into_raw(Box::new(Mutex::new(rx))),
+	}
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rust_free_ipc(ptr: IpcPair<'_>) {
+	let _ = Box::from_raw(ptr.tx);
+	let _ = Box::from_raw(ptr.rx);
 }
 
 #[no_mangle]
