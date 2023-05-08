@@ -11,7 +11,8 @@ void ipcReceiver(
 	bool *active,
 	s2e::S2E *s2e,
 	std::mutex *dead_states_lock,
-	std::unordered_set<i32> *dead_states
+	std::unordered_set<i32> *dead_states,
+	std::mutex *searcher_lock
 );
 
 }

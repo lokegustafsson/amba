@@ -141,7 +141,8 @@ void AmbaPlugin::initialize() {
 			&self->m_alive,
 			self->s2e(),
 			&self->m_dead_states_lock,
-			&self->m_dead_states
+			&self->m_dead_states,
+			&self->m_searcher_lock
 		);
 	});
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
@@ -152,6 +153,18 @@ void AmbaPlugin::onStateKill(S2EExecutionState *state) {
 	this->m_dead_states_lock.lock();
 	this->m_dead_states.insert(state->getGuid());
 	this->m_dead_states_lock.unlock();
+
+	auto &s2e = *this->s2e();
+	auto &executor = *s2e.getExecutor();
+
+	const size_t state_count = executor.getStatesCount();
+	if (state_count == 0) {
+		this->m_searcher_lock.lock();
+		auto old_searcher = executor.getSearcher();
+		executor.setSearcher(new klee::DFSSearcher());
+		delete old_searcher;
+		this->m_searcher_lock.unlock();
+	}
 }
 
 void AmbaPlugin::translateInstructionStart(

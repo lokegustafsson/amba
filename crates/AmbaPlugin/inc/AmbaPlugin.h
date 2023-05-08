@@ -43,6 +43,7 @@ class AmbaPlugin : public Plugin {
 
 	std::mutex m_dead_states_lock;
 	std::unordered_set<i32> m_dead_states;
+	std::mutex m_searcher_lock;
 	std::jthread m_ipc_receiver_thread;
 	heap_leak::HeapLeak m_heap_leak;
 	assembly_graph::AssemblyGraph m_assembly_graph;
