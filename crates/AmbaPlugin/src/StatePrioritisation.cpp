@@ -15,8 +15,8 @@
 
 namespace state_prioritisation {
 
-// These pointers are not a race condition because the thread has to
-// join before the AmbaPlugin fields can be destructed
+// These pointers are guaranteed to live long enough due to this
+// thread being owned by the same object as owns this thread
 void ipcReceiver(
 	Ipc *ipc,
 	std::atomic<bool> *active,
