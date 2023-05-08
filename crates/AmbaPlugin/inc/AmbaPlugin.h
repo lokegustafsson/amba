@@ -3,6 +3,7 @@
 #include <memory>
 #include <s2e/S2EExecutionState.h>
 
+#include <atomic>
 #include <thread>
 #include <mutex>
 
@@ -39,7 +40,7 @@ class AmbaPlugin : public Plugin {
 	ModuleMap *m_modules = nullptr;
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;
-	bool m_alive = true;
+	std::atomic<bool> m_alive = true;
 
 	std::mutex m_dead_states_lock;
 	std::unordered_set<i32> m_dead_states;

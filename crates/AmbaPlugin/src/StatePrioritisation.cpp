@@ -7,6 +7,7 @@
 #include <tuple>
 #include <vector>
 #include <unordered_set>
+#include <atomic>
 
 #include "StatePrioritisation.h"
 #include "Amba.h"
@@ -18,7 +19,7 @@ namespace state_prioritisation {
 // join before the AmbaPlugin fields can be destructed
 void ipcReceiver(
 	Ipc *ipc,
-	bool *active,
+	std::atomic<bool> *active,
 	s2e::S2E *s2e,
 	std::mutex *dead_states_lock,
 	std::unordered_set<i32> *dead_states,
