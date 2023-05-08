@@ -13,8 +13,6 @@ pub struct Graph2D {
 	pub(crate) edges: Vec<(usize, usize)>,
 	pub(crate) min: DVec2,
 	pub(crate) max: DVec2,
-	pub(crate) gui_zoom: f32,
-	pub(crate) gui_pos: emath::Vec2,
 }
 
 impl Default for Graph2D {
@@ -61,8 +59,6 @@ impl Graph2D {
 			edges: Vec::new(),
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
-			gui_zoom: 1.0,
-			gui_pos: emath::Vec2::ZERO,
 		}
 	}
 
@@ -96,8 +92,6 @@ impl Graph2D {
 			edges,
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
-			gui_zoom: 1.0,
-			gui_pos: emath::Vec2::ZERO,
 		}
 	}
 
@@ -216,8 +210,6 @@ impl Graph2D {
 						edges: mem::take(&mut self.edges),
 						min: DVec2::ZERO,
 						max: DVec2::ZERO,
-						gui_zoom: 1.0,
-						gui_pos: emath::Vec2::ZERO,
 					};
 					return f64::INFINITY;
 				}
