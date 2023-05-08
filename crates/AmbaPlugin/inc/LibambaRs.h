@@ -4,7 +4,6 @@
 
 #include "Numbers.h"
 
-struct ControlFlowGraph;
 struct IpcTx;
 struct IpcRx;
 
