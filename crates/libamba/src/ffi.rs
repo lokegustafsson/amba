@@ -59,6 +59,10 @@ pub unsafe extern "C" fn rust_ipc_receive_message(
 	let (ipc_rx, _) = lock.get_rx_tx();
 	let message = match ipc_rx.polling_receive() {
 		Ok(m) => m,
+		Err(ipc::IpcError::EndOfFile) => {
+			println!("GUI has shut down");
+			return false;
+		},
 		Err(err) => panic!("{err:?}"),
 	};
 	let res = match message {
