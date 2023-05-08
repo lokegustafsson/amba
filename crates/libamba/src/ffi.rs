@@ -1,6 +1,6 @@
 #![allow(unsafe_code, clippy::missing_safety_doc)]
 
-use std::{os::unix::net::UnixStream, pin::Pin, slice, sync::Mutex};
+use std::{pin::Pin, slice, sync::Mutex};
 
 use ipc::{IpcInstance, IpcMessage};
 
