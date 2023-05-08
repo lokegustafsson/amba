@@ -25,7 +25,8 @@ pub struct Model {
 	raw_block_graph: RwLock<Graph2D>,
 	compressed_block_graph: RwLock<Graph2D>,
 	embedding_parameters: Mutex<EmbeddingParameters>,
-	/// Model supports mixed read/write, but only by a single writer EXCLUDING `embedding_parameters` that can be written to by anyone.
+	/// Model supports mixed read/write, but only by a single writer.
+	/// EXCLUDING `embedding_parameters` that can be written to by anyone.
 	modelwide_single_writer_lock: Mutex<()>,
 }
 
