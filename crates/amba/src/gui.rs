@@ -1,6 +1,6 @@
 use std::{
-	fmt, mem,
-	sync::{mpsc, Arc, Mutex, RwLock},
+	mem,
+	sync::{mpsc, Arc},
 	thread,
 };
 
