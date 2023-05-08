@@ -1,12 +1,12 @@
+#include <s2e/S2E.h>
+#include <s2e/S2EExecutionState.h>
+#include <klee/Searcher.h>
+
 #include <thread>
 #include <chrono>
 #include <tuple>
 #include <vector>
 #include <unordered_set>
-
-#include <s2e/S2E.h>
-#include <s2e/S2EExecutionState.h>
-#include <klee/Searcher.h>
 
 #include "StatePrioritisation.h"
 #include "Amba.h"
