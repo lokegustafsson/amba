@@ -212,10 +212,7 @@ fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
 		}
 		NodeMetadata::BasicBlock {
 			symbolic_state_id: state,
-			basic_block_vaddr,
-			basic_block_generation,
-			basic_block_elf_vaddr,
-			basic_block_content,
+			..
 		} => {
 			ret.coarser(format!("{state}{marker}\nfunctionname+addr2line"));
 			ret.coarser(format!("{state}{marker}\nfunctionname"));
@@ -224,10 +221,7 @@ fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
 		NodeMetadata::CompressedBasicBlock(boxed) => {
 			let CompressedBasicBlock {
 				symbolic_state_ids,
-				basic_block_vaddrs,
-				basic_block_generations,
-				basic_block_elf_vaddrs,
-				basic_block_contents,
+				..
 			} = &**boxed;
 			assert!(!symbolic_state_ids.is_empty());
 			let state_first = symbolic_state_ids.first().unwrap();
