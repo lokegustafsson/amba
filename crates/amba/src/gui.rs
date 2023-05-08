@@ -1,5 +1,6 @@
 use std::{
-	sync::{mpsc, Arc},
+	fmt, mem,
+	sync::{mpsc, Arc, Mutex, RwLock},
 	thread,
 };
 
@@ -121,8 +122,7 @@ impl App for Gui {
 
 		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, &graph));
 
-		if let Some(new_priority) = self.graph_widget.new_priority_node {
-			self.graph_widget.new_priority_node = None;
+		if let Some(new_priority) = mem::take(&mut self.graph_widget.new_priority_node) {
 			self.controller_tx
 				.send(ControllerMsg::NewPriority(new_priority))
 				.unwrap();

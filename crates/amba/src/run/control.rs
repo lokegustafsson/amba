@@ -10,10 +10,9 @@ use std::{
 	thread::{self, ScopedJoinHandle},
 };
 
-use data_structures::ControlFlowGraph;
 use eframe::egui::Context;
 use ipc::{IpcInstance, IpcTx, NodeMetadata};
-use model::Model;
+use model::{Model, ControlFlowGraph};
 
 use crate::{
 	cmd::Cmd,
@@ -93,13 +92,14 @@ impl Controller {
 					runners::run_qmp(qmp_socket, controller_tx_from_qmp)
 				})
 				.unwrap();
+			let embedder_model = model.clone();
 			let embedder = thread::Builder::new()
 				.name("embedder".to_owned())
 				.spawn_scoped(s, move || {
-					embed::run_embedder(&*model, embedder_rx, embedder_gui_context)
+					embed::run_embedder(&embedder_model, embedder_rx, embedder_gui_context)
 				})
 				.unwrap();
-			self.run_controller(ipc_tx);
+			self.run_controller(ipc_tx, model);
 			self.shutdown_controller(ipc_socket, ipc, qemu, qmp, embedder)
 		});
 		cmd.try_remove(ipc_socket);
@@ -107,7 +107,7 @@ impl Controller {
 		res
 	}
 
-	fn run_controller(&mut self, mut ipc_tx: IpcTx) {
+	fn run_controller(&mut self, mut ipc_tx: IpcTx, model: Arc<Model>) {
 		loop {
 			match self.rx.recv().unwrap() {
 				ControllerMsg::GuiShutdown => return,
@@ -147,7 +147,7 @@ impl Controller {
 						}
 					}
 
-					let state_cfg = self.model.state_control_flow.read().unwrap();
+					let state_cfg = model.state_control_flow.read().unwrap();
 					let mut states_set = BTreeSet::new();
 					get_neighbours(prio as u64, &state_cfg, &mut states_set);
 					let states = states_set.into_iter().collect();

@@ -9,7 +9,7 @@ use std::{
 use graphui::{EmbeddingParameters, Graph2D, LodText};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
-use crate::control_flow::ControlFlowGraph;
+pub use crate::control_flow::ControlFlowGraph;
 
 mod control_flow;
 
@@ -18,7 +18,7 @@ pub struct Model {
 	// TODO: For every graph: the graph, the graph2d, the rendered node metadata
 	// (controlflowgraph because we must support incremental edge adding)
 	block_control_flow: RwLock<ControlFlowGraph>,
-	state_control_flow: RwLock<ControlFlowGraph>,
+	pub state_control_flow: RwLock<ControlFlowGraph>,
 	raw_state_graph: RwLock<Graph2D>,
 	raw_block_graph: RwLock<Graph2D>,
 	compressed_block_graph: RwLock<Graph2D>,
@@ -205,7 +205,10 @@ fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
 	let marker = if has_self_edge { "↺" } else { "" };
 
 	match metadata {
-		NodeMetadata::State { amba_state_id , s2e_state_id} => {
+		NodeMetadata::State {
+			amba_state_id,
+			s2e_state_id,
+		} => {
 			ret.coarser(format!("{amba_state_id} ({s2e_state_id})"));
 		}
 		NodeMetadata::BasicBlock {
