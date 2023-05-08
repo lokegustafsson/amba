@@ -1,5 +1,4 @@
 use std::{
-	collections::BTreeSet,
 	fmt, mem,
 	ops::BitOrAssign,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
