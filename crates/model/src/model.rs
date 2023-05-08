@@ -218,8 +218,7 @@ fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
 		}
 		NodeMetadata::CompressedBasicBlock(boxed) => {
 			let CompressedBasicBlock {
-				symbolic_state_ids,
-				..
+				symbolic_state_ids, ..
 			} = &**boxed;
 			assert!(!symbolic_state_ids.is_empty());
 			let state_first = symbolic_state_ids.first().unwrap();

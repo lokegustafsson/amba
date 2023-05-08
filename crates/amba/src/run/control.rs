@@ -12,7 +12,7 @@ use std::{
 
 use eframe::egui::Context;
 use ipc::{IpcInstance, IpcTx, NodeMetadata};
-use model::{Model, ControlFlowGraph};
+use model::{ControlFlowGraph, Model};
 
 use crate::{
 	cmd::Cmd,
