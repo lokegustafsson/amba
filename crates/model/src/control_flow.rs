@@ -137,11 +137,14 @@ impl ControlFlowGraph {
 			}) as u64
 	}
 
-	pub fn get_raw_metadata_and_sequential_edges(
+	pub fn get_raw_metadata_and_selfedge_and_sequential_edges(
 		&self,
-	) -> (Vec<NodeMetadata>, Vec<(usize, usize)>) {
+	) -> (Vec<NodeMetadata>, Vec<bool>, Vec<(usize, usize)>) {
 		(
 			self.metadata.clone(),
+			(0..(self.metadata.len() as u64))
+				.map(|idx| self.graph.nodes[&idx].to.contains(&idx))
+				.collect(),
 			self.graph
 				.edges()
 				.map(|(from, to)| (from as usize, to as usize))
@@ -149,9 +152,9 @@ impl ControlFlowGraph {
 		)
 	}
 
-	pub fn get_compressed_metadata_and_sequential_edges(
+	pub fn get_compressed_metadata_and_selfedge_and_sequential_edges(
 		&self,
-	) -> (Vec<NodeMetadata>, Vec<(usize, usize)>) {
+	) -> (Vec<NodeMetadata>, Vec<bool>, Vec<(usize, usize)>) {
 		// NOTE: Iterating in increasing-id-order over `self.nodes` is crucial for
 		// correctness (here guaranteed by BTreeMap).
 		let node_id_renamings = self
@@ -175,6 +178,11 @@ impl ControlFlowGraph {
 							.map(|component_node| &self.metadata[*component_node as usize]),
 					)
 				})
+				.collect(),
+			self.compressed_graph
+				.nodes
+				.iter()
+				.map(|(id, node)| node.to.contains(id))
 				.collect(),
 			self.compressed_graph
 				.edges()

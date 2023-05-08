@@ -48,6 +48,8 @@ impl Model {
 	) {
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
+		let new_lod_text = |(metadata, self_edge)| new_lod_text_impl(&metadata, self_edge);
+
 		{
 			let mut block_control_flow = self.block_control_flow.write().unwrap();
 			for (from, to) in block_edges.into_iter() {
@@ -58,16 +60,23 @@ impl Model {
 				.write()
 				.unwrap()
 				.seeded_replace_self_with({
-					let (nodes, edges) = block_control_flow.get_raw_metadata_and_sequential_edges();
-					(nodes.iter().map(new_lod_text).collect(), edges)
+					let (nodes, self_edge, edges) =
+						block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+					(
+						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						edges,
+					)
 				});
 			self.compressed_block_graph
 				.write()
 				.unwrap()
 				.seeded_replace_self_with({
-					let (nodes, edges) =
-						block_control_flow.get_compressed_metadata_and_sequential_edges();
-					(nodes.iter().map(new_lod_text).collect(), edges)
+					let (nodes, self_edge, edges) = block_control_flow
+						.get_compressed_metadata_and_selfedge_and_sequential_edges();
+					(
+						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						edges,
+					)
 				});
 		}
 
@@ -81,8 +90,12 @@ impl Model {
 				.write()
 				.unwrap()
 				.seeded_replace_self_with({
-					let (nodes, edges) = state_control_flow.get_raw_metadata_and_sequential_edges();
-					(nodes.iter().map(new_lod_text).collect(), edges)
+					let (nodes, self_edge, edges) =
+						state_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+					(
+						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						edges,
+					)
 				});
 		}
 		mem::drop(mutex);
@@ -187,8 +200,10 @@ impl BitOrAssign for LayoutMadeProgress {
 	}
 }
 
-fn new_lod_text(metadata: &NodeMetadata) -> LodText {
+fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
 	let mut ret = LodText::new();
+	let marker = if has_self_edge { "↺" } else { "" };
+
 	match metadata {
 		NodeMetadata::State { symbolic_state_id } => {
 			ret.coarser(symbolic_state_id.to_string());
@@ -200,9 +215,9 @@ fn new_lod_text(metadata: &NodeMetadata) -> LodText {
 			basic_block_elf_vaddr,
 			basic_block_content,
 		} => {
-			ret.coarser(format!("{state}\nfunctionname+addr2line"));
-			ret.coarser(format!("{state}\nfunctionname"));
-			ret.coarser(format!("{state}"));
+			ret.coarser(format!("{state}{marker}\nfunctionname+addr2line"));
+			ret.coarser(format!("{state}{marker}\nfunctionname"));
+			ret.coarser(format!("{state}{marker}"));
 		}
 		NodeMetadata::CompressedBasicBlock(boxed) => {
 			let CompressedBasicBlock {
@@ -216,17 +231,19 @@ fn new_lod_text(metadata: &NodeMetadata) -> LodText {
 			let state_first = symbolic_state_ids.first().unwrap();
 			let state_last = symbolic_state_ids.last().unwrap();
 			if state_first == state_last {
-				ret.coarser(format!("{state_first}\nfunctionname+addr2line"));
-				ret.coarser(format!("{state_first}\nfunctionname"));
-				ret.coarser(format!("{state_first}"));
+				ret.coarser(format!(
+					"{state_first}{marker}\nfunctionname+addr2line"
+				));
+				ret.coarser(format!("{state_first}{marker}\nfunctionname"));
+				ret.coarser(format!("{state_first}{marker}"));
 			} else {
 				ret.coarser(format!(
-					"{state_first}-{state_last}\nfunctionname+addr2line"
+					"{state_first}-{state_last}{marker}\nfunctionname+addr2line"
 				));
 				ret.coarser(format!(
-					"{state_first}-{state_last}\nfunctionname"
+					"{state_first}-{state_last}{marker}\nfunctionname"
 				));
-				ret.coarser(format!("{state_first}-{state_last}"));
+				ret.coarser(format!("{state_first}-{state_last}{marker}"));
 			}
 		}
 	}
