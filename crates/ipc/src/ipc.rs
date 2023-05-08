@@ -48,13 +48,8 @@ impl IpcInstance {
 		let ipc_listener = UnixListener::bind(socket).unwrap();
 		let stream = IoArc::new(ipc_listener.accept().unwrap().0);
 
-		let reader = {
-			let rx = BufReader::new(stream.clone());
-			rx.get_ref()
-				.as_ref()
-				.set_read_timeout(Some(Duration::from_nanos(1)))
-				.unwrap();
-			IpcRx { rx }
+		let reader = IpcRx {
+			rx: BufReader::new(stream.clone()),
 		};
 
 		let writer = IpcTx {
@@ -108,28 +103,22 @@ impl Drop for IpcRx {
 
 impl IpcRx {
 	pub fn blocking_receive(&mut self) -> Result<IpcMessage, IpcError> {
+		// Set timeout behaviour
 		self.rx.get_ref().as_ref().set_read_timeout(None).unwrap();
-		let ret = (|| {
-			let size = {
-				let mut size = [0u8; mem::size_of::<u64>()];
-				self.rx.read_exact(&mut size)?;
-				u64::from_le_bytes(size)
-			};
-			bincode::deserialize_from((&mut self.rx).take(size)).map_err(Into::into)
-		})();
-		self.rx
-			.get_ref()
-			.as_ref()
-			.set_read_timeout(Some(Duration::from_nanos(1)))
-			.unwrap();
-		ret
+
+		let size = {
+			let mut size = [0u8; mem::size_of::<u64>()];
+			self.rx.read_exact(&mut size)?;
+			u64::from_le_bytes(size)
+		};
+		bincode::deserialize_from((&mut self.rx).take(size)).map_err(Into::into)
 	}
 
 	/// Breaks when receiving the following, recover by calling `blocking_receive`:
 	/// * An incomplete packet (`IpcError::PollingReceiveFragmented`)
 	/// * An packet larger than the buffer size (`IpcError::PollingReceiveTooLarge`)
 	pub fn polling_receive(&mut self) -> Result<Option<IpcMessage>, IpcError> {
-		let old_timeout = self.rx.get_ref().as_ref().read_timeout().unwrap();
+		// Set timeout behaviour
 		self.rx
 			.get_ref()
 			.as_ref()
@@ -137,7 +126,7 @@ impl IpcRx {
 			.unwrap();
 
 		let buf_capacity = self.rx.capacity();
-		let res = match self.rx.fill_buf() {
+		match self.rx.fill_buf() {
 			Err(err)
 				if matches!(
 					err.kind(),
@@ -166,15 +155,7 @@ impl IpcRx {
 				self.rx.consume(packet_size);
 				Ok(Some(ret))
 			}
-		};
-
-		self.rx
-			.get_ref()
-			.as_ref()
-			.set_read_timeout(old_timeout)
-			.unwrap();
-
-		res
+		}
 	}
 }
 
