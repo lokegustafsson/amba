@@ -2,8 +2,10 @@ use egui::{self, Rect, Response, Sense, Ui, Widget};
 use emath::Vec2;
 
 mod embed;
+mod lod;
 
 pub use embed::{EmbeddingParameters, Graph2D};
+pub use lod::LodText;
 
 impl Widget for &mut EmbeddingParameters {
 	fn ui(self, ui: &mut Ui) -> Response {

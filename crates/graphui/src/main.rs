@@ -4,7 +4,7 @@ use std::{
 	time::Instant,
 };
 
-use graphui::{EmbeddingParameters, Graph2D, GraphWidget};
+use graphui::{EmbeddingParameters, Graph2D, GraphWidget, LodText};
 use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
 mod example_graph;
@@ -47,7 +47,16 @@ fn main() {
 	let params = Arc::new(Mutex::new(EmbeddingParameters::default()));
 	let graph = Arc::new(RwLock::new({
 		let (node_count, edges) = example_graph::example_node_count_and_edges();
-		Graph2D::new(node_count, edges)
+		Graph2D::new(
+			(0..node_count)
+				.map(|i| {
+					let mut ret = LodText::new();
+					ret.coarser(i.to_string());
+					ret
+				})
+				.collect(),
+			edges,
+		)
 	}));
 
 	let worker_params = Arc::clone(&params);

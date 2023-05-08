@@ -332,6 +332,8 @@ impl Graph {
 	}
 
 	pub fn edge_list_sequentially_renamed(&self) -> Vec<(usize, usize)> {
+		// NOTE: Iterating in increasing-id-order over `self.nodes` is crucial for
+		// correctness (here guaranteed by BTreeMap).
 		let node_id_renamings = self
 			.nodes
 			.keys()

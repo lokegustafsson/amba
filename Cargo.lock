@@ -1444,6 +1444,7 @@ dependencies = [
 name = "graphui"
 version = "0.1.0"
 dependencies = [
+ "arrayvec",
  "eframe",
  "egui",
  "emath",
@@ -2039,7 +2040,6 @@ dependencies = [
 name = "model"
 version = "0.1.0"
 dependencies = [
- "arrayvec",
  "data-structures",
  "graphui",
  "ipc",

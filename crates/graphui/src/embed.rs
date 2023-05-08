@@ -4,14 +4,17 @@ use fastrand::Rng;
 use glam::DVec2;
 use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
+use crate::LodText;
+
 #[derive(Clone, Debug)]
 pub struct Graph2D {
-	pub node_positions: Vec<DVec2>,
-	pub edges: Vec<(usize, usize)>,
-	pub min: DVec2,
-	pub max: DVec2,
-	pub gui_zoom: f32,
-	pub gui_pos: emath::Vec2,
+	pub(crate) node_positions: Vec<DVec2>,
+	pub(crate) node_lod_texts: Vec<LodText>,
+	pub(crate) edges: Vec<(usize, usize)>,
+	pub(crate) min: DVec2,
+	pub(crate) max: DVec2,
+	pub(crate) gui_zoom: f32,
+	pub(crate) gui_pos: emath::Vec2,
 }
 
 impl Default for Graph2D {
@@ -54,6 +57,7 @@ impl Graph2D {
 	pub fn empty() -> Self {
 		Self {
 			node_positions: Vec::new(),
+			node_lod_texts: Vec::new(),
 			edges: Vec::new(),
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
@@ -64,10 +68,14 @@ impl Graph2D {
 
 	/// Equivalent to `*self = Graph2D::new(node_count, edges)`, but with a better
 	/// initial layout guess.
-	pub fn seeded_replace_self_with(&mut self, node_count: usize, edges: Vec<(usize, usize)>) {
-		let old = mem::replace(self, Self::new(node_count, edges));
+	pub fn seeded_replace_self_with(
+		&mut self,
+		(nodes, edges): (Vec<LodText>, Vec<(usize, usize)>),
+	) {
+		let num_nodes = nodes.len();
+		let old = mem::replace(self, Self::new(nodes, edges));
 
-		let shared_count = usize::min(old.node_positions.len(), node_count);
+		let shared_count = usize::min(old.node_positions.len(), num_nodes);
 		self.node_positions[..shared_count].copy_from_slice(&old.node_positions[..shared_count]);
 
 		const INITIAL_NOISE: f64 = 0.1;
@@ -77,19 +85,24 @@ impl Graph2D {
 			.for_each(|pos| *pos += INITIAL_NOISE * random_dvec2(rng));
 	}
 
-	pub fn new(node_count: usize, edges: Vec<(usize, usize)>) -> Self {
-		if node_count == 0 {
+	pub fn new(nodes: Vec<LodText>, edges: Vec<(usize, usize)>) -> Self {
+		if nodes.len() == 0 {
 			return Self::empty();
 		}
 
 		Self {
-			node_positions: Self::initial_node_positions(node_count, &edges),
+			node_positions: Self::initial_node_positions(nodes.len(), &edges),
+			node_lod_texts: nodes,
 			edges,
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
 			gui_zoom: 1.0,
 			gui_pos: emath::Vec2::ZERO,
 		}
+	}
+
+	pub fn get_node_text(&self, node_id: usize) -> &str {
+		self.node_lod_texts[node_id].get_full()
 	}
 
 	fn initial_node_positions(node_count: usize, edges: &[(usize, usize)]) -> Vec<DVec2> {
@@ -199,6 +212,7 @@ impl Graph2D {
 							self.node_positions.len(),
 							&self.edges,
 						),
+						node_lod_texts: mem::take(&mut self.node_lod_texts),
 						edges: mem::take(&mut self.edges),
 						min: DVec2::ZERO,
 						max: DVec2::ZERO,

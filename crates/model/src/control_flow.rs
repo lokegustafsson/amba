@@ -5,7 +5,8 @@ use std::{
 };
 
 use data_structures::Graph;
-use ipc::NodeMetadata;
+use ipc::{CompressedBasicBlock, NodeMetadata};
+use smallvec::SmallVec;
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
@@ -16,7 +17,7 @@ pub struct ControlFlowGraph {
 	pub(crate) created_at: Instant,
 	pub(crate) rebuilding_time: Duration,
 	pub metadata: Vec<NodeMetadata>,
-	pub(crate) meta_mapping_unique_id_to_index: HashMap<NodeMetadata, usize>,
+	meta_mapping_unique_id_to_index: HashMap<NodeMetadata, usize>,
 }
 
 impl FromIterator<(NodeMetadata, NodeMetadata)> for ControlFlowGraph {
@@ -135,6 +136,89 @@ impl ControlFlowGraph {
 				seq_index
 			}) as u64
 	}
+
+	pub fn get_raw_metadata_and_sequential_edges(
+		&self,
+	) -> (Vec<NodeMetadata>, Vec<(usize, usize)>) {
+		(
+			self.metadata.clone(),
+			self.graph
+				.edges()
+				.map(|(from, to)| (from as usize, to as usize))
+				.collect(),
+		)
+	}
+
+	pub fn get_compressed_metadata_and_sequential_edges(
+		&self,
+	) -> (Vec<NodeMetadata>, Vec<(usize, usize)>) {
+		// NOTE: Iterating in increasing-id-order over `self.nodes` is crucial for
+		// correctness (here guaranteed by BTreeMap).
+		let node_id_renamings = self
+			.compressed_graph
+			.nodes
+			.keys()
+			.copied()
+			.enumerate()
+			.map(|(x, y)| (y, x))
+			.collect::<HashMap<_, _>>();
+		(
+			self.compressed_graph
+				.nodes
+				.iter()
+				.enumerate()
+				.map(|(i, (id, node))| {
+					assert_eq!(node_id_renamings[id], i);
+					merge_nodes_into_single_metadata(
+						node.of
+							.iter()
+							.map(|component_node| &self.metadata[*component_node as usize]),
+					)
+				})
+				.collect(),
+			self.compressed_graph
+				.edges()
+				.map(|(from, to)| (node_id_renamings[&from], node_id_renamings[&to]))
+				.collect(),
+		)
+	}
+}
+
+fn merge_nodes_into_single_metadata<'a>(
+	raw_nodes: impl Iterator<Item = &'a NodeMetadata>,
+) -> NodeMetadata {
+	let mut symbolic_state_ids = SmallVec::new();
+	let mut basic_block_vaddrs = SmallVec::new();
+	let mut basic_block_generations = SmallVec::new();
+	let mut basic_block_elf_vaddrs = SmallVec::new();
+	let mut basic_block_contents = SmallVec::new();
+
+	for metadata in raw_nodes {
+		if let NodeMetadata::BasicBlock {
+			symbolic_state_id,
+			basic_block_vaddr,
+			basic_block_generation,
+			basic_block_elf_vaddr,
+			basic_block_content,
+		} = metadata
+		{
+			symbolic_state_ids.push(*symbolic_state_id);
+			basic_block_vaddrs.push(*basic_block_vaddr);
+			basic_block_generations.push(*basic_block_generation);
+			basic_block_elf_vaddrs.push(*basic_block_elf_vaddr);
+			basic_block_contents.push(basic_block_content.clone());
+		} else {
+			panic!("Basic block graph contained non-basic-block metadata")
+		};
+	}
+
+	NodeMetadata::CompressedBasicBlock(Box::new(CompressedBasicBlock {
+		symbolic_state_ids,
+		basic_block_vaddrs,
+		basic_block_generations,
+		basic_block_elf_vaddrs,
+		basic_block_contents,
+	}))
 }
 
 #[cfg(test)]

@@ -1,15 +1,13 @@
 use std::{
+	collections::BTreeSet,
 	fmt, mem,
 	ops::BitOrAssign,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
 	time::Instant,
 };
 
-use arrayvec::ArrayVec;
-use data_structures::SmallU64Set;
-use graphui::{EmbeddingParameters, Graph2D};
+use graphui::{EmbeddingParameters, Graph2D, LodText};
 use ipc::{CompressedBasicBlock, NodeMetadata};
-use smallvec::SmallVec;
 
 use crate::control_flow::ControlFlowGraph;
 
@@ -59,19 +57,18 @@ impl Model {
 			self.raw_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(
-					block_control_flow.graph.len(),
-					block_control_flow.graph.edge_list_sequentially_renamed(),
-				);
+				.seeded_replace_self_with({
+					let (nodes, edges) = block_control_flow.get_raw_metadata_and_sequential_edges();
+					(nodes.iter().map(new_lod_text).collect(), edges)
+				});
 			self.compressed_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(
-					block_control_flow.compressed_graph.len(),
-					block_control_flow
-						.compressed_graph
-						.edge_list_sequentially_renamed(),
-				);
+				.seeded_replace_self_with({
+					let (nodes, edges) =
+						block_control_flow.get_compressed_metadata_and_sequential_edges();
+					(nodes.iter().map(new_lod_text).collect(), edges)
+				});
 		}
 
 		{
@@ -83,10 +80,10 @@ impl Model {
 			self.raw_state_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(
-					state_control_flow.graph.len(),
-					state_control_flow.graph.edge_list_sequentially_renamed(),
-				);
+				.seeded_replace_self_with({
+					let (nodes, edges) = state_control_flow.get_raw_metadata_and_sequential_edges();
+					(nodes.iter().map(new_lod_text).collect(), edges)
+				});
 		}
 		mem::drop(mutex);
 	}
@@ -145,27 +142,14 @@ impl Model {
 	}
 
 	pub fn gui_get_node_description(&self, graph: GraphToView, node_index: usize) -> String {
-		let metadata = match graph {
-			GraphToView::RawBlock => {
-				self.block_control_flow.read().unwrap().metadata[node_index].clone()
-			}
-			GraphToView::CompressedBlock => {
-				// Cloned because even the immutable get requires a mutable reference
-				let mut cfg = self.block_control_flow.write().unwrap();
-				let nodes = cfg
-					.compressed_graph
-					.get(node_index as u64)
-					.map(|x| x.of.clone())
-					.unwrap();
-
-				merge_nodes_into_single_metadata(&nodes, &cfg)
-			}
-			GraphToView::State => {
-				self.state_control_flow.read().unwrap().metadata[node_index].clone()
-			}
-		};
-
-		format!("{}: {:#?}", node_index, metadata)
+		match graph {
+			GraphToView::RawBlock => self.raw_block_graph.read(),
+			GraphToView::CompressedBlock => self.compressed_block_graph.read(),
+			GraphToView::State => self.raw_state_graph.read(),
+		}
+		.unwrap()
+		.get_node_text(node_index)
+		.to_owned()
 	}
 }
 
@@ -203,118 +187,48 @@ impl BitOrAssign for LayoutMadeProgress {
 	}
 }
 
-pub struct LodText {
-	levels: ArrayVec<(String, u32, u32), 3>,
-}
-
-impl LodText {
-	// TODO: Build using Addr2Line+Disassembler
-	pub fn new(metadata: &NodeMetadata) -> Self {
-		fn level(msg: String) -> (String, u32, u32) {
-			const MAX_WIDTH: usize = 80;
-			let mut width = 0;
-			let mut height = 0;
-			for line in msg.lines() {
-				if line.len() <= MAX_WIDTH {
-					width = width.max(line.len());
-					height += 1;
-				} else {
-					width = MAX_WIDTH;
-					height += (line.len() + MAX_WIDTH - 1) / MAX_WIDTH;
-				}
-			}
-			(
-				msg,
-				u32::try_from(width).unwrap(),
-				u32::try_from(height).unwrap(),
-			)
+fn new_lod_text(metadata: &NodeMetadata) -> LodText {
+	let mut ret = LodText::new();
+	match metadata {
+		NodeMetadata::State { symbolic_state_id } => {
+			ret.coarser(symbolic_state_id.to_string());
 		}
-		match metadata {
-			NodeMetadata::State { symbolic_state_id } => {
-				let mut levels = ArrayVec::new();
-				levels.push(level(symbolic_state_id.to_string()));
-				Self { levels }
-			}
-			NodeMetadata::BasicBlock {
-				symbolic_state_id,
-				basic_block_vaddr,
-				basic_block_generation,
-				basic_block_elf_vaddr,
-				basic_block_content,
-			} => Self {
-				levels: ArrayVec::from([
-					level("TODO".to_owned()),
-					level("TODO".to_owned()),
-					level(symbolic_state_id.to_string()),
-				]),
-			},
-			NodeMetadata::CompressedBasicBlock(boxed) => {
-				let CompressedBasicBlock {
-					symbolic_state_ids,
-					basic_block_vaddrs,
-					basic_block_generations,
-					basic_block_elf_vaddrs,
-					basic_block_contents,
-				} = &**boxed;
-				Self {
-					levels: ArrayVec::from([
-						level("TODO".to_owned()),
-						level("TODO".to_owned()),
-						level({
-							assert_eq!(
-								symbolic_state_ids.first(),
-								symbolic_state_ids.last(),
-							);
-							assert!(!symbolic_state_ids.is_empty());
-							symbolic_state_ids.first().unwrap().to_string()
-						}),
-					]),
-				}
-			}
-		}
-	}
-
-	pub fn get_given_available_square(&self, width: u32, height: u32) -> &str {
-		for (content, w, h) in &self.levels {
-			if *w <= width && *h <= height {
-				return content;
-			}
-		}
-		""
-	}
-}
-
-fn merge_nodes_into_single_metadata(nodes: &SmallU64Set, cfg: &ControlFlowGraph) -> NodeMetadata {
-	let mut symbolic_state_ids = SmallVec::new();
-	let mut basic_block_vaddrs = SmallVec::new();
-	let mut basic_block_generations = SmallVec::new();
-	let mut basic_block_elf_vaddrs = SmallVec::new();
-	let mut basic_block_contents = SmallVec::new();
-
-	for metadata in nodes.iter().map(|i| &cfg.metadata[*i as usize]) {
-		if let NodeMetadata::BasicBlock {
-			symbolic_state_id,
+		NodeMetadata::BasicBlock {
+			symbolic_state_id: state,
 			basic_block_vaddr,
 			basic_block_generation,
 			basic_block_elf_vaddr,
 			basic_block_content,
-		} = metadata
-		{
-			symbolic_state_ids.push(*symbolic_state_id);
-			basic_block_vaddrs.push(*basic_block_vaddr);
-			basic_block_generations.push(*basic_block_generation);
-			basic_block_elf_vaddrs.push(*basic_block_elf_vaddr);
-			basic_block_contents.push(basic_block_content.clone());
-		} else {
-			panic!("Basic block graph contained non-basic-block metadata")
-		};
+		} => {
+			ret.coarser(format!("{state}\nfunctionname+addr2line"));
+			ret.coarser(format!("{state}\nfunctionname"));
+			ret.coarser(format!("{state}"));
+		}
+		NodeMetadata::CompressedBasicBlock(boxed) => {
+			let CompressedBasicBlock {
+				symbolic_state_ids,
+				basic_block_vaddrs,
+				basic_block_generations,
+				basic_block_elf_vaddrs,
+				basic_block_contents,
+			} = &**boxed;
+			assert!(!symbolic_state_ids.is_empty());
+			let state_first = symbolic_state_ids.first().unwrap();
+			let state_last = symbolic_state_ids.last().unwrap();
+			if state_first == state_last {
+				ret.coarser(format!("{state_first}\nfunctionname+addr2line"));
+				ret.coarser(format!("{state_first}\nfunctionname"));
+				ret.coarser(format!("{state_first}"));
+			} else {
+				ret.coarser(format!(
+					"{state_first}-{state_last}\nfunctionname+addr2line"
+				));
+				ret.coarser(format!(
+					"{state_first}-{state_last}\nfunctionname"
+				));
+				ret.coarser(format!("{state_first}-{state_last}"));
+			}
+		}
 	}
-
-	NodeMetadata::CompressedBasicBlock(Box::new(CompressedBasicBlock {
-		symbolic_state_ids,
-		basic_block_vaddrs,
-		basic_block_generations,
-		basic_block_elf_vaddrs,
-		basic_block_contents,
-	}))
+	ret
 }
