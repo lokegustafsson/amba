@@ -16,7 +16,13 @@ namespace state_prioritisation {
 
 // These pointers are not a race condition because the thread has to
 // join before the AmbaPlugin fields can be destructed
-void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
+void ipcReceiver(
+	Ipc *ipc,
+	bool *active,
+	s2e::S2E *s2e,
+	std::mutex *dead_states_lock,
+	std::unordered_set<i32> *dead_states
+) {
 	using IdSet = std::unordered_set<i32>;
 	using StateSet = std::unordered_set<klee::ExecutionState *>;
 
@@ -31,7 +37,19 @@ void ipcReceiver(Ipc *ipc, bool *active, s2e::S2E *s2e) {
 			continue;
 		}
 
-		const IdSet to_prioritise_ids = IdSet(receive_buffer.begin(), receive_buffer.end());
+		const IdSet to_prioritise_ids = ([&]() {
+			IdSet s {};
+			dead_states_lock->lock();
+
+			for (auto state : receive_buffer) {
+				if (!dead_states->contains(state)) {
+					s.insert(state);
+				}
+			}
+
+			dead_states_lock->unlock();
+			return s;
+		})();
 
 		auto &executor = *s2e->getExecutor();
 		auto new_searcher = new klee::DFSSearcher();

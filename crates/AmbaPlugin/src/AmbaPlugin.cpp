@@ -136,13 +136,22 @@ void AmbaPlugin::initialize() {
 
 	auto self = this;
 	this->m_ipc_receiver_thread = std::jthread([=]() {
-		state_prioritisation::ipcReceiver(self->m_ipc, &self->m_alive, self->s2e());
+		state_prioritisation::ipcReceiver(
+			self->m_ipc,
+			&self->m_alive,
+			self->s2e(),
+			&self->m_dead_states_lock,
+			&self->m_dead_states
+		);
 	});
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
 }
 
 void AmbaPlugin::onStateKill(S2EExecutionState *state) {
 	*amba::warning_stream() << "Killing " << state << "\n\n";
+	this->m_dead_states_lock.lock();
+	this->m_dead_states.insert(state->getGuid());
+	this->m_dead_states_lock.unlock();
 }
 
 void AmbaPlugin::translateInstructionStart(

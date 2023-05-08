@@ -4,6 +4,7 @@
 #include <s2e/S2EExecutionState.h>
 
 #include <thread>
+#include <mutex>
 
 #include "Amba.h"
 #include "HeapLeak.h"
@@ -40,6 +41,8 @@ class AmbaPlugin : public Plugin {
 	u64 m_module_pid = 0;
 	bool m_alive = true;
 
+	std::mutex m_dead_states_lock;
+	std::unordered_set<i32> m_dead_states;
 	std::jthread m_ipc_receiver_thread;
 	heap_leak::HeapLeak m_heap_leak;
 	assembly_graph::AssemblyGraph m_assembly_graph;
