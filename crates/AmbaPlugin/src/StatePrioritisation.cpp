@@ -5,12 +5,12 @@
 #include <unordered_set>
 
 #include <s2e/S2E.h>
+#include <s2e/S2EExecutionState.h>
 #include <klee/Searcher.h>
 
 #include "StatePrioritisation.h"
 #include "Amba.h"
 #include "LibambaRs.h"
-#include "s2e/S2EExecutionState.h"
 
 namespace state_prioritisation {
 
