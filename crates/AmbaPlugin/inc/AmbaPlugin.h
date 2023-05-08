@@ -19,6 +19,7 @@ class AmbaPlugin : public Plugin {
 
 	amba::TranslationFunction translateInstructionStart;
 	amba::TranslationFunction translateBlockStart;
+	amba::TranslationCompleteFunction translateBlockComplete;
 	amba::ModuleFunction onModuleLoad;
 	amba::ModuleFunction onModuleUnload;
 	amba::ProcessFunction onProcessUnload;

@@ -9,6 +9,7 @@ args@{
     "ipc/default"
     "disassembler/default"
     "graphui/default"
+    "model/default"
     "qmp-client/default"
     "recipe/default"
     "bootstrap/default"
@@ -53,6 +54,7 @@ in
     ipc = rustPackages.unknown.ipc."0.1.0";
     disassembler = rustPackages.unknown.disassembler."0.1.0";
     graphui = rustPackages.unknown.graphui."0.1.0";
+    model = rustPackages.unknown.model."0.1.0";
     qmp-client = rustPackages.unknown.qmp-client."0.1.0";
     recipe = rustPackages.unknown.recipe."0.1.0";
     bootstrap = rustPackages.unknown.bootstrap."0.1.0";
@@ -199,6 +201,7 @@ in
       graphui = rustPackages."unknown".graphui."0.1.0" { inherit profileName; };
       include_dir = rustPackages."registry+https://github.com/rust-lang/crates.io-index".include_dir."0.7.3" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
+      model = rustPackages."unknown".model."0.1.0" { inherit profileName; };
       nix = rustPackages."registry+https://github.com/rust-lang/crates.io-index".nix."0.26.2" { inherit profileName; };
       qmp_client = rustPackages."unknown".qmp-client."0.1.0" { inherit profileName; };
       rand = rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.8.5" { inherit profileName; };
@@ -2037,12 +2040,12 @@ in
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/graphui");
     dependencies = {
+      arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
       eframe = rustPackages."registry+https://github.com/rust-lang/crates.io-index".eframe."0.21.3" { inherit profileName; };
       egui = rustPackages."registry+https://github.com/rust-lang/crates.io-index".egui."0.21.0" { inherit profileName; };
       emath = rustPackages."registry+https://github.com/rust-lang/crates.io-index".emath."0.21.0" { inherit profileName; };
       fastrand = rustPackages."registry+https://github.com/rust-lang/crates.io-index".fastrand."1.8.0" { inherit profileName; };
       glam = rustPackages."registry+https://github.com/rust-lang/crates.io-index".glam."0.23.0" { inherit profileName; };
-      ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
       rayon = rustPackages."registry+https://github.com/rust-lang/crates.io-index".rayon."1.7.0" { inherit profileName; };
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
       tracing_subscriber = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-subscriber."0.3.16" { inherit profileName; };
@@ -2547,6 +2550,7 @@ in
     registry = "unknown";
     src = fetchCrateLocal (workspaceSrc + "/crates/libamba");
     dependencies = {
+      cxx = rustPackages."registry+https://github.com/rust-lang/crates.io-index".cxx."1.0.89" { inherit profileName; };
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
     };
@@ -2831,6 +2835,19 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/mitm-debug-stream");
     dependencies = {
       tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
+    };
+  });
+  
+  "unknown".model."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "model";
+    version = "0.1.0";
+    registry = "unknown";
+    src = fetchCrateLocal (workspaceSrc + "/crates/model");
+    dependencies = {
+      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
+      graphui = rustPackages."unknown".graphui."0.1.0" { inherit profileName; };
+      ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
+      smallvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".smallvec."1.10.0" { inherit profileName; };
     };
   });
   

@@ -17,7 +17,7 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_ipc(rust_new_ipc())
 	, m_heap_leak(heap_leak::HeapLeak {})
-	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks" })
+	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks", s2e->getPlugin<ModuleMap>() })
 	, m_symbolic_graph(symbolic_graph::SymbolicGraph { "symbolic states" })
 {
 	auto self = this;
@@ -53,7 +53,7 @@ void AmbaPlugin::initialize() {
 		<< this->m_module_path
 		<< '\n';
 
-        // Set up event callbacks
+	// Set up event callbacks
 	core.onTranslateInstructionStart
 		.connect(sigc::mem_fun(
 			*this,
@@ -63,6 +63,11 @@ void AmbaPlugin::initialize() {
 		.connect(sigc::mem_fun(
 			*this,
 			&AmbaPlugin::translateBlockStart
+		));
+	core.onTranslateBlockComplete
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::translateBlockComplete
 		));
 	core.onStateFork
 		.connect(sigc::mem_fun(
@@ -158,12 +163,22 @@ void AmbaPlugin::translateBlockStart(
 		return;
 	}
 
-	this->m_assembly_graph.translateBlockStart(signal, state, tb, pc);
-
 	signal->connect(sigc::mem_fun(
 		this->m_assembly_graph,
 		&assembly_graph::AssemblyGraph::onBlockStart
 	));
+}
+void AmbaPlugin::translateBlockComplete(
+	S2EExecutionState *state,
+	TranslationBlock *tb,
+	u64 final_instruction_pc
+) {
+	auto mod = this->m_modules->getModule(state);
+	if (mod.get() == nullptr || mod->Path != this->m_module_path) {
+		return;
+	}
+
+	this->m_assembly_graph.translateBlockComplete(state, tb, final_instruction_pc);
 }
 
 void AmbaPlugin::onModuleLoad(

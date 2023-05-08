@@ -29,6 +29,8 @@ struct BasicBlockMetadata {
 	StateIdAmba symbolic_state_id;
 	u64 basic_block_vaddr;
 	u64 basic_block_generation;
+	u64 basic_block_elf_vaddr;
+	std::vector<u8> basic_block_content;
 
 	NodeMetadataFFI into_ffi() const;
 };

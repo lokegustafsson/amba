@@ -1,6 +1,9 @@
+#pragma once
+
+#include <vector>
+
 #include "Numbers.h"
 
-struct ControlFlowGraph;
 struct IpcTx;
 struct IpcRx;
 
@@ -9,6 +12,8 @@ struct NodeMetadataFFI {
 	u32 symbolic_state_id;
 	u64 basic_block_vaddr;
 	u64 basic_block_generation;
+	u64 basic_block_elf_vaddr;
+	std::unique_ptr<std::vector<u8>> basic_block_content;
 };
 
 struct NodeMetadataFFIPair {
