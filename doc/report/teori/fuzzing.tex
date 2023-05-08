@@ -1,24 +1,42 @@
-Fuzzing är i sig ett användbart automatiskt verktyg för att testa program efter
-ofta svårupptäckta problem som minnesbuggar, krascher, etc. på grund av dess
-enkelhet. Grundprincipen i fuzzing är att attackera en större mängd av möjlig
-indata genom att generera oväntad, godtycklig eller felaktig data. Denna typ
-av genererad indata resulterar ofta i syntaktiskt felaktig indata som inte kan
-hanteras av målprogrammet. Således finns det anledning för utvecklingspotential,
-något som lett till bland annat Mutation-Based Fuzzing och Generaton-based
-fuzzing. Mutation-Based Fuzzing muterar känd giltig indata, t.ex. om strängen
-"fuzz" är giltig indata kan detta muteras till "fuzzZZZZZ". Detta skiljer sig från
-Generation-Based fuzzing, som genererar indata givet en modell för
-domänen~\cite{fuzzing}.
+Fuzzing är ett användbart automatiskt verktyg för att testa program efter
+ofta svårupptäckta problem som minnesbuggar, krascher, etc. tack vare dess
+enkelhet i att konfigurera verktyget mot godtyckliga program.  
+
+Grundprincipen i fuzzing är att attackera en större mängd av möjlig indata genom
+att generera oväntad, godtycklig eller felaktig data. Denna typ av genererad
+indata resulterar ofta i syntaktiskt eller semantiskt felaktig indata som inte
+kan hanteras av målprogrammet. Således finns det anledning för
+utvecklingspotential, något som lett till bland annat mutation-based fuzzing och
+generaton-based fuzzing. Mutation-based fuzzing muterar känd giltig indata,
+t.ex. om strängen "fuzz" är giltig indata kan detta muteras till "fuzzZZZZZ". Om
+en användare exempelvis vill fuzztesta bildhanteringsbiblioteket libjpeg skulle
+detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
+seeds, ett värde som används i en pseudoslumptalsgenerator för att generera ett
+pseudoslumptal, och sedan modifiera dessa. Detta skiljer sig från
+Generation-based fuzzing som genererar indata givet en modell för domänen -- en
+fördel i jämförelse med mutation-based fuzzing som kräver känd kvalitativ
+indata. 
 
 \subsection{Problemet med fuzzing}
-Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera 
+Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera
+indata.  
+
+Ett annat problem är insikt om den underliggande kodstrukturen. En
+viktig egenskap hos fuzzers som används för att beskriva dess effektivitet är
+dess förmåga att traversera över alla kanter och noder i programmets
+underliggande kontrollflödesgraf. Black-box fuzzing är ett exempel på en fuzzer
+som inte har någon vetskap om den underliggande kodstrukturen utan genererar
+endast slumpmässig indata, något som leder till ytlig testning av målprogrammet.
+I kontrast till black-box fuzzing finns det andra fuzzers, till exempel gray-box
+fuzzern AFL~\cite{aflplusplus} som tillämpar binärinstrumentering, en teknik för att observera
+eller manipulera en binär vilket görs genom att modifiera källkoden i binären.
+Genom binärinstrumentering fås information om underliggande basic blocks 
+
+% code coverage testing, vi vill bevara så mycket av kodstrukturen.
+% fuzzing är blind, därför symbolisk fuzzing.
 
 \subsection{Symbolisk fuzzing}
 
-
-
-% skriv om code coverage (räkna kanter vs noder, vilket är bäst)
-% KÄLLORRRRRRRRRr 🙃
 
 
 
