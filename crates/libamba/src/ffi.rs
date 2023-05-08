@@ -62,7 +62,7 @@ pub unsafe extern "C" fn rust_ipc_receive_message(
 		Err(ipc::IpcError::EndOfFile) => {
 			println!("GUI has shut down");
 			return false;
-		},
+		}
 		Err(err) => panic!("{err:?}"),
 	};
 	let res = match message {
