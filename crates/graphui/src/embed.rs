@@ -82,7 +82,7 @@ impl Graph2D {
 	}
 
 	pub fn new(nodes: Vec<LodText>, edges: Vec<(usize, usize)>) -> Self {
-		if nodes.len() == 0 {
+		if nodes.is_empty() {
 			return Self::empty();
 		}
 

@@ -226,13 +226,10 @@ fn draw_graph(
 		.map(|&p| translate_embed_to_scrollarea_pos(p, graph, zoom_level, viewport.size()))
 		.collect();
 
-	let (node_size, node_has_self_edge) = {
+	let node_size = {
 		let mut node_size = vec![std::f32::INFINITY; graph.node_positions.len()];
-		let mut node_has_self_edge = vec![false; graph.node_positions.len()];
 		for &(a, b) in &graph.edges {
-			if a == b {
-				node_has_self_edge[a] = true;
-			} else {
+			if a != b {
 				let d = scrollarea_node_pos[a].distance(scrollarea_node_pos[b]);
 				node_size[a] = node_size[a].min(0.6 * d);
 				node_size[b] = node_size[b].min(0.6 * d);
@@ -242,7 +239,7 @@ fn draw_graph(
 		for size in &mut node_size {
 			*size = size.clamp(avg_size / 3.0, avg_size * 2.0);
 		}
-		(node_size, node_has_self_edge)
+		node_size
 	};
 
 	let expanded_viewport = viewport.expand(

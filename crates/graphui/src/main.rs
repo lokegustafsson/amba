@@ -101,7 +101,7 @@ fn main() {
 			})
 		}),
 	)
-	.unwrap()
+	.unwrap();
 }
 
 #[cfg(test)]

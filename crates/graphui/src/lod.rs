@@ -1,19 +1,17 @@
 use arrayvec::ArrayVec;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct LodText {
 	levels: ArrayVec<(String, u32, u32), 3>,
 }
 
 impl LodText {
 	pub fn new() -> Self {
-		Self {
-			levels: ArrayVec::new(),
-		}
+		Self::default()
 	}
 
 	pub fn coarser(&mut self, text: String) {
-		self.levels.push(Self::level(text))
+		self.levels.push(Self::level(text));
 	}
 
 	pub(crate) fn get_given_available_square(&self, width: u32, height: u32) -> &str {
