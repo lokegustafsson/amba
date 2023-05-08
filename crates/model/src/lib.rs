@@ -6,10 +6,14 @@ use std::{
 };
 
 use arrayvec::ArrayVec;
-use data_structures::{ControlFlowGraph, SmallU64Set};
+use data_structures::SmallU64Set;
 use graphui::{EmbeddingParameters, Graph2D};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 use smallvec::SmallVec;
+
+use crate::control_flow::ControlFlowGraph;
+
+mod control_flow;
 
 /// An `Arc<Model>` is shared between the AMBA gui and embedder threads.
 pub struct Model {

@@ -4,9 +4,8 @@ use std::{
 	time::{Duration, Instant},
 };
 
+use data_structures::Graph;
 use ipc::NodeMetadata;
-
-use crate::Graph;
 
 #[derive(Debug, Clone)]
 pub struct ControlFlowGraph {
