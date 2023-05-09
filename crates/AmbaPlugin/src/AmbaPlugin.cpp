@@ -260,7 +260,7 @@ void AmbaPlugin::onProcessUnload(
 		<< "Module "
 		<< this->m_module_path
 		<< " exited with code "
-		<< std::to_string(return_code)
+		<< return_code
 		<< '\n';
 }
 
