@@ -149,7 +149,10 @@ void AmbaPlugin::initialize() {
 }
 
 void AmbaPlugin::onStateKill(S2EExecutionState *state) {
-	*amba::warning_stream() << "Killing " << state << "\n\n";
+	*amba::warning_stream()
+		<< "Killing "
+		<< state
+		<< "\n\n";
 	this->m_dead_states_lock.lock();
 	this->m_dead_states.insert(state->getGuid());
 	this->m_dead_states_lock.unlock();
