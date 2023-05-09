@@ -3,6 +3,7 @@
 #include <s2e/Utils.h>
 #include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
 #include <s2e/Plugins/OSMonitors/OSMonitor.h>
+#include <klee/Searcher.h>
 
 #include <memory.h>
 #include <thread>
@@ -11,7 +12,6 @@
 #include "AmbaPlugin.h"
 #include "Amba.h"
 #include "StatePrioritisation.h"
-#include "klee/Searcher.h"
 
 namespace s2e {
 namespace plugins {
