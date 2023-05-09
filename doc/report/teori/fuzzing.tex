@@ -17,26 +17,31 @@ Generation-based fuzzing som genererar indata givet en modell för domänen -- e
 fördel i jämförelse med mutation-based fuzzing som kräver känd kvalitativ
 indata. 
 
-\subsection{Problemet med fuzzing}
-Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera
-indata.  
-
-Ett annat problem är insikt om den underliggande kodstrukturen. En
+\subsection{Problem med fuzzing}
+Ett problem är insikt om den underliggande kodstrukturen. En
 viktig egenskap hos fuzzers som används för att beskriva dess effektivitet är
-dess förmåga att traversera över alla kanter och noder i programmets
-underliggande kontrollflödesgraf. Black-box fuzzing är ett exempel på en fuzzer
-som inte har någon vetskap om den underliggande kodstrukturen utan genererar
+code coverage -- fuzzerns förmåga att traversera över samtliga kanter och noder i programmets
+kontrollflödesgraf. Black-box fuzzing är ett exempel på en fuzzer
+som saknar vetskap om den underliggande kodstrukturen och genererar
 endast slumpmässig indata, något som leder till ytlig testning av målprogrammet.
 I kontrast till black-box fuzzing finns det andra fuzzers, till exempel gray-box
 fuzzern AFL~\cite{aflplusplus} som tillämpar binärinstrumentering, en teknik för att observera
 eller manipulera en binär vilket görs genom att modifiera källkoden i binären.
-Genom binärinstrumentering fås information om underliggande basic blocks 
+Genom binärinstrumentering fås information om underliggande basic blocks som
+delger övergången till nästa basic block. Detta används sedan av AFL för att ge
+feedback till fuzzern som minns code coverage för en viss input och repeterar
+denna process för att få så stor code coverage som möjligt och därmed öka
+testytan.
+
+Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera
+indata. Detta blir problem för komplexa kodbaser eller bibliotek som saknar
+trivial eller uppenbar indata och leder därmed till lägre code coverage. 
 
 % code coverage testing, vi vill bevara så mycket av kodstrukturen.
 % fuzzing är blind, därför symbolisk fuzzing.
 
 \subsection{Symbolisk fuzzing}
-
+Symbolisk fuzzing, eller concolic testing, är en white-box fuzzer
 
 
 
