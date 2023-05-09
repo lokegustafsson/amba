@@ -1,8 +1,9 @@
 #pragma once
 
-#include <memory>
 #include <s2e/S2EExecutionState.h>
+#include <klee/Searcher.h>
 
+#include <memory>
 #include <atomic>
 #include <thread>
 #include <mutex>
@@ -34,6 +35,7 @@ class AmbaPlugin : public Plugin {
 	amba::TimerFunction onTimer;
 	amba::TimerFunction onEngineShutdown;
 	amba::StateKillFunction onStateKill;
+	amba::StateMergeFunction onStateSwitch;
 
   protected:
 	Ipc *const m_ipc;

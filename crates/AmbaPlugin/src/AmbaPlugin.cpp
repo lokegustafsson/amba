@@ -113,6 +113,11 @@ void AmbaPlugin::initialize() {
 			*this,
 			&AmbaPlugin::onEngineShutdown
 		));
+	core.onStateSwitch
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onStateSwitch
+		));
 
 	monitor->onModuleLoad
 		.connect(sigc::mem_fun(
@@ -132,7 +137,6 @@ void AmbaPlugin::initialize() {
 
 	(void) core.onStateForkDecide;
 	(void) core.onStateKill;
-	(void) core.onStateSwitch;
 
 	auto self = this;
 	this->m_ipc_receiver_thread = std::jthread([=]() {
@@ -168,6 +172,13 @@ void AmbaPlugin::onStateKill(S2EExecutionState *state) {
 		delete old_searcher;
 		this->m_searcher_lock.unlock();
 	}
+}
+
+void AmbaPlugin::onStateSwitch(
+	S2EExecutionState *from,
+	S2EExecutionState *to
+) {
+
 }
 
 void AmbaPlugin::translateInstructionStart(
