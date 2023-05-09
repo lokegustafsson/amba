@@ -43,10 +43,10 @@ class AmbaPlugin : public Plugin {
 	std::string m_module_path = "";
 	u64 m_module_pid = 0;
 	std::atomic<bool> m_alive = true;
+	std::atomic<klee::Searcher *> m_next_searcher = nullptr;
 
 	std::mutex m_dead_states_lock;
 	std::unordered_set<i32> m_dead_states;
-	std::mutex m_searcher_lock;
 	std::jthread m_ipc_receiver_thread;
 	heap_leak::HeapLeak m_heap_leak;
 	assembly_graph::AssemblyGraph m_assembly_graph;

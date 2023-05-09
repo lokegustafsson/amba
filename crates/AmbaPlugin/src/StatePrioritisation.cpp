@@ -23,7 +23,7 @@ void ipcReceiver(
 	s2e::S2E *s2e,
 	std::mutex *dead_states_lock,
 	std::unordered_set<i32> *dead_states,
-	std::mutex *searcher_lock
+	std::atomic<klee::Searcher *> *next_searcher
 ) {
 	using IdSet = std::unordered_set<i32>;
 	using StateSet = std::unordered_set<klee::ExecutionState *>;
@@ -72,14 +72,20 @@ void ipcReceiver(
 			return add;
 		})();
 
-		searcher_lock->lock();
 		new_searcher->update(nullptr, to_add, {});
-		auto old_searcher = executor.getSearcher();
-		executor.setSearcher(new_searcher);
-		if (old_searcher) {
-			delete old_searcher;
+
+		klee::Searcher *expected;
+		while (true) {
+			expected = next_searcher->load();
+			bool loaded = next_searcher->compare_exchange_weak(expected, new_searcher);
+			if (loaded) {
+				break;
+			}
 		}
-		searcher_lock->unlock();
+
+		if (expected != nullptr) {
+			delete expected;
+		}
 	}
 
 	*amba::debug_stream() << "Exited ipc receiver thread\n";
