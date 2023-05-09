@@ -15,7 +15,7 @@ seeds, ett värde som används i en pseudoslumptalsgenerator för att generera e
 pseudoslumptal, och sedan modifiera dessa. Detta skiljer sig från
 Generation-based fuzzing som genererar indata givet en modell för domänen -- en
 fördel i jämförelse med mutation-based fuzzing som kräver känd kvalitativ
-indata. 
+indata~\cite{fuzzing}. 
 
 \subsection{Problem med fuzzing}
 Ett problem är insikt om den underliggande kodstrukturen. En
@@ -29,19 +29,24 @@ fuzzern AFL~\cite{aflplusplus} som tillämpar binärinstrumentering, en teknik f
 eller manipulera en binär vilket görs genom att modifiera källkoden i binären.
 Genom binärinstrumentering fås information om underliggande basic blocks som
 delger övergången till nästa basic block. Detta används sedan av AFL för att ge
-feedback till fuzzern som minns code coverage för en viss input och repeterar
-denna process för att få så stor code coverage som möjligt och därmed öka
-testytan.
+feedback till fuzzern som minns code coverage för en viss indata och repeterar
+denna process för att maximera code coverage med ny indata och därmed öka
+testytan~\cite{challenges_fuzzing}.
 
-Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera
+Fuzzers kräver ofta protokoll- eller domänkännedom för att kunna generera
 indata. Detta blir problem för komplexa kodbaser eller bibliotek som saknar
-trivial eller uppenbar indata och leder därmed till lägre code coverage. 
-
-% code coverage testing, vi vill bevara så mycket av kodstrukturen.
-% fuzzing är blind, därför symbolisk fuzzing.
+trivial eller uppenbar indata och leder därmed till lägre code coverage.
 
 \subsection{Symbolisk fuzzing}
-Symbolisk fuzzing, eller concolic testing, är en white-box fuzzer
+Symbolisk fuzzing, eller concolic testing, är en white-box fuzzer som nyttjar
+symbolisk exekvering för att nå maximal code coverage. Skiljt från gray-box
+fuzzers som AFL, möjliggör symbolisk exekvering att fuzzern alltid väljer en
+branch som inte tidigare tagits och således ökar code
+coverage~\cite{challenges_fuzzing}.  
 
+
+% vad är viktigt att veta om symbolisk fuzzing? hur används symbolisk
+% exekvering? 
+% hur används symbolisk exekvering?
 
 
