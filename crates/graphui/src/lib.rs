@@ -43,11 +43,13 @@ impl Widget for &mut EmbeddingParameters {
 					),
 				)
 				.union(
-					ui.add_enabled(
-						self.enable_repulsion_approximation,
-						egui::Slider::new(&mut self.repulsion_approximation, 0.0..=0.5)
-							.step_by(0.5 / STEPS)
-							.text("repulsion approximaton"),
+					ui.add(
+						egui::Slider::new(
+							&mut self.repulsion_approximation,
+							0.0..=EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
+						)
+						.step_by(EmbeddingParameters::MAX_REPULSION_APPROXIMATION / STEPS)
+						.text("repulsion approximaton"),
 					),
 				)
 				.union(
@@ -316,11 +318,14 @@ fn draw_node(
 			style_widgets.hovered.bg_stroke,
 		)
 	};
-	let lod_text = {
+	let (lod_text, lod_size) = {
 		let font_height = ui.text_style_height(&egui::style::TextStyle::Small);
 		let height = (node_width / font_height) as u32;
-		let width = (2.0 * node_width / font_height) as u32;
-		text.get_given_available_square(width, height)
+		const SHAPE: f32 = 1.6;
+		let width = (SHAPE * node_width / font_height) as u32;
+		let (lod_text, w, h) = text.get_given_available_square(width, height);
+		let lod_size = (0.9 * node_width / f32::max(w as f32 / SHAPE, h as f32)).clamp(1.0, 200.0);
+		(lod_text, lod_size)
 	};
 
 	ui.put(rect, move |ui: &mut Ui| {
@@ -328,13 +333,15 @@ fn draw_node(
 			ui.painter().rect_filled(rect, rounding, bg_color);
 			ui.painter().rect_stroke(rect, rounding, stroke);
 		} else {
-			egui::Frame::none()
-				.rounding(rounding)
-				.fill(bg_color)
-				.stroke(stroke)
-				.show(ui, |ui| {
-					ui.label(egui::RichText::new(lod_text).small());
-				});
+			ui.centered_and_justified(|ui| {
+				egui::Frame::none()
+					.rounding(rounding)
+					.fill(bg_color)
+					.stroke(stroke)
+					.show(ui, |ui| {
+						ui.label(egui::RichText::new(lod_text).monospace().size(lod_size));
+					});
+			});
 		}
 		resp
 	})

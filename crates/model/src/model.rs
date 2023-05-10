@@ -130,19 +130,19 @@ impl Model {
 			total_delta_pos += working_copy.run_layout_iterations(SUBSTEPS, params);
 			*graph.write().unwrap() = working_copy;
 		}
-		let (ret, updates_per_second, enable_repulsion_approximation) = if total_delta_pos < 0.1 {
-			(LayoutMadeProgress::NoJustTiny, 0.0, true)
+		let (ret, updates_per_second, delta_repulsion_approximation) = if total_delta_pos < 0.1 {
+			(LayoutMadeProgress::NoJustTiny, 0.0, 0.0)
 		} else if total_delta_pos < 100.0 {
 			(
 				LayoutMadeProgress::YesALittle,
 				timer.elapsed().as_secs_f64().recip(),
-				true,
+				-0.01,
 			)
 		} else {
 			(
 				LayoutMadeProgress::YesALot,
 				timer.elapsed().as_secs_f64().recip(),
-				false,
+				0.01,
 			)
 		};
 
@@ -150,7 +150,11 @@ impl Model {
 		{
 			let mut params = self.embedding_parameters.lock().unwrap();
 			params.statistic_updates_per_second = SUBSTEPS as f64 * updates_per_second;
-			params.enable_repulsion_approximation = enable_repulsion_approximation;
+			params.repulsion_approximation =
+				(params.repulsion_approximation + delta_repulsion_approximation).clamp(
+					0.0,
+					EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
+				);
 		}
 		ret
 	}
