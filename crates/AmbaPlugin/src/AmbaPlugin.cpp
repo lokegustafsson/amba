@@ -135,9 +135,6 @@ void AmbaPlugin::initialize() {
 			&AmbaPlugin::onProcessUnload
 		));
 
-	(void) core.onStateForkDecide;
-	(void) core.onStateKill;
-
 	auto self = this;
 	this->m_ipc_receiver_thread = std::jthread([=]() {
 		state_prioritisation::ipcReceiver(
