@@ -288,6 +288,7 @@ fn new_lod_text_impl(
 			s2e_state_id,
 		} => {
 			ret.coarser(format!("{amba_state_id} ({s2e_state_id})"));
+			ret.coarser(format!("{amba_state_id}"));
 		}
 		NodeMetadata::BasicBlock {
 			symbolic_state_id: state,
@@ -303,7 +304,7 @@ fn new_lod_text_impl(
 				*basic_block_elf_vaddr,
 				&*basic_block_content,
 			);
-			ret.coarser(format!("{state}{marker}\n{name}\n{code}"));
+			ret.coarser(format!("State: {state}{marker}\n{name}\n{code}"));
 			ret.coarser(format!("{state}{marker}\n{name}"));
 			ret.coarser(format!("{state}{marker}"));
 		}
@@ -321,21 +322,25 @@ fn new_lod_text_impl(
 
 			let name: String = basic_block_elf_vaddrs
 				.iter()
-				.map(|elf_vaddr| function_name(*elf_vaddr))
+				.map(|elf_vaddr| format!("{} ", function_name(*elf_vaddr)))
 				.collect();
 			let code: String = basic_block_vaddrs
 				.iter()
 				.zip(basic_block_elf_vaddrs)
 				.zip(basic_block_contents)
-				.map(|((vaddr, elf_vaddr), content)| block_code(*vaddr, *elf_vaddr, &*content))
+				.map(|((vaddr, elf_vaddr), content)| {
+					format!("{}\n", block_code(*vaddr, *elf_vaddr, &*content))
+				})
 				.collect();
 
 			if first == last {
-				ret.coarser(format!("{first}{marker}\n{name}\n{code}"));
+				ret.coarser(format!("State: {first}{marker}\n{name}\n{code}"));
 				ret.coarser(format!("{first}{marker}\n{name}"));
 				ret.coarser(format!("{first}{marker}"));
 			} else {
-				ret.coarser(format!("{first}-{last}{marker}\n{name}\n{code}"));
+				ret.coarser(format!(
+					"States: {first}-{last}{marker}\n{name}\n{code}"
+				));
 				ret.coarser(format!("{first}-{last}{marker}\n{name}"));
 				ret.coarser(format!("{first}-{last}{marker}"));
 			}
