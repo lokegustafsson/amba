@@ -20,22 +20,51 @@ This sentence talks about Newsweek's article only /Iulia}. Det finns olika
 metoder till cyberattacker men många angripare och skadeprogram använder sig av
 olika säkerhetsbrister i programvaror.
 
-Vanliga exempel på säkerhetsbrister som utnyttjas av angripare och skadeprogram
-är minnessårbarheter, som tillåter access till minne utanför gränserna till
-viss minnesregion, t.ex. buffertöverflöden (jfr eng. \emph{buffer
-overflow}) och formatsträng (jfr eng. \emph{format string}). Den
-vanligaste minnessårbarheten är buffertöverflöde vilket uppstår när
-programmerare inte utför tillräckliga gränskontroller, vilket
-utlöser en åtkomst bortom gränserna för viss minnesregion. Angripare kan
-utnyttja detta för att korrumpera programmets normala beteende genom att skriva
-bortom gränserna~\cite{computer_security_cs161}. Formatsträngsbugg uppstår när
-någon typ av indata tolkas och används som input till vanliga
-textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
-konvertingsfunktioner för data med olika typer. Om inte en noggrann och
-tillräcklig utvärdering av indatan görs innan indatan används i en funktion som
-kan tolka formatsträng kan funktionen använda stacken och den data som råkar
-ligga där som argument för konverteringsfunktioner. Med noggrann utformning av
-indata kan en angripare utnyttja formatsträngsbugg för att exekvera godtyckliga
-kommandon på en dator som kör programvaran.
+Vanliga fel i program som utnyttjas av angripare och skadeprogram är
+minnesårbarheter. Det som gör minnessårbarheter allvarligare till skillnad från
+andra fel som logikfel är att minnessårbarheter kan utnyttjas för att påverka
+ett programs kontrolflöde (jfr eng. \emph{control flow}) och alltså dess
+beteende. Minnesårbarheter tillåter minnesaccess utanför en viss minnesregion.
+Det kan vara alvarligt om en angripare kan läsa delar av minnet som inte ska
+vara läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
+angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
+datorn som kör programmet~\cite{computer_security_cs161}.
 
-För att upptäcka sårbarheter i programvaror kan många 
+Det är möjligt att undvika olika minnessårbarheter som
+programutvecklare genom försiktighet men för att undvika 100\% av
+minnessårbarheter krävs användning av minnessäkra programspråk (jfr eng.
+\emph{memory-safe language}).
+Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
+\emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile time
+checks}) för att undvika minnessårbarheter. Däremot finns det än idag många
+skäl för att fortsätta använda minnesosäkra programspråk som
+C såsom prestandaskäl~\cite{computer_security_cs161}.
+
+Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka
+och åtgärda sårbarheter innan en angripare. Programanalys går ut på att
+analysera programegenskaper. Det finns många olika metoder för programanalys
+och kan utföras olika på nivåer: på källkoden eller på binären. Genom att
+bektrakta den kompilerade binären kan de verkliga egenskaperna av programmet
+analyseras. Binäranalys tar hänsyn till fel som introduceras i
+kompileringssteget och undviker även problem med det semantiska gapet mellan
+ett högnivåspråk och den faktiska maskinkod och data som blir produkten efter
+kompilering. Genom binäranalys undersöker man vad ett program faktiskt gör
+istället för vad man tror att den gör. I sammanhanget av skadeprogramsanalys
+(jfr eng. \emph{malware analysis}) och \emph{reverse engeneering} finns inget
+annat val än binäranalys eftersom källkoden inte är
+tillgänglig~\cite{andriesse2018}.
+
+En metod för binäranalys är \emph{fuzzing} som går ut på att mata olika indata
+till ett program och betrakta fel som uppstår. Målet med \emph{fuzzing} är att
+uppnå en hög täckning (jfr eng. \emph{coverage}) av programmet som beror
+på indatan. Alltså att ta alla möjliga vägar genom kontrollflödet som är
+möjliga att nå genom att variera indatan. Däremot är det ett svårt problem att
+generera indata som uppnår en hög täckning som även är effektivtast, speciellt
+när indatan kan ha ett högt antal olika värden. Symbolisk exekvering är ett
+exekveringssätt som syftar till att lösa detta problem. Det är en ett sätt att
+exekvera ett program abstrakt där en exekvering betraktar alla möjliga indata
+som delar en viss exekveringsväg genom kontrollflödet. Symbolisk fuzzing
+använder symbolisk exekvering för att generera olika indata till \emph{fuzzing}
+processen som effektivast uppnår den högsta täckning som kan uppnås genom att
+variera indatan.
+
