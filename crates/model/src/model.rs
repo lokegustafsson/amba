@@ -246,7 +246,7 @@ fn new_lod_text_impl(
 					elf_vaddr,
 					"debuginfo get_function_name failed"
 				);
-				format!("{:#x}", elf_vaddr)
+				format!("{:x}", elf_vaddr)
 			}
 		}
 	};
@@ -269,8 +269,11 @@ fn new_lod_text_impl(
 					);
 				}
 			}
-			writeln!(ret, "{}", disasm);
+			writeln!(ret, "{}", disasm).unwrap();
 			elf_vaddr += size as u64;
+		}
+		while ret.ends_with('\n') {
+			ret.pop();
 		}
 		ret
 	};

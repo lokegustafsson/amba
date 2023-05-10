@@ -70,9 +70,18 @@ impl DisasmContext {
 				ret.push_str(" in ");
 			}
 			match frame.function {
-				Some(name) => ret.push_str(&*name.demangle()?),
+				Some(name) => {
+					let innermost = ret.is_empty();
+					ret.push_str(&*name.demangle()?);
+					if innermost {
+						ret.push_str("()")
+					}
+				}
 				None => ret.push_str("?"),
 			}
+		}
+		if ret.is_empty() {
+			ret.push_str("<unknown>");
 		}
 		Ok(ret)
 	}
