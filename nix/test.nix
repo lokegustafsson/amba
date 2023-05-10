@@ -9,7 +9,6 @@ let
       mkdir -p $out/
       cp hello hello.recipe.json $out/
     '';
-    APPEND_CFLAGS = "-static";
   };
   control-flow = pkgs.stdenv.mkDerivation {
     name = "control-flow";
@@ -20,7 +19,16 @@ let
       mkdir -p $out/
       cp control-flow control-flow.recipe.json $out/
     '';
-    APPEND_CFLAGS = "-static";
+  };
+  state-splitter = pkgs.stdenv.mkDerivation {
+    name = "state-splitter";
+    src = ../demos;
+    nativeBuildInputs = [ pkgs.musl ];
+    buildPhase = "make state-splitter";
+    installPhase = ''
+      mkdir -p $out/
+      cp state-splitter state-splitter.recipe.json $out/
+    '';
   };
   test-amba-hello = pkgs.writeShellApplication {
     name = "test-amba-hello";
@@ -42,4 +50,17 @@ let
       time ${amba.amba}/bin/amba run ${control-flow}/control-flow.recipe.json --no-gui
     '';
   };
-in { inherit hello control-flow test-amba-hello test-amba-control-flow; }
+  test-amba-state-splitter = pkgs.writeShellApplication {
+    name = "test-amba-state-splitter";
+    text = ''
+      export RUST_BACKTRACE=full
+      # Amba skips unnecessary download internally
+      ${amba.amba}/bin/amba init --download
+      # Run musl state-splitter
+      time ${amba.amba}/bin/amba run ${state-splitter}/state-splitter.recipe.json --no-gui
+    '';
+  };
+in {
+  inherit hello control-flow state-splitter test-amba-hello
+    test-amba-control-flow test-amba-state-splitter;
+}

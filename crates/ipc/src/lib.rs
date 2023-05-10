@@ -4,6 +4,6 @@ mod metadata;
 
 pub use crate::{
 	graph::GraphIpc,
-	ipc::{new_wrapping, IpcError, IpcMessage, IpcRx, IpcTx},
+	ipc::{IpcError, IpcInstance, IpcMessage, IpcRx, IpcTx},
 	metadata::{CompressedBasicBlock, NodeMetadata},
 };

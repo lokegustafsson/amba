@@ -3,10 +3,15 @@
 #include <s2e/Utils.h>
 #include <s2e/Plugins/OSMonitors/Support/ModuleMap.h>
 #include <s2e/Plugins/OSMonitors/OSMonitor.h>
+#include <klee/Searcher.h>
+
+#include <memory.h>
+#include <thread>
 
 // Our headers
 #include "AmbaPlugin.h"
 #include "Amba.h"
+#include "StatePrioritisation.h"
 
 namespace s2e {
 namespace plugins {
@@ -16,7 +21,6 @@ S2E_DEFINE_PLUGIN(AmbaPlugin, "Amba S2E plugin", "", "ModuleMap", "OSMonitor");
 AmbaPlugin::AmbaPlugin(S2E *s2e)
 	: Plugin(s2e)
 	, m_ipc(rust_new_ipc())
-	, m_heap_leak(heap_leak::HeapLeak {})
 	, m_assembly_graph(assembly_graph::AssemblyGraph { "basic blocks", s2e->getPlugin<ModuleMap>() })
 	, m_symbolic_graph(symbolic_graph::SymbolicGraph { "symbolic states" })
 {
@@ -24,6 +28,11 @@ AmbaPlugin::AmbaPlugin(S2E *s2e)
 	amba::debug_stream = [=](){ return &self->getDebugStream(); };
 	amba::info_stream = [=](){ return &self->getInfoStream(); };
 	amba::warning_stream = [=](){ return &self->getWarningsStream(); };
+}
+
+AmbaPlugin::~AmbaPlugin() {
+	this->m_alive = false;
+	this->m_ipc_receiver_thread.join();
 }
 
 void AmbaPlugin::initialize() {
@@ -89,6 +98,11 @@ void AmbaPlugin::initialize() {
 			this->m_symbolic_graph,
 			&symbolic_graph::SymbolicGraph::onStateMerge
 		));
+	core.onStateKill
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onStateKill
+		));
 	core.onTimer
 		.connect(sigc::mem_fun(
 			*this,
@@ -98,6 +112,11 @@ void AmbaPlugin::initialize() {
 		.connect(sigc::mem_fun(
 			*this,
 			&AmbaPlugin::onEngineShutdown
+		));
+	core.onStateSwitch
+		.connect(sigc::mem_fun(
+			*this,
+			&AmbaPlugin::onStateSwitch
 		));
 
 	monitor->onModuleLoad
@@ -116,11 +135,53 @@ void AmbaPlugin::initialize() {
 			&AmbaPlugin::onProcessUnload
 		));
 
-	(void) core.onStateForkDecide;
-	(void) core.onStateKill;
-	(void) core.onStateSwitch;
-
+	auto self = this;
+	this->m_ipc_receiver_thread = std::jthread([=]() {
+		state_prioritisation::ipcReceiver(
+			self->m_ipc,
+			&self->m_alive,
+			self->s2e(),
+			&self->m_dead_states_lock,
+			&self->m_dead_states,
+			&self->m_next_searcher
+		);
+	});
 	*amba::debug_stream() << "Finished initializing AmbaPlugin\n";
+}
+
+void AmbaPlugin::onStateKill(S2EExecutionState *state) {
+	*amba::warning_stream()
+		<< "Killing "
+		<< state
+		<< "\n\n";
+	this->m_dead_states_lock.lock();
+	this->m_dead_states.insert(state->getGuid());
+	this->m_dead_states_lock.unlock();
+
+	auto &s2e = *this->s2e();
+	auto &executor = *s2e.getExecutor();
+
+	const size_t state_count = executor.getStatesCount();
+	if (state_count == 0) {
+		auto old_searcher = executor.getSearcher();
+		executor.setSearcher(new klee::DFSSearcher());
+		delete old_searcher;
+	}
+}
+
+void AmbaPlugin::onStateSwitch(
+	S2EExecutionState *from,
+	S2EExecutionState *to
+) {
+	// Load and reset searcher. Retry if reset by other thread
+	klee::Searcher *new_searcher = this->m_next_searcher.exchange(nullptr);
+
+	if (new_searcher != nullptr) {
+		auto &executor = *this->s2e()->getExecutor();
+		auto old_searcher = executor.getSearcher();
+		executor.setSearcher(new_searcher);
+		delete old_searcher;
+	}
 }
 
 void AmbaPlugin::translateInstructionStart(
@@ -216,7 +277,7 @@ void AmbaPlugin::onProcessUnload(
 		<< "Module "
 		<< this->m_module_path
 		<< " exited with code "
-		<< std::to_string(return_code)
+		<< return_code
 		<< '\n';
 }
 

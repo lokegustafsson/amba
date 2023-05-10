@@ -1,39 +1,84 @@
 use std::{
-	io::{self, BufReader, BufWriter, Read, Write},
+	io::{self, BufRead, BufReader, BufWriter, Read, Write},
 	mem,
 	net::Shutdown,
-	os::unix::net::UnixStream,
+	os::unix::net::{UnixListener, UnixStream},
+	path::Path,
+	time::Duration,
 };
 
+use io_arc::IoArc;
 use serde::{Deserialize, Serialize};
 
 pub use crate::{graph::GraphIpc, metadata::NodeMetadata};
 
-pub fn new_wrapping(stream: &UnixStream) -> (IpcTx<'_>, IpcRx<'_>) {
-	(
-		IpcTx {
+pub struct IpcInstance {
+	reader: IpcRx,
+	writer: IpcTx,
+}
+
+impl From<IpcInstance> for (IpcRx, IpcTx) {
+	fn from(val: IpcInstance) -> Self {
+		(val.reader, val.writer)
+	}
+}
+
+impl IpcInstance {
+	pub fn new_plugin(socket: &Path) -> Self {
+		let stream = IoArc::new(UnixStream::connect(socket).unwrap());
+
+		let reader = {
+			let rx = BufReader::new(stream.clone());
+			rx.get_ref()
+				.as_ref()
+				.set_read_timeout(Some(Duration::from_nanos(1)))
+				.unwrap();
+			IpcRx { rx }
+		};
+
+		let writer = IpcTx {
 			tx: BufWriter::new(stream),
-		},
-		IpcRx {
-			rx: BufReader::new(stream),
-		},
-	)
+		};
+
+		tracing::info!("Plugin IPC setup");
+		IpcInstance { reader, writer }
+	}
+
+	pub fn new_gui(socket: &Path) -> Self {
+		let ipc_listener = UnixListener::bind(socket).unwrap();
+		let stream = IoArc::new(ipc_listener.accept().unwrap().0);
+
+		let reader = IpcRx {
+			rx: BufReader::new(stream.clone()),
+		};
+
+		let writer = IpcTx {
+			tx: BufWriter::new(stream),
+		};
+
+		tracing::info!("GUI IPC setup");
+		IpcInstance { reader, writer }
+	}
+
+	pub fn get_rx_tx(&mut self) -> (&mut IpcRx, &mut IpcTx) {
+		(&mut self.reader, &mut self.writer)
+	}
 }
 
-pub struct IpcTx<'a> {
-	tx: BufWriter<&'a UnixStream>,
+pub struct IpcTx {
+	tx: BufWriter<IoArc<UnixStream>>,
 }
 
-impl Drop for IpcTx<'_> {
+impl Drop for IpcTx {
 	fn drop(&mut self) {
-		match self.tx.get_ref().shutdown(Shutdown::Write) {
+		match self.tx.get_ref().as_ref().shutdown(Shutdown::Write) {
 			Ok(()) => {}
 			Err(error) => tracing::error!(?error, "failed shutting down IpcTx on drop"),
 		}
 	}
 }
 
-impl IpcTx<'_> {
+impl IpcTx {
 	pub fn blocking_send(&mut self, msg: &IpcMessage) -> Result<(), IpcError> {
 		let size = bincode::serialized_size(msg).unwrap();
 		self.tx.write_all(&size.to_le_bytes())?;
@@ -43,28 +88,74 @@ impl IpcTx<'_> {
 	}
 }
 
-pub struct IpcRx<'a> {
-	rx: BufReader<&'a UnixStream>,
+pub struct IpcRx {
+	rx: BufReader<IoArc<UnixStream>>,
 }
 
-impl Drop for IpcRx<'_> {
+impl Drop for IpcRx {
 	fn drop(&mut self) {
-		match self.rx.get_ref().shutdown(Shutdown::Read) {
+		match self.rx.get_ref().as_ref().shutdown(Shutdown::Read) {
 			Ok(()) => {}
 			Err(error) => tracing::error!(?error, "failed shutting down IpcRx on drop"),
 		}
 	}
 }
 
-impl IpcRx<'_> {
+impl IpcRx {
 	pub fn blocking_receive(&mut self) -> Result<IpcMessage, IpcError> {
+		// Set timeout behaviour
+		self.rx.get_ref().as_ref().set_read_timeout(None).unwrap();
+
 		let size = {
 			let mut size = [0u8; mem::size_of::<u64>()];
 			self.rx.read_exact(&mut size)?;
 			u64::from_le_bytes(size)
 		};
-		let ret = bincode::deserialize_from((&mut self.rx).take(size))?;
-		Ok(ret)
+		bincode::deserialize_from((&mut self.rx).take(size)).map_err(Into::into)
+	}
+
+	/// Breaks when receiving the following, recover by calling `blocking_receive`:
+	/// * An incomplete packet (`IpcError::PollingReceiveFragmented`)
+	/// * An packet larger than the buffer size (`IpcError::PollingReceiveTooLarge`)
+	pub fn polling_receive(&mut self) -> Result<Option<IpcMessage>, IpcError> {
+		// Set timeout behaviour
+		self.rx
+			.get_ref()
+			.as_ref()
+			.set_read_timeout(Some(Duration::from_nanos(1)))
+			.unwrap();
+
+		let buf_capacity = self.rx.capacity();
+		match self.rx.fill_buf() {
+			Err(err)
+				if matches!(
+					err.kind(),
+					io::ErrorKind::WouldBlock | io::ErrorKind::Interrupted
+				) =>
+			{
+				Ok(None)
+			}
+			Err(err) => Err(IpcError::from(err)),
+			Ok(&[]) => Err(IpcError::EndOfFile),
+			Ok(view) => {
+				if view.len() < mem::size_of::<u64>() {
+					return Err(IpcError::PollingReceiveFragmented);
+				}
+				let header_size = mem::size_of::<u64>();
+				let size = u64::from_le_bytes(view[..header_size].try_into().unwrap());
+				let packet_size =
+					usize::try_from(size + u64::try_from(header_size).unwrap()).unwrap();
+				if packet_size > buf_capacity {
+					return Err(IpcError::PollingReceiveTooLarge);
+				}
+				if view.len() < packet_size {
+					return Err(IpcError::PollingReceiveFragmented);
+				}
+				let ret = bincode::deserialize(&view[header_size..packet_size])?;
+				self.rx.consume(packet_size);
+				Ok(Some(ret))
+			}
+		}
 	}
 }
 
@@ -75,12 +166,16 @@ pub enum IpcMessage {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
+	PrioritiseStates(Vec<i32>),
+	ResetPriority,
 }
 
 #[derive(Debug)]
 pub enum IpcError {
 	EndOfFile,
 	Interrupted,
+	PollingReceiveFragmented,
+	PollingReceiveTooLarge,
 	Io(io::Error),
 }
 

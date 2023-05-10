@@ -81,7 +81,7 @@ impl S2EConfig {
 					);
 				}
 				FileSource::SymbolicContent { seed, .. } => {
-					cmd.write(host_files_dir.join(guest_path), seed)
+					cmd.write(host_files_dir.join(guest_path), seed);
 				}
 			}
 		}

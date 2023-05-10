@@ -1707,6 +1707,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "io-arc"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "488b94a404af90b5d42ceec00cdeb0bc0738cf07e65ca433ee0a3353ece932ce"
+dependencies = [
+ "futures-io",
+]
+
+[[package]]
 name = "io-lifetimes"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1721,6 +1730,7 @@ name = "ipc"
 version = "0.1.0"
 dependencies = [
  "bincode",
+ "io-arc",
  "serde",
  "smallvec",
  "tracing",

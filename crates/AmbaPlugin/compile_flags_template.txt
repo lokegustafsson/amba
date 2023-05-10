@@ -5,6 +5,7 @@
 -Wpedantic
 -Wconversion
 -Wno-c99-extensions
+-Wmissing-field-initializers
 -I
 crates/AmbaPlugin/inc
 -I

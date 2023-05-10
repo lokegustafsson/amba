@@ -8,7 +8,7 @@ CFLAGS ?= \
 	-g \
 	-fno-stack-protector \
 	-U _FORTIFY_SOURCE \
-	${APPEND_CFLAGS}
+	-static
 
 overrun: overrun.c
 run_overrun: overrun
@@ -16,6 +16,10 @@ run_overrun: overrun
 	echo 12 | ./overrun
 overrun.S: overrun
 	objdump -S overrun > overrun.S
+
+state-splitter: state-splitter.c
+state-splitter.S: state-splitter
+	objdump -S state-splitter > state-splitter.S
 
 hello: hello.c
 hello.S: hello

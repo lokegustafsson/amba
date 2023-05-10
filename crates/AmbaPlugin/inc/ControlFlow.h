@@ -20,7 +20,8 @@ using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
 using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
 
 struct StateMetadata {
-	StateIdAmba symbolic_state_id;
+	StateIdAmba amba_state_id;
+	StateIdS2E s2e_state_id;
 
 	NodeMetadataFFI into_ffi()  const;
 };

@@ -4,3 +4,5 @@ control-flow
 control-flow.S
 hello
 hello.S
+state-splitter
+state-splitter.S

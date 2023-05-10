@@ -1,6 +1,7 @@
 //! The Gui controller
 
 use std::{
+	collections::BTreeSet,
 	mem,
 	net::Shutdown,
 	os::unix::net::UnixStream,
@@ -10,12 +11,12 @@ use std::{
 };
 
 use eframe::egui::Context;
-use ipc::NodeMetadata;
-use model::Model;
+use ipc::{IpcInstance, IpcTx, NodeMetadata};
+use model::{ControlFlowGraph, Model};
 
 use crate::{
 	cmd::Cmd,
-	run::{embed, run},
+	run::{embed, runners},
 	SessionConfig,
 };
 
@@ -28,6 +29,7 @@ pub enum ControllerMsg {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
 	EmbeddingParamsUpdated,
+	NewPriority(usize),
 }
 
 pub enum EmbedderMsg {
@@ -45,6 +47,7 @@ pub struct Controller {
 	pub qemu_pid: Option<u32>,
 	pub embedder_tx: Option<mpsc::Sender<EmbedderMsg>>,
 }
+
 impl Controller {
 	/// Launch QEMU+S2E. That is, we do the equivalent of
 	/// <https://github.com/S2E/s2e-env/blob/master/s2e_env/templates/launch-s2e.sh>
@@ -57,7 +60,7 @@ impl Controller {
 		config: &SessionConfig,
 		model: Arc<Model>,
 	) -> Result<(), ()> {
-		run::prepare_run(cmd, config)?;
+		runners::prepare_run(cmd, config)?;
 
 		let ipc_socket = &config.temp_dir.join("amba-ipc.socket");
 		let qmp_socket = &config.temp_dir.join("qmp.socket");
@@ -69,31 +72,34 @@ impl Controller {
 		let embedder_gui_context = self.gui_context.clone();
 
 		let res = thread::scope(|s| {
-			let ipc = thread::Builder::new()
-				.name("ipc".to_owned())
-				.spawn_scoped(s, || {
-					run::run_ipc(ipc_socket, controller_tx_from_ipc)
-				})
-				.unwrap();
 			let qemu = thread::Builder::new()
 				.name("qemu".to_owned())
 				.spawn_scoped(s, || {
-					run::run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
+					runners::run_qemu(cmd, config, qmp_socket, controller_tx_from_qemu)
+				})
+				.unwrap();
+			let ipc_instance = IpcInstance::new_gui(ipc_socket);
+			let (ipc_rx, ipc_tx) = ipc_instance.into();
+			let ipc = thread::Builder::new()
+				.name("ipc".to_owned())
+				.spawn_scoped(s, || {
+					runners::run_ipc(ipc_rx, controller_tx_from_ipc)
 				})
 				.unwrap();
 			let qmp = thread::Builder::new()
 				.name("qmp".to_owned())
 				.spawn_scoped(s, || {
-					run::run_qmp(qmp_socket, controller_tx_from_qmp)
+					runners::run_qmp(qmp_socket, controller_tx_from_qmp)
 				})
 				.unwrap();
+			let embedder_model = model.clone();
 			let embedder = thread::Builder::new()
 				.name("embedder".to_owned())
 				.spawn_scoped(s, move || {
-					embed::run_embedder(&*model, embedder_rx, embedder_gui_context)
+					embed::run_embedder(&embedder_model, embedder_rx, embedder_gui_context)
 				})
 				.unwrap();
-			self.run_controller();
+			self.run_controller(ipc_tx, model);
 			self.shutdown_controller(ipc_socket, ipc, qemu, qmp, embedder)
 		});
 		cmd.try_remove(ipc_socket);
@@ -101,7 +107,7 @@ impl Controller {
 		res
 	}
 
-	fn run_controller(&mut self) {
+	fn run_controller(&mut self, mut ipc_tx: IpcTx, model: Arc<Model>) {
 		loop {
 			match self.rx.recv().unwrap() {
 				ControllerMsg::GuiShutdown => return,
@@ -125,6 +131,17 @@ impl Controller {
 				ControllerMsg::EmbeddingParamsUpdated => {
 					if let Some(tx) = self.embedder_tx.as_ref() {
 						let (Ok(_) | Err(_)) = tx.send(EmbedderMsg::WakeUp);
+					}
+				}
+				ControllerMsg::NewPriority(prio) => {
+					let states = model.as_ref().get_neighbour_states(prio);
+
+					tracing::info!("Sending state prio: {states:#?}");
+
+					let msg_result =
+						ipc_tx.blocking_send(&ipc::IpcMessage::PrioritiseStates(states));
+					if msg_result.is_err() {
+						tracing::info!("State priority signal sent, but execution has completed");
 					}
 				}
 			}

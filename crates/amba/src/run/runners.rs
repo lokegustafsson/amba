@@ -4,11 +4,7 @@
 
 use std::{
 	ffi::{OsStr, OsString},
-	net::Shutdown,
-	os::unix::{
-		net::{UnixListener, UnixStream},
-		process::CommandExt,
-	},
+	os::unix::{net::UnixStream, process::CommandExt},
 	path::Path,
 	process::{self, Command, ExitStatus},
 	sync::mpsc,
@@ -16,7 +12,7 @@ use std::{
 	time::Duration,
 };
 
-use ipc::{IpcError, IpcMessage};
+use ipc::{IpcError, IpcMessage, IpcRx};
 use qmp_client::{QmpClient, QmpCommand, QmpError, QmpEvent};
 
 use crate::{
@@ -79,11 +75,7 @@ pub fn prepare_run(cmd: &mut Cmd, config: &SessionConfig) -> Result<(), ()> {
 	Ok(())
 }
 
-pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
-	let ipc_listener = UnixListener::bind(ipc_socket).unwrap();
-	let stream = ipc_listener.accept().unwrap().0;
-	let (_ipc_tx, mut ipc_rx) = ipc::new_wrapping(&stream);
-	tracing::info!("IPC initialized");
+pub fn run_ipc(mut ipc_rx: IpcRx, controller_tx: mpsc::Sender<ControllerMsg>) -> Result<(), ()> {
 	loop {
 		match ipc_rx.blocking_receive() {
 			Ok(IpcMessage::NewEdges {
@@ -104,8 +96,6 @@ pub fn run_ipc(ipc_socket: &Path, controller_tx: mpsc::Sender<ControllerMsg>) ->
 			Err(other) => panic!("ipc error: {other:?}"),
 		}
 	}
-	stream.shutdown(Shutdown::Both).unwrap();
-	tracing::info!("IPC shut down");
 	Ok(())
 }
 

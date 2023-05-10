@@ -8,7 +8,8 @@ namespace control_flow {
 NodeMetadataFFI StateMetadata::into_ffi() const {
 	return (NodeMetadataFFI) {
 		.metadata_type = 0,
-		.symbolic_state_id = (u32) this->symbolic_state_id.val,
+		.amba_state_id = (u32) this->amba_state_id.val,
+		.s2e_state_id = (i32) this->s2e_state_id.val,
 		.basic_block_vaddr = 0,
 		.basic_block_generation = 0,
 		.basic_block_elf_vaddr = 0,
@@ -19,7 +20,8 @@ NodeMetadataFFI StateMetadata::into_ffi() const {
 NodeMetadataFFI BasicBlockMetadata::into_ffi() const {
 	return (NodeMetadataFFI) {
 		.metadata_type = 1,
-		.symbolic_state_id = (u32) this->symbolic_state_id.val,
+		.amba_state_id = (u32) this->symbolic_state_id.val,
+		.s2e_state_id = 0,
 		.basic_block_vaddr = this->basic_block_vaddr,
 		.basic_block_generation = this->basic_block_generation,
 		.basic_block_elf_vaddr = this->basic_block_elf_vaddr,
