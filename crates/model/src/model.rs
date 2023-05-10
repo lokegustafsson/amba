@@ -12,8 +12,6 @@ use crate::control_flow::ControlFlowGraph;
 
 /// An `Arc<Model>` is shared between the AMBA gui and embedder threads.
 pub struct Model {
-	// TODO: For every graph: the graph, the graph2d, the rendered node metadata
-	// (controlflowgraph because we must support incremental edge adding)
 	block_control_flow: RwLock<ControlFlowGraph>,
 	pub state_control_flow: RwLock<ControlFlowGraph>,
 	raw_state_graph: RwLock<Graph2D>,
