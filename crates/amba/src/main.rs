@@ -9,7 +9,7 @@ use std::{
 use chrono::offset::Local;
 use model::Model;
 use rand::{distributions::Alphanumeric, Rng};
-use recipe::{Recipe, RecipeError};
+use recipe::{FileSource, Recipe, RecipeError};
 use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 
 use crate::cmd::Cmd;
@@ -202,6 +202,25 @@ impl SessionConfig {
 			recipe,
 			sigstop_before_qemu_exec: run_args.debugger,
 		})
+	}
+
+	pub fn executable_host_path(&self) -> PathBuf {
+		let mut guest_path: &str = &self.recipe.executable_path;
+		while let Some(stripped) = guest_path.strip_prefix("./") {
+			assert_ne!(stripped.chars().next(), Some('/'));
+			guest_path = stripped;
+		}
+		assert!(!guest_path.is_empty());
+		match self.recipe.files.get(guest_path) {
+			None => panic!(
+				"invalid recipe: guest path '{guest_path}' matches no guest file: {:?}",
+				self.recipe.files
+			),
+			Some(FileSource::Host(host_path)) => self.recipe_path.parent().unwrap().join(host_path),
+			Some(
+				symbolic @ (FileSource::SymbolicContent { .. } | FileSource::SymbolicHost { .. }),
+			) => panic!("invalid recipe: executable file cannot be symbolic: {symbolic:?}"),
+		}
 	}
 }
 

@@ -96,7 +96,12 @@ impl Controller {
 			let embedder = thread::Builder::new()
 				.name("embedder".to_owned())
 				.spawn_scoped(s, move || {
-					embed::run_embedder(&embedder_model, embedder_rx, embedder_gui_context)
+					embed::run_embedder(
+						&embedder_model,
+						embedder_rx,
+						embedder_gui_context,
+						config,
+					)
 				})
 				.unwrap();
 			self.run_controller(ipc_tx, model);

@@ -2,17 +2,20 @@
 
 use std::sync::mpsc;
 
+use disassembler::DebugInfoContext;
 use eframe::egui::Context;
 use model::{LayoutMadeProgress, Model};
 
-use crate::run::control::EmbedderMsg;
+use crate::{run::control::EmbedderMsg, SessionConfig};
 
 pub fn run_embedder(
 	model: &Model,
 	rx: mpsc::Receiver<EmbedderMsg>,
 	gui_context: Option<Context>,
+	config: &SessionConfig,
 ) -> Result<(), ()> {
 	let mut blocking = true;
+	let debug_info_context = DebugInfoContext::new(&config.executable_host_path()).unwrap();
 	loop {
 		let message = if blocking {
 			// Will wait

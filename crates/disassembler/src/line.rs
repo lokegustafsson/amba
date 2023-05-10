@@ -6,7 +6,7 @@ use std::{
 
 use addr2line::{
 	gimli::{EndianReader, RunTimeEndian},
-	object::read,
+	object::read::{Error as ObjectReadError, File as ObjectFile},
 };
 use elsa::FrozenMap;
 use thiserror::Error;
@@ -20,7 +20,7 @@ pub enum Error {
 	#[error("{0}")]
 	Gimli(#[from] addr2line::gimli::Error),
 	#[error("{0}")]
-	ObjectRead(#[from] read::Error),
+	ObjectRead(#[from] ObjectReadError),
 	#[error("Stripped? Missing debug data: {0}")]
 	MissingDebugData(&'static str),
 	#[error("Partially stripped? A weird subset of debug data is missing")]
@@ -84,17 +84,21 @@ impl FileLineCache {
 	}
 }
 
-pub struct Addr2Line {
+pub struct DebugInfoContext {
 	file_line_cache: FileLineCache,
 	addr2line_context: Context,
 }
 
-impl Addr2Line {
+impl DebugInfoContext {
 	/// `filepath` is the path to the binary.
 	pub fn new(filepath: &Path) -> Result<Self, Error> {
 		Ok(Self {
 			file_line_cache: FileLineCache::default(),
-			addr2line_context: Addr2Line::create_addr2line_context(filepath)?,
+			addr2line_context: {
+				let contents = fs::read(&filepath)?;
+				let parsed = ObjectFile::parse(&*contents)?;
+				addr2line::Context::new(&parsed)?
+			},
 		})
 	}
 
@@ -164,15 +168,6 @@ impl Addr2Line {
 			))
 		});
 		Ok(frame)
-	}
-
-	fn create_addr2line_context<P>(filepath: P) -> Result<Context, Error>
-	where
-		P: AsRef<Path> + fmt::Debug,
-	{
-		let contents = fs::read(&filepath)?;
-		let parsed = read::File::parse(&*contents)?;
-		Ok(addr2line::Context::new(&parsed)?)
 	}
 }
 
