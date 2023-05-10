@@ -15,7 +15,7 @@ pub fn run_embedder(
 	config: &SessionConfig,
 ) -> Result<(), ()> {
 	let mut blocking = true;
-	let debug_info_context = DebugInfoContext::new(&config.executable_host_path()).unwrap();
+	let mut debug_info_context = DebugInfoContext::new(&config.executable_host_path()).unwrap();
 	loop {
 		let message = if blocking {
 			// Will wait
@@ -29,7 +29,7 @@ pub fn run_embedder(
 				block_edges,
 				state_edges,
 			}) => {
-				model.add_new_edges(state_edges, block_edges);
+				model.add_new_edges(state_edges, block_edges, &mut debug_info_context);
 
 				blocking = false;
 				continue;

@@ -1,11 +1,13 @@
 use std::{
 	collections::BTreeSet,
-	fmt, mem,
+	fmt::{self, Debug},
+	mem,
 	ops::BitOrAssign,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
 	time::Instant,
 };
 
+use disassembler::DebugInfoContext;
 use graphui::{EmbeddingParameters, Graph2D, LodText};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
@@ -41,10 +43,13 @@ impl Model {
 		&self,
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
+		debug_info_context: &mut DebugInfoContext,
 	) {
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
-		let new_lod_text = |(metadata, self_edge)| new_lod_text_impl(&metadata, self_edge);
+		let mut new_lod_text = |(metadata, has_self_edge)| {
+			new_lod_text_impl(&metadata, has_self_edge, debug_info_context)
+		};
 
 		{
 			let mut block_control_flow = self.block_control_flow.write().unwrap();
@@ -52,17 +57,23 @@ impl Model {
 				block_control_flow.update(from, to);
 			}
 
-			self.raw_block_graph
-				.write()
-				.unwrap()
-				.seeded_replace_self_with({
-					let (nodes, self_edge, edges) =
-						block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
-					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
-						edges,
-					)
-				});
+			mem::drop(
+				self.raw_block_graph
+					.write()
+					.unwrap()
+					.seeded_replace_self_with({
+						let (nodes, self_edge, edges) =
+							block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+						(
+							nodes
+								.into_iter()
+								.zip(self_edge)
+								.map(&mut new_lod_text)
+								.collect(),
+							edges,
+						)
+					}),
+			);
 			self.compressed_block_graph
 				.write()
 				.unwrap()
@@ -70,7 +81,11 @@ impl Model {
 					let (nodes, self_edge, edges) = block_control_flow
 						.get_compressed_metadata_and_selfedge_and_sequential_edges();
 					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						nodes
+							.into_iter()
+							.zip(self_edge)
+							.map(&mut new_lod_text)
+							.collect(),
 						edges,
 					)
 				});
@@ -89,7 +104,11 @@ impl Model {
 					let (nodes, self_edge, edges) =
 						state_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
 					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						nodes
+							.into_iter()
+							.zip(self_edge)
+							.map(&mut new_lod_text)
+							.collect(),
 						edges,
 					)
 				});
@@ -212,7 +231,11 @@ impl BitOrAssign for LayoutMadeProgress {
 	}
 }
 
-fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
+fn new_lod_text_impl(
+	metadata: &NodeMetadata,
+	has_self_edge: bool,
+	debug_info_context: &mut DebugInfoContext,
+) -> LodText {
 	let mut ret = LodText::new();
 	let marker = if has_self_edge { "↺" } else { "" };
 
