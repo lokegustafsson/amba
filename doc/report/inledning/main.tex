@@ -4,10 +4,10 @@ Cybereason\footnote{Cybereason är ett cybersäkerhetsteknikföretag som erbjude
 plattform för skydd av ändpunkter (jfr. eng. \emph{endpoints}) som t.ex.
 antivirusprogram. Företaget utför även forskning inom cybersäkerhet genom
 \emph{reverse engeneering} av skadeprogram och
-systemsårbarhetsanalys.}~\cite{enwiki:1147596623} svarade över 70 procent av de
+systemsårbarhetsanalys~\cite{enwiki:1147596623}.} svarade över 70 procent av de
 över 1400 tillfrågade säkerhetsspecialister i en
 av deras studier att deras organisation hade utsats för
-utpressningsprogram (engelska: \emph{ransomware}) minst en gång de senaste
+utpressningsprogram (jfr eng. \emph{ransomware}) minst en gång de senaste
 24 månaderna~\cite{cyberreason2021, cyberreason2022}. Cybereasons rapporter
 beskriver att några av de direkta följderna av att en lyckad attack är: höga
 kostnader för organisationen; stoppad produktion; konsekvenser från reglerare;
@@ -16,7 +16,26 @@ bland annat uppsägningar av anställda för att kunna kompensera. Bloomberg
 Newsweek~\cite{gallagher2023} beskriver hur cancerpatienter som behövde akut
 sjukvård förflyttades till sjukhus med fungerade datorsystem när Irlands
 offentliga sjukhussystem låg nere~\cite{hse_report}\todo{why is this needed?
-This sentence talks about Newsweek's article only /Iulia}. \emph{Ransomware}
-attacker möjliggörs tack vare säkerhetsbrister i programvarorna som finns på
-offrens
-datorsystem.
+This sentence talks about Newsweek's article only /Iulia}. Det finns olika
+metoder till cyberattacker men många angripare och skadeprogram använder sig av
+olika säkerhetsbrister i programvaror.
+
+Vanliga exempel på säkerhetsbrister som utnyttjas av angripare och skadeprogram
+är minnessårbarheter, som tillåter access till minne utanför gränserna till
+viss minnesregion, t.ex. buffertöverflöden (jfr eng. \emph{buffer
+overflow}) och formatsträng (jfr eng. \emph{format string}). Den
+vanligaste minnessårbarheten är buffertöverflöde vilket uppstår när
+programmerare inte utför tillräckliga gränskontroller, vilket
+utlöser en åtkomst bortom gränserna för viss minnesregion. Angripare kan
+utnyttja detta för att korrumpera programmets normala beteende genom att skriva
+bortom gränserna~\cite{computer_security_cs161}. Formatsträngsbugg uppstår när
+någon typ av indata tolkas och används som input till vanliga
+textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
+konvertingsfunktioner för data med olika typer. Om inte en noggrann och
+tillräcklig utvärdering av indatan görs innan indatan används i en funktion som
+kan tolka formatsträng kan funktionen använda stacken och den data som råkar
+ligga där som argument för konverteringsfunktioner. Med noggrann utformning av
+indata kan en angripare utnyttja formatsträngsbugg för att exekvera godtyckliga
+kommandon på en dator som kör programvaran.
+
+För att upptäcka sårbarheter i programvaror kan många 
