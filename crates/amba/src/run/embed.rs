@@ -2,7 +2,7 @@
 
 use std::sync::mpsc;
 
-use disassembler::DebugInfoContext;
+use disassembler::DisasmContext;
 use eframe::egui::Context;
 use model::{LayoutMadeProgress, Model};
 
@@ -15,7 +15,7 @@ pub fn run_embedder(
 	config: &SessionConfig,
 ) -> Result<(), ()> {
 	let mut blocking = true;
-	let mut debug_info_context = DebugInfoContext::new(&config.executable_host_path()).unwrap();
+	let mut debug_info_context = DisasmContext::new(&config.executable_host_path()).unwrap();
 	loop {
 		let message = if blocking {
 			// Will wait

@@ -8,7 +8,7 @@ use std::{
 	time::Instant,
 };
 
-use disassembler::DebugInfoContext;
+use disassembler::DisasmContext;
 use graphui::{EmbeddingParameters, Graph2D, LodText};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
@@ -44,13 +44,12 @@ impl Model {
 		&self,
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
-		debug_info_context: &mut DebugInfoContext,
+		disasm_context: &mut DisasmContext,
 	) {
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
-		let mut new_lod_text = |(metadata, has_self_edge)| {
-			new_lod_text_impl(&metadata, has_self_edge, debug_info_context)
-		};
+		let mut new_lod_text =
+			|(metadata, has_self_edge)| new_lod_text_impl(&metadata, has_self_edge, disasm_context);
 
 		{
 			let mut block_control_flow = self.block_control_flow.write().unwrap();
@@ -233,13 +232,13 @@ impl BitOrAssign for LayoutMadeProgress {
 fn new_lod_text_impl(
 	metadata: &NodeMetadata,
 	has_self_edge: bool,
-	debug_info_context: &DebugInfoContext,
+	disasm_context: &DisasmContext,
 ) -> LodText {
 	let mut ret = LodText::new();
 	let marker = if has_self_edge { "↺" } else { "" };
 	let function_name = |elf_vaddr: Option<NonZeroU64>| {
 		let elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
-		match debug_info_context.get_function_name(elf_vaddr) {
+		match disasm_context.get_function_name(elf_vaddr) {
 			Ok(ret) => ret,
 			Err(err) => {
 				tracing::warn!(
@@ -255,11 +254,11 @@ fn new_lod_text_impl(
 		use std::fmt::Write;
 		let mut elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
 		let ins_size_and_disasm =
-			disassembler::x64_to_assembly(content, vaddr.map_or(0, NonZeroU64::get));
+			disasm_context.x64_to_assembly(content, vaddr.map_or(0, NonZeroU64::get));
 
 		let mut ret = String::new();
 		for (size, disasm) in ins_size_and_disasm {
-			match debug_info_context.get_source_line(elf_vaddr) {
+			match disasm_context.get_source_line(elf_vaddr) {
 				Ok(Some(line)) => writeln!(ret, "{}", line).unwrap(),
 				Ok(None) => {}
 				Err(err) => {
