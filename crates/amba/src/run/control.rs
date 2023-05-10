@@ -134,7 +134,7 @@ impl Controller {
 					}
 				}
 				ControllerMsg::NewPriority(prio) => {
-					let states = model.as_ref().get_neighbours(prio);
+					let states = model.as_ref().get_neighbour_states(prio);
 
 					tracing::info!("Sending state prio: {states:#?}");
 

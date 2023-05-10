@@ -161,7 +161,7 @@ impl Model {
 		.to_owned()
 	}
 
-	pub fn get_neighbours(&self, prio: usize) -> Vec<i32> {
+	pub fn get_neighbour_states(&self, prio: usize) -> Vec<i32> {
 		fn get_neighbours_inner(idx: u64, state_cfg: &ControlFlowGraph, out: &mut BTreeSet<i32>) {
 			let NodeMetadata::State { s2e_state_id , .. } = state_cfg.metadata[idx as usize] else {panic!()};
 			out.insert(s2e_state_id);
