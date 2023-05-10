@@ -58,23 +58,21 @@ impl Model {
 				block_control_flow.update(from, to);
 			}
 
-			mem::drop(
-				self.raw_block_graph
-					.write()
-					.unwrap()
-					.seeded_replace_self_with({
-						let (nodes, self_edge, edges) =
-							block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
-						(
-							nodes
-								.into_iter()
-								.zip(self_edge)
-								.map(&mut new_lod_text)
-								.collect(),
-							edges,
-						)
-					}),
-			);
+			self.raw_block_graph
+				.write()
+				.unwrap()
+				.seeded_replace_self_with({
+					let (nodes, self_edge, edges) =
+						block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+					(
+						nodes
+							.into_iter()
+							.zip(self_edge)
+							.map(&mut new_lod_text)
+							.collect(),
+						edges,
+					)
+				});
 			self.compressed_block_graph
 				.write()
 				.unwrap()
