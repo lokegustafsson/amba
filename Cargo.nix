@@ -2857,6 +2857,7 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/model");
     dependencies = {
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
+      disassembler = rustPackages."unknown".disassembler."0.1.0" { inherit profileName; };
       graphui = rustPackages."unknown".graphui."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
       smallvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".smallvec."1.10.0" { inherit profileName; };

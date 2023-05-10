@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 data-structures = { path = "../data-structures" }
+disassembler = { path = "../disassembler" }
 graphui = { path = "../graphui" }
 ipc = { path = "../ipc" }
 smallvec = { version = "1.8", default-features = false, features = [ "union", "const_generics", "const_new", "write", "serde" ] }

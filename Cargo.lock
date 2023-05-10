@@ -2051,6 +2051,7 @@ name = "model"
 version = "0.1.0"
 dependencies = [
  "data-structures",
+ "disassembler",
  "graphui",
  "ipc",
  "smallvec",
