@@ -13,7 +13,7 @@ use crate::control_flow::ControlFlowGraph;
 /// An `Arc<Model>` is shared between the AMBA gui and embedder threads.
 pub struct Model {
 	block_control_flow: RwLock<ControlFlowGraph>,
-	pub state_control_flow: RwLock<ControlFlowGraph>,
+	state_control_flow: RwLock<ControlFlowGraph>,
 	raw_state_graph: RwLock<Graph2D>,
 	raw_block_graph: RwLock<Graph2D>,
 	compressed_block_graph: RwLock<Graph2D>,
@@ -158,6 +158,10 @@ impl Model {
 		.unwrap()
 		.get_node_text(node_index)
 		.to_owned()
+	}
+
+	pub fn read_state_control_flow(&self) -> RwLockReadGuard<ControlFlowGraph> {
+		self.state_control_flow.read().unwrap()
 	}
 }
 

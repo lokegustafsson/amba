@@ -147,7 +147,7 @@ impl Controller {
 						}
 					}
 
-					let state_cfg = model.state_control_flow.read().unwrap();
+					let state_cfg = model.read_state_control_flow();
 					let mut states_set = BTreeSet::new();
 					get_neighbours(prio as u64, &state_cfg, &mut states_set);
 					let states = states_set.into_iter().collect();
