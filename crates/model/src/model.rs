@@ -1,4 +1,5 @@
 use std::{
+	collections::BTreeSet,
 	fmt, mem,
 	ops::BitOrAssign,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
@@ -160,8 +161,20 @@ impl Model {
 		.to_owned()
 	}
 
-	pub fn read_state_control_flow(&self) -> RwLockReadGuard<ControlFlowGraph> {
-		self.state_control_flow.read().unwrap()
+	pub fn get_neighbours(&self, prio: usize) -> Vec<i32> {
+		fn get_neighbours_inner(idx: u64, state_cfg: &ControlFlowGraph, out: &mut BTreeSet<i32>) {
+			let NodeMetadata::State { s2e_state_id , .. } = state_cfg.metadata[idx as usize] else {panic!()};
+			out.insert(s2e_state_id);
+			let to = &state_cfg.graph.nodes[&idx].to;
+			for &link in to.iter() {
+				get_neighbours_inner(link, state_cfg, out);
+			}
+		}
+
+		let state_cfg = self.state_control_flow.read().unwrap();
+		let mut states_set = BTreeSet::new();
+		get_neighbours_inner(prio as u64, &state_cfg, &mut states_set);
+		states_set.into_iter().collect()
 	}
 }
 
