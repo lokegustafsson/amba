@@ -1,4 +1,5 @@
 use std::{
+	borrow::Cow,
 	fs, io, iter,
 	path::{Path, PathBuf},
 	rc::Rc,
@@ -100,6 +101,21 @@ impl DebugInfoContext {
 				addr2line::Context::new(&parsed)?
 			},
 		})
+	}
+
+	pub fn get_function_name(&self, addr: u64) -> Result<String, Error> {
+		let mut frames = self.addr2line_context.find_frames(addr)?;
+		let mut ret = String::new();
+		while let Some(frame) = frames.next()? {
+			if !ret.is_empty() {
+				ret.push_str(" in ");
+			}
+			match frame.function {
+				Some(name) => ret.push_str(&*name.demangle()?),
+				None => ret.push_str("?"),
+			}
+		}
+		Ok(ret)
 	}
 
 	/// Returns the line of source code corresponding to `addr`, if location information for `addr`

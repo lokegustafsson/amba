@@ -2,6 +2,7 @@ use std::{
 	collections::BTreeSet,
 	fmt::{self, Debug},
 	mem,
+	num::NonZeroU64,
 	ops::BitOrAssign,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
 	time::Instant,
@@ -234,10 +235,48 @@ impl BitOrAssign for LayoutMadeProgress {
 fn new_lod_text_impl(
 	metadata: &NodeMetadata,
 	has_self_edge: bool,
-	debug_info_context: &mut DebugInfoContext,
+	debug_info_context: &DebugInfoContext,
 ) -> LodText {
 	let mut ret = LodText::new();
 	let marker = if has_self_edge { "↺" } else { "" };
+	let function_name = |elf_vaddr: Option<NonZeroU64>| {
+		let elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
+		match debug_info_context.get_function_name(elf_vaddr) {
+			Ok(ret) => ret,
+			Err(err) => {
+				tracing::warn!(
+					?err,
+					elf_vaddr,
+					"debuginfo get_function_name failed"
+				);
+				format!("{:#x}", elf_vaddr)
+			}
+		}
+	};
+	let block_code = |vaddr: Option<NonZeroU64>, elf_vaddr: Option<NonZeroU64>, content: &[u8]| {
+		use std::fmt::Write;
+		let mut elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
+		let ins_size_and_disasm =
+			disassembler::x64_to_assembly(content, vaddr.map_or(0, NonZeroU64::get));
+
+		let mut ret = String::new();
+		for (size, disasm) in ins_size_and_disasm {
+			match debug_info_context.get_source_line(elf_vaddr) {
+				Ok(Some(line)) => writeln!(ret, "{}", line).unwrap(),
+				Ok(None) => {}
+				Err(err) => {
+					tracing::warn!(
+						?err,
+						elf_vaddr,
+						"debuginfo get_function_name failed"
+					);
+				}
+			}
+			writeln!(ret, "{}", disasm);
+			elf_vaddr += size as u64;
+		}
+		ret
+	};
 
 	match metadata {
 		NodeMetadata::State {
@@ -248,33 +287,53 @@ fn new_lod_text_impl(
 		}
 		NodeMetadata::BasicBlock {
 			symbolic_state_id: state,
+			basic_block_vaddr,
+			basic_block_generation: _,
+			basic_block_elf_vaddr,
+			basic_block_content,
 			..
 		} => {
-			ret.coarser(format!("{state}{marker}\nfunctionname+addr2line"));
-			ret.coarser(format!("{state}{marker}\nfunctionname"));
+			let name = function_name(*basic_block_elf_vaddr);
+			let code = block_code(
+				*basic_block_vaddr,
+				*basic_block_elf_vaddr,
+				&*basic_block_content,
+			);
+			ret.coarser(format!("{state}{marker}\n{name}\n{code}"));
+			ret.coarser(format!("{state}{marker}\n{name}"));
 			ret.coarser(format!("{state}{marker}"));
 		}
 		NodeMetadata::CompressedBasicBlock(boxed) => {
 			let CompressedBasicBlock {
-				symbolic_state_ids, ..
+				symbolic_state_ids,
+				basic_block_vaddrs,
+				basic_block_generations: _,
+				basic_block_elf_vaddrs,
+				basic_block_contents,
 			} = &**boxed;
 			assert!(!symbolic_state_ids.is_empty());
-			let state_first = symbolic_state_ids.first().unwrap();
-			let state_last = symbolic_state_ids.last().unwrap();
-			if state_first == state_last {
-				ret.coarser(format!(
-					"{state_first}{marker}\nfunctionname+addr2line"
-				));
-				ret.coarser(format!("{state_first}{marker}\nfunctionname"));
-				ret.coarser(format!("{state_first}{marker}"));
+			let first = symbolic_state_ids.first().unwrap();
+			let last = symbolic_state_ids.last().unwrap();
+
+			let name: String = basic_block_elf_vaddrs
+				.iter()
+				.map(|elf_vaddr| function_name(*elf_vaddr))
+				.collect();
+			let code: String = basic_block_vaddrs
+				.iter()
+				.zip(basic_block_elf_vaddrs)
+				.zip(basic_block_contents)
+				.map(|((vaddr, elf_vaddr), content)| block_code(*vaddr, *elf_vaddr, &*content))
+				.collect();
+
+			if first == last {
+				ret.coarser(format!("{first}{marker}\n{name}\n{code}"));
+				ret.coarser(format!("{first}{marker}\n{name}"));
+				ret.coarser(format!("{first}{marker}"));
 			} else {
-				ret.coarser(format!(
-					"{state_first}-{state_last}{marker}\nfunctionname+addr2line"
-				));
-				ret.coarser(format!(
-					"{state_first}-{state_last}{marker}\nfunctionname"
-				));
-				ret.coarser(format!("{state_first}-{state_last}{marker}"));
+				ret.coarser(format!("{first}-{last}{marker}\n{name}\n{code}"));
+				ret.coarser(format!("{first}-{last}{marker}\n{name}"));
+				ret.coarser(format!("{first}-{last}{marker}"));
 			}
 		}
 	}

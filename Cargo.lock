@@ -2055,6 +2055,7 @@ dependencies = [
  "graphui",
  "ipc",
  "smallvec",
+ "tracing",
 ]
 
 [[package]]
