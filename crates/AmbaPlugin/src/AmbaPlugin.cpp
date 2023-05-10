@@ -174,19 +174,12 @@ void AmbaPlugin::onStateSwitch(
 	S2EExecutionState *to
 ) {
 	// Load and reset searcher. Retry if reset by other thread
-	klee::Searcher *expected;
-	while (true) {
-		expected = this->m_next_searcher.load();
-		bool loaded = this->m_next_searcher.compare_exchange_weak(expected, nullptr);
-		if (loaded) {
-			break;
-		}
-	}
+	klee::Searcher *new_searcher = this->m_next_searcher.exchange(nullptr);
 
-	if (expected != nullptr) {
+	if (new_searcher != nullptr) {
 		auto &executor = *this->s2e()->getExecutor();
 		auto old_searcher = executor.getSearcher();
-		executor.setSearcher(expected);
+		executor.setSearcher(new_searcher);
 		delete old_searcher;
 	}
 }

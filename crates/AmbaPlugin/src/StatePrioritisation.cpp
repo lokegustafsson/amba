@@ -74,17 +74,9 @@ void ipcReceiver(
 
 		new_searcher->update(nullptr, to_add, {});
 
-		klee::Searcher *expected;
-		while (true) {
-			expected = next_searcher->load();
-			bool loaded = next_searcher->compare_exchange_weak(expected, new_searcher);
-			if (loaded) {
-				break;
-			}
-		}
-
-		if (expected != nullptr) {
-			delete expected;
+		klee::Searcher *old_searcher = next_searcher->exchange(new_searcher);
+		if (old_searcher != nullptr) {
+			delete old_searcher;
 		}
 	}
 
