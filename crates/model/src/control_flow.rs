@@ -18,6 +18,7 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilding_time: Duration,
 	pub metadata: Vec<NodeMetadata>,
 	meta_mapping_unique_id_to_index: HashMap<NodeMetadata, usize>,
+	scc_cache: Option<Graph>,
 }
 
 impl FromIterator<(NodeMetadata, NodeMetadata)> for ControlFlowGraph {
@@ -99,6 +100,7 @@ impl ControlFlowGraph {
 			rebuilding_time: Duration::new(0, 0),
 			metadata: Vec::new(),
 			meta_mapping_unique_id_to_index: HashMap::new(),
+			scc_cache: None,
 		}
 	}
 
@@ -111,6 +113,8 @@ impl ControlFlowGraph {
 		let now = Instant::now();
 		let modified = self.graph.update(from, to);
 		self.updates += 1;
+
+		self.scc_cache = None;
 
 		// Only edit the compressed graph if this was a new link
 		if modified {
@@ -189,6 +193,26 @@ impl ControlFlowGraph {
 				.map(|(from, to)| (node_id_renamings[&from], node_id_renamings[&to]))
 				.collect(),
 		)
+	}
+
+	pub fn get_strongly_connected_components(&mut self) -> &Graph {
+		// Inner functions are required due to borrow checker limitations
+		fn get_cached(graph: &ControlFlowGraph) -> &Graph {
+			graph.scc_cache.as_ref().unwrap()
+		}
+		fn populate_cache(graph: &mut ControlFlowGraph) -> &Graph {
+			let cache = graph
+				.compressed_graph
+				.to_strongly_connected_components_tarjan();
+			graph.scc_cache = Some(cache);
+			graph.scc_cache.as_ref().unwrap()
+		}
+
+		if self.scc_cache.is_some() {
+			get_cached(self)
+		} else {
+			populate_cache(self)
+		}
 	}
 }
 
