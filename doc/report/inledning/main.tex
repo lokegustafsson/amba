@@ -1,24 +1,15 @@
-Attacker mot organisationers eller nationers IT-system har ofta förrödande
-direkta och indirekta konsekvenser för de drabbade. Enligt företaget
-Cybereason\footnote{Cybereason är ett cybersäkerhetsteknikföretag som erbjuder
-plattform för skydd av ändpunkter (jfr. eng. \emph{endpoints}) som t.ex.
-antivirusprogram. Företaget utför även forskning inom cybersäkerhet genom
-\emph{reverse engeneering} av skadeprogram och
-systemsårbarhetsanalys~\cite{enwiki:1147596623}.} svarade över 70 procent av de
-över 1400 tillfrågade säkerhetsspecialister i en
-av deras studier att deras organisation hade utsats för
-utpressningsprogram (jfr eng. \emph{ransomware}) minst en gång de senaste
-24 månaderna~\cite{cyberreason2021, cyberreason2022}. Cybereasons rapporter
-beskriver att några av de direkta följderna av att en lyckad attack är: höga
+En stor mängd organisationer har utsats för utpressningsprogram (jfr eng.
+\emph{ransomware}) minst en gång de senaste 24 månaderna~\cite{cyberreason2021,
+cyberreason2022}. Några av de direkta följderna av att en lyckad attack är: höga
 kostnader för organisationen; stoppad produktion; konsekvenser från reglerare;
-och skadat anseende. Dessutom leder de höga kostnaderna till
-bland annat uppsägningar av anställda för att kunna kompensera. Bloomberg
-Newsweek~\cite{gallagher2023} beskriver hur cancerpatienter som behövde akut
-sjukvård förflyttades till sjukhus med fungerade datorsystem när Irlands
-offentliga sjukhussystem låg nere~\cite{hse_report}\todo{why is this needed?
-This sentence talks about Newsweek's article only /Iulia}. Det finns olika
-metoder till cyberattacker men många angripare och skadeprogram använder sig av
-olika säkerhetsbrister i programvaror.
+och skadat anseende~\cite{cyberreason2021, cyberreason2022}. Dessutom leder
+de höga kostnaderna till bland annat uppsägningar av anställda för att kunna
+kompensera~\cite{cyberreason2021, cyberreason2022}. Till exempel påverkades
+Irlands offentliga sjuknussystem kraftigt när utpressningsprogram tog över en
+stor del av deras digitala infrastruktur~\cite{hse_report, gallagher2023}. I
+många fall är människan den svaga länken i cyberattacker men angripare och
+skadeprogram (jfr eng. \emph{malware}) utnyttjar också olika sårbarheter i
+programvaror.
 
 Vanliga fel i program som utnyttjas av angripare och skadeprogram är
 minnesårbarheter. Det som gör minnessårbarheter allvarligare till skillnad från
@@ -38,7 +29,7 @@ Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
 \emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile time
 checks}) för att undvika minnessårbarheter. Däremot finns det än idag många
 skäl för att fortsätta använda minnesosäkra programspråk som
-C såsom prestandaskäl~\cite{computer_security_cs161}.
+C, såsom prestandaskäl~\cite{computer_security_cs161}.
 
 Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka
 och åtgärda sårbarheter innan en angripare. Programanalys går ut på att
@@ -67,4 +58,8 @@ som delar en viss exekveringsväg genom kontrollflödet. Symbolisk fuzzing
 använder symbolisk exekvering för att generera olika indata till \emph{fuzzing}
 processen som effektivast uppnår den högsta täckning som kan uppnås genom att
 variera indatan.
+
+% why visualize the symbolic fuzzing process is something we need?
+
+% s2e ett av många alternativ, finns några andra exempel på symbolic execution engines
 
