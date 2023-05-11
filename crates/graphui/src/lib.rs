@@ -1,3 +1,5 @@
+use std::fmt;
+
 use egui::{self, Rect, Response, Sense, Ui, Widget};
 use emath::Vec2;
 
@@ -6,6 +8,27 @@ mod lod;
 
 pub use embed::{EmbeddingParameters, Graph2D};
 pub use lod::LodText;
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum ColouringMode {
+	AllGrey,
+	ByState,
+	StronglyConnectedComponents,
+	Function,
+}
+
+impl fmt::Display for ColouringMode {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		match self {
+			ColouringMode::AllGrey => write!(f, "All grey"),
+			ColouringMode::ByState => write!(f, "By state"),
+			ColouringMode::StronglyConnectedComponents => {
+				write!(f, "Strongly connected components")
+			}
+			ColouringMode::Function => write!(f, "Function"),
+		}
+	}
+}
 
 impl Widget for &mut EmbeddingParameters {
 	fn ui(self, ui: &mut Ui) -> Response {
