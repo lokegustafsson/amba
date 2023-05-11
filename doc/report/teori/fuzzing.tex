@@ -6,15 +6,16 @@ Grundprincipen i fuzzing är att attackera en större mängd av möjlig indata g
 att generera oväntad, godtycklig eller felaktig data. Denna typ av genererad
 indata resulterar ofta i syntaktiskt eller semantiskt felaktig indata som inte
 kan hanteras av målprogrammet. Således finns det anledning för
-utvecklingspotential, något som lett till bland annat mutation-based fuzzing och
-generaton-based fuzzing. Mutation-based fuzzing muterar känd giltig indata,
+utvecklingspotential, något som lett till bland annat mutationsbaserad fuzzing
+(jmf. eng. mutation-based fuzzing) och genereringsbaserad fuzzing (jmf. eng.
+generation-based fuzzing). Mutationsbaserad fuzzing muterar känd giltig indata,
 t.ex. om strängen 'fuzz' är giltig indata kan detta muteras till 'fuzzZZZZZ'. Om
 en användare exempelvis vill fuzztesta bildhanteringsbiblioteket libjpeg skulle
 detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
 seeds, värden som används i pseudoslumptalsgeneratorer för att generera
 pseudoslumptal, och sedan modifiera dessa. Detta skiljer sig från
-Generation-based fuzzing som genererar indata givet en modell för domänen -- en
-fördel i jämförelse med mutation-based fuzzing som kräver känd kvalitativ
+genereringsbaserad fuzzing som genererar indata givet en modell för domänen --
+en fördel i jämförelse med mutationsbaserad fuzzing som kräver känd kvalitativ
 indata~\cite{fuzzing}. 
 
 \subsection{Symbolisk fuzzing} Symbolisk fuzzing, eller concolic testing, är en
