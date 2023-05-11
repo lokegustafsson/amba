@@ -304,7 +304,9 @@ fn new_lod_text_impl(
 				*basic_block_elf_vaddr,
 				&*basic_block_content,
 			);
-			ret.coarser(format!("State: {state}{marker}\n{name}\n{code}"));
+			ret.coarser(format!(
+				"State: {state}{marker}\nWithin function: {name}\n{code}"
+			));
 			ret.coarser(format!("{state}{marker}\n{name}"));
 			ret.coarser(format!("{state}{marker}"));
 		}
@@ -316,32 +318,38 @@ fn new_lod_text_impl(
 				basic_block_elf_vaddrs,
 				basic_block_contents,
 			} = &**boxed;
+			use std::fmt::Write;
+
 			assert!(!symbolic_state_ids.is_empty());
 			let first = symbolic_state_ids.first().unwrap();
 			let last = symbolic_state_ids.last().unwrap();
 
-			let name: String = basic_block_elf_vaddrs
-				.iter()
-				.map(|elf_vaddr| format!("{} ", function_name(*elf_vaddr)))
-				.collect();
-			let code: String = basic_block_vaddrs
+			let mut names = String::new();
+			let mut disasm = String::new();
+			for ((&vaddr, &elf_vaddr), content) in basic_block_vaddrs
 				.iter()
 				.zip(basic_block_elf_vaddrs)
 				.zip(basic_block_contents)
-				.map(|((vaddr, elf_vaddr), content)| {
-					format!("{}\n", block_code(*vaddr, *elf_vaddr, &*content))
-				})
-				.collect();
+			{
+				let name = function_name(elf_vaddr);
+				let code = block_code(vaddr, elf_vaddr, &*content);
+				if !names.ends_with(&name) {
+					write!(names, " {name}").unwrap();
+				}
+				write!(disasm, "\n{name}\n{code}").unwrap();
+			}
 
 			if first == last {
-				ret.coarser(format!("State: {first}{marker}\n{name}\n{code}"));
-				ret.coarser(format!("{first}{marker}\n{name}"));
+				ret.coarser(format!(
+					"State: {first}{marker}\nWithin functions: {names}{disasm}"
+				));
+				ret.coarser(format!("{first}{marker}\n{names}"));
 				ret.coarser(format!("{first}{marker}"));
 			} else {
 				ret.coarser(format!(
-					"States: {first}-{last}{marker}\n{name}\n{code}"
+					"States: {first}-{last}{marker}\nWithin functions: {names}{disasm}"
 				));
-				ret.coarser(format!("{first}-{last}{marker}\n{name}"));
+				ret.coarser(format!("{first}-{last}{marker}\n{names}"));
 				ret.coarser(format!("{first}-{last}{marker}"));
 			}
 		}
