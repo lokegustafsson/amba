@@ -24,6 +24,12 @@ pub struct Model {
 	modelwide_single_writer_lock: Mutex<()>,
 }
 
+impl Default for Model {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl Model {
 	pub fn new() -> Self {
 		Self {
