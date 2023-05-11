@@ -4,7 +4,7 @@ use std::{
 	time::Instant,
 };
 
-use graphui::{EmbeddingParameters, Graph2D, GraphWidget, LodText};
+use graphui::{ColouringMode, EmbeddingParameters, Graph2D, GraphWidget, LodText};
 use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
 mod example_graph;
@@ -22,7 +22,11 @@ impl eframe::App for GraphTestGui {
 			if params_widget.changed() {
 				self.notify_params_changed.send(()).unwrap();
 			}
-			self.graph_widget.show(ui, &self.graph.read().unwrap());
+			self.graph_widget.show(
+				ui,
+				&self.graph.read().unwrap(),
+				ColouringMode::AllGrey,
+			);
 		});
 	}
 }

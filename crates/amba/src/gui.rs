@@ -151,7 +151,9 @@ impl App for Gui {
 				});
 		}
 
-		egui::CentralPanel::default().show(ctx, |ui| self.graph_widget.show(ui, &graph));
+		egui::CentralPanel::default().show(ctx, |ui| {
+			self.graph_widget.show(ui, &graph, self.colouring_mode)
+		});
 
 		if let Some(new_priority) = mem::take(&mut self.graph_widget.new_priority_node) {
 			self.controller_tx

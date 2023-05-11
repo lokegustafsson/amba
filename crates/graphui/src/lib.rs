@@ -132,7 +132,7 @@ impl GraphWidget {
 		self.active_node_and_pan.map(|(node, _)| node)
 	}
 
-	pub fn show(&mut self, ui: &mut Ui, graph: &Graph2D) {
+	pub fn show(&mut self, ui: &mut Ui, graph: &Graph2D, colouring_mode: ColouringMode) {
 		egui::Frame::none()
 			.stroke(ui.visuals().widgets.inactive.fg_stroke)
 			.show(ui, |ui| {
