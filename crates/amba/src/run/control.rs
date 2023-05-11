@@ -1,7 +1,6 @@
 //! The Gui controller
 
 use std::{
-	collections::BTreeSet,
 	mem,
 	net::Shutdown,
 	os::unix::net::UnixStream,
@@ -12,7 +11,7 @@ use std::{
 
 use eframe::egui::Context;
 use ipc::{IpcInstance, IpcTx, NodeMetadata};
-use model::{ControlFlowGraph, Model};
+use model::Model;
 
 use crate::{
 	cmd::Cmd,
