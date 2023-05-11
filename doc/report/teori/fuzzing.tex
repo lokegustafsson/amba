@@ -1,0 +1,63 @@
+Fuzzing är ett användbart automatiskt verktyg för att testa program efter ofta
+svårupptäckta problem som minnesbuggar, krascher, etc. tack vare dess enkelhet i
+att konfigurera verktyget mot godtyckliga program.  
+
+Grundprincipen i fuzzing är att attackera en större mängd av möjlig indata genom
+att generera oväntad, godtycklig eller felaktig data. Denna typ av genererad
+indata resulterar ofta i syntaktiskt eller semantiskt felaktig indata som inte
+kan hanteras av målprogrammet. Således finns det anledning för
+utvecklingspotential, något som lett till bland annat mutationsbaserad fuzzing
+(jmf. eng. mutation-based fuzzing) och genereringsbaserad fuzzing (jmf. eng.
+generation-based fuzzing). Mutationsbaserad fuzzing muterar känd giltig indata,
+t.ex. om strängen 'fuzz' är giltig indata kan detta muteras till 'fuzzZZZZZ'. Om
+en användare exempelvis vill fuzztesta bildhanteringsbiblioteket libjpeg skulle
+detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
+seeds, värden som används i pseudoslumptalsgeneratorer för att generera
+pseudoslumptal, och sedan modifiera dessa. Detta skiljer sig från
+genereringsbaserad fuzzing som genererar indata givet en modell för domänen --
+en fördel i jämförelse med mutationsbaserad fuzzing som kräver känd kvalitativ
+indata~\cite{fuzzing}. 
+
+\subsection{Symbolisk fuzzing} Symbolisk fuzzing, eller concolic testing, är en
+white-box fuzzermetod som nyttjar symbolisk exekvering för att maximera code
+coverage -- fuzzerns förmåga att traversera över samtliga kanter och noder i
+programmets kontrollflödesgraf. Skiljt från grey-box-fuzzers som AFL, möjliggör
+symbolisk exekvering att fuzzern alltid väljer en branch som inte tidigare
+tagits och således ökar code coverage~\cite{challenges_fuzzing}. Som beskrivet i
+avsnittet \nameref{symbolisk_exekvering} sker detta genom att emulera programmet
+med hjälp av en virtuell maskin och ersätta indata med symbolisk motsvarighet,
+som enklast beskrivs som en liknelse till matematiska formler i form av ett
+algebraiskt uttryck. Dessa uttryck bildar sedan tillsammans ett path constraint
+som skickas till en SMT-lösare som resulterar i en input som leder till en given
+branch. 
+
+\subsection{Problem med fuzzing} Ett problem är insikt om den underliggande
+kodstrukturen. En viktig egenskap hos fuzzers som används för att beskriva dess
+effektivitet är code coverage. Black-box-fuzzing är ett exempel på en fuzzer som
+saknar vetskap om den underliggande kodstrukturen och genererar endast
+slumpmässig indata, något som leder till ytlig testning av målprogrammet. I
+kontrast till black-box-fuzzing finns det andra fuzzers, till exempel
+grey-box-fuzzern AFL~\cite{aflplusplus} som tillämpar binärinstrumentering, en
+teknik för att observera eller manipulera en binär vilket görs genom att
+modifiera källkoden i binären. Genom binärinstrumentering fås information om
+underliggande basic blocks som delger övergången till nästa basic block. Detta
+används sedan av AFL för att ge feedback till fuzzern som minns code coverage
+för en viss indata och repeterar denna process för att maximera code coverage
+med ny indata och därmed öka testytan~\cite{challenges_fuzzing}.
+
+Fuzzers kräver ofta protokoll- eller domänkännedom för att kunna generera
+indata. Detta blir problem för komplexa kodbaser eller bibliotek som saknar
+trivial eller uppenbar indata och leder därmed till lägre code coverage. 
+
+White-box fuzzers är inte en allmän lösning till problemen med fuzzing, utan
+stretar med problem som exempelvis prestanda, path explosion, och falsk positiva
+resultat. Det finns en stark korrelation mellan code coverage och bug
+coverage~\cite{directed_greybox_fuzzing} men eftersom white-box fuzzing är ett
+prestandakrävande verktyg kan detta leda till falsk positiva resultat genom att
+resultatet från symboliska exekveringen guidar fuzzern längs med en branch som
+inte nödvändigtvis leder till en bug, eller som är omöjlig. Trots existensen av
+en stark korrelation mellan code coverage och bug coverage, innebär detta inte
+att buggar kan uteslutas vid testning med hög code coverage. Det har visat sig
+att enbart 3\% av Mozilla Firefox källkod innehåller
+sårbarheter~\cite{fault_prediction_vuln_pred}, och därför är det oproduktivt att
+blint följa code coverage.
