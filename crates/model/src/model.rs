@@ -58,28 +58,35 @@ impl Model {
 				block_control_flow.update(from, to);
 			}
 
+			let (raw_nodes, raw_edges) = {
+				let (metadata, self_edge, edges) =
+					block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+				let nodes = metadata
+					.into_iter()
+					.zip(self_edge)
+					.map(new_lod_text)
+					.collect();
+				(nodes, edges)
+			};
 			self.raw_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with({
-					let (nodes, self_edge, edges) =
-						block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
-					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
-						edges,
-					)
-				});
+				.seeded_replace_self_with(raw_nodes, raw_edges);
+
+			let (compressed_nodes, compressed_edges) = {
+				let (metadata, self_edge, edges) =
+					block_control_flow.get_compressed_metadata_and_selfedge_and_sequential_edges();
+				let nodes = metadata
+					.into_iter()
+					.zip(self_edge)
+					.map(new_lod_text)
+					.collect();
+				(nodes, edges)
+			};
 			self.compressed_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with({
-					let (nodes, self_edge, edges) = block_control_flow
-						.get_compressed_metadata_and_selfedge_and_sequential_edges();
-					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
-						edges,
-					)
-				});
+				.seeded_replace_self_with(compressed_nodes, compressed_edges);
 		}
 
 		{
@@ -88,17 +95,20 @@ impl Model {
 				state_control_flow.update(from, to);
 			}
 
+			let (state_nodes, state_edges) = {
+				let (metadata, self_edge, edges) =
+					state_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+				let nodes = metadata
+					.into_iter()
+					.zip(self_edge)
+					.map(new_lod_text)
+					.collect();
+				(nodes, edges)
+			};
 			self.raw_state_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with({
-					let (nodes, self_edge, edges) =
-						state_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
-					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
-						edges,
-					)
-				});
+				.seeded_replace_self_with(state_nodes, state_edges);
 		}
 		mem::drop(mutex);
 	}

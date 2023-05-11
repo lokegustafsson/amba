@@ -64,10 +64,7 @@ impl Graph2D {
 
 	/// Equivalent to `*self = Graph2D::new(node_count, edges)`, but with a better
 	/// initial layout guess.
-	pub fn seeded_replace_self_with(
-		&mut self,
-		(nodes, edges): (Vec<LodText>, Vec<(usize, usize)>),
-	) {
+	pub fn seeded_replace_self_with(&mut self, nodes: Vec<LodText>, edges: Vec<(usize, usize)>) {
 		let num_nodes = nodes.len();
 		let old = mem::replace(self, Self::new(nodes, edges));
 
