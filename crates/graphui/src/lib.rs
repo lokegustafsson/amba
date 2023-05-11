@@ -318,14 +318,23 @@ fn draw_node(
 			style_widgets.hovered.bg_stroke,
 		)
 	};
-	let (lod_text, lod_size) = {
-		let font_height = ui.text_style_height(&egui::style::TextStyle::Small);
-		let height = (node_width / font_height) as u32;
-		const SHAPE: f32 = 1.6;
-		let width = (SHAPE * node_width / font_height) as u32;
-		let (lod_text, w, h) = text.get_given_available_square(width, height);
-		let lod_size = (0.9 * node_width / f32::max(w as f32 / SHAPE, h as f32)).clamp(1.0, 200.0);
-		(lod_text, lod_size)
+	let (lod_text, lod_size, lod_center) = {
+		let useful_node_width = 0.6 * node_width;
+		const SHAPE: f32 = 2.0;
+		let (lod_text, w, h) = {
+			let font_height = ui.text_style_height(&egui::style::TextStyle::Small);
+			let height = (useful_node_width / font_height) as u32;
+			let width = (SHAPE * useful_node_width / font_height) as u32;
+			text.get_given_available_square(width, height)
+		};
+		let num_lines = lod_text.lines().count();
+		let lod_size = {
+			let width = w as f32 / SHAPE;
+			let height = h as f32;
+			(useful_node_width / f32::max(width, height)).clamp(1.0, 400.0)
+		};
+		let lod_center = num_lines <= 2;
+		(lod_text, lod_size, lod_center)
 	};
 
 	ui.put(rect, move |ui: &mut Ui| {
@@ -333,15 +342,24 @@ fn draw_node(
 			ui.painter().rect_filled(rect, rounding, bg_color);
 			ui.painter().rect_stroke(rect, rounding, stroke);
 		} else {
-			ui.centered_and_justified(|ui| {
-				egui::Frame::none()
-					.rounding(rounding)
-					.fill(bg_color)
-					.stroke(stroke)
-					.show(ui, |ui| {
-						ui.label(egui::RichText::new(lod_text).monospace().size(lod_size));
-					});
-			});
+			egui::Frame::none()
+				.rounding(rounding)
+				.fill(bg_color)
+				.stroke(stroke)
+				.inner_margin(egui::style::Margin::same(node_width * 0.1))
+				.show(ui, |ui| {
+					ui.with_layout(
+						egui::Layout::top_down(if lod_center {
+							egui::Align::Center
+						} else {
+							egui::Align::Min
+						}),
+						|ui| {
+							ui.label(egui::RichText::new(lod_text).monospace().size(lod_size));
+						},
+					);
+					ui.allocate_space(ui.available_size());
+				});
 		}
 		resp
 	})
