@@ -11,14 +11,25 @@
 % Lägga till future work, vad behandlar inte den här rapporten, vad hade vi
 % velat att verkyget kunde göra? osv
 
+% Vad har vi för features?
+% node colouring, disassembly debuginfo (for every node?), state prioritization
+% (hur får vi med det?)
+
 % Text under titel
 För att evaluera verktyget används existerande verktyg som jämförelse i
 kombination med att dess fördelar och nackdelar vägs mot AMBA. Dessutom jämförs
 funktionalitet, bla
 
 Ghidra är ett avancerat verktyg som gör statisk analys bortom syftet med AMBA,
-men AMBA har ett par likheter. Ghidra representerar en kontrollflödesgraf för
-en given binär men på några olika sätt: Block Flow Graph, Code Flow Graph, 
+men AMBA har ett par likheter. Ghidra kan representera en kontrollflödesgraf för en
+given binär på två olika sätt: Block Flow Graph och Code Flow Graph. Ghidra
+kompletterar dessa vyer med en code listing (förklara) där användaren ges
+djupare förståelse om contexten. Användaren kan fritt välja vilket code block
+(förklara, det är ungefär ghidras egna specifikation på ett utökat basic
+block) som analyseras i grafen och visar den tillhörande disassemblerade koden.
+
+% ^vi gör också detta, fast på ett annat sätt och med fler alternativ (eller
+% sätt att visualisera grafen med olika typer av grafer).
 
 % Vad gör vi bättre?
 % Vad gör vi sämre?
