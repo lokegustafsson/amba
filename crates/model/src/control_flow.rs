@@ -196,23 +196,13 @@ impl ControlFlowGraph {
 	}
 
 	pub fn get_strongly_connected_components(&mut self) -> &Graph {
-		// Inner functions are required due to borrow checker limitations
-		fn get_cached(graph: &ControlFlowGraph) -> &Graph {
-			graph.scc_cache.as_ref().unwrap()
-		}
-		fn populate_cache(graph: &mut ControlFlowGraph) -> &Graph {
-			let cache = graph
+		if self.scc_cache.is_none() {
+			let cache = self
 				.compressed_graph
 				.to_strongly_connected_components_tarjan();
-			graph.scc_cache = Some(cache);
-			graph.scc_cache.as_ref().unwrap()
+			self.scc_cache = Some(cache);
 		}
-
-		if self.scc_cache.is_some() {
-			get_cached(self)
-		} else {
-			populate_cache(self)
-		}
+		self.scc_cache.as_ref().unwrap()
 	}
 }
 
