@@ -8,7 +8,7 @@ use eframe::{
 	egui::{self, Context},
 	App, CreationContext, Frame,
 };
-use graphui::GraphWidget;
+use graphui::{ColouringMode, GraphWidget};
 use model::{GraphToView, Model};
 
 use crate::{
@@ -34,6 +34,7 @@ struct Gui {
 	model: Arc<Model>,
 	graph_widget: GraphWidget,
 	view: GraphToView,
+	colouring_mode: ColouringMode,
 }
 
 impl Gui {
@@ -65,6 +66,7 @@ impl Gui {
 			model,
 			graph_widget: GraphWidget::default(),
 			view: GraphToView::RawBlock,
+			colouring_mode: ColouringMode::AllGrey,
 		}
 	}
 }
@@ -102,6 +104,35 @@ impl App for Gui {
 							self.graph_widget.deselect();
 						}
 					});
+				if self.view == GraphToView::RawBlock {
+					// Required due to both dropdowns having the same label
+					ui.push_id(ui.id(), |ui| {
+						egui::ComboBox::from_label("")
+							.selected_text(format!("{}", self.colouring_mode))
+							.show_ui(ui, |ui| {
+								ui.selectable_value(
+									&mut self.colouring_mode,
+									ColouringMode::AllGrey,
+									"All grey",
+								);
+								ui.selectable_value(
+									&mut self.colouring_mode,
+									ColouringMode::ByState,
+									"By state",
+								);
+								ui.selectable_value(
+									&mut self.colouring_mode,
+									ColouringMode::StronglyConnectedComponents,
+									"Strongly Connected Components",
+								);
+								ui.selectable_value(
+									&mut self.colouring_mode,
+									ColouringMode::Function,
+									"By function (requires debug data)",
+								);
+							})
+					});
+				}
 			})
 		});
 		if let Some(active) = self.graph_widget.active_node_id() {
