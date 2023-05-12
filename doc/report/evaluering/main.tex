@@ -8,8 +8,6 @@
 
 % Varför har vi valt att evaluera på detta sättet (rimligt att ta upp?)
 
-% Lägga till future work, vad behandlar inte den här rapporten, vad hade vi
-% velat att verkyget kunde göra? osv
 
 % Vad har vi för features?
 % node colouring, disassembly debuginfo (for every node?), state prioritization
@@ -21,12 +19,16 @@ kombination med att dess fördelar och nackdelar vägs mot AMBA. Dessutom jämf�
 funktionalitet, bla
 
 Ghidra är ett avancerat verktyg som gör statisk analys bortom syftet med AMBA,
-men AMBA har ett par likheter. Ghidra kan representera en kontrollflödesgraf för en
-given binär på två olika sätt: Block Flow Graph och Code Flow Graph. Ghidra
-kompletterar dessa vyer med en code listing (förklara) där användaren ges
-djupare förståelse om contexten. Användaren kan fritt välja vilket code block
-(förklara, det är ungefär ghidras egna specifikation på ett utökat basic
-block) som analyseras i grafen och visar den tillhörande disassemblerade koden.
+men AMBA har ett par likheter. Ghidra kan representera en
+kontrollflödesgraf för en given binär på två olika sätt: \textit{Flow
+Graph} och \textit{Code Flow Graph}. Ghidra kompletterar dessa vyer
+med en \textit{code listing}, en primär vy där binärens
+disassemblerade kod listas. Användaren kan fritt välja att bilda en
+graf från ett markerat \textit{code block}, vilket är Ghidras utökade
+specifikation på ett basic block, från Ghidras code listing. 
+
+
+
 
 % ^vi gör också detta, fast på ett annat sätt och med fler alternativ (eller
 % sätt att visualisera grafen med olika typer av grafer).
@@ -41,3 +43,6 @@ block) som analyseras i grafen och visar den tillhörande disassemblerade koden.
 %\subsection{AMBA vs SymQEMU}
 %\subsection{AMBA vs SAGE}
 %\subsection{Vidareutveckling}
+% Lägga till future work, vad behandlar inte den här rapporten, vad hade vi
+% velat att verkyget kunde göra? osv
+
