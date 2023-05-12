@@ -15,7 +15,11 @@ pub fn run_embedder(
 	config: &SessionConfig,
 ) -> Result<(), ()> {
 	let mut blocking = true;
-	let mut debug_info_context = DisasmContext::new(&config.executable_host_path()).unwrap();
+	let mut debug_info_context = DisasmContext::new(
+		&config.executable_host_path(),
+		config.recipe_path.parent().unwrap(),
+	)
+	.unwrap();
 	loop {
 		let message = if blocking {
 			// Will wait

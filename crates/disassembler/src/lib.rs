@@ -1,4 +1,8 @@
-use std::{fs, io, path::Path, rc::Rc};
+use std::{
+	fs, io,
+	path::{Path, PathBuf},
+	rc::Rc,
+};
 
 use addr2line::{
 	gimli::{EndianReader, RunTimeEndian},
@@ -28,6 +32,7 @@ pub enum Error {
 }
 
 pub struct DisasmContext {
+	recipe_dir: PathBuf,
 	file_line_cache: FileLineCache,
 	addr2line_context: addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>,
 	capstone: Capstone,
@@ -35,8 +40,9 @@ pub struct DisasmContext {
 
 impl DisasmContext {
 	/// `filepath` is the path to the binary.
-	pub fn new(filepath: &Path) -> Result<Self, Error> {
+	pub fn new(filepath: &Path, recipe_dir: &Path) -> Result<Self, Error> {
 		Ok(Self {
+			recipe_dir: recipe_dir.to_owned(),
 			file_line_cache: FileLineCache::default(),
 			addr2line_context: {
 				let contents = fs::read(&filepath)?;
@@ -94,9 +100,13 @@ impl DisasmContext {
 	pub fn get_source_line(&self, addr: u64) -> Result<Option<&str>, Error> {
 		let line_info = self.addr2loc(addr)?;
 		let Some((file_name, line, _)) = line_info else { return Ok(None); };
-		let filepath = Path::new(&file_name);
 
-		self.file_line_cache.get(filepath, line)
+		let filepath = Path::new(&file_name);
+		let alternative_filepath = self.recipe_dir.join(filepath.file_name().unwrap());
+
+		self.file_line_cache
+			.get(filepath, line)
+			.or_else(|_err| self.file_line_cache.get(&alternative_filepath, line))
 	}
 
 	/// Returns source code line information for a virtual adress range in binary if the sources
