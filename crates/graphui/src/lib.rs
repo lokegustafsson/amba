@@ -237,13 +237,9 @@ fn draw_graph(
 		for &(a, b) in &graph.edges {
 			if a != b {
 				let d = scrollarea_node_pos[a].distance(scrollarea_node_pos[b]);
-				node_size[a] = node_size[a].min(0.6 * d);
-				node_size[b] = node_size[b].min(0.6 * d);
+				node_size[a] = node_size[a].min(0.7 * d);
+				node_size[b] = node_size[b].min(0.7 * d);
 			}
-		}
-		let avg_size = node_size.iter().copied().sum::<f32>() / node_size.len() as f32;
-		for size in &mut node_size {
-			*size = size.clamp(avg_size / 3.0, avg_size * 2.0);
 		}
 		node_size
 	};
