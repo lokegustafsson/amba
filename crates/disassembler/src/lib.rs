@@ -223,7 +223,11 @@ mod test {
 		let (source_filepath, binary_filepath) = create_hello_prog();
 		const ADDR: u64 = 0x401134;
 
-		let context = DisasmContext::new(&binary_filepath).unwrap();
+		let context = DisasmContext::new(
+			&binary_filepath,
+			source_filepath.parent().unwrap(),
+		)
+		.unwrap();
 		let line = context.get_source_line(ADDR).unwrap().unwrap().to_owned();
 
 		assert_eq!(line, read_line(source_filepath, 5).unwrap());
@@ -234,7 +238,11 @@ mod test {
 		let (source_filepath, binary_filepath) = create_hello_prog();
 		let low = 0x401126;
 		let high = 0x40113F;
-		let context = DisasmContext::new(&binary_filepath).unwrap();
+		let context = DisasmContext::new(
+			&binary_filepath,
+			source_filepath.parent().unwrap(),
+		)
+		.unwrap();
 		let res: Vec<_> = context
 			.get_source_lines(low, high)
 			.unwrap()
