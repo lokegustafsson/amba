@@ -264,14 +264,7 @@ fn new_lod_text_impl(
 		for (size, disasm) in ins_size_and_disasm {
 			match disasm_context.get_source_line(elf_vaddr) {
 				Ok(Some(line)) => writeln!(ret, "{}", line).unwrap(),
-				Ok(None) => {}
-				Err(err) => {
-					tracing::warn!(
-						?err,
-						elf_vaddr,
-						"debuginfo get_function_name failed"
-					);
-				}
+				Ok(None) | Err(_) => {}
 			}
 			writeln!(ret, "{}", disasm).unwrap();
 			elf_vaddr += size as u64;

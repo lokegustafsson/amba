@@ -23,6 +23,8 @@ pub enum Error {
 	MissingDebugData(&'static str),
 	#[error("Partially stripped? A weird subset of debug data is missing")]
 	WeirdDebugData,
+	#[error("Could not populate FileLineCache")]
+	PopulatingFileLineCache,
 }
 
 pub struct DisasmContext {

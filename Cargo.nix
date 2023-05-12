@@ -1369,6 +1369,7 @@ in
       capstone = rustPackages."registry+https://github.com/rust-lang/crates.io-index".capstone."0.11.0" { inherit profileName; };
       elsa = rustPackages."registry+https://github.com/rust-lang/crates.io-index".elsa."1.8.0" { inherit profileName; };
       thiserror = rustPackages."registry+https://github.com/rust-lang/crates.io-index".thiserror."1.0.38" { inherit profileName; };
+      tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };
   });
   
