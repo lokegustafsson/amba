@@ -10,6 +10,8 @@ use crate::LodText;
 pub struct Graph2D {
 	pub(crate) node_positions: Vec<DVec2>,
 	pub(crate) node_lod_texts: Vec<LodText>,
+	pub(crate) scc_indicies: Vec<usize>,
+	pub(crate) function_indicies: Vec<usize>,
 	pub(crate) edges: Vec<(usize, usize)>,
 	pub(crate) min: DVec2,
 	pub(crate) max: DVec2,
@@ -56,6 +58,8 @@ impl Graph2D {
 		Self {
 			node_positions: Vec::new(),
 			node_lod_texts: Vec::new(),
+			scc_indicies: Vec::new(),
+			function_indicies: Vec::new(),
 			edges: Vec::new(),
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
@@ -64,9 +68,18 @@ impl Graph2D {
 
 	/// Equivalent to `*self = Graph2D::new(node_count, edges)`, but with a better
 	/// initial layout guess.
-	pub fn seeded_replace_self_with(&mut self, nodes: Vec<LodText>, edges: Vec<(usize, usize)>) {
+	pub fn seeded_replace_self_with(
+		&mut self,
+		nodes: Vec<LodText>,
+		edges: Vec<(usize, usize)>,
+		scc_indicies: Vec<usize>,
+		function_indicies: Vec<usize>,
+	) {
 		let num_nodes = nodes.len();
-		let old = mem::replace(self, Self::new(nodes, edges));
+		let old = mem::replace(
+			self,
+			Self::new(nodes, edges, scc_indicies, function_indicies),
+		);
 
 		let shared_count = usize::min(old.node_positions.len(), num_nodes);
 		self.node_positions[..shared_count].copy_from_slice(&old.node_positions[..shared_count]);
@@ -78,7 +91,12 @@ impl Graph2D {
 			.for_each(|pos| *pos += INITIAL_NOISE * random_dvec2(rng));
 	}
 
-	pub fn new(nodes: Vec<LodText>, edges: Vec<(usize, usize)>) -> Self {
+	pub fn new(
+		nodes: Vec<LodText>,
+		edges: Vec<(usize, usize)>,
+		scc_indicies: Vec<usize>,
+		function_indicies: Vec<usize>,
+	) -> Self {
 		if nodes.is_empty() {
 			return Self::empty();
 		}
@@ -86,6 +104,8 @@ impl Graph2D {
 		Self {
 			node_positions: Self::initial_node_positions(nodes.len(), &edges),
 			node_lod_texts: nodes,
+			scc_indicies,
+			function_indicies,
 			edges,
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
@@ -204,6 +224,8 @@ impl Graph2D {
 							&self.edges,
 						),
 						node_lod_texts: mem::take(&mut self.node_lod_texts),
+						scc_indicies: mem::take(&mut self.scc_indicies),
+						function_indicies: mem::take(&mut self.function_indicies),
 						edges: mem::take(&mut self.edges),
 						min: DVec2::ZERO,
 						max: DVec2::ZERO,

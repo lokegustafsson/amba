@@ -1,5 +1,5 @@
 use std::{
-	collections::HashMap,
+	collections::{BTreeMap, HashMap},
 	fmt,
 	time::{Duration, Instant},
 };
@@ -18,7 +18,7 @@ pub struct ControlFlowGraph {
 	pub(crate) rebuilding_time: Duration,
 	pub metadata: Vec<NodeMetadata>,
 	meta_mapping_unique_id_to_index: HashMap<NodeMetadata, usize>,
-	scc_cache: Option<Graph>,
+	scc_cache: Option<BTreeMap<u64, u64>>,
 }
 
 impl FromIterator<(NodeMetadata, NodeMetadata)> for ControlFlowGraph {
@@ -195,11 +195,14 @@ impl ControlFlowGraph {
 		)
 	}
 
-	pub fn get_strongly_connected_components(&mut self) -> &Graph {
+	pub fn get_strongly_connected_components(&mut self) -> &BTreeMap<u64, u64> {
 		if self.scc_cache.is_none() {
 			let cache = self
-				.compressed_graph
-				.to_strongly_connected_components_tarjan();
+				.graph
+				.tarjan()
+				.into_iter()
+				.map(|(k, v)| (k, v.id))
+				.collect();
 			self.scc_cache = Some(cache);
 		}
 		self.scc_cache.as_ref().unwrap()

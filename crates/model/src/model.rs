@@ -65,13 +65,15 @@ impl Model {
 					.into_iter()
 					.zip(self_edge)
 					.map(new_lod_text)
-					.collect();
+					.collect::<Vec<_>>();
 				(nodes, edges)
 			};
+			let scc_indicies = (0..raw_nodes.len()).map(|x| x % 10).collect();
+			let function_indicies = vec![0; raw_nodes.len()];
 			self.raw_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(raw_nodes, raw_edges);
+				.seeded_replace_self_with(raw_nodes, raw_edges, scc_indicies, function_indicies);
 
 			let (compressed_nodes, compressed_edges) = {
 				let (metadata, self_edge, edges) =
@@ -86,7 +88,7 @@ impl Model {
 			self.compressed_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(compressed_nodes, compressed_edges);
+				.seeded_replace_self_with(compressed_nodes, compressed_edges, Vec::new(), Vec::new());
 		}
 
 		{
@@ -108,7 +110,7 @@ impl Model {
 			self.raw_state_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(state_nodes, state_edges);
+				.seeded_replace_self_with(state_nodes, state_edges, Vec::new(), Vec::new());
 		}
 		mem::drop(mutex);
 	}

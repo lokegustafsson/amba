@@ -1,12 +1,14 @@
-use std::fmt;
+use std::{fmt, sync::Mutex};
 
-use egui::{self, Rect, Response, Sense, Ui, Widget};
+use egui::{self, Color32 as Colour32, Rect, Response, Sense, Stroke, Ui, Widget};
 use emath::Vec2;
 
 use crate::{
 	embed::{EmbeddingParameters, Graph2D},
 	lod::LodText,
 };
+
+static COLOURS: Mutex<Vec<(Colour32, Colour32)>> = Mutex::new(Vec::new());
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum ColouringMode {
@@ -155,6 +157,7 @@ impl GraphWidget {
 							&mut self.new_priority_node,
 							viewport,
 							graph,
+							colouring_mode,
 						)
 					});
 
@@ -237,6 +240,7 @@ fn draw_graph(
 	priority_node: &mut Option<usize>,
 	viewport: Rect,
 	graph: &Graph2D,
+	colouring_mode: ColouringMode,
 ) -> egui::Response {
 	let offset = ui.cursor().left_top().to_vec2();
 	let background = ui.allocate_rect(
@@ -279,9 +283,18 @@ fn draw_graph(
 
 	for (i, &pos) in scrollarea_node_pos.iter().enumerate() {
 		if expanded_viewport.contains(pos) {
+			let colours = match colouring_mode {
+				ColouringMode::AllGrey => (
+					style_widgets.hovered.bg_fill,
+					style_widgets.hovered.bg_stroke,
+				),
+				ColouringMode::ByState => todo!(),
+				ColouringMode::StronglyConnectedComponents => todo!(),
+				ColouringMode::Function => todo!(),
+			};
 			let node = draw_node(
 				ui,
-				style_widgets,
+				colours,
 				style_selection,
 				pos,
 				node_size[i],
@@ -318,7 +331,7 @@ fn draw_graph(
 
 fn draw_node(
 	ui: &mut Ui,
-	style_widgets: &egui::style::Widgets,
+	default_colours: (Colour32, Stroke),
 	style_selection: &egui::style::Selection,
 	pos: egui::Pos2,
 	node_width: f32,
@@ -333,10 +346,7 @@ fn draw_node(
 	let (bg_color, stroke) = if selected {
 		(style_selection.bg_fill, style_selection.stroke)
 	} else {
-		(
-			style_widgets.hovered.bg_fill,
-			style_widgets.hovered.bg_stroke,
-		)
+		default_colours
 	};
 	let lod_text = {
 		let font_height = ui.text_style_height(&egui::style::TextStyle::Small);

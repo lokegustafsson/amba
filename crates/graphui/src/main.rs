@@ -60,6 +60,8 @@ fn main() {
 				})
 				.collect(),
 			edges,
+			vec![0; node_count],
+			vec![0; node_count],
 		)
 	}));
 
