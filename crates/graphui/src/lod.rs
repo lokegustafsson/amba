@@ -2,7 +2,7 @@ use arrayvec::ArrayVec;
 
 #[derive(Clone, Debug, Default)]
 pub struct LodText {
-	levels: ArrayVec<(String, u32, u32), 3>,
+	levels: ArrayVec<(String, u32, u32), 4>,
 }
 
 impl LodText {

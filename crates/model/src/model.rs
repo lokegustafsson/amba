@@ -254,26 +254,36 @@ fn new_lod_text_impl(
 			}
 		}
 	};
-	let block_code = |vaddr: Option<NonZeroU64>, elf_vaddr: Option<NonZeroU64>, content: &[u8]| {
-		use std::fmt::Write;
-		let mut elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
-		let ins_size_and_disasm =
-			disasm_context.x64_to_assembly(content, vaddr.map_or(0, NonZeroU64::get));
+	let block_source_and_disasm =
+		|vaddr: Option<NonZeroU64>, elf_vaddr: Option<NonZeroU64>, content: &[u8]| {
+			use std::fmt::Write;
+			let mut elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
+			let ins_size_and_disasm =
+				disasm_context.x64_to_assembly(content, vaddr.map_or(0, NonZeroU64::get));
 
-		let mut ret = String::new();
-		for (size, disasm) in ins_size_and_disasm {
-			match disasm_context.get_source_line(elf_vaddr) {
-				Ok(Some(line)) => writeln!(ret, "{}", line).unwrap(),
-				Ok(None) | Err(_) => {}
+			let mut source = String::new();
+			let mut disassembly = String::new();
+			for (size, disasm) in ins_size_and_disasm {
+				match disasm_context.get_source_line(elf_vaddr) {
+					Ok(Some(line)) => {
+						if !source[..source.len().saturating_sub(1)].ends_with(line) {
+							writeln!(source, "{}", line).unwrap();
+							writeln!(disassembly, "{}", line).unwrap();
+						}
+					}
+					Ok(None) | Err(_) => {}
+				}
+				writeln!(disassembly, "{}", disasm).unwrap();
+				elf_vaddr += size as u64;
 			}
-			writeln!(ret, "{}", disasm).unwrap();
-			elf_vaddr += size as u64;
-		}
-		while ret.ends_with('\n') {
-			ret.pop();
-		}
-		ret
-	};
+			while source.ends_with('\n') {
+				source.pop();
+			}
+			while disassembly.ends_with('\n') {
+				disassembly.pop();
+			}
+			(source, disassembly)
+		};
 
 	match metadata {
 		NodeMetadata::State {
@@ -292,13 +302,16 @@ fn new_lod_text_impl(
 			..
 		} => {
 			let name = function_name(*basic_block_elf_vaddr);
-			let code = block_code(
+			let (source, disasm) = block_source_and_disasm(
 				*basic_block_vaddr,
 				*basic_block_elf_vaddr,
 				&*basic_block_content,
 			);
 			ret.coarser(format!(
-				"State: {state}{marker}\nWithin function: {name}\n{code}"
+				"State: {state}{marker}\nWithin function: {name}\n{disasm}"
+			));
+			ret.coarser(format!(
+				"State: {state}{marker}\nWithin function: {name}\n{source}"
 			));
 			ret.coarser(format!("{state}{marker}\n{name}"));
 			ret.coarser(format!("{state}{marker}"));
@@ -318,29 +331,37 @@ fn new_lod_text_impl(
 			let last = symbolic_state_ids.last().unwrap();
 
 			let mut names = String::new();
-			let mut disasm = String::new();
+			let mut sources = String::new();
+			let mut disasms = String::new();
 			for ((&vaddr, &elf_vaddr), content) in basic_block_vaddrs
 				.iter()
 				.zip(basic_block_elf_vaddrs)
 				.zip(basic_block_contents)
 			{
 				let name = function_name(elf_vaddr);
-				let code = block_code(vaddr, elf_vaddr, &*content);
+				let (source, disasm) = block_source_and_disasm(vaddr, elf_vaddr, &*content);
 				if !names.ends_with(&name) {
 					write!(names, " {name}").unwrap();
 				}
-				write!(disasm, "\n{name}\n{code}").unwrap();
+				write!(sources, "\n{name}\n{source}").unwrap();
+				write!(disasms, "\n{name}\n{disasm}").unwrap();
 			}
 
 			if first == last {
 				ret.coarser(format!(
-					"State: {first}{marker}\nWithin functions: {names}{disasm}"
+					"State: {first}{marker}\nWithin functions: {names}{disasms}"
+				));
+				ret.coarser(format!(
+					"State: {first}{marker}\nWithin functions: {names}{sources}"
 				));
 				ret.coarser(format!("{first}{marker}\n{names}"));
 				ret.coarser(format!("{first}{marker}"));
 			} else {
 				ret.coarser(format!(
-					"States: {first}-{last}{marker}\nWithin functions: {names}{disasm}"
+					"States: {first}-{last}{marker}\nWithin functions: {names}{disasms}"
+				));
+				ret.coarser(format!(
+					"States: {first}-{last}{marker}\nWithin functions: {names}{sources}"
 				));
 				ret.coarser(format!("{first}-{last}{marker}\n{names}"));
 				ret.coarser(format!("{first}-{last}{marker}"));
