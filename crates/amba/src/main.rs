@@ -205,12 +205,16 @@ impl SessionConfig {
 	}
 
 	pub fn executable_host_path(&self) -> PathBuf {
-		let mut guest_path: &str = &self.recipe.executable_path;
-		while let Some(stripped) = guest_path.strip_prefix("./") {
-			assert_ne!(stripped.chars().next(), Some('/'));
-			guest_path = stripped;
+		fn remove_executable_dotslash(mut guest_path: &str) -> &str {
+			while let Some(stripped) = guest_path.strip_prefix("./") {
+				assert_ne!(stripped.chars().next(), Some('/'));
+				guest_path = stripped;
+			}
+			assert!(!guest_path.is_empty());
+			guest_path
 		}
-		assert!(!guest_path.is_empty());
+		let guest_path: &str = remove_executable_dotslash(&self.recipe.executable_path);
+
 		match self.recipe.files.get(guest_path) {
 			None => panic!(
 				"invalid recipe: guest path '{guest_path}' matches no guest file: {:?}",
