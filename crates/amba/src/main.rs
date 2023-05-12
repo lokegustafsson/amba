@@ -205,6 +205,8 @@ impl SessionConfig {
 	}
 
 	pub fn executable_host_path(&self) -> PathBuf {
+		// NOTE: `fs::canonicalize` and similar are inappropriate here since we are
+		// operating on a *guest* path.
 		fn remove_executable_dotslash(mut guest_path: &str) -> &str {
 			while let Some(stripped) = guest_path.strip_prefix("./") {
 				assert_ne!(stripped.chars().next(), Some('/'));
