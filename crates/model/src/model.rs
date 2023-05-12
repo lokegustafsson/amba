@@ -73,7 +73,12 @@ impl Model {
 			self.raw_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(raw_nodes, raw_edges, scc_indicies, function_indicies);
+				.seeded_replace_self_with(
+					raw_nodes,
+					raw_edges,
+					scc_indicies,
+					function_indicies,
+				);
 
 			let (compressed_nodes, compressed_edges) = {
 				let (metadata, self_edge, edges) =
@@ -88,7 +93,12 @@ impl Model {
 			self.compressed_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(compressed_nodes, compressed_edges, Vec::new(), Vec::new());
+				.seeded_replace_self_with(
+					compressed_nodes,
+					compressed_edges,
+					Vec::new(),
+					Vec::new(),
+				);
 		}
 
 		{
