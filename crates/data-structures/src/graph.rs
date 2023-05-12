@@ -347,7 +347,7 @@ impl Graph {
 	}
 
 	/// Find strongly connected components in a graph. Return them as a map of original id to new nodes
-	fn tarjan(&self) -> Map<u64, Node> {
+	pub fn tarjan(&self) -> Map<u64, Node> {
 		/// Associated metadata for each node
 		#[derive(Copy, Clone, PartialEq, Eq, Default)]
 		struct Translation {
