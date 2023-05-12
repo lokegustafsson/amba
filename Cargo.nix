@@ -1369,6 +1369,7 @@ in
       capstone = rustPackages."registry+https://github.com/rust-lang/crates.io-index".capstone."0.11.0" { inherit profileName; };
       elsa = rustPackages."registry+https://github.com/rust-lang/crates.io-index".elsa."1.8.0" { inherit profileName; };
       thiserror = rustPackages."registry+https://github.com/rust-lang/crates.io-index".thiserror."1.0.38" { inherit profileName; };
+      tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };
   });
   
@@ -2857,9 +2858,11 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/model");
     dependencies = {
       data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
+      disassembler = rustPackages."unknown".disassembler."0.1.0" { inherit profileName; };
       graphui = rustPackages."unknown".graphui."0.1.0" { inherit profileName; };
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
       smallvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".smallvec."1.10.0" { inherit profileName; };
+      tracing = rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.37" { inherit profileName; };
     };
   });
   

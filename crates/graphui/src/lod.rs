@@ -2,7 +2,7 @@ use arrayvec::ArrayVec;
 
 #[derive(Clone, Debug, Default)]
 pub struct LodText {
-	levels: ArrayVec<(String, u32, u32), 3>,
+	levels: ArrayVec<(String, u32, u32), 4>,
 }
 
 impl LodText {
@@ -14,13 +14,13 @@ impl LodText {
 		self.levels.push(Self::level(text));
 	}
 
-	pub(crate) fn get_given_available_square(&self, width: u32, height: u32) -> &str {
-		for (content, w, h) in &self.levels {
-			if *w <= width && *h <= height {
-				return content;
+	pub(crate) fn get_given_available_square(&self, width: u32, height: u32) -> (&str, u32, u32) {
+		for &(ref content, w, h) in &self.levels {
+			if w <= width && h <= height {
+				return (content, w, h);
 			}
 		}
-		""
+		("", 0, 0)
 	}
 
 	pub(crate) fn get_full(&self) -> &str {
@@ -32,12 +32,13 @@ impl LodText {
 		let mut width = 0;
 		let mut height = 0;
 		for line in text.lines() {
-			if line.len() <= MAX_WIDTH {
-				width = width.max(line.len());
+			let line_len_codepoints = line.chars().count();
+			if line_len_codepoints <= MAX_WIDTH {
+				width = width.max(line_len_codepoints);
 				height += 1;
 			} else {
 				width = MAX_WIDTH;
-				height += (line.len() + MAX_WIDTH - 1) / MAX_WIDTH;
+				height += (line_len_codepoints + MAX_WIDTH - 1) / MAX_WIDTH;
 			}
 		}
 		(

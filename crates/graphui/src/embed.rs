@@ -27,7 +27,6 @@ pub struct EmbeddingParameters {
 	pub attraction: f64,
 	pub repulsion: f64,
 	pub gravity: f64,
-	pub enable_repulsion_approximation: bool,
 	pub repulsion_approximation: f64,
 	pub statistic_updates_per_second: f64,
 }
@@ -36,6 +35,7 @@ impl EmbeddingParameters {
 	pub const MAX_GRAVITY: f64 = 2.0;
 	pub const MAX_NOISE: f64 = 20.0;
 	pub const MAX_REPULSION: f64 = 2.0;
+	pub const MAX_REPULSION_APPROXIMATION: f64 = 0.4;
 }
 impl Default for EmbeddingParameters {
 	fn default() -> Self {
@@ -44,7 +44,6 @@ impl Default for EmbeddingParameters {
 			attraction: 0.1,
 			repulsion: 1.0,
 			gravity: 0.5,
-			enable_repulsion_approximation: true,
 			repulsion_approximation: 0.4,
 			statistic_updates_per_second: 1.0,
 		}
@@ -151,7 +150,7 @@ impl Graph2D {
 				node_accel[b] -= push;
 			}
 			// Nodes repell with `F \propto D^-2`
-			if params.enable_repulsion_approximation && params.repulsion_approximation > 0.0 {
+			if params.repulsion_approximation > 0.0 {
 				BarnesHutRTree::build_in(&mut tree_buffer, &mut self.node_positions.clone());
 				node_accel
 					.par_iter_mut()

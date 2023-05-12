@@ -7,7 +7,7 @@ let
     buildPhase = "make hello";
     installPhase = ''
       mkdir -p $out/
-      cp hello hello.recipe.json $out/
+      cp hello.c hello hello.recipe.json $out/
     '';
   };
   control-flow = pkgs.stdenv.mkDerivation {
@@ -17,7 +17,7 @@ let
     buildPhase = "make control-flow";
     installPhase = ''
       mkdir -p $out/
-      cp control-flow control-flow.recipe.json $out/
+      cp control-flow.c control-flow control-flow.recipe.json $out/
     '';
   };
   state-splitter = pkgs.stdenv.mkDerivation {
@@ -27,7 +27,7 @@ let
     buildPhase = "make state-splitter";
     installPhase = ''
       mkdir -p $out/
-      cp state-splitter state-splitter.recipe.json $out/
+      cp state-splitter.c state-splitter state-splitter.recipe.json $out/
     '';
   };
   test-amba-hello = pkgs.writeShellApplication {

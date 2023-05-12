@@ -1,11 +1,14 @@
 use std::{
 	collections::BTreeSet,
-	fmt, mem,
+	fmt::{self, Debug},
+	mem,
+	num::NonZeroU64,
 	ops::BitOrAssign,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
 	time::Instant,
 };
 
+use disassembler::DisasmContext;
 use graphui::{EmbeddingParameters, Graph2D, LodText};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
@@ -41,10 +44,12 @@ impl Model {
 		&self,
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
+		disasm_context: &mut DisasmContext,
 	) {
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
-		let new_lod_text = |(metadata, self_edge)| new_lod_text_impl(&metadata, self_edge);
+		let mut new_lod_text =
+			|(metadata, has_self_edge)| new_lod_text_impl(&metadata, has_self_edge, disasm_context);
 
 		{
 			let mut block_control_flow = self.block_control_flow.write().unwrap();
@@ -59,7 +64,11 @@ impl Model {
 					let (nodes, self_edge, edges) =
 						block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
 					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						nodes
+							.into_iter()
+							.zip(self_edge)
+							.map(&mut new_lod_text)
+							.collect(),
 						edges,
 					)
 				});
@@ -70,7 +79,11 @@ impl Model {
 					let (nodes, self_edge, edges) = block_control_flow
 						.get_compressed_metadata_and_selfedge_and_sequential_edges();
 					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						nodes
+							.into_iter()
+							.zip(self_edge)
+							.map(&mut new_lod_text)
+							.collect(),
 						edges,
 					)
 				});
@@ -89,7 +102,11 @@ impl Model {
 					let (nodes, self_edge, edges) =
 						state_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
 					(
-						nodes.into_iter().zip(self_edge).map(new_lod_text).collect(),
+						nodes
+							.into_iter()
+							.zip(self_edge)
+							.map(&mut new_lod_text)
+							.collect(),
 						edges,
 					)
 				});
@@ -113,19 +130,19 @@ impl Model {
 			total_delta_pos += working_copy.run_layout_iterations(SUBSTEPS, params);
 			*graph.write().unwrap() = working_copy;
 		}
-		let (ret, updates_per_second, enable_repulsion_approximation) = if total_delta_pos < 0.1 {
-			(LayoutMadeProgress::NoJustTiny, 0.0, true)
+		let (ret, updates_per_second, delta_repulsion_approximation) = if total_delta_pos < 0.1 {
+			(LayoutMadeProgress::NoJustTiny, 0.0, 0.0)
 		} else if total_delta_pos < 100.0 {
 			(
 				LayoutMadeProgress::YesALittle,
 				timer.elapsed().as_secs_f64().recip(),
-				true,
+				-0.01,
 			)
 		} else {
 			(
 				LayoutMadeProgress::YesALot,
 				timer.elapsed().as_secs_f64().recip(),
-				false,
+				0.01,
 			)
 		};
 
@@ -133,7 +150,11 @@ impl Model {
 		{
 			let mut params = self.embedding_parameters.lock().unwrap();
 			params.statistic_updates_per_second = SUBSTEPS as f64 * updates_per_second;
-			params.enable_repulsion_approximation = enable_repulsion_approximation;
+			params.repulsion_approximation =
+				(params.repulsion_approximation + delta_repulsion_approximation).clamp(
+					0.0,
+					EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
+				);
 		}
 		ret
 	}
@@ -212,9 +233,57 @@ impl BitOrAssign for LayoutMadeProgress {
 	}
 }
 
-fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
+fn new_lod_text_impl(
+	metadata: &NodeMetadata,
+	has_self_edge: bool,
+	disasm_context: &DisasmContext,
+) -> LodText {
 	let mut ret = LodText::new();
 	let marker = if has_self_edge { "↺" } else { "" };
+	let function_name = |elf_vaddr: Option<NonZeroU64>| {
+		let elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
+		match disasm_context.get_function_name(elf_vaddr) {
+			Ok(ret) => ret,
+			Err(err) => {
+				tracing::warn!(
+					?err,
+					elf_vaddr,
+					"debuginfo get_function_name failed"
+				);
+				format!("{:x}", elf_vaddr)
+			}
+		}
+	};
+	let block_source_and_disasm =
+		|vaddr: Option<NonZeroU64>, elf_vaddr: Option<NonZeroU64>, content: &[u8]| {
+			use std::fmt::Write;
+			let mut elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
+			let ins_size_and_disasm =
+				disasm_context.x64_to_assembly(content, vaddr.map_or(0, NonZeroU64::get));
+
+			let mut source = String::new();
+			let mut disassembly = String::new();
+			for (size, disasm) in ins_size_and_disasm {
+				match disasm_context.get_source_line(elf_vaddr) {
+					Ok(Some(line)) => {
+						if !source[..source.len().saturating_sub(1)].ends_with(line) {
+							writeln!(source, "{}", line).unwrap();
+							writeln!(disassembly, "{}", line).unwrap();
+						}
+					}
+					Ok(None) | Err(_) => {}
+				}
+				writeln!(disassembly, "{}", disasm).unwrap();
+				elf_vaddr += size as u64;
+			}
+			while source.ends_with('\n') {
+				source.pop();
+			}
+			while disassembly.ends_with('\n') {
+				disassembly.pop();
+			}
+			(source, disassembly)
+		};
 
 	match metadata {
 		NodeMetadata::State {
@@ -222,36 +291,80 @@ fn new_lod_text_impl(metadata: &NodeMetadata, has_self_edge: bool) -> LodText {
 			s2e_state_id,
 		} => {
 			ret.coarser(format!("{amba_state_id} ({s2e_state_id})"));
+			ret.coarser(format!("{amba_state_id}"));
 		}
 		NodeMetadata::BasicBlock {
 			symbolic_state_id: state,
+			basic_block_vaddr,
+			basic_block_generation: _,
+			basic_block_elf_vaddr,
+			basic_block_content,
 			..
 		} => {
-			ret.coarser(format!("{state}{marker}\nfunctionname+addr2line"));
-			ret.coarser(format!("{state}{marker}\nfunctionname"));
+			let name = function_name(*basic_block_elf_vaddr);
+			let (source, disasm) = block_source_and_disasm(
+				*basic_block_vaddr,
+				*basic_block_elf_vaddr,
+				&*basic_block_content,
+			);
+			ret.coarser(format!(
+				"State: {state}{marker}\nWithin function: {name}\n{disasm}"
+			));
+			ret.coarser(format!(
+				"State: {state}{marker}\nWithin function: {name}\n{source}"
+			));
+			ret.coarser(format!("{state}{marker}\n{name}"));
 			ret.coarser(format!("{state}{marker}"));
 		}
 		NodeMetadata::CompressedBasicBlock(boxed) => {
 			let CompressedBasicBlock {
-				symbolic_state_ids, ..
+				symbolic_state_ids,
+				basic_block_vaddrs,
+				basic_block_generations: _,
+				basic_block_elf_vaddrs,
+				basic_block_contents,
 			} = &**boxed;
+			use std::fmt::Write;
+
 			assert!(!symbolic_state_ids.is_empty());
-			let state_first = symbolic_state_ids.first().unwrap();
-			let state_last = symbolic_state_ids.last().unwrap();
-			if state_first == state_last {
+			let first = symbolic_state_ids.first().unwrap();
+			let last = symbolic_state_ids.last().unwrap();
+
+			let mut names = String::new();
+			let mut sources = String::new();
+			let mut disasms = String::new();
+			for ((&vaddr, &elf_vaddr), content) in basic_block_vaddrs
+				.iter()
+				.zip(basic_block_elf_vaddrs)
+				.zip(basic_block_contents)
+			{
+				let name = function_name(elf_vaddr);
+				let (source, disasm) = block_source_and_disasm(vaddr, elf_vaddr, &*content);
+				if !names.ends_with(&name) {
+					write!(names, " {name}").unwrap();
+				}
+				write!(sources, "\n{name}\n{source}").unwrap();
+				write!(disasms, "\n{name}\n{disasm}").unwrap();
+			}
+
+			if first == last {
 				ret.coarser(format!(
-					"{state_first}{marker}\nfunctionname+addr2line"
+					"State: {first}{marker}\nWithin functions: {names}{disasms}"
 				));
-				ret.coarser(format!("{state_first}{marker}\nfunctionname"));
-				ret.coarser(format!("{state_first}{marker}"));
+				ret.coarser(format!(
+					"State: {first}{marker}\nWithin functions: {names}{sources}"
+				));
+				ret.coarser(format!("{first}{marker}\n{names}"));
+				ret.coarser(format!("{first}{marker}"));
 			} else {
 				ret.coarser(format!(
-					"{state_first}-{state_last}{marker}\nfunctionname+addr2line"
+					"States: {first}-{last}{marker}\nWithin functions: {names}{disasms}"
 				));
 				ret.coarser(format!(
-					"{state_first}-{state_last}{marker}\nfunctionname"
+					"States: {first}-{last}{marker}\nWithin functions: {names}{sources}"
 				));
-				ret.coarser(format!("{state_first}-{state_last}{marker}"));
+				ret.coarser(format!("{first}-{last}{marker}\n{names}"));
+				ret.coarser(format!("{first}-{last}{marker}"));
 			}
 		}
 	}

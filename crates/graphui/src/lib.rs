@@ -43,11 +43,13 @@ impl Widget for &mut EmbeddingParameters {
 					),
 				)
 				.union(
-					ui.add_enabled(
-						self.enable_repulsion_approximation,
-						egui::Slider::new(&mut self.repulsion_approximation, 0.0..=0.5)
-							.step_by(0.5 / STEPS)
-							.text("repulsion approximaton"),
+					ui.add(
+						egui::Slider::new(
+							&mut self.repulsion_approximation,
+							0.0..=EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
+						)
+						.step_by(EmbeddingParameters::MAX_REPULSION_APPROXIMATION / STEPS)
+						.text("repulsion approximaton"),
 					),
 				)
 				.union(
@@ -235,13 +237,9 @@ fn draw_graph(
 		for &(a, b) in &graph.edges {
 			if a != b {
 				let d = scrollarea_node_pos[a].distance(scrollarea_node_pos[b]);
-				node_size[a] = node_size[a].min(0.6 * d);
-				node_size[b] = node_size[b].min(0.6 * d);
+				node_size[a] = node_size[a].min(0.7 * d);
+				node_size[b] = node_size[b].min(0.7 * d);
 			}
-		}
-		let avg_size = node_size.iter().copied().sum::<f32>() / node_size.len() as f32;
-		for size in &mut node_size {
-			*size = size.clamp(avg_size / 3.0, avg_size * 2.0);
 		}
 		node_size
 	};
@@ -316,11 +314,23 @@ fn draw_node(
 			style_widgets.hovered.bg_stroke,
 		)
 	};
-	let lod_text = {
-		let font_height = ui.text_style_height(&egui::style::TextStyle::Small);
-		let height = (node_width / font_height) as u32;
-		let width = (2.0 * node_width / font_height) as u32;
-		text.get_given_available_square(width, height)
+	let (lod_text, lod_size, lod_center) = {
+		let useful_node_width = 0.6 * node_width;
+		const SHAPE: f32 = 2.0;
+		let (lod_text, w, h) = {
+			let font_height = ui.text_style_height(&egui::style::TextStyle::Small);
+			let height = (useful_node_width / font_height) as u32;
+			let width = (SHAPE * useful_node_width / font_height) as u32;
+			text.get_given_available_square(width, height)
+		};
+		let num_lines = lod_text.lines().count();
+		let lod_size = {
+			let width = w as f32 / SHAPE;
+			let height = h as f32;
+			(useful_node_width / f32::max(width, height)).clamp(1.0, 400.0)
+		};
+		let lod_center = num_lines <= 2;
+		(lod_text, lod_size, lod_center)
 	};
 
 	ui.put(rect, move |ui: &mut Ui| {
@@ -332,8 +342,19 @@ fn draw_node(
 				.rounding(rounding)
 				.fill(bg_color)
 				.stroke(stroke)
+				.inner_margin(egui::style::Margin::same(node_width * 0.1))
 				.show(ui, |ui| {
-					ui.label(egui::RichText::new(lod_text).small());
+					ui.with_layout(
+						egui::Layout::top_down(if lod_center {
+							egui::Align::Center
+						} else {
+							egui::Align::Min
+						}),
+						|ui| {
+							ui.label(egui::RichText::new(lod_text).monospace().size(lod_size));
+						},
+					);
+					ui.allocate_space(ui.available_size());
 				});
 		}
 		resp

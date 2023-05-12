@@ -9,7 +9,7 @@ use std::{
 use chrono::offset::Local;
 use model::Model;
 use rand::{distributions::Alphanumeric, Rng};
-use recipe::{Recipe, RecipeError};
+use recipe::{FileSource, Recipe, RecipeError};
 use tracing_subscriber::{filter::targets::Targets, fmt, layer::Layer};
 
 use crate::cmd::Cmd;
@@ -202,6 +202,31 @@ impl SessionConfig {
 			recipe,
 			sigstop_before_qemu_exec: run_args.debugger,
 		})
+	}
+
+	pub fn executable_host_path(&self) -> PathBuf {
+		// NOTE: `fs::canonicalize` and similar are inappropriate here since we are
+		// operating on a *guest* path.
+		fn remove_executable_dotslash(mut guest_path: &str) -> &str {
+			while let Some(stripped) = guest_path.strip_prefix("./") {
+				assert_ne!(stripped.chars().next(), Some('/'));
+				guest_path = stripped;
+			}
+			assert!(!guest_path.is_empty());
+			guest_path
+		}
+		let guest_path: &str = remove_executable_dotslash(&self.recipe.executable_path);
+
+		match self.recipe.files.get(guest_path) {
+			None => panic!(
+				"invalid recipe: guest path '{guest_path}' matches no guest file: {:?}",
+				self.recipe.files
+			),
+			Some(FileSource::Host(host_path)) => self.recipe_path.parent().unwrap().join(host_path),
+			Some(
+				symbolic @ (FileSource::SymbolicContent { .. } | FileSource::SymbolicHost { .. }),
+			) => panic!("invalid recipe: executable file cannot be symbolic: {symbolic:?}"),
+		}
 	}
 }
 

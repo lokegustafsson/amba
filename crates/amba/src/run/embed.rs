@@ -2,17 +2,24 @@
 
 use std::sync::mpsc;
 
+use disassembler::DisasmContext;
 use eframe::egui::Context;
 use model::{LayoutMadeProgress, Model};
 
-use crate::run::control::EmbedderMsg;
+use crate::{run::control::EmbedderMsg, SessionConfig};
 
 pub fn run_embedder(
 	model: &Model,
 	rx: mpsc::Receiver<EmbedderMsg>,
 	gui_context: Option<Context>,
+	config: &SessionConfig,
 ) -> Result<(), ()> {
 	let mut blocking = true;
+	let mut debug_info_context = DisasmContext::new(
+		&config.executable_host_path(),
+		config.recipe_path.parent().unwrap(),
+	)
+	.unwrap();
 	loop {
 		let message = if blocking {
 			// Will wait
@@ -26,7 +33,7 @@ pub fn run_embedder(
 				block_edges,
 				state_edges,
 			}) => {
-				model.add_new_edges(state_edges, block_edges);
+				model.add_new_edges(state_edges, block_edges, &mut debug_info_context);
 
 				blocking = false;
 				continue;
