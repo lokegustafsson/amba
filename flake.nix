@@ -122,6 +122,20 @@
             program =
               "${test.test-amba-state-splitter}/bin/test-amba-state-splitter";
           };
+          run-amba-hello = {
+            type = "app";
+            program = "${test.run-amba-hello}/bin/run-amba-hello";
+          };
+          run-amba-control-flow = {
+            type = "app";
+            program =
+              "${test.run-amba-control-flow}/bin/run-amba-control-flow";
+          };
+          run-amba-state-splitter = {
+            type = "app";
+            program =
+              "${test.run-amba-state-splitter}/bin/run-amba-state-splitter";
+          };
         };
       });
 }

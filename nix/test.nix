@@ -60,7 +60,39 @@ let
       time ${amba.amba}/bin/amba run ${state-splitter}/state-splitter.recipe.json --no-gui
     '';
   };
+  run-amba-hello = pkgs.writeShellApplication {
+    name = "run-amba-hello";
+    text = ''
+      export RUST_BACKTRACE=full
+      # Amba skips unnecessary download internally
+      ${amba.amba}/bin/amba init --download
+      # Run musl control flow
+      time ${amba.amba}/bin/amba run ${hello}/hello.recipe.json
+    '';
+  };
+  run-amba-control-flow = pkgs.writeShellApplication {
+    name = "run-amba-control-flow";
+    text = ''
+      export RUST_BACKTRACE=full
+      # Amba skips unnecessary download internally
+      ${amba.amba}/bin/amba init --download
+      # Run musl control flow
+      time ${amba.amba}/bin/amba run ${control-flow}/control-flow.recipe.json
+    '';
+  };
+  run-amba-state-splitter = pkgs.writeShellApplication {
+    name = "run-amba-state-splitter";
+    text = ''
+      export RUST_BACKTRACE=full
+      # Amba skips unnecessary download internally
+      ${amba.amba}/bin/amba init --download
+      # Run musl state-splitter
+      time ${amba.amba}/bin/amba run ${state-splitter}/state-splitter.recipe.json
+    '';
+  };
 in {
-  inherit hello control-flow state-splitter test-amba-hello
-    test-amba-control-flow test-amba-state-splitter;
+  inherit
+    hello control-flow state-splitter
+    test-amba-hello test-amba-control-flow test-amba-state-splitter
+    run-amba-hello run-amba-control-flow run-amba-state-splitter;
 }
