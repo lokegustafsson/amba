@@ -105,7 +105,7 @@ impl App for Gui {
 			})
 		});
 		if let Some(active) = self.graph_widget.active_node_id() {
-			egui::SidePanel::left("bottom-panel")
+			egui::SidePanel::left("active-node-panel")
 				.resizable(true)
 				.default_width(ctx.screen_rect().width() * 0.3)
 				.max_width(ctx.screen_rect().width() * 0.6)
