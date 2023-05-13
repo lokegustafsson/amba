@@ -2,7 +2,8 @@
 all: group_64_project_report.pdf check
 
 check:
-	sh -c 'echo 000'
+	/bin/sh -c 'echo 000'
+	sh -c 'echo 111'
 	if echo 123; then echo 456; fi
 	if type chktex; then echo 789; fi
 	if type chktex; then chktex -n 32 main; fi
