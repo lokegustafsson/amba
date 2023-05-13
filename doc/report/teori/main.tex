@@ -1,5 +1,5 @@
 Under \emph{BlueHat} 2019 gav \emph{MSRC} (\emph{Microsoft Security Response
-Center}) en överblick över Microsofts taktiker för hur de hanterar
+	Center}) en överblick över Microsofts taktiker för hur de hanterar
 säkerhetsbrister i deras produkter och tjänster~\cite{miller19}.
 Taktikerna som listades var att
 \begin{itemize}
@@ -21,43 +21,43 @@ binären interagerar med minnet genom att bland annat analysera minneslayouten
 och den underliggande datastrukturen för att hitta problem vid minnesallokering
 och minnesdeallokering, och därigenom hitta minnessäkerhetsbuggar.
 
-Det finns ett flertal metoder för att analysera en exekverbar binär. Exempel på dessa är att: 
+Det finns ett flertal metoder för att analysera en exekverbar binär. Exempel på dessa är att:
 \begin{enumerate}
-  \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
-  \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
-    läsbara koden.
-  \item köra binären på speciella testfall och jämföra svaret med vad som förväntas. Om
-    programmet implementerar en specifikation kan en existerande testsamling användas.
-  \item fuzztesta binären, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
-    annat oönskat beteende i binären. Många fuzztestmotorer skapar testfall med en evolutionär
-    algoritm, och många använder instrumentering över vilka programhopp som tas för att bedöma
-    testfalls nyttighet.
-  \item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
-    lösa för testfall som orsakar annorlunda programhopp.
-  \item stega igenom programmet i en debugger för att se exakt vad programmet gör med viss input.
+	\item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
+	\item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
+	      läsbara koden.
+	\item köra binären på speciella testfall och jämföra svaret med vad som förväntas. Om
+	      programmet implementerar en specifikation kan en existerande testsamling användas.
+	\item fuzztesta binären, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
+	      annat oönskat beteende i binären. Många fuzztestmotorer skapar testfall med en evolutionär
+	      algoritm, och många använder instrumentering över vilka programhopp som tas för att bedöma
+	      testfalls nyttighet.
+	\item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
+	      lösa för testfall som orsakar annorlunda programhopp.
+	\item stega igenom programmet i en debugger för att se exakt vad programmet gör med viss input.
 \end{enumerate}
 
-Problematisk minneshantering har potential att påverka ett programs korrekthet och 
-kan utnyttjas av fientliga aktörer i skadliga syften. Att minne hanteras på ett 
-osäkert sätt är inte ovanligt, speciellt då proggrammet är skrivet i ett språk som är 
-"memory unsafe" som exempelvis C/C++. Det är då lätt att vid utveckling av program 
-göra misstag som introducerar sårbarheter, och kan vara svårare att upptäcka dessa 
-sårbarheter när de väl introducerats, speciellt om det inkorrekta beteendet endast 
+Problematisk minneshantering har potential att påverka ett programs korrekthet och
+kan utnyttjas av fientliga aktörer i skadliga syften. Att minne hanteras på ett
+osäkert sätt är inte ovanligt, speciellt då proggrammet är skrivet i ett språk som är
+''memory unsafe'' som exempelvis C/C++. Det är då lätt att vid utveckling av program
+göra misstag som introducerar sårbarheter, och kan vara svårare att upptäcka dessa
+sårbarheter när de väl introducerats, speciellt om det inkorrekta beteendet endast
 uppstår under körning med specifika indata.
 
 Att läsa källkod är ett sätt att förstå program, men ibland är det gynnsamt att istället betrakta
 maskinkoden direkt. Detta kan vara för att
 
-Begreppet \textit{reverse engingeering} syftar på processen att söka insikt i hur en produkt 
-(enhet/process/mjukvara/verktyg/system) arbetar, utan en etablerad insikt i dess interna 
-uppbyggnad. Med andra ord syftar reverse engineering på att dekonstruera en produkt för att 
-öka förståelsen av den. Detta görs genom att med olika metoder plocka isär produkten för 
-att förstå hur den utför ett arbete. Reverse engineering är ett fundamentalt verktyg då insikt 
-om en produkts design behövs men designspecifikationer ej existerar eller är tillgängliga. 
-Reverse engineering har flera användningsområden, däribland då äldre produkter, vars design 
-inte längre är tillgänglig, behöver undersökas, eller när funktionalitet försvunnit i 
-utvecklingsaproccesen och behöver återfinnas. Reverse engineering är också användbart för 
-att analysera fel som uppstår, för att förbättra delkomponenter eller för att diagnostisera 
+Begreppet \textit{reverse engingeering} syftar på processen att söka insikt i hur en produkt
+(enhet/process/mjukvara/verktyg/system) arbetar, utan en etablerad insikt i dess interna
+uppbyggnad. Med andra ord syftar reverse engineering på att dekonstruera en produkt för att
+öka förståelsen av den. Detta görs genom att med olika metoder plocka isär produkten för
+att förstå hur den utför ett arbete. Reverse engineering är ett fundamentalt verktyg då insikt
+om en produkts design behövs men designspecifikationer ej existerar eller är tillgängliga.
+Reverse engineering har flera användningsområden, däribland då äldre produkter, vars design
+inte längre är tillgänglig, behöver undersökas, eller när funktionalitet försvunnit i
+utvecklingsaproccesen och behöver återfinnas. Reverse engineering är också användbart för
+att analysera fel som uppstår, för att förbättra delkomponenter eller för att diagnostisera
 en produkt.
 
 För att bilda en allmän förståelse om ett program krävs både \textit{korrekt} och
@@ -105,7 +105,7 @@ För att klargöra distinktionen mellan manuell och automatiska metoder för
 binäranalys används följande use cases:
 
 \begin{figure}
-\begin{lstlisting}[
+	\begin{lstlisting}[
     label={list:first},
     language=Python,
     frame=single
@@ -117,7 +117,7 @@ if sha256(s) = "välkänd hash":
 else:
   print("you lose")
 \end{lstlisting}
-\caption{Use case manuella metoder}
+	\caption{Use case manuella metoder}
 \end{figure}
 
 I use cases där det existerar kända konstanter, något som är typiskt i fall som
@@ -133,7 +133,7 @@ inversen till en given SHA-256 hash vilket idag är omöjligt och leder därmed
 till att alla paths inte undersöks.
 
 \begin{figure}
-\begin{lstlisting}[
+	\begin{lstlisting}[
     label={list:first},
     language=Python,
     frame=single
@@ -145,7 +145,7 @@ if s == "secret":
 else:
   print("you lost")
 \end{lstlisting}
-\caption{Use case manuella metoder}
+	\caption{Use case manuella metoder}
 \end{figure}
 
 Ett motsatt fall är ovan och lämpas väl att undersökas med automatiska
@@ -153,7 +153,7 @@ metoder eftersom det är tidskrävande att manuellt välja slumpvalda värden p�
 för att hitta den korrekta branchen. Istället lämpar concolic testing, dvs en
 automatisk metod, sig väl i detta fallet eftersom concolic testing väljer olika
 konkreta värden samtidigt som den tillämpar symbolisk exekvering med symboliska
-värden som följer den givna branchen, t.ex. om \lstinline{s == "hej"} vilket
-motsvarar att programmet väljer else-branchen och printar \lstinline{"you lost"}. 
+värden som följer den givna branchen, t.ex.\ om \lstinline{s == "hej"} vilket
+motsvarar att programmet väljer else-branchen och printar \lstinline{"you lost"}.
 Detta upprepas med nya exekveringsvägar och till slut hittas vilken input som ger
-\lstinline{print("you won")}-branchen. 
+\lstinline{print("you won")}-branchen.

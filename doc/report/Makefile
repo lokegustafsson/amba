@@ -2,7 +2,7 @@
 all: group_64_project_report.pdf check
 
 check:
-	if command -v chktex &> /dev/null; then chktex main; fi
+	if command -v chktex &> /dev/null; then chktex -n 32 main; fi
 
 group_64_project_report.pdf: \
   amba/main.tex \

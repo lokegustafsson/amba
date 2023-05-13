@@ -1,24 +1,24 @@
-En metod för dynamisk binäranalys är symbolisk exekvering. Eftersom exekveringen är symbolisk är 
+En metod för dynamisk binäranalys är symbolisk exekvering. Eftersom exekveringen är symbolisk är
 det möjligt att utforska alla möjliga exekveringsvägar i programmet, även de som inte är möjliga
-med konkreta inputs. Både \stoe{} och SymQEMU är kraftfulla verktyg för att analysera binära program 
+med konkreta inputs. Både \stoe{} och SymQEMU är kraftfulla verktyg för att analysera binära program
 med symbolisk exekvering.
 
-SymQEMU är byggt som en förlängning av QEMU, och använder en kombination av dynamisk binär 
+SymQEMU är byggt som en förlängning av QEMU, och använder en kombination av dynamisk binär
 översättning och symbolisk exekvering för att analysera binära program som körs inuti emulatorn.
-SymQEMU utför kompileringsbaserad symbolisk exekvering, där den mellanliggande representationen först blir modifierad 
+SymQEMU utför kompileringsbaserad symbolisk exekvering, där den mellanliggande representationen först blir modifierad
 innan den översätts till värdarkitekturen, och är därför arkitekturoberoende utan att påverka prestandan~\cite{symqemu}.
 
-\stoe{} är ett modulärt bibliotek som ger virtuella maskiner symbolisk exekvering. \stoe{} erbjuder 
-redskap för att fokusera utforskningen på delkomponenter av systemet och gör det även 
-möjligt för användare att sätta in kod i målsystemet vid specifika punkter under 
-exekvering. Det gör att användare kan anpassa analysprocessen efter sina behov~\cite{s2e}. 
-\stoe{} kan analysera kod för de flesta processorarkitekturer men betalar för det med ökad 
-komplexitet och prestanda~\cite{symqemu}. 
+\stoe{} är ett modulärt bibliotek som ger virtuella maskiner symbolisk exekvering. \stoe{} erbjuder
+redskap för att fokusera utforskningen på delkomponenter av systemet och gör det även
+möjligt för användare att sätta in kod i målsystemet vid specifika punkter under
+exekvering. Det gör att användare kan anpassa analysprocessen efter sina behov~\cite{s2e}.
+\stoe{} kan analysera kod för de flesta processorarkitekturer men betalar för det med ökad
+komplexitet och prestanda~\cite{symqemu}.
 
-Ett annat verktyg för att identifiera buggar och sårbarheter med hjälp av dynamisk symbolisk 
+Ett annat verktyg för att identifiera buggar och sårbarheter med hjälp av dynamisk symbolisk
 exekvering är SAGE (Scalable Automated Guided Execution).
-SAGE var det första verktyget som utförde dynamisk symbolisk exekvering på x86-binärnivå och använder flera 
-avgörande optimeringar för att hantera stora exekverings-spår (jmf. engelska execution traces).
-För att skala upp till stora exekverings-spår använder SAGE flera tekniker för att förbättra hastigheten och 
-minnesanvändningen för constraint generering, exempelvis så kartläggs ekvivalenta symboliska uttryck till samma 
+SAGE var det första verktyget som utförde dynamisk symbolisk exekvering på x86-binärnivå och använder flera
+avgörande optimeringar för att hantera stora exekverings-spår (jmf.\ engelska execution traces).
+För att skala upp till stora exekverings-spår använder SAGE flera tekniker för att förbättra hastigheten och
+minnesanvändningen för constraint generering, exempelvis så kartläggs ekvivalenta symboliska uttryck till samma
 objekt och constraints som redan är tillagda hoppas över~\cite{sage}.

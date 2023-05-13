@@ -42,9 +42,9 @@ Sammantaget är kraven på en exekveringsmotor med stöd för symbolisk analys a
 	\item kan ladda en binär i en konkret miljö;
 	\item kan introducera symboliska variabler i denna miljö genom till exempel kommunikation med omgivningen;
 	\item kan exekvera konkreta delar av programmet med god prestanda genom att köra dessa delar
-	avprogrammet som maskinkod; och
+	      avprogrammet som maskinkod; och
 	\item kan exekvera symboliska delar av programmet på ett sätt som är tillräckligt kraftfullt för de
-	symboliska analyser som exekveringsmotorn ska användas till.
+	      symboliska analyser som exekveringsmotorn ska användas till.
 \end{enumerate}
 
 Dessutom behöver exekveringsmotorn kunna kontrolleras och dess
@@ -52,14 +52,18 @@ slutsatser kunna användas av och presenteras i resten av programmet.
 Figur~\ref{schematic} visar förhållandet mellan användaren, analysverktyget och
 dess exekveringsmotor.
 
-\begin{figure}[H] \centering \begin{tikzpicture} \node [draw, fill=lime, minimum
-	width=2cm, minimum height=1cm, ]  (user) {Användare};
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+
+		\node [draw, fill=lime, minimum
+			width=2cm, minimum height=1cm, ]  (user) {Användare};
 
 		\node [draw, fill=yellow, minimum width=2cm, minimum height=1cm,
-		right=2cm of user ] (tool) {Analysverktyg};
+			right=2cm of user ] (tool) {Analysverktyg};
 
 		\node [draw, fill=orange, minimum width=2cm, minimum height=1cm,
-		right=2cm of tool ] (engine) {Exekveringsmotor};
+			right=2cm of tool ] (engine) {Exekveringsmotor};
 
 		\draw[->, line width=.4mm] (user.-30) to[out=-30, in=-150]
 		node[midway,below]{Beslut} (tool.-150);
@@ -73,8 +77,9 @@ dess exekveringsmotor.
 		\draw[->, line width=.4mm] (engine.150) to[out=150, in=30]
 		node[midway,above]{Instrumentering} (tool.30);
 
-	\end{tikzpicture} \caption{ Schematisk bild av ett binäranalysverktyg byggt
-	kring en exekveringsmotor }\label{schematic} \end{figure}
+	\end{tikzpicture}
+	\caption{ Schematisk bild av ett binäranalysverktyg byggt kring en exekveringsmotor}\label{schematic}
+\end{figure}
 
 \subsection{Analyser}
 
