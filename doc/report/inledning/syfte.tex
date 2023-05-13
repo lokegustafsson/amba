@@ -2,25 +2,21 @@
 %engineering, det vill säga en applikation vars uppgift är att analysera binära
 %program utan kännedom om källkoden utifrån ett datorsäkerhetsperspektiv.
 
-Projektet ämnar utveckla ett verktyg för interaktiv visualisering av symbolisk
-fuzzing som möjliggör utforskande binäranalys med hjälp av symbolisk
-exekvering. Visualiseringen ska presenteras i ett grafiskt användargränssnitt
-där användaren kan interaktivt stega igenom det binära programmet och
+Projektet ämnar utveckla binäranalysverktyget AMBA för interaktiv visualisering
+av symbolisk fuzzing som möjliggör utforskande binäranalys med hjälp av
+symbolisk exekvering. Visualiseringen ska presenteras i ett grafiskt
+användargränssnitt där användaren kan interaktivt följa exekveringen och
 prioritera exekveringsstigar. Verktyget ämnar att, genom mänskligt fördelaktiga
-representationer av programmets beteende, öka användarens abstrakta förståelse
-av det.
+representationer av programmets beteende, förbättra kommunikationen till
+användaren och underlätta binäranalys inom skadeprogramsanalys och
+sårbarhetsanalys.
 
-Att kunna avgöra ett programs beteende utifrån endast exekverbar (binär) 
-kod är viktigt när man undersöker skadeprogram eftersom dess källkod oftast är
-okänd. För att upptäcka pågående, och motverka framtida attacker är det viktigt
-att förstå hur skadeprogram är utformade och hur de beteer sig. 
+Detta för att möjliggöra ett utforskande analysverktyg som kombinerar datorns
+fördel i beräkningskraft och människans intuition. Symbolisk fuzzing
+löser problemet av att inte behöva godtyckligt gissa input som leder till att
+en specifik väg tas i ett program, och nyttan från människans intuition nyttjas
+på samma sätt som med en dekompilator -- genom analys som leder till ökad
+förståelse och insikt. Denna kombinationen gör det möjligt att på ett
+användarvänligt sätt dra analytiska slutsatser om en binär och öka ens
+abstrakta förståelse av det och därmed underlätta symbolisk fuzzing.
 
-Användbarheten av ett analysverktyg som möjliggör utforskande analys kommer
-från kombinationen av datorns fördel i beräkningskraft och människans
-intuition. Symbolisk fuzzing löser problemet av att inte behöva godtyckligt
-gissa input som leder till att en specifik väg tas i ett program,
-och nyttan från människans intuition nyttjas på samma sätt som med en
-dekompilator -- genom analys som leder till ökad förståelse och insikt. Denna
-kombinationen gör det möjligt att på ett användarvänligt sätt dra analytiska
-slutsatser om en binär och öka ens abstrakta förståelse av det och därmed
-potentiellt hitta sårbarheter.
