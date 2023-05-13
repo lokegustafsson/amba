@@ -32,7 +32,7 @@
 **/*.toc
 **/*.bcf
 **/*.run.xml
-**/*.bak[0-9]
+**/*.bak*
 
 # Built PDFs
 !doc/pdf/**
