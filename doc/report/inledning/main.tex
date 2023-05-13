@@ -14,7 +14,7 @@ programvaror.
 Vanliga fel i program som utnyttjas av angripare och skadeprogram är
 minnesårbarheter. Det som gör minnessårbarheter allvarligare till skillnad från
 andra fel som logikfel är att minnessårbarheter kan utnyttjas för att påverka
-ett programs kontrolflöde (jfr eng. \emph{control flow}) och alltså dess
+programflödet (jfr eng. \emph{control flow}) i ett program och alltså dess
 beteende. Minnesårbarheter tillåter minnesaccess utanför en viss minnesregion.
 Det kan vara alvarligt om en angripare kan läsa delar av minnet som inte ska
 vara läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
@@ -48,18 +48,40 @@ tillgänglig~\cite{andriesse2018}.
 En metod för binäranalys är \emph{fuzzing} som går ut på att mata olika indata
 till ett program och betrakta fel som uppstår. Målet med \emph{fuzzing} är att
 uppnå en hög täckning (jfr eng. \emph{coverage}) av programmet som beror
-på indatan. Alltså att ta alla möjliga vägar genom kontrollflödet som är
+på indatan. Alltså att ta alla möjliga vägar i programflödet som är
 möjliga att nå genom att variera indatan. Däremot är det ett svårt problem att
 generera indata som uppnår en hög täckning som även är effektivtast, speciellt
-när indatan kan ha ett högt antal olika värden. Symbolisk exekvering är ett
-exekveringssätt som syftar till att lösa detta problem. Det är en ett sätt att
+när indatan kan ha ett högt antal olika värden. Symbolisk exekvering, beskrivet
+i detalj i avsnitt~\ref{sec:symbolic_execution} är ett exekveringssätt som
+syftar till att lösa detta problem. Det är en ett sätt att
 exekvera ett program abstrakt där en exekvering betraktar alla möjliga indata
-som delar en viss exekveringsväg genom kontrollflödet. Symbolisk fuzzing
-använder symbolisk exekvering för att generera olika indata till \emph{fuzzing}
-processen som effektivast uppnår den högsta täckning som kan uppnås genom att
-variera indatan.
+som delar en viss exekveringsstig (jfr eng. \emph{execution path}) genom
+programflödet. Detta möjliggörs genom att betrakta indatan som symbolisk där
+en viss stig ackumulerar en stigvillkor (jfr eng. \emph{path condition}) på
+symbolen vars lösning/lösningar beskriver alla värden på symbolen som leder
+till att programmet följer motsvarande stig i programflödet. Symbolisk
+fuzzing använder symbolisk exekvering för att generera olika indata till
+\emph{fuzzing} processen som effektivast uppnår den högsta täckning som kan
+uppnås genom att variera indatan.
 
-% why visualize the symbolic fuzzing process is something we need?
+Domänen för binäranalys är stort, det finns många metoder och
+användningsområdet är betydande. Det krävs alltid bra verktyg som underlättar
+och möjliggör mer inom användningsområdena. Symbolisk exekvering är en
+exekveringsmetod som tillåter väldigt kraftiga binäranalys men leder också till
+komplicerade sådana. Symbolisk exekvering är en metod som oftast leder till en
+långsam exekvering och begränsas även av stigexplosionsproblemet (jfr eng.
+\emph{path explosion}), som orsakas av ett stort antal villkorstest på
+symbolisk data, i bl.a. loopar, rekursion och undantag (jfr eng.
+\emph{exceptions}). Det finns ett antal metoder för att kringgå
+stigexplosionsproblemet men lägger stor börda på analytikern som ofta har ett
+väldigt begränsad vy in i vad som händer under exekveringen, oftast genom en
+textuell gränssnitt.
 
-% s2e ett av många alternativ, finns några andra exempel på symbolic execution engines
+Ett annat problem som berör säkerhetsforskare är att verkliga skadeprogram
+ofta tilltar flera kända metoder för att försvåra analys och vilseleda
+analysverktyg. Det krävs ofta en utforskande metod för att analysera och förstå
+en skadeprogram och testa ett antal metoder för att förstå och känneteckna
+sårbarheter som skadeprogrammet utnyttjar. Detta och tidigare beskriva
+problem kan behandlas genom ett visuellt, interaktivt och utforskande
+analysverktyg.
 

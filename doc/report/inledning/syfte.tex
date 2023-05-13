@@ -3,37 +3,24 @@
 %program utan kännedom om källkoden utifrån ett datorsäkerhetsperspektiv.
 
 Projektet ämnar utveckla ett verktyg för interaktiv visualisering av symbolisk
-fuzzing. Detta innebär att utveckla en applikation vars uppgift är att analysera
-binärer med inkluderade debugsymboler för att hitta input som leder till
-buggar eller minnessårbarheter.
+fuzzing som möjliggör utforskande binäranalys med hjälp av symbolisk
+exekvering. Visualiseringen ska presenteras i ett grafiskt användargränssnitt
+där användaren kan interaktivt stega igenom det binära programmet och
+prioritera exekveringsstigar. Verktyget ämnar att, genom mänskligt fördelaktiga
+representationer av programmets beteende, öka användarens abstrakta förståelse
+av det.
 
-\subsection{Mål}
-Verktyget ska ha en korrekt och testbar förståelse av det analyserade programmet
-och ska samtidigt kunna kommunicera denna till användaren genom visualisering.
+Att kunna avgöra ett programs beteende utifrån endast exekverbar (binär) 
+kod är viktigt när man undersöker skadeprogram eftersom dess källkod oftast är
+okänd. För att upptäcka pågående, och motverka framtida attacker är det viktigt
+att förstå hur skadeprogram är utformade och hur de beteer sig. 
 
-Visualiseringen ska presenteras i ett grafiskt användargränssnitt där användaren
-kan interaktivt stega igenom det binära programmet och själv välja vilka states
-som ska prioriteras. Funktionaliteten i verktyget uppnås
-med hjälp av symbolisk exekvering vilket tillgängliggör symbolisk fuzzing.
-
-% Utveckla syfte (förstå nyttan och det akademiskt relevanta i arbetet)
-Verktyget ämnar att genom mänskligt läsbara representationer av programmets
-beteende, öka användarens abstrakta förståelse av det. Verktyget ska vara
-användbart för att öka användarens abstrakta förståelse av ett program då källkod
-saknas. Det vill säga verktyget ska hjälpa användaren att resonera om programmet
-generellt.
-
-\subsection{Användningsområden}
-Att kunna avgöra ett programs beteende utifrån endast exekverbar (binär)
-kod är viktigt när man undersöker potentiellt skadlig mjukvara eftersom
-dess källkod oftast är okänd. För att upptäcka pågående, och motverka
-framtida attacker är det viktigt att förstå hur attackerna är utformade och
-hur de beteer sig.
-
-Användbarheten kommer från kombinationen av datorns fördel i beräkningskraft
-och människans intuition. Symbolisk fuzzing löser problemet av att inte behöva godtyckligt
-gissa input som leder till att en specifik väg tas i ett program, och nyttan från människans
-intuition nyttjas på samma sätt som med en dekompilator --- genom analys som
-leder till ökad förståelse och insikt. Denna kombinationen gör det möjligt att på ett
-användarvänligt sätt dra analytiska slutsatser om en binär och öka ens abstrakta
-förståelse av det och därmed potentiellt hitta minnessårbarheter.
+Användbarheten av ett analysverktyg som möjliggör utforskande analys kommer
+från kombinationen av datorns fördel i beräkningskraft och människans
+intuition. Symbolisk fuzzing löser problemet av att inte behöva godtyckligt
+gissa input som leder till att en specifik väg tas i ett program,
+och nyttan från människans intuition nyttjas på samma sätt som med en
+dekompilator -- genom analys som leder till ökad förståelse och insikt. Denna
+kombinationen gör det möjligt att på ett användarvänligt sätt dra analytiska
+slutsatser om en binär och öka ens abstrakta förståelse av det och därmed
+potentiellt hitta sårbarheter.
