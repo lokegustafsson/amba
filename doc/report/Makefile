@@ -1,3 +1,12 @@
+.PHONY: all check
+all: group_64_project_report.pdf check
+
+check:
+	latexindent --local --overwriteIfDifferent --silent -k *.tex */*.tex
+	-rm *.bak0
+	-rm */*.bak0
+	chktex --nowarn 32 main
+
 group_64_project_report.pdf: \
   amba/main.tex \
   begreppslista.tex \
@@ -24,4 +33,3 @@ group_64_project_report.pdf: \
   refs.bib
 	tectonic main.tex
 	mv main.pdf group_64_project_report.pdf
-

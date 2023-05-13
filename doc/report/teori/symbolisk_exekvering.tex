@@ -1,23 +1,22 @@
-\label{symbolisk_exekvering}
 Att exekvera ett program symboliskt innebär att representera värden utefter
-programflödet som symboliska restriktioner (jfr eng. constraint), vilka kan
+programflödet som symboliska restriktioner (jfr eng.\ constraint), vilka kan
 lösas av automatiserade teoremlösare (\emph{SMT solver}). En symbolisk körning
 representerar flera konkreta körningar eftersom de (symboliska) värden som
 används representerar grupper av konkreta värden vilka har gemensamt hur de
-påverkar programmets flöde~\cite{klee}. 
+påverkar programmets flöde~\cite{klee}.
 
 Vägar i programmets kontrollflöde utforskas med symboliska uttryck som kallas
-för path constraints (jfr sv. vägvillkor) för de begränsningar som finns på
-programmets variabler -- vilka egenskaper de måste uppnå för att just denna väg
-ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan 
-evalueras eftersom de krav som måste uppfyllas för att följa vägen dit dokumenteras 
-under den symboliska körningen, och resulterar i fullständiga symboliska representationer 
-som en automatiserad teoremlösare (jmf. engelska SMT solver) kan appliceras på.
+för path constraints (jfr sv.\ vägvillkor) för de begränsningar som finns på
+programmets variabler --- vilka egenskaper de måste uppnå för att just denna väg
+ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan
+evalueras eftersom de krav som måste uppfyllas för att följa vägen dit dokumenteras
+under den symboliska körningen, och resulterar i fullständiga symboliska representationer
+som en automatiserad teoremlösare (jmf.\ engelska SMT solver) kan appliceras på.
 
-Eftersom de symboliska värdena har kapacitet att representera grupperingar av konkreta 
-värden istället för enskilda sådana, utförs en generaliserad testning av programmet, 
-som ger insikt i hur programmet beter sig givet en grupp av parametrar som alla 
-på grund av någon eller några gemensamma egenskaper, orsakar gemensamma beteenden 
+Eftersom de symboliska värdena har kapacitet att representera grupperingar av konkreta
+värden istället för enskilda sådana, utförs en generaliserad testning av programmet,
+som ger insikt i hur programmet beter sig givet en grupp av parametrar som alla
+på grund av någon eller några gemensamma egenskaper, orsakar gemensamma beteenden
 i programmet~\cite{cadar}.
 
 En symbolisk exekveringsmotor arbetar genom att först representera programmets
@@ -30,26 +29,26 @@ motsvarande symboliska variabler. När körning utefter branchen är
 slutförd repeterar motorn samma metodik på samma branch för att utforska andra
 alternativ. De tillståndsvillkor som en viss väg visas ha byggs därför
 successivt upp genom att motorn utökar de symboliska variablerna till
-villkorliga uttryck allt eftersom vägen följs~\cite{klee}.  
+villkorliga uttryck allt eftersom vägen följs~\cite{klee}.
 
 Eftersom symbolisk exekvering kan leda till \emph{path explosion}, vilket
 uppstår i program vars branches växer exponentiellt och resulterar i att en
 symbolisk exekvering aldrig terminerar~\cite{path_explo}, är det inte effektivt
 att alltid undersöka alla branchar i ett program. Exempel på metoder för att
-undvika path explosion är \emph{state-merging} och \emph{heuristics}. 
+undvika path explosion är \emph{state-merging} och \emph{heuristics}.
 
 För att illustrera symbolisk exekvering används följande pseudokod:
 
 \begin{figure}[H]
-\centering
-\begin{lstlisting}[label={list:first}, language=Python, frame=single]
+    \centering
+    \begin{lstlisting}[label={list:first}, language=Python, frame=single]
 x = input()
 y = input()
 z = 2 * y
 
-if x == 100000: 
+if x == 100000:
   if x < z:
-  # fabricated scenario of 
+  # fabricated scenario of
   # memory vulnerability
     error_leading_to_mem_vuln()
   else:
@@ -58,8 +57,7 @@ else:
   run_important_code()
 
 \end{lstlisting}
-\caption{Pseudokod för att visualisera symbolisk exekvering.}
-\label{symbex_example_code}
+    \caption{Pseudokod för att visualisera symbolisk exekvering.}\label{symbex_example_code}
 \end{figure}
 
 Exemplet ovan använder symbolisk exekvering för att hitta vilken input som leder
@@ -69,18 +67,17 @@ program men inte alla program. Variablerna x och y sätts till symboliska värde
 som sedan används för att beräkna path constraint och de symboliska uttryck som
 variablerna utvecklas till för en vald branch. Därefter används dessa uttryck
 och path constraint tillsammans för att bilda en ekvation som kan lösas med
-hjälp av en SMT-solver och därmed få ut ett konkret värde. Figur
-\ref{symbex_example_graph} visar hur
-det symboliska tillståndet förändras för alla möjliga branches i programmet.
+hjälp av en SMT-solver och därmed få ut ett konkret värde.
+Figur~\ref{symbex_example_graph} visar hur det symboliska tillståndet förändras
+för alla möjliga branches i programmet.
 
 \begin{figure}[H]
-\centering
-\includegraphics[scale=0.5]{figures/final_symbolic_example_graph.png}
-\caption{Path constraint och symboliskt tillstånd för alla vägar i
-    pseudokoden angett i \ref{symbex_example_code}.}
-\label{symbex_example_graph}
+    \centering
+    \includegraphics[scale=0.5]{figures/final_symbolic_example_graph.png}
+    \caption{Path constraint och symboliskt tillstånd för alla vägar i
+        pseudokoden angett i~\ref{symbex_example_code}.}\label{symbex_example_graph}
 \end{figure}
 
-I \ref{symbex_example_graph} används $\pi$ för att ange path constraint vilket
+I~\ref{symbex_example_graph} används $\pi$ för att ange path constraint vilket
 är initialt satt till $\top$ eftersom villkoret är sant från början och $\phi$
 används för att visa mappningen för symboliska värden.

@@ -1,26 +1,26 @@
 Fuzzing är ett användbart automatiskt verktyg för att testa program efter ofta
-svårupptäckta problem som minnesbuggar, krascher, etc. tack vare dess enkelhet i
-att konfigurera verktyget mot godtyckliga program.  
+svårupptäckta problem som minnesbuggar, krascher, etc.\ tack vare dess enkelhet i
+att konfigurera verktyget mot godtyckliga program.
 
 Grundprincipen i fuzzing är att attackera en större mängd av möjlig indata genom
 att generera oväntad, godtycklig eller felaktig data. Denna typ av genererad
 indata resulterar ofta i syntaktiskt eller semantiskt felaktig indata som inte
 kan hanteras av målprogrammet. Således finns det anledning för
 utvecklingspotential, något som lett till bland annat mutationsbaserad fuzzing
-(jmf. eng. mutation-based fuzzing) och genereringsbaserad fuzzing (jmf. eng.
+(jmf.\ eng.\ mutation-based fuzzing) och genereringsbaserad fuzzing (jmf.\ eng.
 generation-based fuzzing). Mutationsbaserad fuzzing muterar känd giltig indata,
-t.ex. om strängen 'fuzz' är giltig indata kan detta muteras till 'fuzzZZZZZ'. Om
+t.ex.\ om strängen `fuzz' är giltig indata kan detta muteras till `fuzzZZZZZ'. Om
 en användare exempelvis vill fuzztesta bildhanteringsbiblioteket libjpeg skulle
 detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
 seeds, värden som används i pseudoslumptalsgeneratorer för att generera
 pseudoslumptal, och sedan modifiera dessa. Detta skiljer sig från
-genereringsbaserad fuzzing som genererar indata givet en modell för domänen --
+genereringsbaserad fuzzing som genererar indata givet en modell för domänen ---
 en fördel i jämförelse med mutationsbaserad fuzzing som kräver känd kvalitativ
-indata~\cite{fuzzing}. 
+indata~\cite{fuzzing}.
 
 \subsection{Symbolisk fuzzing} Symbolisk fuzzing, eller concolic testing, är en
 white-box fuzzermetod som nyttjar symbolisk exekvering för att maximera code
-coverage -- fuzzerns förmåga att traversera över samtliga kanter och noder i
+coverage --- fuzzerns förmåga att traversera över samtliga kanter och noder i
 programmets kontrollflödesgraf. Skiljt från grey-box-fuzzers som AFL, möjliggör
 symbolisk exekvering att fuzzern alltid väljer en branch som inte tidigare
 tagits och således ökar code coverage~\cite{challenges_fuzzing}. Som beskrivet i
@@ -29,7 +29,7 @@ med hjälp av en virtuell maskin och ersätta indata med symbolisk motsvarighet,
 som enklast beskrivs som en liknelse till matematiska formler i form av ett
 algebraiskt uttryck. Dessa uttryck bildar sedan tillsammans ett path constraint
 som skickas till en SMT-lösare som resulterar i en input som leder till en given
-branch. 
+branch.
 
 \subsection{Problem med fuzzing} Ett problem är insikt om den underliggande
 kodstrukturen. En viktig egenskap hos fuzzers som används för att beskriva dess
@@ -47,7 +47,7 @@ med ny indata och därmed öka testytan~\cite{challenges_fuzzing}.
 
 Fuzzers kräver ofta protokoll- eller domänkännedom för att kunna generera
 indata. Detta blir problem för komplexa kodbaser eller bibliotek som saknar
-trivial eller uppenbar indata och leder därmed till lägre code coverage. 
+trivial eller uppenbar indata och leder därmed till lägre code coverage.
 
 White-box fuzzers är inte en allmän lösning till problemen med fuzzing, utan
 stretar med problem som exempelvis prestanda, path explosion, och falsk positiva

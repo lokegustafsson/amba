@@ -10,11 +10,10 @@
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{figures/arkitektur.jpg}
-    \caption{Placeholder: Systemöversikt över AMBA}
-    \label{fig:arkitektur}
+    \caption{Placeholder: Systemöversikt över AMBA}\label{fig:arkitektur}
 \end{figure}
 
-% 
+%
 
 AMBA ska betraktas som ett system bestående av ett flertalet subsystem
 som kommunicerar med varandra med delade objekt eller unix socklar.
@@ -25,10 +24,10 @@ symboliska uttryck som baseras på binärens maskinkod.  Grafen ger en
 visualisering över vilka möjliga vägar som exekveringen kan ta när
 binären körs på en maskin.  En översikt av systemets arkitektur finns
 i figur~\ref{fig:arkitektur}.  Med hjälp av inställningarna från
-konfigurationsfilen startas sedan QEMU och \stoe med vårt \stoe plugin
+konfigurationsfilen startas sedan QEMU och \stoe{} med vårt \stoe{} plugin
 AmbaPlugin.  Ett operativsystem och binären laddas in och börjar
-exekveras.  När \stoe anropar callbackfunktioner definierade i
-AmbaPlugin, vilka är tillagda i utvalda \stoe hooks, som sedan
+exekveras.  När \stoe{} anropar callbackfunktioner definierade i
+AmbaPlugin, vilka är tillagda i utvalda \stoe{} hooks, som sedan
 uppdaterar vyn i vislualiseringen.
 
 \section{Amba}
@@ -50,7 +49,7 @@ analyser~\cite{Chipounov12}.
 
 Konceptuellt består ett S2E plugin av ett tillstånd och en
 initieringsfuktion. Tillståndet ärvs från ett kärn-plugin som
-innehåller information om bl.a. programtillstånd, symbolisk
+innehåller information om bl.a.\ programtillstånd, symbolisk
 exekveringstillstånd och information om andra plugin. Tillståndet kan
 utökas för att samla information, kontrollera egenskaper och utföra
 binäranalys. Initieringsfunktionen består av tillståndsinitiering och
@@ -60,7 +59,7 @@ under exekvering när motsvarande villkor för en hook uppfylls.
 
 AmbaPlugin är ett S2E plugin som har utvecklats för att samla
 information under exekvering av en binär ämnat för att visualisera
-exekveringen i AMBA.
+exekveringen i AMBA.\@
 
 \section{AmbaPlugin}
 AmbaPlugin registrerar callbacks för ett antal hooks bland vilka
@@ -111,7 +110,7 @@ den underliggande linjegrafen.
 % Rust isn't supported, Swift is close enough syntactically
 \begin{lstlisting}[label={list:third}, language=Swift]
 // Language question: Translate field names to Swedish?
-// Specify Set and Map? List → Vec?
+// Specify Set and Map? List -> Vec?
 struct Node {
     from:  Set<Id>,
     to:    Set<Id>,

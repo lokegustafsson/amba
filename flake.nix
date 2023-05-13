@@ -67,6 +67,7 @@
               p.rust-bin.stable.latest.rust-analyzer
               p.stable.tectonic
               p.texlab
+              p.texlive.combined.scheme-medium
             ];
             IMPURE_RUST = 1;
             inherit (amba)
@@ -99,9 +100,11 @@
               (pkgs.writeShellScript "build-documents" ''
                 export PATH=${
                   lib.strings.makeBinPath [
+                    pkgs.bash
                     pkgs.coreutils
                     pkgs.gnumake
                     pkgs.stable.tectonic
+                    pkgs.texlive.combined.scheme-medium
                   ]
                 }
                 make -C doc/plan
