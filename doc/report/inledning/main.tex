@@ -11,8 +11,8 @@ kompensera~\cite{cyberreason2021, cyberreason2022}. I
 många fall är människan den svaga länken i cyberattacker men angripare och
 skadeprogram (jfr eng. \emph{malware}) utnyttjar också olika sårbarheter i
 programvaror. WannaCry var ett utpressningsprogram som utnyttjade bl.a. en
-sårbarhet som tillät fjärrexekvering av kod (jfr eng. \emph{remote code
-    execution}) med ett specialutformat paket i SMB protokollet, en protokoll
+sårbarhet som tillät \emph{remote code execution}) med ett specialutformat
+paket i SMB-protokollet, ett protokoll
 för nätverksfildelning~\cite{enwiki:1152151996}.
 
 % I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
@@ -29,18 +29,20 @@ för nätverksfildelning~\cite{enwiki:1152151996}.
 Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka
 och åtgärda sårbarheter innan en angripare. Programanalys går ut på att
 analysera programegenskaper för kontrollera korrekthet och hitta möjliga
-sårbarheter och kan utföras olika på nivåer: på källkoden eller på binären. I
-den beskrivna situation ovan, skadeprogramsanalys (jfr eng. \emph{malware
-    analysis}) och \emph{reverse engeneering}, är programmet som ska analyseras
-oftast endast tillgänglig som binär~\cite{andriesse2018}.
+sårbarheter och kan utföras olika på nivåer: på källkoden eller på maskinkoden
+(jfr eng. \emph{binary}). I den beskrivna situation ovan, skadeprogramsanalys
+(jfr eng. \emph{malware analysis}) och \emph{reverse engeneering}, är
+programmet som ska analyseras oftast endast tillgänglig som
+maskinkod~\cite{andriesse2018}.
 
-Binäranalys är ofta en komplicerad och en tidskrävande och skadeprogram
-ofta tilltar flera kända metoder för att försvåra analys och vilseleda
-analysverktyg. Det krävs ofta en utforskande metod för att analysera och förstå
-ett skadeprogram och testa ett antal metoder för att förstå och känneteckna
-sårbarheter som skadeprogrammet utnyttjar. Detta kräver ett interaktivt och
-utforskande analysverktyg som tillåter användaren att känneteckna problematik i
-en analys och styra analysen åt ett håll som medför resultat.
+Binäranalys (jfr eng. \emph{binaryanalysis}) är ofta en komplicerad och en
+tidskrävande och skadeprogram ofta tilltar flera kända metoder för att försvåra
+analys och vilseleda analysverktyg. Det krävs ofta en utforskande metod för att
+analysera och förstå ett skadeprogram och testa ett antal metoder för att
+förstå och känneteckna sårbarheter som skadeprogrammet utnyttjar. Detta kräver
+ett interaktivt och utforskande analysverktyg som tillåter användaren att
+känneteckna problematik i en analys och styra analysen åt ett håll som medför
+resultat.
 
 Symbolisk exekvering, beskrivet i detalj i avsnitt~\ref{sec:symbolic_execution}
 är en kraftfull teknik som har möjliggjort stora mängder
@@ -50,7 +52,7 @@ skyddssystem, eller förstå deras inre delar''~\cite{symnav}. Det är en ett s�
 att exekvera ett program abstrakt där en exekvering betraktar alla möjliga
 indata som delar en viss exekveringsstig (jfr eng. \emph{execution path}) genom
 programflödet. Detta möjliggörs genom att betrakta indatan som symbolisk där en
-viss stig ackumulerar en stigvillkor (jfr eng. \emph{path condition}) på
+viss stig ackumulerar stigvillkor (jfr eng. \emph{path conditions}) på
 symbolen vars lösning/lösningar beskriver alla värden på symbolen som leder
 till att programmet följer motsvarande stig i programflödet. Trots
 kraftfullheten i symbolisk exekvering, finns det ett antal problem med
