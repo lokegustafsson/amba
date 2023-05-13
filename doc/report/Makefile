@@ -2,7 +2,7 @@
 all: group_64_project_report.pdf check
 
 check:
-	-chktex -n 32 main
+	-chktex --nowarn 32 main
 
 group_64_project_report.pdf: \
   amba/main.tex \
