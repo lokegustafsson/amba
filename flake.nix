@@ -67,6 +67,7 @@
               p.rust-bin.stable.latest.rust-analyzer
               p.stable.tectonic
               p.texlab
+              p.texlive.combined.scheme-medium
             ];
             IMPURE_RUST = 1;
             inherit (amba)

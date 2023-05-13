@@ -1,3 +1,9 @@
+.PHONY: all check
+all: group_64_project_report.pdf check
+
+check:
+	if command -v chktex &> /dev/null; then chktex main; fi
+
 group_64_project_report.pdf: \
   amba/main.tex \
   begreppslista.tex \
@@ -24,4 +30,3 @@ group_64_project_report.pdf: \
   refs.bib
 	tectonic main.tex
 	mv main.pdf group_64_project_report.pdf
-
