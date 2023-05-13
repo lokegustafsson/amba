@@ -1,12 +1,12 @@
 Under \emph{BlueHat} 2019 gav \emph{MSRC} (\emph{Microsoft Security Response
-	Center}) en överblick över Microsofts taktiker för hur de hanterar
+    Center}) en överblick över Microsofts taktiker för hur de hanterar
 säkerhetsbrister i deras produkter och tjänster~\cite{miller19}.
 Taktikerna som listades var att
 \begin{itemize}
-	\item eliminera säkerhetsbristerna från början;
-	\item implementera metoder för att försvåra utnyttjande av säkerhetsbrister;
-	\item minimera platserna där attackerarna kan göra skada och förhindra åtkomst; samt slutligen
-	\item minimera tidsfönstret då attackerare har tillgång till systemet med hjälp av aktiv övervakning.
+    \item eliminera säkerhetsbristerna från början;
+    \item implementera metoder för att försvåra utnyttjande av säkerhetsbrister;
+    \item minimera platserna där attackerarna kan göra skada och förhindra åtkomst; samt slutligen
+    \item minimera tidsfönstret då attackerare har tillgång till systemet med hjälp av aktiv övervakning.
 \end{itemize}
 Enligt Miller~\cite{miller19} härstammar ungefär 70 procent av alla Microsofts CVEr från minnessäkerhetsbuggar. Om
 hela klasser av säkerhetsbrister kan eliminieras genom att utveckla nya verktyg som underlättar för
@@ -23,18 +23,18 @@ och minnesdeallokering, och därigenom hitta minnessäkerhetsbuggar.
 
 Det finns ett flertal metoder för att analysera en exekverbar binär. Exempel på dessa är att:
 \begin{enumerate}
-	\item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
-	\item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
-	      läsbara koden.
-	\item köra binären på speciella testfall och jämföra svaret med vad som förväntas. Om
-	      programmet implementerar en specifikation kan en existerande testsamling användas.
-	\item fuzztesta binären, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
-	      annat oönskat beteende i binären. Många fuzztestmotorer skapar testfall med en evolutionär
-	      algoritm, och många använder instrumentering över vilka programhopp som tas för att bedöma
-	      testfalls nyttighet.
-	\item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
-	      lösa för testfall som orsakar annorlunda programhopp.
-	\item stega igenom programmet i en debugger för att se exakt vad programmet gör med viss input.
+    \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
+    \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
+          läsbara koden.
+    \item köra binären på speciella testfall och jämföra svaret med vad som förväntas. Om
+          programmet implementerar en specifikation kan en existerande testsamling användas.
+    \item fuzztesta binären, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
+          annat oönskat beteende i binären. Många fuzztestmotorer skapar testfall med en evolutionär
+          algoritm, och många använder instrumentering över vilka programhopp som tas för att bedöma
+          testfalls nyttighet.
+    \item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
+          lösa för testfall som orsakar annorlunda programhopp.
+    \item stega igenom programmet i en debugger för att se exakt vad programmet gör med viss input.
 \end{enumerate}
 
 Problematisk minneshantering har potential att påverka ett programs korrekthet och
@@ -105,7 +105,7 @@ För att klargöra distinktionen mellan manuell och automatiska metoder för
 binäranalys används följande use cases:
 
 \begin{figure}
-	\begin{lstlisting}[
+    \begin{lstlisting}[
     label={list:first},
     language=Python,
     frame=single
@@ -117,7 +117,7 @@ if sha256(s) = "välkänd hash":
 else:
   print("you lose")
 \end{lstlisting}
-	\caption{Use case manuella metoder}
+    \caption{Use case manuella metoder}
 \end{figure}
 
 I use cases där det existerar kända konstanter, något som är typiskt i fall som
@@ -133,7 +133,7 @@ inversen till en given SHA-256 hash vilket idag är omöjligt och leder därmed
 till att alla paths inte undersöks.
 
 \begin{figure}
-	\begin{lstlisting}[
+    \begin{lstlisting}[
     label={list:first},
     language=Python,
     frame=single
@@ -145,7 +145,7 @@ if s == "secret":
 else:
   print("you lost")
 \end{lstlisting}
-	\caption{Use case manuella metoder}
+    \caption{Use case manuella metoder}
 \end{figure}
 
 Ett motsatt fall är ovan och lämpas väl att undersökas med automatiska

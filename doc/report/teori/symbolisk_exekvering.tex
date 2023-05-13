@@ -40,8 +40,8 @@ undvika path explosion är \emph{state-merging} och \emph{heuristics}.
 För att illustrera symbolisk exekvering används följande pseudokod:
 
 \begin{figure}[H]
-	\centering
-	\begin{lstlisting}[label={list:first}, language=Python, frame=single]
+    \centering
+    \begin{lstlisting}[label={list:first}, language=Python, frame=single]
 x = input()
 y = input()
 z = 2 * y
@@ -57,7 +57,7 @@ else:
   run_important_code()
 
 \end{lstlisting}
-	\caption{Pseudokod för att visualisera symbolisk exekvering.}\label{symbex_example_code}
+    \caption{Pseudokod för att visualisera symbolisk exekvering.}\label{symbex_example_code}
 \end{figure}
 
 Exemplet ovan använder symbolisk exekvering för att hitta vilken input som leder
@@ -72,10 +72,10 @@ Figur~\ref{symbex_example_graph} visar hur det symboliska tillståndet förändr
 för alla möjliga branches i programmet.
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.5]{figures/final_symbolic_example_graph.png}
-	\caption{Path constraint och symboliskt tillstånd för alla vägar i
-		pseudokoden angett i~\ref{symbex_example_code}.}\label{symbex_example_graph}
+    \centering
+    \includegraphics[scale=0.5]{figures/final_symbolic_example_graph.png}
+    \caption{Path constraint och symboliskt tillstånd för alla vägar i
+        pseudokoden angett i~\ref{symbex_example_code}.}\label{symbex_example_graph}
 \end{figure}
 
 I~\ref{symbex_example_graph} används $\pi$ för att ange path constraint vilket

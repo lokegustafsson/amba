@@ -1,60 +1,60 @@
 \begin{labeling}{begreppslista}
 
-	\item[\textbf{Basic block}] En sekvens av instruktioner som saknar
-	hopp eller branches bortsett från början och slutet av
-	blocket. Är oftast expanderade till att bli så långa som möjligt
+    \item[\textbf{Basic block}] En sekvens av instruktioner som saknar
+    hopp eller branches bortsett från början och slutet av
+    blocket. Är oftast expanderade till att bli så långa som möjligt
 
-	\item [\textbf{Black-box}] Analys av ett objekt som endast betraktar dess
-	yttre utseende och beteende, till skillnad från white-box-analys som även
-	betraktar vad som händer inuti.
+    \item [\textbf{Black-box}] Analys av ett objekt som endast betraktar dess
+    yttre utseende och beteende, till skillnad från white-box-analys som även
+    betraktar vad som händer inuti.
 
-	\item [\textbf{Concolic testing}] En sorts fuzztesting där indata genereras
-	genom att med en SMT-lösare lösa ekvationerna som beskriver en körning som
-	ursprungligen följer körningen för en seed-indata, men vid ett angivet
-	hopp avviker. Detta är en effektiv metod för att konstruera indata som tar
-	speciella svår-tagna hopp.
+    \item [\textbf{Concolic testing}] En sorts fuzztesting där indata genereras
+    genom att med en SMT-lösare lösa ekvationerna som beskriver en körning som
+    ursprungligen följer körningen för en seed-indata, men vid ett angivet
+    hopp avviker. Detta är en effektiv metod för att konstruera indata som tar
+    speciella svår-tagna hopp.
 
-	\item [\textbf{CTF}] CTF, eller Capture the Flag i ett
-	datorsäkerhetssammanhang är en utmaning eller övning i
-	att hitta gömda ''flaggor'' i program med avsiktliga säkerhetshål.
+    \item [\textbf{CTF}] CTF, eller Capture the Flag i ett
+    datorsäkerhetssammanhang är en utmaning eller övning i
+    att hitta gömda ''flaggor'' i program med avsiktliga säkerhetshål.
 
-	\item [\textbf{ELF}] \emph{Executable and Linkable Format}. Filformatet för
-	exekverbara filer på Unix.
+    \item [\textbf{ELF}] \emph{Executable and Linkable Format}. Filformatet för
+    exekverbara filer på Unix.
 
-	\item [\textbf{Fuzzing}] Att slumpmässigt generera indata till ett system i
-	ett försök att hitta buggar eller genom frånvaron av dåligt beteende
-	betryggas i systemets kvalité. Vissa fuzztestmotorer genererar ny indata
-	med genetiska algoritmer och vissa använder white-box binärinstrumentation
-	för att evaluera indata.
+    \item [\textbf{Fuzzing}] Att slumpmässigt generera indata till ett system i
+    ett försök att hitta buggar eller genom frånvaron av dåligt beteende
+    betryggas i systemets kvalité. Vissa fuzztestmotorer genererar ny indata
+    med genetiska algoritmer och vissa använder white-box binärinstrumentation
+    för att evaluera indata.
 
-	\item [\textbf{Grey-box}] Grey-box är en teknik som kombinerar black-box och
-	white-box för att bilda en bredare analys. Ett användingsområde kan vara där
-	dokumentationen är begränsad om ett programs interna struktur.
+    \item [\textbf{Grey-box}] Grey-box är en teknik som kombinerar black-box och
+    white-box för att bilda en bredare analys. Ett användingsområde kan vara där
+    dokumentationen är begränsad om ett programs interna struktur.
 
-	\item [\textbf{QEMU}] Ett välunderhållet öppen källkods emulatorramverk med stöd
-	för många plattformar och som stöder både user-space emulering av en process
-	samt emulering av ett helt system.
+    \item [\textbf{QEMU}] Ett välunderhållet öppen källkods emulatorramverk med stöd
+    för många plattformar och som stöder både user-space emulering av en process
+    samt emulering av ett helt system.
 
-	\item [\textbf{\stoe}] \stoe, eller \emph{The Selective Symbolic Execution Platform}, är
-	en platform som tillhandahåller symbolisk exekvering inuti den virtuella
-	maskinen QEMU.\@
+    \item [\textbf{\stoe}] \stoe, eller \emph{The Selective Symbolic Execution Platform}, är
+    en platform som tillhandahåller symbolisk exekvering inuti den virtuella
+    maskinen QEMU.\@
 
-	\item [\textbf{SMT Solver}] En Satisfiability modulo theories-lösare är ett
-	program som kan lösa ekvationssystem för olika matematiska objekt. Exempel
-	på teorier är modulär aritmetik eller bitvektorer. En SMT-lösare kan till
-	exempel lösa ekvationer konstruerade i symbolisk exekvering.
+    \item [\textbf{SMT Solver}] En Satisfiability modulo theories-lösare är ett
+    program som kan lösa ekvationssystem för olika matematiska objekt. Exempel
+    på teorier är modulär aritmetik eller bitvektorer. En SMT-lösare kan till
+    exempel lösa ekvationer konstruerade i symbolisk exekvering.
 
-	\item [\textbf{Symbolisk exekvering}] Att tilldela variabler symboliska, i
-	motsats till konkreta värden under programmets exekvering. Med denna
-	analysteknik kan enskilda körningar ge information som annars hade krävt
-	en uttömmande sökning.
+    \item [\textbf{Symbolisk exekvering}] Att tilldela variabler symboliska, i
+    motsats till konkreta värden under programmets exekvering. Med denna
+    analysteknik kan enskilda körningar ge information som annars hade krävt
+    en uttömmande sökning.
 
-	\item [\textbf{Symbolisk fuzzing}] Symbolisk fuzzing är en teknik som
-	kombinerar teknikerna symbolisk exekvering och fuzzing. Kombinationen
-	bevarar kodstrukturen och kan samtidigt lösa komplexa symboliska
-	restriktioner.
+    \item [\textbf{Symbolisk fuzzing}] Symbolisk fuzzing är en teknik som
+    kombinerar teknikerna symbolisk exekvering och fuzzing. Kombinationen
+    bevarar kodstrukturen och kan samtidigt lösa komplexa symboliska
+    restriktioner.
 
-	\item [\textbf{White-box}] En analysmetod som behandlar en applikations
-	interna struktur i kontrast till black-box som enbart betraktar
-	funktionaliteten.
+    \item [\textbf{White-box}] En analysmetod som behandlar en applikations
+    interna struktur i kontrast till black-box som enbart betraktar
+    funktionaliteten.
 \end{labeling}
