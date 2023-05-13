@@ -2,13 +2,10 @@
 all: group_64_project_report.pdf check
 
 check:
-	@echo PATH = $(PATH)
-	type sh
-	type bash
 	latexindent --local --overwriteIfDifferent --silent *.tex */*.tex
 	-rm *.bak0
 	-rm */*.bak0
-	-chktex --nowarn 32 main
+	chktex --nowarn 32 main
 
 group_64_project_report.pdf: \
   amba/main.tex \

@@ -100,9 +100,11 @@
               (pkgs.writeShellScript "build-documents" ''
                 export PATH=${
                   lib.strings.makeBinPath [
+                    pkgs.bash
                     pkgs.coreutils
                     pkgs.gnumake
                     pkgs.stable.tectonic
+                    pkgs.texlive.combined.scheme-medium
                   ]
                 }
                 make -C doc/plan
