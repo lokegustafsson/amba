@@ -2,11 +2,8 @@
 all: group_64_project_report.pdf check
 
 check:
-	/bin/sh -c 'echo 000'
-	sh -c 'echo 111'
-	if echo 123; then echo 456; fi
-	if type chktex; then echo 789; fi
-	if type chktex; then chktex -n 32 main; fi
+	# The github runner does not have `sh` in $PATH
+	/bin/sh -c 'if type chktex; then chktex -n 32 main; fi'
 
 group_64_project_report.pdf: \
   amba/main.tex \
