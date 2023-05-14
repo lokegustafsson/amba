@@ -22,6 +22,8 @@ i och den disassemblerade maskinkoden. Om binären innehåller debugdata visas
 även funktionsnamn och om både debugdata och källkoden är tillgänglig visas de
 källkodsrader som gett upphov till maskinkoden.
 
+TODO skriv om den oimplementerade grafhomomorfism-glöm-state-grafen om vi hinner implementera den TODO
+
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/graph_block_compressed.png}\label{fig:graf-compressed}
@@ -32,7 +34,9 @@ Den andra grafen är en komprimerad basic-block-graf.
 Figur~\ref{fig:graf-compressed} visar ett exempel. Den visar samma graf som den
 första, men med linjesubgrafer sammanslagna till samma nod. Precist uttryckt har
 alla kanter anslutna till noder med ingrad och utgrad exakt ett
-kantkomprimerats. Sidopanelen visar samma information som för basic-block-grafen, alltså assemblerkod och debugdata, men för hela spannet av sammanslagna noder.
+kantkomprimerats. Sidopanelen visar samma information som för
+basic-block-grafen, alltså assemblerkod och debugdata, men för hela spannet av
+sammanslagna noder.
 
 \begin{figure}
     \centering
@@ -56,7 +60,7 @@ program som inte terminerar eller vid stigexplosion.
 Grafnodernas placering i 2D hittas genom iterativ lösning för lägst energi i ett
 system av attraktion, repulsion och externa krafter. Utplaceringsalgoritmens
 parametrar kan konfigureras i realtid vid körning av användaren i toppanelen.
-Denna panelen låter även användaren välja vilken graf de vill visa.
+Den här panelen låter även användaren välja vilken graf de vill visa.
 
 Genom \stoe{} kör AMBA det analyserade programmet virtualiserat med KVM i
 QEMU.\@ Detta innebär att den analyserade binärens beteende i hög grad inte
@@ -71,8 +75,7 @@ skadlig kod i dess nuvarande skick.
 
 Alla program kan inte hanteras av AMBA.\@ Programmen som AMBA kör måste vara
 byggda för Linux x86-64 och kunna köras på Ubuntu-22.04-x86\_64. Detta kan göras
-genom att bygga direkt för Ubuntu, för en kompatibel äldre glibc-version utan
-ytterligare biblioteksberoenden eller eller med full statisk länkning mot t.ex.\
+genom att bygga direkt för Ubuntu eller med full statisk länkning mot t.ex.\
 musl.
 
 Den symboliska indatan är också begränsad till att komma ifrån stdin samt filer
@@ -93,8 +96,7 @@ utvecklingsmöjligheter i Sektion~\ref{sec:futurework}.
 
 \section{Hur du kör AMBA}
 
-AMBA utvecklas i GitHub-repot \url{https://github.com/lokegustafsson/amba} som
-kommer att göras publikt efter att detta kandidatarbete slutförts.
+AMBA utvecklas i GitHub-repot \url{https://github.com/lokegustafsson/amba}.
 Dokumentationen i repot innehåller mer detaljerade installationsinstruktioner
 och allmän dokumentation.
 
@@ -145,11 +147,13 @@ implementerade.
 }
 \end{lstlisting}\label{fig:recipe}
 
-    \caption{Receptfilen för testprogrammet control-flow. Binären
+    \caption{
+        Receptfilen för testprogrammet control-flow. Binären
         \texttt{control-flow} ligger bredvid receptfilen och kopieras till
         QEMU-gästens hemmapp. Dessutom placeras en 1 byte lång fil innehållande en
         symbolisk variabel i \texttt{/tmp/input.txt}. I gästen körs binären med den
-        symboliska filen som \texttt{stdin}.}
+        symboliska filen som \texttt{stdin}.
+    }
 
 \end{figure}
 
