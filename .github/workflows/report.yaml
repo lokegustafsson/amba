@@ -19,5 +19,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: nix build documents
         run: |
-          nix run -L --accept-flake-config '.#documents'
+          nix run -L --accept-flake-config '.#check-documents'
 
