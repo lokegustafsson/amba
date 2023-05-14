@@ -78,13 +78,7 @@ impl DisasmContext {
 				ret.push_str(" in ");
 			}
 			match frame.function {
-				Some(name) => {
-					let innermost = ret.is_empty();
-					ret.push_str(&*name.demangle()?);
-					if innermost {
-						ret.push_str("()")
-					}
-				}
+				Some(name) => ret.push_str(&*name.demangle()?),
 				None => ret.push_str("?"),
 			}
 		}

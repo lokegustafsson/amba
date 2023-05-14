@@ -363,8 +363,8 @@ fn new_lod_text_impl(
 				if !names.ends_with(&name) {
 					write!(names, " {name}").unwrap();
 				}
-				write!(sources, "\n\n{name}\n{source}").unwrap();
-				write!(disasms, "\n\n{name}\n{disasm}").unwrap();
+				write!(sources, "\n\n{name}:\n{source}").unwrap();
+				write!(disasms, "\n\n{name}:\n{disasm}").unwrap();
 			}
 
 			if first == last {
