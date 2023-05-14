@@ -1,5 +1,5 @@
 .PHONY: all check
-all: group_64_project_report.pdf check
+all: check group_64_project_report.pdf
 
 check:
 	latexindent --local --overwriteIfDifferent --silent -k *.tex */*.tex

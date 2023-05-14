@@ -30,7 +30,7 @@
 \usepackage[
     backend=biber,
     style=ieee,
-	citestyle=numeric-comp,
+    citestyle=numeric-comp,
     sorting=none
 ]{biblatex}
 \addbibresource{refs.bib}
@@ -88,6 +88,35 @@
   {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
   {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
   {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1 {¡}{{!`}}1
+}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{white},
+    literate=
+     *{0}{{{\color{teal}0}}}{1}
+      {1}{{{\color{teal}1}}}{1}
+      {2}{{{\color{teal}2}}}{1}
+      {3}{{{\color{teal}3}}}{1}
+      {4}{{{\color{teal}4}}}{1}
+      {5}{{{\color{teal}5}}}{1}
+      {6}{{{\color{teal}6}}}{1}
+      {7}{{{\color{teal}7}}}{1}
+      {8}{{{\color{teal}8}}}{1}
+      {9}{{{\color{teal}9}}}{1}
+      {:}{{{\color{violet}{:}}}}{1}
+      {,}{{{\color{violet}{,}}}}{1}
+      {\{}{{{\color{brown}{\{}}}}{1}
+      {\}}{{{\color{brown}{\}}}}}{1}
+      {[}{{{\color{brown}{[}}}}{1}
+      {]}{{{\color{brown}{]}}}}{1},
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  NICE PALETTE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -186,7 +215,7 @@
 
 \pagenumbering{arabic} % turn on arabic page numbers
 
-\chapter{Inledning}
+\chapter{Inledning}\label{chap:inledning}
 \input{inledning/main.tex}
 % \section{Tidigare arbete}
 % \input{inledning/tidigarearbete.tex}
