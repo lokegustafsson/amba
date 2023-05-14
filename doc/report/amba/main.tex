@@ -67,15 +67,97 @@ omogen programvara som ej granskats för felkonfiguration eller liknande kopplat
 till QEMU eller \stoe{}, så vi rekommenderar inte att använda AMBA för analys av
 skadlig kod i dess nuvarande skick.
 
-\subsection{Begränsningar}
+\section{Begränsningar}
 
 Alla program kan inte hanteras av AMBA.\@ Programmen som AMBA kör måste vara
-byggda för Linux x86\_64 och kunna köras på Ubuntu-22.04-x86\_64. Detta görs
-lättast med att antingen bygga direkt för Ubuntu, eller för bredare support,
-fullt statiskt länkad mot t.ex.\ musl.
+byggda för Linux x86-64 och kunna köras på Ubuntu-22.04-x86\_64. Detta kan göras
+genom att bygga direkt för Ubuntu, för en kompatibel äldre glibc-version utan
+ytterligare biblioteksberoenden eller eller med full statisk länkning mot t.ex.\
+musl.
 
-Den symboliska indatan är också begränsad till att komma ifrån
-stdin. Alltså kan inte programargument (argc, argv) eller filer på
-disk användas.
+Den symboliska indatan är också begränsad till att komma ifrån stdin samt filer
+på disk. Symbolisk input till AMBA i dess nuvarande kan inte skickas som
+programargument (\verb|argc|, \verb|argv|), miljövariabler (\verb|envp|) eller i
+form av symbolisk hårdvara (t.ex.\ registret TSC/Time Stamp Counter). Detta är
+inte en fundamental begränsning utan endast oimplementerad funktionalitet som
+lämnas som utvecklingsmöjlighet, se Sektion~\ref{futurework}.
 
-\subsection{Hur du kör AMBA}
+\section{Hur du kör AMBA}
+
+AMBA utvecklas i GitHub-repot \url{https://github.com/lokegustafsson/amba} som
+kommer att göras publikt efter att detta kandidatarbete slutförts.
+Dokumentationen i repot innehåller mer detaljerade installationsinstruktioner
+och allmän dokumentation.
+
+AMBA kan köras i alla Linux-x86-64-miljöer med stöd för KVM med tillräckligt
+mycket diskutrymme (ca $\SI{20}{\giga\byte}$) och RAM-minne
+($\SI{16}{\giga\byte}$ för att bygga AMBA, ej nödvändigt vid nedladdning av
+cachad binär). De tre installationsstegen består av att först installera
+pakethanteraren Nix, följt utav av köra kommandot \lstinline{nix build}.  När
+detta kommandot körs byggs alla programvarukomponenter från LLVM och Linux till
+\stoe{} och AMBA självt. Detta bygget är deterministiskt reproducibelt från
+källkod och Nix möjliggör även korrekt cachelagring och servering över nätverk
+vilket vi använd för att minimiera ombyggnation under AMBAs utvecklingsprocess.
+Det sista installationssteget är att köra kommandot
+\lstinline{nix run . -- init --download}
+som laddar ned en Ubuntu-22.04-x86\_64-diskavbild byggd av \stoe{}-projektet
+. Bygget av diskavbilder för \stoe{} är inte bit-för-bit reproducibelt
+och därför är detta bygget inte packeterat i Nix.
+
+AMBA körs med kommandot
+\begin{verbatim}
+./result/bin/amba-wrapped run path/to/a/recipe.json"
+\end{verbatim}
+efter \lstinline{nix build} eller ekvivalent
+\begin{verbatim}
+nix run . -- run path/to/a/recipe.json"
+\end{verbatim}
+alltså genom att peka AMBA på en receptfil. En giltig receptfil följer ett
+schema varav en delmängd av fälten har implementerad funktionalitet.
+Figur~\ref{fig:recipe} visar en receptfil för vilken alla fält är
+implementerade.
+
+\begin{figure}
+    \begin{lstlisting}[
+    label={list:first},
+    language=json,
+    frame=single
+    ]
+{
+  "files": {
+    "control-flow": "./control-flow",
+    "input.txt": {
+      "seed": "a",
+      "symbolic": [0]
+    }
+  },
+  "executable_path": "./control-flow",
+  "stdin_path": "/tmp/input.txt"
+}
+\end{lstlisting}\label{fig:recipe}
+
+    \caption{Receptfilen för testprogrammet control-flow. Binären
+        \texttt{control-flow} ligger bredvid receptfilen och kopieras till
+        QEMU-gästens hemmapp. Dessutom placeras en 1 byte lång fil innehållande en
+        symbolisk variabel i \texttt{/tmp/input.txt}. I gästen körs binären med den
+        symboliska filen som \texttt{stdin}.}
+
+\end{figure}
+
+I receptfilen specifieras först ett antal filer som ska placeras i QEMU-gästen.
+Filerna specifieras med deras relativa sökväg i gästen, med konkreta filer
+angivna relativt \verb|~/| och symboliska filer angivna relativt \verb|/tmp/|.
+Filers innehåll kan specifieras som en sökväg relativt mappen receptfilen ligger
+i, vilket kopierar in en konkret fil. Filers innehåll kan också specifieras som
+symboliskt genom att ange en lista av byteadresser (t.ex.\ \verb|0|) samt
+byteadressintervall (t.ex.\ \verb|[42, 57]|) mellan vilka filen ska innehålla
+symboliska bytes. Symboliska filer behöver också konkreta värden som får förtur
+i tillståndsutforskningen. Dessa kan anges med antingen
+\verb|"seed": "<förtursvärden>"| eller
+\verb|"host_path": "<värddatorsökväg till förtursvärden>"|.
+
+När AMBA körs med \lstinline{nix run . -- run path/to/a/recipe.json"} öppnas det
+grafiska gränssnittet samtidigt som QEMU/\stoe{} startas i bakgrunden.
+Grafuppdateringar skickas regelbundet tillbaka tills alla tillstånd utforskats
+eller programmet stänger ned. Både före och efter alla tillstånd utforskats kan
+graferna undersökas av användaren.
