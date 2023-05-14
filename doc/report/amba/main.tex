@@ -8,8 +8,10 @@ en separat panel för noden som användaren senast klickade på.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/graph_basic_block.png}\label{fig:graf-basic}
-    \caption{AMBAs basic-block-graf för testprogrammet control-flow}
+    \includegraphics[width=0.7\textwidth]{figures/graph_basic_block.png}
+    \caption{
+        AMBAs basic-block-graf för testprogrammet control-flow
+    }\label{fig:graf-basic}
 \end{figure}
 
 Den första grafen är en basic-block-graf. Figur~\ref{fig:graf-basic} visar ett
@@ -25,8 +27,10 @@ implementera den TODO
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/graph_block_compressed.png}\label{fig:graf-compressed}
-    \caption{AMBAs komprimerade basic-block-graf för testprogrammet control-flow}
+    \includegraphics[width=0.7\textwidth]{figures/graph_block_compressed.png}
+    \caption{
+        AMBAs komprimerade basic-block-graf för testprogrammet control-flow
+    }\label{fig:graf-compressed}
 \end{figure}
 
 Den andra grafen är en komprimerad basic-block-graf.
@@ -39,8 +43,10 @@ sammanslagna noder.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/graph_symbolic.png}\label{fig:graf-symbolic}
-    \caption{AMBAs graf över symboliska tillstånd för testprogrammet control-flow}
+    \includegraphics[width=0.7\textwidth]{figures/graph_symbolic.png}
+    \caption{
+        AMBAs graf över symboliska tillstånd för testprogrammet control-flow
+    }\label{fig:graf-symbolic}
 \end{figure}
 
 Den tredje grafen visar symboliska tillstånd. Figur~\ref{fig:graf-symbolic}
@@ -82,7 +88,7 @@ på disk. Symbolisk input till AMBA i dess nuvarande kan inte skickas som
 programargument (\verb|argc|, \verb|argv|), miljövariabler (\verb|envp|) eller i
 form av symbolisk hårdvara (t.ex.\ registret TSC/Time Stamp Counter). Detta är
 inte en fundamental begränsning utan endast oimplementerad funktionalitet som
-lämnas som utvecklingsmöjlighet, se Sektion~\ref{sec:futurework}.
+lämnas som utvecklingsmöjlighet, se avsnittet \nameref{sec:futurework}.
 
 En stor begränsning vid användandet av AMBA och mycket symbolisk fuzzing i
 allmänhet är hanterandet av program med väldigt många symboliska tillstånd.
@@ -91,7 +97,7 @@ Sektion~\ref{chap:inledning}. AMBAs enda funktionalitet för att hantera detta �
 prioritering av exekveringstillstånd, vilket är ett trubbigt verktyg. Detta är
 till stor del en fundamental begränsning i symbolisk fuzzing i helhet men kan
 delvis angripas genom \textit{state merging}, se diskussion om
-utvecklingsmöjligheter i Sektion~\ref{sec:futurework}.
+utvecklingsmöjligheter i avsnittet \nameref{sec:futurework}.
 
 \section{Hur du kör AMBA}
 
@@ -124,12 +130,11 @@ nix run . -- run path/to/a/recipe.json"
 \end{verbatim}
 alltså genom att peka AMBA på en receptfil. En giltig receptfil följer ett
 schema varav en delmängd av fälten har implementerad funktionalitet.
-Figur~\ref{list:recipe} visar en receptfil för vilken alla fält är
+Figur~\ref{fig:recipe} visar en receptfil för vilken alla fält är
 implementerade.
 
 \begin{figure}
     \begin{lstlisting}[
-    label={list:recipe},
     language=json,
     frame=single
     ]
@@ -152,7 +157,7 @@ implementerade.
         QEMU-gästens hemmapp. Dessutom placeras en 1 byte lång fil innehållande en
         symbolisk variabel i \texttt{/tmp/input.txt}. I gästen körs binären med den
         symboliska filen som \texttt{stdin}.
-    }
+    }\label{fig:recipe}
 
 \end{figure}
 
