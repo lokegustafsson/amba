@@ -2,18 +2,17 @@ En stor mängd organisationer har utsatts för utpressningsprogram (jfr eng.
 \emph{ransomware}) minst en gång de senaste 24 månaderna~\cite{cyberreason2021,
     cyberreason2022}. Till exempel påverkades Irlands offentliga sjukhussystem
 kraftigt när utpressningsprogram tog över en stor del av deras digitala
-infrastruktur~\cite{hse_report, gallagher2023}.
-Några av de direkta följderna av att en lyckad attack är: höga kostnader för
-organisationen; stoppad produktion; konsekvenser från reglerare;
-och skadat anseende~\cite{cyberreason2021, cyberreason2022}. Dessutom leder
-de höga kostnaderna till bland annat uppsägningar av anställda för att kunna
-kompensera~\cite{cyberreason2021, cyberreason2022}. I
-många fall är människan den svaga länken i cyberattacker men angripare och
-skadeprogram (jfr eng. \emph{malware}) utnyttjar också olika sårbarheter i
-programvaror. WannaCry var ett utpressningsprogram som utnyttjade, bland annat,
-en sårbarhet som tillät \emph{remote code execution}) med ett specialutformat
-paket i SMB-protokollet, ett protokoll
-för nätverksfildelning~\cite{alraddadicomprehensive}.
+infrastruktur~\cite{hse_report, gallagher2023}.  Några av de direkta följderna
+av att en lyckad attack är: höga kostnader för organisationen; stoppad
+produktion; konsekvenser från reglerare; och skadat
+anseende~\cite{cyberreason2021, cyberreason2022}. Dessutom leder de höga
+kostnaderna till bland annat uppsägningar av anställda för att kunna
+kompensera~\cite{cyberreason2021, cyberreason2022}. I många fall är människan
+den svaga länken i cyberattacker men angripare och skadeprogram (jfr eng.
+\emph{malware}) utnyttjar också olika sårbarheter i programvaror. WannaCry var
+ett utpressningsprogram som utnyttjade, bland annat, en sårbarhet som tillät
+\emph{remote code execution} med ett specialutformat paket i SMB-protokollet,
+ett protokoll för nätverksfildelning~\cite{alraddadicomprehensive}.
 
 % I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
 % det är inte möjligt. För att undvika, exempelvis, 100\% av minnessårbarheter
@@ -26,21 +25,20 @@ för nätverksfildelning~\cite{alraddadicomprehensive}.
 % om~\cite{computer_security_cs161}. Vidare kan utvecklare aldrig undvika alla
 % misstag.
 
-Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka
-och åtgärda sårbarheter innan en angripare. Programanalys går ut på att
-analysera programegenskaper för att kontrollera korrekthet och hitta möjliga
-sårbarheter och kan utföras olika på nivåer: på källkoden eller på maskinkoden
-(jfr eng. \emph{binary}). I den beskrivna situationen ovan, skadeprogramsanalys
-(jfr eng. \emph{malware analysis}) och \emph{reverse engeneering}, är
-programmet som ska analyseras oftast endast tillgänglig som
-maskinkod~\cite{andriesse2018}.
+Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka och
+åtgärda sårbarheter innan en angripare. Programanalys går ut på att analysera
+programegenskaper för att kontrollera korrekthet och hitta möjliga sårbarheter
+och kan utföras olika på nivåer: på källkoden eller på maskinkoden (jfr eng.
+\emph{binary}). I den beskrivna situationen ovan, skadeprogramsanalys (jfr eng.
+\emph{malware analysis}) och \emph{reverse engeneering}, är programmet som ska
+analyseras oftast endast tillgänglig som maskinkod~\cite{andriesse2018}.
 
 Binäranalys (jfr eng. \emph{binaryanalysis}) är ofta en komplicerad och en
 tidskrävande och skadeprogram ofta tilltar flera kända metoder för att försvåra
 analys och vilseleda analysverktyg. Det krävs ofta en utforskande metod för att
-analysera och förstå ett skadeprogram och testa ett antal metoder för att
-förstå och känneteckna sårbarheter som skadeprogrammet utnyttjar. Detta kräver
-ett interaktivt och utforskande analysverktyg som tillåter användaren att
+analysera och förstå ett skadeprogram och testa ett antal metoder för att förstå
+och känneteckna sårbarheter som skadeprogrammet utnyttjar. Detta kräver ett
+interaktivt och utforskande analysverktyg som tillåter användaren att
 känneteckna problematik i en analys och styra analysen åt ett håll som medför
 resultat.
 
@@ -52,29 +50,27 @@ skyddssystem, eller förstå deras inre delar''~\cite{symnav}. Det är en ett s�
 att exekvera ett program abstrakt där en exekvering betraktar alla möjliga
 indata som delar en viss exekveringsstig (jfr eng. \emph{execution path}) genom
 programflödet. Detta möjliggörs genom att betrakta indatan som symbolisk där en
-viss stig ackumulerar stigvillkor (jfr eng. \emph{path conditions}) på
-symbolen vars lösning/lösningar beskriver alla värden på symbolen som leder
-till att programmet följer motsvarande stig i programflödet. Trots
-kraftfullheten i symbolisk exekvering, finns det ett antal problem med
-tekniken. Det är en metod som oftast leder till en långsam exekvering och
-begränsas även av stigexplosionsproblemet (jfr eng. \emph{path explosion}), som
-orsakas av ett stort antal villkorstest på symbolisk data, i bl.a. loopar,
-rekursion och undantag (jfr eng. \emph{exceptions}). Det finns ett antal
-metoder för att kringgå stigexplosionsproblemet men lägger stor börda på
-analytikern som ofta har ett väldigt begränsad vy in i vad som händer under
-exekveringen, oftast genom en textuell gränssnitt. Dessa problem kan utnyttjas
-av skadeprogram för att vilseleda binäranalysmetoder som förlitar sig på
-symbolisk exekvering.
+viss stig ackumulerar stigvillkor (jfr eng. \emph{path conditions}) på symbolen
+vars lösning/lösningar beskriver alla värden på symbolen som leder till att
+programmet följer motsvarande stig i programflödet. Trots kraftfullheten i
+symbolisk exekvering, finns det ett antal problem med tekniken. Det är en metod
+som oftast leder till en långsam exekvering och begränsas även av
+stigexplosionsproblemet (jfr eng. \emph{path explosion}), som orsakas av ett
+stort antal villkorstest på symbolisk data, i bl.a.\ loopar, rekursion och
+undantag (jfr eng. \emph{exceptions}). Det finns ett antal metoder för att
+kringgå stigexplosionsproblemet men lägger stor börda på analytikern som ofta
+har ett väldigt begränsad vy in i vad som händer under exekveringen, oftast
+genom en textuell gränssnitt. Dessa problem kan utnyttjas av skadeprogram för
+att vilseleda binäranalysmetoder som förlitar sig på symbolisk exekvering.
 
 I den här rapporten föreslår vi AMBA för att, genom bättre kommunikation till
 användaren, skapa möjligheter för användaren att känneteckna stigexplosion och
 tillåta styrning bort från dessa stigar som orsakar problem. AMBA kommer även
 att undersöka alla stigar i programflödet vilket är känd som symbolisk fuzzing.
 
-SymNav~\cite{symnav}, som beskrvis i mer detalj i avsnitt
-\ref{chap:existerande_verktyg}, har tidigare undersökt samma problem och
-föreslagit liknande lösningar men har
-begräsningar i form av prestanda.
+SymNav~\cite{symnav}, som beskrvis i mer detalj i
+avsnitt~\ref{sec:existerande-visualiserad}, har tidigare undersökt samma problem och
+föreslagit liknande lösningar men har begräsningar i form av prestanda.
 
 % En metod för binäranalys är \emph{fuzzing} som går ut på att mata olika indata
 % till ett program och betrakta fel som uppstår. Målet med \emph{fuzzing} är att
@@ -82,7 +78,7 @@ begräsningar i form av prestanda.
 % på indatan. Alltså att ta alla möjliga vägar i programflödet som är möjliga att
 % nå genom att variera indatan. Däremot är det ett svårt problem att generera
 % indata som uppnår en hög täckning som även är effektivtast, speciellt när
-% indatan kan ha ett högt antal olika värden. 
+% indatan kan ha ett högt antal olika värden.
 
 % Vanliga fel i program som utnyttjas av angripare och skadeprogram är
 % minnesårbarheter. Det som gör minnessårbarheter allvarligare till skillnad från
@@ -100,7 +96,7 @@ begräsningar i form av prestanda.
 % * Give example where ransomware uses såbarheter
 % * legacy code main reason, not used to rust for example, too small memory to
 % run high level programs?
-% * binary analysis hard and time consuming
+
 % * Use this form in the introduction: Situation - Problem - Solution -
 % Evaluation
 % * use case: governments need to evaluate safety of products custom made for

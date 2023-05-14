@@ -161,8 +161,8 @@
 % TODO: figure out what the two arguments exactly do, so far used it blindly.
 
 % declare new dimensions
-\newdimen\origiwspc
-\newdimen\origiwstr
+\newdimen\origiwspc{}
+\newdimen\origiwstr{}
 
 \newenvironment{fontspace}[2]
     {\par
@@ -170,19 +170,19 @@
         \origiwspc=\fontdimen2\font% original inter word space
         \origiwstr=\fontdimen3\font% original inter word stretch
         % set dimensions to arguments given
-        \fontdimen2\font=#1\origiwspc
-        \fontdimen3\font=#2\origiwstr
+        \fontdimen2\font=#1\origiwspc{}
+        \fontdimen3\font=#2\origiwstr{}
     }
     {\par
         % reset original dimensions
-        \fontdimen2\font=\origiwspc
-        \fontdimen3\font=\origiwstr
+        \fontdimen2\font=\origiwspc{}
+        \fontdimen3\font=\origiwstr{}
     }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COMMANDS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\stoe}{S$^2$E\xspace}
 
-\newcommand{\ambaTitle}{AMBA: Interaktiv visualisering av symbolisk fuzzing}
+\newcommand{\ambaTitle}{AMBA:\@ Interaktiv visualisering av symbolisk fuzzing}
 \newcommand{\ambaAuthors}{Loke Gustafsson, Samuel Kyletoft, Enayatullah Norozi, Albin Otterhäll, Clara Salberg, Linus Wallman}
 \newcommand{\ambaCityCountryYear}{Gothenburg, Sweden \the\year}
 \newcommand{\ambaCityCountryYearSwedish}{Göteborg, Sverige \the\year}
@@ -196,7 +196,7 @@
 \pagenumbering{gobble} % turn off page numbers
 
 \input{cover_svenska.tex}
-\newpage\null % empty page after cover to present better for printing on both faces of paper
+\newpage\null{} % empty page after cover to present better for printing on both faces of paper
 \newpage
 \input{titlepage_svenska.tex}
 
@@ -226,9 +226,9 @@
 \section{Rapportstruktur}
 \input{inledning/rapportstruktur.tex}
 
-\chapter{Teori}
+\chapter{Teori}\label{chap:teori}
 \input{teori/main.tex}
-\section{Symbolisk exekvering}\label{symbolisk_exekvering}
+\section{Symbolisk exekvering}\label{sec:symbolic_execution}
 \input{teori/symbolisk_exekvering.tex}
 \section{Fuzzing}
 \input{teori/fuzzing.tex}
@@ -237,27 +237,31 @@
 \section{Arkitektur för binäranalysverktyg}
 \input{teori/arkitektur_for_binaranalysverktyg.tex}
 
-\chapter{Existerande verktyg}
+\chapter{Existerande verktyg}\label{chap:existerande_verktyg}
 \input{existerande_verktyg/main.tex}
 \section{Statisk disassemblering}
 \input{existerande_verktyg/statisk_disassemblering.tex}
 \section{Dynamiska binäranalysramverk}
 \input{existerande_verktyg/dynamiska_binaranalysramverk.tex}
+\section{Automatiska fuzzers}
+\input{existerande_verktyg/automatiska_fuzzers.tex}
+\section{Visualiserad dynamisk och symbolisk analys}\label{sec:existerande-visualiserad}
+\input{existerande_verktyg/visualiserad.tex}
 
-\chapter{AMBA}
+\chapter{AMBA}\label{chap:amba}
 \input{amba/main.tex}
 
-\chapter{Implementation}
+\chapter{Implementation}\label{chap:implementation}
 \input{implementation/main.tex}
 
-\chapter{Evaluering}
+\chapter{Evaluering}\label{chap:evaluering}
 \input{evaluering/main.tex}
 \section{Metod}
 \input{evaluering/metod.tex}
 \section{Begränsningar}
 \input{evaluering/begransningar.tex}
 
-\chapter{Slutsats}
+\chapter{Slutsats}\label{chap:slutsats}
 \input{slutsats/main.tex}
 
 \printbibliography{}

@@ -1,5 +1,3 @@
-\label{chap:amba}
-
 Detta arbete presenterar AMBA, ett verktyg för att visualisera och styra
 symbolisk exekvering som är byggt ovanpå \stoe{}. AMBA kör program med symbolisk
 indata och visar ett antal grafer över exekveringen. Dessa grafer visar inte
@@ -126,12 +124,12 @@ nix run . -- run path/to/a/recipe.json"
 \end{verbatim}
 alltså genom att peka AMBA på en receptfil. En giltig receptfil följer ett
 schema varav en delmängd av fälten har implementerad funktionalitet.
-Figur~\ref{fig:recipe} visar en receptfil för vilken alla fält är
+Figur~\ref{list:recipe} visar en receptfil för vilken alla fält är
 implementerade.
 
 \begin{figure}
     \begin{lstlisting}[
-    label={list:first},
+    label={list:recipe},
     language=json,
     frame=single
     ]
@@ -146,7 +144,7 @@ implementerade.
   "executable_path": "./control-flow",
   "stdin_path": "/tmp/input.txt"
 }
-\end{lstlisting}\label{fig:recipe}
+\end{lstlisting}
 
     \caption{
         Receptfilen för testprogrammet control-flow. Binären
