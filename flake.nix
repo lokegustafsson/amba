@@ -100,6 +100,20 @@
               (pkgs.writeShellScript "build-documents" ''
                 export PATH=${
                   lib.strings.makeBinPath [
+                    pkgs.gnumake
+                    pkgs.stable.tectonic
+                  ]
+                }
+                make -C doc/plan
+                make -C doc/report group_64_project_report.pdf
+              '');
+          };
+          check-documents = {
+            type = "app";
+            program = builtins.toString
+              (pkgs.writeShellScript "build-documents" ''
+                export PATH=${
+                  lib.strings.makeBinPath [
                     pkgs.bash
                     pkgs.coreutils
                     pkgs.gnumake
