@@ -20,7 +20,13 @@
   siunitx,
   tikz,
   titlesec,
+  parskip,
+  xspace,
+  xstring,
 }
+\usepackage[
+% disable % Comment out to disable all macros defined for this package (so you don't have to manually remove all todos from the entire report)
+]{todonotes} % remove later
 \usepackage[
     backend=biber,
     style=ieee,
@@ -116,21 +122,43 @@
     {-1cm} % before
     {0pt}  % after
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  TITLE PAGE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% prevent words running into the margins
+% \emergencystretch 3em
 
-%\title{Projektrapport - Binäranalys med en hybrid av automatiska och manuella metoder}
-%\author{
-%    Loke Gustafsson \and
-%    Samuel Kyletoft \and
-%    Enayatullah Norozi \and
-%    Albin Otterhäll \and
-%    Clara Salberg \and
-%    Linus Wallman
-%}
-%\date{2023-02-20}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% THE fontspace ENVIRONMENT %%%%%%%%%%%%%%%%%%%%%%%
+% https://tex.stackexchange.com/a/284775
+% Use like \begin{fontspace}{1.5}{2} ... \end{fontspace}
+% Changes word spacing according to arguments
+% TODO: figure out what the two arguments exactly do, so far used it blindly.
+
+% declare new dimensions
+\newdimen\origiwspc
+\newdimen\origiwstr
+
+\newenvironment{fontspace}[2]
+    {\par
+        % set default value of new dimensions
+        \origiwspc=\fontdimen2\font% original inter word space
+        \origiwstr=\fontdimen3\font% original inter word stretch
+        % set dimensions to arguments given
+        \fontdimen2\font=#1\origiwspc
+        \fontdimen3\font=#2\origiwstr
+    }
+    {\par
+        % reset original dimensions
+        \fontdimen2\font=\origiwspc
+        \fontdimen3\font=\origiwstr
+    }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COMMANDS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\stoe}{S$^2$E}
+\newcommand{\stoe}{S$^2$E\xspace}
+
+\newcommand{\ambaTitle}{AMBA: Interaktiv visualisering av symbolisk fuzzing}
+\newcommand{\ambaAuthors}{Loke Gustafsson, Samuel Kyletoft, Enayatullah Norozi, Albin Otterhäll, Clara Salberg, Linus Wallman}
+\newcommand{\ambaCityCountryYear}{Gothenburg, Sweden \the\year}
+\newcommand{\ambaCityCountryYearSwedish}{Göteborg, Sverige \the\year}
+\newcommand{\ambaDepartment}{Department of Computer Science and Engineering}
+\newcommand{\ambaDepartmentSwedish}{Institutionen för Data och Informationsteknik}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT STRUCTURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -138,9 +166,10 @@
 \year=2023
 \pagenumbering{gobble} % turn off page numbers
 
-\input{cover.tex}
+\input{cover_svenska.tex}
+\newpage\null % empty page after cover to present better for printing on both faces of paper
 \newpage
-\input{titlepage.tex}
+\input{titlepage_svenska.tex}
 
 \newpage
 \pagenumbering{roman} % turn on roman page numbers
@@ -159,12 +188,14 @@
 
 \chapter{Inledning}
 \input{inledning/main.tex}
-\section{Tidigare arbete}
-\input{inledning/tidigarearbete.tex}
-\section{Avgränsningar}
-\input{inledning/avgransningar.tex}
+% \section{Tidigare arbete}
+% \input{inledning/tidigarearbete.tex}
+% \section{Avgränsningar}
+% \input{inledning/avgransningar.tex}
 \section{Syfte}
 \input{inledning/syfte.tex}
+\section{Rapportstruktur}
+\input{inledning/rapportstruktur.tex}
 
 \chapter{Teori}
 \input{teori/main.tex}
