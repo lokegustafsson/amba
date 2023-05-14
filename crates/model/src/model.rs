@@ -3,7 +3,7 @@ use std::{
 	fmt::{self, Debug},
 	mem,
 	num::NonZeroU64,
-	ops::BitOrAssign,
+	ops::{BitOrAssign, Deref},
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
 	time::Instant,
 };
@@ -171,15 +171,20 @@ impl Model {
 		self.embedding_parameters.lock().unwrap()
 	}
 
-	pub fn gui_get_node_description(&self, graph: GraphToView, node_index: usize) -> String {
-		match graph {
-			GraphToView::RawBlock => self.raw_block_graph.read(),
-			GraphToView::CompressedBlock => self.compressed_block_graph.read(),
-			GraphToView::State => self.raw_state_graph.read(),
+	pub fn gui_get_node_description(
+		&self,
+		graph: GraphToView,
+		node_index: usize,
+	) -> DescriptionReadGuard<'_> {
+		DescriptionReadGuard {
+			guard: match graph {
+				GraphToView::RawBlock => self.raw_block_graph.read(),
+				GraphToView::CompressedBlock => self.compressed_block_graph.read(),
+				GraphToView::State => self.raw_state_graph.read(),
+			}
+			.unwrap(),
+			node_index,
 		}
-		.unwrap()
-		.get_node_text(node_index)
-		.to_owned()
 	}
 
 	pub fn get_neighbour_states(&self, prio: usize) -> Vec<i32> {
@@ -233,6 +238,18 @@ impl BitOrAssign for LayoutMadeProgress {
 	}
 }
 
+pub struct DescriptionReadGuard<'a> {
+	guard: RwLockReadGuard<'a, Graph2D>,
+	node_index: usize,
+}
+impl<'a> Deref for DescriptionReadGuard<'a> {
+	type Target = str;
+
+	fn deref(&self) -> &Self::Target {
+		self.guard.get_node_text(self.node_index)
+	}
+}
+
 fn new_lod_text_impl(
 	metadata: &NodeMetadata,
 	has_self_edge: bool,
@@ -266,9 +283,12 @@ fn new_lod_text_impl(
 			for (size, disasm) in ins_size_and_disasm {
 				match disasm_context.get_source_line(elf_vaddr) {
 					Ok(Some(line)) => {
+						// Force exact indentation
+						let line = line.trim();
+						const INDENT: &str = ";   ";
 						if !source[..source.len().saturating_sub(1)].ends_with(line) {
-							writeln!(source, "{}", line).unwrap();
-							writeln!(disassembly, "{}", line).unwrap();
+							writeln!(source, "{INDENT}{}", line).unwrap();
+							writeln!(disassembly, "{INDENT}{}", line).unwrap();
 						}
 					}
 					Ok(None) | Err(_) => {}
@@ -343,8 +363,8 @@ fn new_lod_text_impl(
 				if !names.ends_with(&name) {
 					write!(names, " {name}").unwrap();
 				}
-				write!(sources, "\n{name}\n{source}").unwrap();
-				write!(disasms, "\n{name}\n{disasm}").unwrap();
+				write!(sources, "\n\n{name}:\n{source}").unwrap();
+				write!(disasms, "\n\n{name}:\n{disasm}").unwrap();
 			}
 
 			if first == last {

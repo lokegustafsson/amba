@@ -113,8 +113,15 @@ impl App for Gui {
 					egui::ScrollArea::vertical()
 						.auto_shrink([false, true])
 						.show(ui, |ui| {
+							let description_guard =
+								self.model.gui_get_node_description(self.view, active);
+							let mut description: &str = &*description_guard;
 							ui.heading("Selected node");
-							ui.label(self.model.gui_get_node_description(self.view, active));
+							ui.add(
+								egui::TextEdit::multiline(&mut description)
+									.code_editor()
+									.desired_width(f32::INFINITY),
+							);
 							ui.allocate_space(ui.available_size());
 						});
 				});
