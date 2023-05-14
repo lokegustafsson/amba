@@ -1,3 +1,41 @@
+% result and process discussion - limitation - future work  
+För att evaluera verktyget används existerande verktyg som jämförelse i
+kombination med att dess fördelar och nackdelar vägs mot AMBA. Dessutom
+presenteras en diskussion kring utvecklingsprocessens gång och
+vidareutvecklingspotential. 
+
+\section{Diskussion av resultat}
+bla
+
+\subsection{Jämförelse mellan AMBA och Ghidra}
+Ghidra är ett avancerat verktyg som gör statisk analys bortom syftet med AMBA,
+men AMBA har ett par likheter. Ghidra kan representera en
+kontrollflödesgraf för en given binär på två olika sätt: \textit{Flow
+Graph} och \textit{Code Flow Graph}~\cite{ghidra_website} **FIGUR
+HÄR**. Ghidra kompletterar dessa vyer
+med en \textit{code listing}, en primär vy där binärens
+disassemblerade kod listas. Användaren kan fritt välja att bilda en
+graf från ett markerat \textit{code block}, vilket är Ghidras utökade
+specifikation på ett basic block, från Ghidras code
+listing~\cite{ghidra_website}. 
+AMBA har liknande funktionalitet och kan visualisera binärens
+fullständiga
+disassemblerade kod för en given nod **REF TILL FIGUR HÄR (lokes)**
+men saknar större kontext likt Ghidras code
+listing. En fördel mot Ghidras representation är AMBAs tre olika sätt
+att
+representera en binärs kontrollflöde på: \textit{Raw Block},
+\textit{Compressed Block}, och \textit{State Graph}. 
+Genom att använda dessa tre olika vyer kan en användare bilda en
+större
+förståelse om en given binär, dels genom att exempelvis visualisera
+alla symboliska tillstånd som
+S2E skapar i kombination med färgade noder som indikerar på
+\textit{strongly connected
+component}%(hur? varför ger detta en större förståelse om en
+binär?)
+
+
 % Vad ska vi evaluera?
     % jämförelse med andra verktyg, hur står sig vårt verktyg mot andra verktyg?
         % vi använder idén om att användare får ge input till verktyget för att
@@ -14,23 +52,13 @@
 % (hur får vi med det?)
 
 % Text under titel
-För att evaluera verktyget används existerande verktyg som jämförelse i
-kombination med att dess fördelar och nackdelar vägs mot AMBA. Dessutom jämförs
-funktionalitet -- AMBA jämförs med andra verktyg där likheter
-och skillnader lyfts.
 
-Ghidra är ett avancerat verktyg som gör statisk analys bortom syftet med AMBA,
-men AMBA har ett par likheter. Ghidra kan representera en
-kontrollflödesgraf för en given binär på två olika sätt: \textit{Flow
-Graph} och \textit{Code Flow Graph}~\cite{ghidra_website}. Ghidra kompletterar dessa vyer
-med en \textit{code listing}, en primär vy där binärens
-disassemblerade kod listas. Användaren kan fritt välja att bilda en
-graf från ett markerat \textit{code block}, vilket är Ghidras utökade
-specifikation på ett basic block, från Ghidras code
-listing~\cite{ghidra_website}. 
+% Ghidra does this
+% Amba doesn't
+% What does AMBA do?
+% How is it different, what does this entail?
 
-
-
+% walkthrough på ett exempel
 
 % ^vi gör också detta, fast på ett annat sätt och med fler alternativ (eller
 % sätt att visualisera grafen med olika typer av grafer).
