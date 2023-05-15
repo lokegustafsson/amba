@@ -4,52 +4,9 @@ domänen. Först och främst beskrivs olika metoder inom binäranalys och bakgru
 till symbolisk exekvering och vilka problem tekniken löser. Detta följs upp med
 en mer detaljerad beskrivning av symbolisk exekvering och fuzzing.
 Avslutningsvis, beskrivs problem som en symbolisk exekveringsmotor står inför
-och några möjliga lösningar till dessa problem, samt motiveringar till detta
-projekt.
-
-För att förstå utvecklingen- och tillämpningen av symbolisk exekvering, låt
-oss börja med att titta på de vanligaste sårbarheterna.
-
-\section{Minnessårbarheter}
-I praktiken består ungefär 70 procent av sårbarheter av
-minnessårbarheter.~\cite{miller19}. Minnessårbarheter kan påverka programflödet
-(jfr eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
-vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
-läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
-angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
-datorn som kör programmet~\cite{computer_security_cs161}, alltså \emph{remote
-    code execution}.
-
-I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
-det är inte möjligt på grund av mänskliga fel och konsekvenser av de verktyg vi
-använder. För att undvika, exempelvis, 100\% av minnessårbarheter krävs
-användning av minnessäkra programspråk (jfr eng. \emph{memory-safe language}).
-Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
-\emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile
-    time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
-många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
-prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är svåra att
-skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
-exempelvis Rust, som kan konkurrera med C relativt ny och det krävs tid för
-övergången mellan språken.
-
-Två exempel på minnessårbarheter är buffertöverflöden (jfr eng. \emph{buffer
-    overflow}) och formatsträng (jfr eng. \emph{format string}). Den
-vanligaste av de är buffertöverflöde vilket uppstår av otillräckliga
-gränskontroller, vilket utlöser en åtkomst bortom gränserna för viss
-minnesregion. Angripare kan utnyttja detta för att korrumpera programmets
-normala beteende genom att skriva bortom gränserna. Formatsträngsbugg uppstår
-när någon typ av indata tolkas och används som input till vanliga
-textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
-konvertingsfunktioner för kovertering av olika data till text. Om inte en
-noggrann och tillräcklig utvärdering av indatan görs innan den används i en
-funktion som kan tolka formatsträng, kan funktionen använda stacken och den
-data som råkar ligga där som argument för konverteringsfunktioner. Med noggrann
-utformning av indata kan en angripare utnyttja formatsträngsbugg för att
-exekvera godtyckliga kommandon~\cite{computer_security_cs161}.
-
-% Metoder baserade på symbolisk exekvering har används för att upptäcka dessa
-% sårbarheter\cite{bofaeg, vakkaupad15}.
+och några möjliga lösningar till dessa problem.
+% , samt motiveringar till detta
+% projekt.
 
 \section{Binäranalys}
 \label{sec:binar_analys}
@@ -204,3 +161,62 @@ exekvering. Exempel på dynamisk binäranalys är metod 3--6 i
 avsnitt~\ref{sec:binar_analys}. I alla fall krävs någon typ av injektion av kod
 eller data i programmet i syfte att kunna extrahera viktig information under
 programmets exekvering~\cite{dynamic_bin_analysis}.
+
+\section{Motivering till symbolisk exekvering}
+Symbolisk exekvering motiverades av behovet för automatiska kontroller av olika
+programegenskaper. ``Aspekter av intresse kan vara så att ingen division med
+noll någonsin utförs, att ingen NULL-pekare någonsin avrefereras (jfr eng.
+\emph{dereferenced}), att det inte finns någon bakdörr som kan kringgå
+autentisering och så vidare''~\cite{survey_symb_exc}. För att kontrollera dessa
+egenskaper krävs kontroll av flertal olika exekveringsvägar vilket är svårt med
+vanlig exekvering (konkret exekvering) men enkelt genom symbolisk exekvering.
+Symbolisk exekvering tillåter dynamisk binäranalys och både manuella och
+automatiska sådana. Som tidigare nämnts, är metoder baserade på symbolisk
+exekvering även kända som concolic testing och symbolisk fuzzing.
+
+Låt oss betrakta några vanliga sårbarheter som har upptäckts med metoder
+baserade på symbolisk exekvering.
+
+\subsection{Minnessårbarheter}
+I praktiken består ungefär 70 procent av sårbarheter av
+minnessårbarheter.~\cite{miller19}. Minnessårbarheter kan påverka programflödet
+(jfr eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
+vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
+läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
+angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
+datorn som kör programmet~\cite{computer_security_cs161}, alltså \emph{remote
+    code execution}.
+
+I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
+det är inte möjligt på grund av mänskliga fel och konsekvenser av de verktyg vi
+använder. För att undvika, exempelvis, 100\% av minnessårbarheter krävs
+användning av minnessäkra programspråk (jfr eng. \emph{memory-safe language}).
+Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
+\emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile
+    time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
+många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
+prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är svåra att
+skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
+exempelvis Rust, som kan konkurrera med C relativt ny och det krävs tid för
+övergången mellan språken.
+
+Två exempel på minnessårbarheter är buffertöverflöden (jfr eng. \emph{buffer
+    overflow}) och formatsträng (jfr eng. \emph{format string}). Den
+vanligaste av de är buffertöverflöde vilket uppstår av otillräckliga
+gränskontroller, vilket utlöser en åtkomst bortom gränserna för viss
+minnesregion. Angripare kan utnyttja detta för att korrumpera programmets
+normala beteende genom att skriva bortom gränserna. Formatsträngsbugg uppstår
+när någon typ av indata tolkas och används som input till vanliga
+textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
+konvertingsfunktioner för kovertering av olika data till text. Om inte en
+noggrann och tillräcklig utvärdering av indatan görs innan den används i en
+funktion som kan tolka formatsträng, kan funktionen använda stacken och den
+data som råkar ligga där som argument för konverteringsfunktioner. Med noggrann
+utformning av indata kan en angripare utnyttja formatsträngsbugg för att
+exekvera godtyckliga kommandon~\cite{computer_security_cs161}.
+
+Metoder baserade på symbolisk exekvering har används för att upptäcka både
+buffertöverflöden~\cite{bofaeg} och formatsträngsbuggar~\cite{vakkaupad15}.
+Metoderna har olika begränsningar, såsom prestandabegränsningar och andra
+begränsnigar som symbolisk exekvering innehar, men dessa sårbarheter är också
+allmänt svåra att upptäcka automatiskt.

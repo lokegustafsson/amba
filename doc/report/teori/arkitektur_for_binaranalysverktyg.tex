@@ -1,35 +1,13 @@
 
-Kärnan i ett korrekt dynamisk binäranalysverktyg är en
-\emph{exekveringsmotor}, en komponent som på ett korrekt vis kan köra
-programmet. Att köra ett program innebär att ladda binären och dess bibliotek,
-hoppa till startadressen och sedan köra enskilda instruktioner. Om
-binäranalysverktyget ska kunna använda metoder som använder symbolisk exekvering
-behöver denna exekvering av enskilda instruktioner också stödja symboliska
-variabler. För att verktyget ska uppnå hög prestanda är det eftersträvansvärt
-att de instruktioner som inte använder symboliska variabler utan endast agerar
-på konkreta värden exekverar direkt på processorn som kör binäranalysverktyget.
-
-Program i verkligheten kommunicerar på många sätt med sin omgivning. För
-inbyggda system är denna omgivning fysisk och för program som kör ovanpå
-operativsystem är denna omgivning en virtuell värld bestående av filer och IPC (inter
-process communication). För att en \textit{exekveringsmotor} ska vara så
-brett tillämpbar som möjligt behöver den också stödja flera sorters
-omgivningskommunikation.
-
-Sammantaget är kraven på en exekveringsmotor med stöd för symbolisk analys att den
-\begin{enumerate}
-    \item kan ladda en binär i en konkret miljö;
-    \item kan introducera symboliska variabler i denna miljö genom till exempel kommunikation med omgivningen;
-    \item kan exekvera konkreta delar av programmet med god prestanda genom att köra dessa delar
-          avprogrammet som maskinkod; och
-    \item kan exekvera symboliska delar av programmet på ett sätt som är tillräckligt kraftfullt för de
-          symboliska analyser som exekveringsmotorn ska användas till.
-\end{enumerate}
-
-Dessutom behöver exekveringsmotorn kunna kontrolleras och dess
-slutsatser kunna användas av och presenteras i resten av programmet.
+Kärnan i ett korrekt dynamisk binäranalysverktyg är en \emph{exekveringsmotor},
+en komponent som på ett korrekt vis kan exekvera programmet.
 Figur~\ref{schematic} visar förhållandet mellan användaren, analysverktyget och
-dess exekveringsmotor.
+dess exekveringsmotor. Att köra ett program innebär att ladda binären och dess
+bibliotek, hoppa till startadressen och sedan köra enskilda instruktioner. Om
+binäranalysverktyget ska kunna använda metoder som använder symbolisk
+exekvering behöver denna exekvering av enskilda instruktioner också stödja
+symboliska variabler.
+
 
 \begin{figure}[H]
     \centering
@@ -60,39 +38,70 @@ dess exekveringsmotor.
     \caption{ Schematisk bild av ett binäranalysverktyg byggt kring en exekveringsmotor}\label{schematic}
 \end{figure}
 
-\subsection{Analyser}
+Symbolisk exekvering innehar, i praktiken, begränsningar i skalbarhet. En
+symbolisk exekveringsmotor som utför symbolisk exekvering behöver ta hänsyn
+till ett antal frågor gällande~\cite{survey_symb_exc}:
 
-Det finns många möjliga analyser som kan användas av ett binäranalysverktyg, där
-\textit{analyser} avser en visualisering av en aspekt av det analyserade
-programmets beteende eventuellt inklusive ett sätt för användaren att påverka
-det analyserade programmets körning.
+\paragraph{Minne} Motorn behöver spara komplexa datatyper och representera de
+på ett sätt som tillåter villkorslösning. Exekvering av större program kräver
+mer minne för att bokföra symboler och uttryck och därmed mer tid för
+exekvering~\cite{survey_symb_exc}.
 
-En konkret exekvering kan spåras och dess instruktionssekvens kan visas för
-användaren med loopar identifierade. Flera exekveringar kan visualiseras på
-samma sätt och deras instruktionssekvenser användas för att återskapa
-kontrollflödesstrukturer som for- och while-loopar och if-satser.
+\paragraph{Miljö} Program i verkligheten kommunicerar på många sätt med sin
+omgivning. För program är denna omgivning en virtuell värld bestående av filer,
+biblioteksanrop och IPC (\emph{inter process communication}). För att en
+\textit{exekveringsmotor} ska vara så brett tillämpbar som möjligt behöver den
+också stödja flera sorters omgivningskommunikation och representera omgivningen
+på ett så komplett sätt som möjligt~\cite{survey_symb_exc}.
 
-Möjligheter för \textit{state merging} kan identifieras helautomatiskt eller av
-användaren, alltså platser där flera exekveringar kan ersättas av en enda mer
-generell exekvering som innehåller ursprungsexekveringarnas skillnader som
-symboliska uttryck.
+\paragraph{Stigexplotion} Verkliga program innehåller loopar, rekursion,
+undantag och kombinationer av dessa som kan orsaka ett exponentiellt stigande
+antal exekveringsvägar i programflödet. Det är alltså osannolikt att en motor
+kan uttömmande utforska alla möjliga exekveringsvägar inom rimlig tid.
+\emph{State-merging} kan appliceras i vissa fall för att begränsa antal
+exekveringsvägar. \emph{State-merging} går ut på att slå samman ett antal
+exekveringsvägar genom att upptäcka exekveringsvägar som liknar varandra och
+slå samman dessa genom att kombinera dess villkor. Det krävs heuristik för att
+upptäcka fall där \emph{state-merging} är applicerbart~\cite{survey_symb_exc}.
 
-En uppsättning liknande exekveringar kan visas upp för användaren tillsammans
-med information om när och hur de divergerar, för att till exempel avgöra när
-olika delar av indatan används.
+\paragraph{Villkorslösning} SMT-lösare kan skala till komplexa kombinationer av
+villkor över hundratals variabler. Däremot kan icke-linjär aritmetik utgöra ett
+stort hinder för effektivitet. Dessutom finns det exempel på olösliga problem
+där SMT-lösare är inte tillämpbara~\cite{survey_symb_exc}.
 
-För analys av programmet är det också hjälpsamt för användaren att kunna stega
-genom exekveringen steg för steg och ändra på värden för att ta de vägar de vill
-analysera. Detta borde också kunna göras baklänges, det vill säga att användaren
-väljer en slutdestination och låter programmet själv lista ut vilka värden som
-behövdes läsas för att exekveringen skulle ta sig till den punkten.
-
-En mer automatisk men ändå viktig funktionalitet är konstruktion av kod-täckande
-indata. När testfall som besöker en uppsättning instruktioner är konstruerad kan
-kraven på indatan över denna uppsättning programhopp analyseras och programmet
-kan lista ut vilka aspekter av indatan som kan ändras utan att påverka
-kodtäckningsgraden, och kommunicera detta till användaren.
-
-Det finns många möjliga analyser. Användbarheten i ett verktyg mäts inte i
-kvantiteten analyser utan i förmågan för de utvalda implementerade analyserna
-att täcka användarens behov av förståelse av programmet.
+% \subsection{Analyser}
+%
+% Det finns många möjliga analyser som kan användas av ett binäranalysverktyg, där
+% \textit{analyser} avser en visualisering av en aspekt av det analyserade
+% programmets beteende eventuellt inklusive ett sätt för användaren att påverka
+% det analyserade programmets körning.
+%
+% En konkret exekvering kan spåras och dess instruktionssekvens kan visas för
+% användaren med loopar identifierade. Flera exekveringar kan visualiseras på
+% samma sätt och deras instruktionssekvenser användas för att återskapa
+% kontrollflödesstrukturer som for- och while-loopar och if-satser.
+%
+% Möjligheter för \textit{state merging} kan identifieras helautomatiskt eller av
+% användaren, alltså platser där flera exekveringar kan ersättas av en enda mer
+% generell exekvering som innehåller ursprungsexekveringarnas skillnader som
+% symboliska uttryck.
+%
+% En uppsättning liknande exekveringar kan visas upp för användaren tillsammans
+% med information om när och hur de divergerar, för att till exempel avgöra när
+% olika delar av indatan används.
+%
+% För analys av programmet är det också hjälpsamt för användaren att kunna stega
+% genom exekveringen steg för steg och ändra på värden för att ta de vägar de vill
+% analysera. Detta borde också kunna göras baklänges, det vill säga att användaren
+% väljer en slutdestination och låter programmet själv lista ut vilka värden som
+% behövdes läsas för att exekveringen skulle ta sig till den punkten.
+%
+% En mer automatisk men ändå viktig funktionalitet är konstruktion av kod-täckande
+% indata. När testfall som besöker en uppsättning instruktioner är konstruerad kan
+% kraven på indatan över denna uppsättning programhopp analyseras och programmet
+% kan lista ut vilka aspekter av indatan som kan ändras utan att påverka
+% kodtäckningsgraden, och kommunicera detta till användaren.
+%
+% Det finns många möjliga analyser. Användbarheten i ett verktyg mäts inte i
+% kvantiteten analyser utan i förmågan för de utvalda implementerade analyserna
+% att täcka användarens behov av förståelse av programmet.
