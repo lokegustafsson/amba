@@ -12,7 +12,7 @@ group_64_project_report.pdf: \
   begreppslista.tex \
   cover.tex \
   abstract.tex \
-  sammandrag.text \
+  sammandrag.tex \
   evaluering/main.tex \
   existerande_verktyg/dynamiska_binaranalysramverk.tex \
   existerande_verktyg/main.tex \
