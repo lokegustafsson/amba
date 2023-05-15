@@ -31,5 +31,47 @@ exkluderar därmed också många detaljer som verktyget eller användaren annars
 annat vis hade behövt filtrera bort.
 
 Verktyget SymNav~\cite{symnav} kan visualisera och kontrollera analysen av en
-exekverbar binär inuti angr. angr beskrivs ingående i
-avsnitt~\cite{sec:existerande-ramverk}.
+exekverbar binär inuti angr:s symboliska exekveringsmotor.\@ angr beskrivs i
+avsnitt~\ref{sec:existerande-ramverk}.
+
+Arbetsflödet består av att starta SymNav med en via kommandorad angiven binär
+och sedan vänta tills programmet forkar. Då visar det grafiska gränssnittet det
+symboliska trädet, delar av kontrollflödesgrafen, etc. Användaren kan då
+navigera den visualiserade informationen, och sedan antingen fortsätta eller
+starta om körningen med en angiven tidsbudget och minnesbudget. Till exempel kan
+användaren starta en sökning med standardparametrar i $10$ sekunder och med
+$\SI{1}{\giga\byte}$ RAM.\@ När söktiden löpt ut uppdateras informationen i
+det grafiska gränssnittet.
+
+SymNavs grafiska gränssnitt består av tre paneler: en trädpanel som visar trädet
+av symboliska tillstånd, en kontrollflödespanel som visar kontrollflödesgrafen
+för enskilda funktion och en styrpanel för att filtrera vilken information som
+ska visas.
+
+Trädpanelen visar en kompakt representation av alla vägar av symboliska
+tillstånd som tagits. Dessutom visas en parallellkoordinatgraf där diverse
+nyckeltal för de symboliska tillstånden visas. Genom att interagera med denna
+graf kan användaren filtrera bort vägar efter nyckeltal, till exempel genom att
+endast visa vägar som någon gång anropar \verb|malloc()|.
+
+Kontrollflödespanelen visar alla en graf över grundblock inom en funktion. Noder
+innehåller den assemblykod som deras grundblock innehåller och kanter färgläggs
+efter hur många olika symboliska tillstånd som vandrat kanten.
+
+Styrpanelen visar för användaren vilka filter de hittills applicerat och låter
+användaren filtrera ytterligare vilka symboliska tillstånd som ska visas i det
+grafiska gränssnittet. Dessutom låter styrpanelen användaren definera
+resursbudgeten, starta om körningen eller fortsätta körningen från nuvarande
+symboliska tillstånd. När en körning startas kan användaren ange att nuvarande
+filter i det grafiska gränssnittet ska omvandlas till villkor på den symboliska
+indatan samt prioriteringsregler för fortsatt sökning.
+
+SymNav är därmed fasbaserad, med alternerande söknings- och presentationsfaser.
+SymNav ger användaren kraftfulla verktyg att filtrera ut intressanta tillstånd
+efter metriker såsom kodtäckningsgrad och minnesallokeringsmönster. Samtidigt
+ärver SymNav flera nackdelar från angr, såsom suboptimal prestanda
+\cite{systematic_comparison_symbex} och begränsad miljömodellering då
+analysgränsen går vid processen med emulerade syscalls snarare än vid en
+virtuell maskin. SymNav är skrivet för att kunna anpassas till andra
+exekveringsmotorer än angr, men detta är inte implementerat i dess nuvarande
+form.
