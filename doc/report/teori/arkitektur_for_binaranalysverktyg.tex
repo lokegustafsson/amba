@@ -48,14 +48,14 @@ mer minne för att bokföra symboler och uttryck och därmed mer tid för
 exekvering~\cite{survey_symb_exc}.
 
 \paragraph{Miljö} Program i verkligheten kommunicerar på många sätt med sin
-omgivning. För program är denna omgivning en virtuell värld bestående av filer,
+omgivning. För program är detta en virtuell miljö bestående av filer,
 biblioteksanrop och IPC (\emph{inter process communication}). För att en
 \textit{exekveringsmotor} ska vara så brett tillämpbar som möjligt behöver den
 också stödja flera sorters omgivningskommunikation och representera omgivningen
 på ett så komplett sätt som möjligt~\cite{survey_symb_exc}.
 
 \paragraph{Stigexplotion} Verkliga program innehåller loopar, rekursion,
-undantag och kombinationer av dessa som kan orsaka ett exponentiellt stigande
+undantag och kombinationer av dessa som kan orsaka ett exponentiellt ökande
 antal exekveringsvägar i programflödet. Det är alltså osannolikt att en motor
 kan uttömmande utforska alla möjliga exekveringsvägar inom rimlig tid.
 \emph{State-merging} kan appliceras i vissa fall för att begränsa antal
