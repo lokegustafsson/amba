@@ -1,7 +1,7 @@
 Ghidra är ett avancerat verktyg som gör statisk analys bortom syftet med AMBA,
 men AMBA har ett par likheter. Ghidra kan representera en kontrollflödesgraf
 för en given binär på två olika sätt: \textit{Flow Graph} och \textit{Code Flow
-Graph}~\cite{ghidra_website}.
+    Graph}~\cite{ghidra_website}.
 
 \begin{figure}[H]
     \begin{subfigure}{0.3\textwidth}
@@ -33,12 +33,12 @@ figur~\ref{fig:graf-basic}, och kan visualisera binärens fullständiga
 disassemblerade kod för en given nod, om debugdata finns tillgänglig, men saknar
 större kontext likt Ghidras code listing. En fördel mot Ghidras representation
 är AMBAs tre olika sätt att representera en binärs kontrollflöde på: \textit{Raw
-Basic Block Graph}, \textit{Compressed Block Graph}, och \textit{State Graph}.
+    Basic Block Graph}, \textit{Compressed Block Graph}, och \textit{State Graph}.
 Genom att använda dessa tre olika vyer kan en användare bilda en större
 förståelse om en given binär, dels genom att exempelvis visualisera alla
 symboliska tillstånd som \stoe{} skapar i kombination med färgade noder som
 indikerar på starkt kopplade komponenter (jfr. eng. \emph{strongly connected
-components}).
+    components}).
 
 Kännedom om starkt kopplade komponenter i en kontrollflödesgraf är i synnerhet
 intressant vid analys av binärer utan källkod, eftersom dessa delgrafer speglar
