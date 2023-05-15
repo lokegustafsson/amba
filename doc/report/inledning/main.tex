@@ -1,48 +1,44 @@
-En stor mängd organisationer har utsatts för utpressningsprogram (jfr eng.
-\emph{ransomware}) minst en gång de senaste 24 månaderna~\cite{cyberreason2021,
+Utpressingsattacker (jfr eng. \emph{ransomware attacks}) fördubblades
+mellan 2021 och 2022 och 73\% av organisationer har varit utsatta för dem
+minst en gång inom 24 månader~\cite{cyberreason2021,
     cyberreason2022}. Till exempel påverkades Irlands offentliga sjukhussystem
-kraftigt när utpressningsprogram tog över en stor del av deras digitala
-infrastruktur~\cite{hse_report, gallagher2023}.  Några av de direkta följderna
+kraftigt när utpressningsprogram (jfr eng. \emph{ransomeware}) tog över en stor del av deras digitala
+infrastruktur~\cite{hse_report, gallagher2023}. Några av de direkta påföljderna
 av att en lyckad attack är: höga kostnader för organisationen; stoppad
-produktion; konsekvenser från reglerare; och skadat
+produktion; juridiska konsekvenser; och skadat
 anseende~\cite{cyberreason2021, cyberreason2022}. Dessutom leder de höga
-kostnaderna till bland annat uppsägningar av anställda för att kunna
+kostnaderna till bland annat uppsägningar av anställda för att
 kompensera~\cite{cyberreason2021, cyberreason2022}. I många fall är människan
-den svaga länken i cyberattacker men angripare och skadeprogram (jfr eng.
-\emph{malware}) utnyttjar också olika sårbarheter i programvaror. WannaCry var
-ett utpressningsprogram som utnyttjade, bland annat, en sårbarhet som tillät
-\emph{remote code execution} med ett specialutformat paket i SMB-protokollet,
-ett protokoll för nätverksfildelning~\cite{alraddadicomprehensive}.
-
-% I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
-% det är inte möjligt. För att undvika, exempelvis, 100\% av minnessårbarheter
-% krävs användning av minnessäkra programspråk (jfr eng. \emph{memory-safe
-% language}). Minnessäkra programspråk tilltar en kombination av körtids- (jfr
-% eng. \emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile
-% time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
-% många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
-% prestandaskäl men främst äldre kod som är svåra att skriva
-% om~\cite{computer_security_cs161}. Vidare kan utvecklare aldrig undvika alla
-% misstag.
+den svaga länken i cyberattacker men skadeprogram (jfr eng.
+\emph{malware}) utnyttjar olika sårbarheter i programvaror för uppnå delmål.
+Exemplvis uttnyttjade utpressningsprogrammet WannaCry en
+sårbarhet i ett populärt nätverksfildelningsprotokoll som tillät \emph{remote
+    code execution} för att sprida sig mellan
+datorer~\cite{alraddadicomprehensive}.
 
 Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka och
 åtgärda sårbarheter innan en angripare. Programanalys går ut på att analysera
 programegenskaper för att kontrollera korrekthet och hitta möjliga sårbarheter
 och kan utföras olika på nivåer: på källkoden eller på maskinkoden (jfr eng.
-\emph{binary}). I den beskrivna situationen ovan, skadeprogramsanalys (jfr eng.
-\emph{malware analysis}) och \emph{reverse engeneering}, är programmet som ska
+\emph{binary}). Inom skadeprogramsanalys (jfr eng. \emph{malware analysis}) och
+\emph{reverse engeneering} är binäranalys nödvändig eftersom programmet som ska
 analyseras oftast endast tillgänglig som maskinkod~\cite{andriesse2018}.
 
-Binäranalys (jfr eng. \emph{binaryanalysis}) är ofta en komplicerad och en
-tidskrävande och skadeprogram ofta tilltar flera kända metoder för att försvåra
-analys och vilseleda analysverktyg. Det krävs ofta en utforskande metod för att
+% Programanalys innebär att man analyserar ett program för att säkerställa att
+% vissa egenskaper uppfylls. Analysen kan göras på olika nivåer (källkoden eller
+% maskinkoden (jfr eng. \emph{binary})) och har flera kategorier: statisk eller
+% dynamisk och manuell eller automatisk.
+
+Däremot är binäranalys (jfr eng. \emph{binaryanalysis}) ofta komplicerat och
+tidskrävande. Skadeprogram tilltar ofta flera metoder för att försvåra
+analys och vilseleda analysverktyg. Därför krävs en utforskande metod för att
 analysera och förstå ett skadeprogram och testa ett antal metoder för att förstå
 och känneteckna sårbarheter som skadeprogrammet utnyttjar. Detta kräver ett
 interaktivt och utforskande analysverktyg som tillåter användaren att
 känneteckna problematik i en analys och styra analysen åt ett håll som medför
 resultat.
 
-Symbolisk exekvering, beskrivet i detalj i avsnitt~\ref{sec:symbolic_execution}
+Symbolisk exekvering, beskrivet i detalj i avsnitt~\ref{sec:symbolic_execution},
 är en kraftfull teknik som har möjliggjort stora mängder
 binäranalysmetoder\cite{survey_symb_exc, symnav}. Inom skadeprogramsanalys
 tillåter det att ``upptäcka sårbarheter, kringgå autentisering eller
@@ -77,19 +73,8 @@ föreslagit liknande lösningar men har begräsningar i form av prestanda.
 % uppnå en hög täckning (jfr eng. \emph{coverage}) av programmet som beror
 % på indatan. Alltså att ta alla möjliga vägar i programflödet som är möjliga att
 % nå genom att variera indatan. Däremot är det ett svårt problem att generera
-% indata som uppnår en hög täckning som även är effektivtast, speciellt när
+% indata som uppnår en hög täckning som även är effektivast, speciellt när
 % indatan kan ha ett högt antal olika värden.
-
-% Vanliga fel i program som utnyttjas av angripare och skadeprogram är
-% minnesårbarheter. Det som gör minnessårbarheter allvarligare till skillnad från
-% andra fel som logikfel är att minnessårbarheter kan utnyttjas för att påverka
-% programflödet (jfr eng. \emph{control flow}) i ett program och alltså dess
-% beteende. Minnesårbarheter tillåter minnesaccess utanför en viss minnesregion.
-% Det kan vara alvarligt om en angripare kan läsa delar av minnet som inte ska
-% vara läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
-% angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
-% datorn som kör programmet~\cite{computer_security_cs161}.
-
 
 % * Svaga argument för någon som vet binäranalys: ransomware ofta
 % människoproblem. Kommer inte till kärnan tills mycket senare.
