@@ -1,5 +1,5 @@
 Att exekvera ett program symboliskt innebär att representera värden utefter
-programflödet som symboliska restriktioner (jfr eng.\ constraint), vilka kan
+programflödet som symboliska restriktioner (jfr eng.\ \emph{constraints}), vilka kan
 lösas av automatiserade teoremlösare (\emph{SMT solver}). En symbolisk körning
 representerar flera konkreta körningar eftersom de (symboliska) värden som
 används representerar grupper av konkreta värden vilka har gemensamt hur de
@@ -17,7 +17,7 @@ Eftersom de symboliska värdena har kapacitet att representera grupperingar av k
 värden istället för enskilda sådana, utförs en generaliserad testning av programmet,
 som ger insikt i hur programmet beter sig givet en grupp av parametrar som alla
 på grund av någon eller några gemensamma egenskaper, orsakar gemensamma beteenden
-i programmet~\cite{cadar}.
+i programmet~\cite{Cadar}.
 
 En symbolisk exekveringsmotor arbetar genom att först representera programmets
 input som symboliska variablar, vilka vid starten inte har några begränsningar.
@@ -37,11 +37,8 @@ symbolisk exekvering aldrig terminerar~\cite{path_explo}, är det inte effektivt
 att alltid undersöka alla branchar i ett program. Exempel på metoder för att
 undvika path explosion är \emph{state-merging} och \emph{heuristics}.
 
-För att illustrera symbolisk exekvering används följande pseudokod:
-
-\begin{figure}[H]
-    \centering
-    \begin{lstlisting}[label={list:first}, language=Python, frame=single]
+\begin{figure}
+    \begin{lstlisting}[language=Python, frame=single]
 x = input()
 y = input()
 z = 2 * y
@@ -57,27 +54,34 @@ else:
   run_important_code()
 
 \end{lstlisting}
-    \caption{Pseudokod för att visualisera symbolisk exekvering.}\label{symbex_example_code}
+    \caption{Pseudokod för att visualisera symbolisk exekvering.}
+    \label{fig:symbex_example_code}
 \end{figure}
 
-Exemplet ovan använder symbolisk exekvering för att hitta vilken input som leder
-till de olika vägarna. I många fall är det intressant att göra en uttömmande
+Exempletprogrammet i figur~\ref{fig:symbex_example_code} använder
+symbolisk exekvering för att hitta vilken input som leder till de olika
+vägarna. I många fall är det intressant att göra en uttömmande
 sökning och hitta alla möjliga vägar i ett program, något som är möjligt i detta
 program men inte alla program. Variablerna x och y sätts till symboliska värden
 som sedan används för att beräkna path constraint och de symboliska uttryck som
 variablerna utvecklas till för en vald branch. Därefter används dessa uttryck
 och path constraint tillsammans för att bilda en ekvation som kan lösas med
 hjälp av en SMT-solver och därmed få ut ett konkret värde.
-Figur~\ref{symbex_example_graph} visar hur det symboliska tillståndet förändras
-för alla möjliga branches i programmet.
+Figur~\ref{fig:symbex_example_graph} visar hur det symboliska tillståndet
+förändras för alla möjliga branches i programmet.
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[scale=0.5]{figures/final_symbolic_example_graph.png}
-    \caption{Path constraint och symboliskt tillstånd för alla vägar i
-        pseudokoden angett i~\ref{symbex_example_code}.}\label{symbex_example_graph}
+    \caption{Path constraint och symboliskt tillstånd för alla stigar i
+        pseudokoden angett i figur~\ref{fig:symbex_example_code}.}
+    \label{fig:symbex_example_graph}
 \end{figure}
 
-I~\ref{symbex_example_graph} används $\pi$ för att ange path constraint vilket
+I figur~\ref{fig:symbex_example_graph} används $\pi$ för att ange path constraint vilket
 är initialt satt till $\top$ eftersom villkoret är sant från början och $\phi$
 används för att visa mappningen för symboliska värden.
+
+\todo[inline]{Explain a bit the graphs in figure \ref{fig:symbex_example_graph} and how
+    elements of each node are constructed, no need to do it for all nodes,  but for
+    1, 2, 4 and explain the path split // Iulia}

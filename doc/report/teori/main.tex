@@ -1,108 +1,136 @@
-Under \emph{BlueHat} 2019 gav \emph{MSRC} (\emph{Microsoft Security Response
-    Center}) en överblick över Microsofts taktiker för hur de hanterar
-säkerhetsbrister i deras produkter och tjänster~\cite{miller19}.
-Taktikerna som listades var att
-\begin{itemize}
-    \item eliminera säkerhetsbristerna från början;
-    \item implementera metoder för att försvåra utnyttjande av säkerhetsbrister;
-    \item minimera platserna där attackerarna kan göra skada och förhindra åtkomst; samt slutligen
-    \item minimera tidsfönstret då attackerare har tillgång till systemet med hjälp av aktiv övervakning.
-\end{itemize}
-Enligt Miller~\cite{miller19} härstammar ungefär 70 procent av alla Microsofts CVEr från minnessäkerhetsbuggar. Om
-hela klasser av säkerhetsbrister kan eliminieras genom att utveckla nya verktyg som underlättar för
-utvecklare att finna dem kan det leda till stor påverkan på antalet sårbarheter.
+I detta avsnitt förklaras bakgrund och problembeskrivning till projektet. Innan
+problemen kan beskrivas måste vi förstå några centrala idéer och teorier inom
+domänen. Först och främst beskrivs olika metoder inom binäranalys och bakgrund
+till symbolisk exekvering och vilka problem tekniken löser. Detta följs upp med
+en mer detaljerad beskrivning av symbolisk exekvering och fuzzing.
+Avslutningsvis, beskrivs problem som en symbolisk exekveringsmotor står inför
+och några möjliga lösningar till dessa problem, samt motiveringar till detta
+projekt.
 
-% probably need a source for this paragraph
-Det är särskilt fördelaktigt att undersöka minnessäkerhetsbuggar genom att
-betrakta maskinkod. Genom att betrakta maskinkod bildar man en lågnivåförståelse
-av en binär eftersom den fullständiga målkoden som kompilatorn genererat
-existerar på denna nivån. Med en lågnivåförståelse kan man också härleda hur
-binären interagerar med minnet genom att bland annat analysera minneslayouten
-och den underliggande datastrukturen för att hitta problem vid minnesallokering
-och minnesdeallokering, och därigenom hitta minnessäkerhetsbuggar.
+För att förstå utvecklingen- och tillämpningen av symbolisk exekvering, låt
+oss börja med att titta på de vanligaste sårbarheterna.
 
-Det finns ett flertal metoder för att analysera en exekverbar binär. Exempel på dessa är att:
+\section{Minnessårbarheter}
+I praktiken består ungefär 70 procent av sårbarheter av
+minnessårbarheter.~\cite{miller19}. Minnessårbarheter kan påverka programflödet
+(jfr eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
+vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
+läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
+angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
+datorn som kör programmet~\cite{computer_security_cs161}, alltså \emph{remote
+    code execution}.
+
+I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
+det är inte möjligt på grund av mänskliga fel och konsekvenser av de verktyg vi
+använder. För att undvika, exempelvis, 100\% av minnessårbarheter krävs
+användning av minnessäkra programspråk (jfr eng. \emph{memory-safe language}).
+Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
+\emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile
+    time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
+många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
+prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är svåra att
+skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
+exempelvis Rust, som kan konkurrera med C relativt ny och det krävs tid för
+övergången mellan språken.
+
+Två exempel på minnessårbarheter är buffertöverflöden (jfr eng. \emph{buffer
+    overflow}) och formatsträng (jfr eng. \emph{format string}). Den
+vanligaste av de är buffertöverflöde vilket uppstår av otillräckliga
+gränskontroller, vilket utlöser en åtkomst bortom gränserna för viss
+minnesregion. Angripare kan utnyttja detta för att korrumpera programmets
+normala beteende genom att skriva bortom gränserna. Formatsträngsbugg uppstår
+när någon typ av indata tolkas och används som input till vanliga
+textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
+konvertingsfunktioner för kovertering av olika data till text. Om inte en
+noggrann och tillräcklig utvärdering av indatan görs innan den används i en
+funktion som kan tolka formatsträng, kan funktionen använda stacken och den
+data som råkar ligga där som argument för konverteringsfunktioner. Med noggrann
+utformning av indata kan en angripare utnyttja formatsträngsbugg för att
+exekvera godtyckliga kommandon~\cite{computer_security_cs161}.
+
+% Metoder baserade på symbolisk exekvering har används för att upptäcka dessa
+% sårbarheter\cite{bofaeg, vakkaupad15}.
+
+\section{Binäranalys}
+\label{sec:binar_analys}
+Som tidigare nämnt, är ofta endast maskinkoden som är tillgänglig inom domänen
+för skadeprogramsanalys och \emph{reverse engeneering}. Binäranalys är dessutom
+viktigt för att upptäcka och undersöka minnessårbarheter. Det beror på det
+semantiska gapet mellan en högnivå programspråk och maskinkod. Det är inte
+trivialt att argumentera för programmets beteende innan och efter kompilering
+till maskinkod och hur väl dessa mostsvarar varandra. Genom att betrakta
+maskinkoden kan man ``undersöka vad programmet faktiskt gör istället för vad
+man tror att den gör''~\cite{andriesse2018}. Avslutningsvis, kan sårbarheter
+introduceras i kompileringssteget på grund av fel i kompilatorer som oftast är
+sällsynta men inte obefintliga~\cite{dusilent}.
+
+Ett flertal metoder används för att analysera maskinkod:
 \begin{enumerate}
-    \item disassemblera binären och läsa dess funktioner för att förstå vad de gör.
-    \item dekompilera assemblykoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
-          läsbara koden.
-    \item köra binären på speciella testfall och jämföra svaret med vad som förväntas. Om
-          programmet implementerar en specifikation kan en existerande testsamling användas.
-    \item fuzztesta binären, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
-          annat oönskat beteende i binären. Många fuzztestmotorer skapar testfall med en evolutionär
-          algoritm, och många använder instrumentering över vilka programhopp som tas för att bedöma
-          testfalls nyttighet.
+    \item disassemblera binären och läsa dess funktioner för att förstå vad de gör~\cite{ghidra_website}.
+    \item dekompilera maskinkoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
+          läsbara koden~\cite{ghidra_website}.
+    \item fuzztesta programmet, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
+          annat oönskat beteende~\cite{8371326}.
     \item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
-          lösa för testfall som orsakar annorlunda programhopp.
-    \item stega igenom programmet i en debugger för att se exakt vad programmet gör med viss input.
+          lösa för testfall som orsakar annorlunda programhopp~\cite{sage}.
 \end{enumerate}
 
-Problematisk minneshantering har potential att påverka ett programs korrekthet och
-kan utnyttjas av fientliga aktörer i skadliga syften. Att minne hanteras på ett
-osäkert sätt är inte ovanligt, speciellt då proggrammet är skrivet i ett språk som är
-''memory unsafe'' som exempelvis C/C++. Det är då lätt att vid utveckling av program
-göra misstag som introducerar sårbarheter, och kan vara svårare att upptäcka dessa
-sårbarheter när de väl introducerats, speciellt om det inkorrekta beteendet endast
-uppstår under körning med specifika indata.
+% Problematisk minneshantering har potential att påverka ett programs korrekthet och
+% kan utnyttjas av fientliga aktörer i skadliga syften. Att minne hanteras på ett
+% osäkert sätt är inte ovanligt, speciellt då proggrammet är skrivet i ett språk som är
+% ''memory unsafe'' som exempelvis C/C++. Det är då lätt att vid utveckling av program
+% göra misstag som introducerar sårbarheter, och kan vara svårare att upptäcka dessa
+% sårbarheter när de väl introducerats, speciellt om det inkorrekta beteendet endast
+% uppstår under körning med specifika indata.
 
-Att läsa källkod är ett sätt att förstå program, men ibland är det gynnsamt att istället betrakta
-maskinkoden direkt. Detta kan vara för att
+% Begreppet \textit{reverse engingeering} syftar på processen att söka insikt i hur en produkt
+% (enhet/process/mjukvara/verktyg/system) arbetar, utan en etablerad insikt i dess interna
+% uppbyggnad. Med andra ord syftar reverse engineering på att dekonstruera en produkt för att
+% öka förståelsen av den. Detta görs genom att med olika metoder plocka isär produkten för
+% att förstå hur den utför ett arbete. Reverse engineering är ett fundamentalt verktyg då insikt
+% om en produkts design behövs men designspecifikationer ej existerar eller är tillgängliga.
+% Reverse engineering har flera användningsområden, däribland då äldre produkter, vars design
+% inte längre är tillgänglig, behöver undersökas, eller när funktionalitet försvunnit i
+% utvecklingsaproccesen och behöver återfinnas. Reverse engineering är också användbart för
+% att analysera fel som uppstår, för att förbättra delkomponenter eller för att diagnostisera
+% en produkt.
 
-Begreppet \textit{reverse engingeering} syftar på processen att söka insikt i hur en produkt
-(enhet/process/mjukvara/verktyg/system) arbetar, utan en etablerad insikt i dess interna
-uppbyggnad. Med andra ord syftar reverse engineering på att dekonstruera en produkt för att
-öka förståelsen av den. Detta görs genom att med olika metoder plocka isär produkten för
-att förstå hur den utför ett arbete. Reverse engineering är ett fundamentalt verktyg då insikt
-om en produkts design behövs men designspecifikationer ej existerar eller är tillgängliga.
-Reverse engineering har flera användningsområden, däribland då äldre produkter, vars design
-inte längre är tillgänglig, behöver undersökas, eller när funktionalitet försvunnit i
-utvecklingsaproccesen och behöver återfinnas. Reverse engineering är också användbart för
-att analysera fel som uppstår, för att förbättra delkomponenter eller för att diagnostisera
-en produkt.
+De olika metoderna har sina för- och nackdelar och är olika effektiva. Dessutom
+är de applicerbara i olika situationer. För att bilda en allmän förståelse om
+ett program krävs både korrekt och abstrakt förståelse. I
+detta avseende syftar korrekt på avsaknaden av felaktiga slutsatser
+och abstrakt på möjligheten att resonera om programmet generellt i
+motsats till att resonera om en specifik konkret indata i taget.
 
-För att bilda en allmän förståelse om ett program krävs både \textit{korrekt} och
-\textit{abstrakt} förståelse. I detta avseende syftar \textit{korrekt} på
-avsaknaden av felaktiga slutsatser och \textit{abstrakt} på möjligheten att
-resonera om programmet generellt i motsats till att resonera om en specifik
-konkret indata i taget.
+Metod 1-2, att läsa kod, kan ge en abstrakt förståelse av vad
+programmet gör, men för att verifiera att huruvida resonemanget är korrekt krävs
+hypotestestning vilket kräver att programmet körs. Således går det inte att
+bilda en korrekt förståelse genom att enbart läsa kod.
 
-% Metod 1-2, att läsa kod, kan ge en \textit{abstrakt} förståelse av vad
-% programmet gör, men för att verifiera att huruvida resonemanget är korrekt krävs
-% hypotestestning vilket kräver att programmet körs. Således går det inte att
-% bilda en \textit{korrekt} förståelse genom att enbart läsa kod.
+Metod 3-4, att köra programmet på testfall, ger framförallt en
+black-box-förståelse av programmet. Tillgången till binären och
+exekveringsmiljön används endast som ett verktyg för att generera nya testfall.
+Fuzzing och concolic testing kan köras helautomatiskt och är korrekta.
+Men ofta är en tillräckligt täckande sökning av indatarummet omöjlig, och då kan
+den automatiska analysen ha missat ett kvalitativt annorlunda beteende. Dessutom
+ger en omfattande uppsättning indata-utdata-par inte användaren samma
+information som källkoden ger. Därmed är helautomatiska analysmetoder inte
+abstrakta. Notera att det inte nödvändigtvis tyder på en brist i den
+automatiska analysen att ett kvalitativt annorlunda beteende missas, för det
+gömda beteendet skulle kunna vara en konsekvens av komplicerad kod, som till
+exempel ett hoppvilkor beroende på en kryptografisk hash av indatan. Men en
+analysmetod borde kunna peka ut var dess förståelse tar slut, snarare än att
+utelämna detta fullständigt vilket är vad avsaknaden av testfall visar sig som.
 
-% Metod 3-5, att köra programmet på testfall, ger framförallt en
-% black-box-förståelse av programmet. Tillgången till binären och
-% exekveringsmiljön används endast som ett verktyg för att generera nya testfall.
-% Fuzzing och concolic testing kan köras helautomatiskt och är \textit{korrekta}.
-% Men ofta är en tillräckligt täckande sökning av indatarummet omöjlig, och då kan
-% den automatiska analysen ha missat ett kvalitativt annorlunda beteende. Dessutom
-% ger en omfattande uppsättning indata-utdata-par inte användaren samma
-% information som källkoden ger. Därmed är helautomatiska analysmetoder inte
-% \textit{abstrakta}. Notera att det inte nödvändigtvis tyder på en brist i den
-% automatiska analysen att ett kvalitativt annorlunda beteende missas, för det
-% gömda beteendet skulle kunna vara en konsekvens av komplicerad kod, som till
-% exempel ett hoppvilkor beroende på en kryptografisk hash av indatan. Men en
-% analysmetod borde kunna peka ut var dess förståelse tar slut, snarare än att
-% utelämna detta fullständigt vilket är vad avsaknaden av testfall visar sig som.
+% En helautomatisk \textit{korrekt} metod kan ge en \textit{abstrakt} förståelse
+% om analysprocessens förlopp visualiseras för användaren. Valet mellan manuell
+% arbetsbörda som ger djup förståelse och en testfallsgenerationsdriven process
+% som ger översiktlig förståelse kan genomföras av användaren om verktygen stödjer
+% hela spektrumet.
 
-% Med metod 6, en debugger, kan användaren följa exekveringen för en viss indata
-% utan att riskera att missförstå hur datan transformeras. Om användaren har ett
-% oändligt tålamod kan de göra detta om och om igen för olika indata genererade
-% med till exempel fuzzing. Varje genomstegning ger information om koden som
-% behandlar indatan men också viss information om övrig kod -- till exempel kan
-% ett svårtaget hopp indikera en plats för användaren att rikta sin uppmärksamhet
-% mot. Detta ger en både \textit{korrekt} och \textit{abstrakt} förståelse, men
-% med en orimlig manuell arbetsbörda för användaren.
-
-En helautomatisk \textit{korrekt} metod kan ge en \textit{abstrakt} förståelse
-om processens förlopp visualiseras för användaren. Valet mellan manuell
-arbetsbörda som ger djup förståelse och en testfallsgenerationsdriven process
-som ger översiktlig förståelse kan genomföras av användaren om verktygen stödjer
-hela spektrummet.
-
+\subsection{Automatiska och manuella metoder för binäranalys}
 För att klargöra distinktionen mellan manuell och automatiska metoder för
-binäranalys används följande use cases:
+binäranalys kan vi betrakta följande exempel:
 
 \begin{figure}
     \begin{lstlisting}[
@@ -112,25 +140,26 @@ binäranalys används följande use cases:
     ]
 # Givet sträng-input från stdin
 s = input()
-if sha256(s) = "välkänd hash":
-  print("Winner winner chicken dinner")
+if sha256(s) == saved_hash:
+  allow_access()
 else:
-  print("you lose")
+  deny_access()
 \end{lstlisting}
-    \caption{Use case manuella metoder}
+    \caption{Exempelprogram där det är fördel att använda manuella metoder för binäranalys}
+    \label{fig:manual_method_example}
 \end{figure}
 
-I use cases där det existerar kända konstanter, något som är typiskt i fall som
+I fall där det existerar kända konstanter, något som är typiskt i fall som
 involverar kryptografi i olika utsträckning, är det rimligt att tillämpa
 manuella metoder för att bilda förståelse om programmet. Genom att inspektera
-ett binärt program innehållande ovan källkod kan det enkelt hittas en konstant
-associerad till sha-256 algoritmen och därmed bilda förståelse om programmet.
-
-I ovan fall är det dessutom orimligt att tillämpa automatiska metoder eftersom
-dessa, såsom concolic testing, genererar alltför stora symboliska
-representationer och hade i det ovan exemplet krävt att det går att hitta
-inversen till en given SHA-256 hash vilket idag är omöjligt och leder därmed
-till att alla paths inte undersöks.
+ett maskinkod för program mostvarande figur~\ref{fig:manual_method_example} kan
+det enkelt hittas en konstant associerad till sha256 algoritmen for att beräkna
+hash funktionen och därmed bilda förståelse om programmet. I detta fall är det
+dessutom orimligt att tillämpa automatiska metoder eftersom dessa, såsom
+concolic testing, genererar alltför stora symboliska representationer och hade
+i det ovan exemplet krävt att det går att hitta inversen till en given sha256
+hash vilket idag är omöjligt och leder därmed till att alla stigar i
+programflödet inte undersöks.
 
 \begin{figure}
     \begin{lstlisting}[
@@ -141,19 +170,37 @@ till att alla paths inte undersöks.
 # Givet sträng-input från stdin
 s = input()
 if s == "secret":
-  print("Winner winner chicken dinner")
+  allow_access()
 else:
-  print("you lost")
+  deny_access()
 \end{lstlisting}
-    \caption{Use case manuella metoder}
+    \caption{Exempelprogram där det är fördel att använda automatiska metoder för binäranalys}
+    \label{fig:automatic_method_example}
 \end{figure}
 
-Ett motsatt fall är ovan och lämpas väl att undersökas med automatiska
-metoder eftersom det är tidskrävande att manuellt välja slumpvalda värden på s
-för att hitta den korrekta branchen. Istället lämpar concolic testing, dvs en
-automatisk metod, sig väl i detta fallet eftersom concolic testing väljer olika
-konkreta värden samtidigt som den tillämpar symbolisk exekvering med symboliska
-värden som följer den givna branchen, t.ex.\ om \lstinline{s == "hej"} vilket
-motsvarar att programmet väljer else-branchen och printar \lstinline{"you lost"}.
-Detta upprepas med nya exekveringsvägar och till slut hittas vilken input som ger
-\lstinline{print("you won")}-branchen.
+Ett motsatt fall är exemplet i figur~\ref{fig:automatic_method_example} och
+lämpas väl att undersökas med automatiska metoder eftersom det är tidskrävande
+att manuellt välja slumpvalda värden på \texttt{s} för att hitta den korrekta
+stigen. Istället lämpar concolic testing sig väl i detta fallet. Eftersom
+concolic testing väljer olika konkreta värden samtidigt som den tillämpar
+symbolisk exekvering med symboliska värden som följer den givna stigen, t.ex.\
+om \lstinline{s == "annat"} vilket motsvarar att programmet väljer else-stigen
+\lstinline{deny_access()}. Detta upprepas med nya exekveringsstigar och till slut
+hittas den indata som ger \lstinline{allow_access()}-stigen.
+
+
+\subsection{Statisk och dynamisk binäranalys}
+En annan typ av kategorisering av olika analysmetoder som fokuserar på hur
+analysen genomförs delar metoderna i två grupper: statisk och dynamisk
+analys~\cite{dynamic_bin_analysis}.
+
+Statisk analys syftar på analys som går att göra utan att exekvera programmet
+som analyseras. Exempel på statisk binäranalys är metod 1--2 beskrivet tidigare
+i avsnitt~\ref{sec:binar_analys}, alltså att disassembla binären och/eller
+visualisera kod~\cite{dynamic_bin_analysis}.
+
+Dynamisk analys går ut på att analysera ett program under
+exekvering. Exempel på dynamisk binäranalys är metod 3--6 i
+avsnitt~\ref{sec:binar_analys}. I alla fall krävs någon typ av injektion av kod
+eller data i programmet i syfte att kunna extrahera viktig information under
+programmets exekvering~\cite{dynamic_bin_analysis}.
