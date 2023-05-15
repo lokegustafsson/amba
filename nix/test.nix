@@ -81,6 +81,6 @@ let
     '';
   };
 in {
-  inherit hello control-flow state-splitter test-amba-hello
-    test-amba-control-flow test-amba-state-splitter;
+  inherit hello control-flow state-splitter self-modifying test-amba-hello
+    test-amba-control-flow test-amba-state-splitter test-amba-self-modifying;
 }

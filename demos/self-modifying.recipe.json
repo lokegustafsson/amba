@@ -7,5 +7,5 @@
 		}
 	},
 	"executable_path": "./self-modifying",
-	"stdin_path": "/tmp/input.txt",
+	"stdin_path": "/tmp/input.txt"
 }

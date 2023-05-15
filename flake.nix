@@ -139,6 +139,11 @@
             program =
               "${test.test-amba-state-splitter}/bin/test-amba-state-splitter";
           };
+          test-amba-self-modifying= {
+            type = "app";
+            program =
+              "${test.test-amba-self-modifying}/bin/test-amba-self-modifying";
+          };
         };
       });
 }
