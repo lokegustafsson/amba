@@ -63,9 +63,7 @@ till ett mer läsbart format i form av pseudokod.
 \section{Jämförelse mellan S2E och Angr som \\ backend} Eftersom AMBA använder
 \stoe{} som symbolisk exekveringsmotor har AMBA således en teoretisk fördel i
 prestanda, något som kan avläsas från figurerna
-i~\cite[Figur~1-5]{systematic_comparison_symbex}. Delvis beror detta på att Angr
-är skrivet i python som är ett interpreterat språk och \stoe{} som är skrivet i
-C++ som är ett kompilerat språk. Detta innebär att AMBA inte nödvändigtvis i
+i~\cite[Figur~1-5]{systematic_comparison_symbex}. Detta innebär att AMBA inte nödvändigtvis i
 nuläget har bättre prestanda mot applikationer utvecklade med Angr som
 \emph{backend}. Dock betyder det att AMBA har en teoretisk konkurrenskraftig
 prestanda.
@@ -75,7 +73,7 @@ tillhandahåller, och är dessutom i allmänhet enklare att påbörja utveckling
 och onekligen eklare att bygga. Dessutom är Angr i synnerhet ett eftertraktat
 verktyg att använda som symbolisk exekveringsmotor eftersom det bland annat
 tillhandahåller funktionalitet såsom \emph{Control-Flow Graph Recovery} och
-disassemblering som möjliggör mycket av funktionalitet som annars behövdes
+disassemblering som möjliggör mycket av funktionalitet som annars behövs 
 implementeras i AMBA.
 
 \section{Jämförelse mellan AMBA och SymNav} SymNav tillhandahåller samma
@@ -110,12 +108,13 @@ drive där lösningen var att istället ladda ner färdiga guest images.
 Denna del av arbetet ledde till att mycket av planeringen blev förskjutet och
 således fanns det mindre tid till att utveckla all funktionalitet som var tänkt.
 
-\section{Vidareutveckling}
-En särskilt eftertraktad funktionalitet är \textit{State merging}. Syftet med
-state merging är att minska antalet exekveringsvägar genom att förena symboliska
-tillstånd som är ekvivalenta. Genom att introducera state merging ökar
-prestandan för den symboliska exekveringen som gör det möjligt att skicka fler
-förfrågningar (jfr. eng. \emph{queries}) till SMT-lösaren.
+\section{Vidareutveckling} En särskilt eftertraktad funktionalitet är
+\textit{State merging}. Syftet med state merging är att minska antalet
+exekveringsvägar genom att förena symboliska tillstånd som är ekvivalenta. Ett
+förslag är att ge uppgiften till användaren att interaktivt välja vilka
+tillstånd som sammanfogas. Således ökar prestandan för den symboliska
+exekveringen som gör det möjligt att skicka fler förfrågningar (jfr. eng.
+\emph{queries}) till SMT-lösaren.
 
 Övervakning av systemanrop (jfr. eng. \emph{syscalls}) ger användaren en större
 insikt i vad som sker i en specifik del av grafen, exempelvis om det sker
@@ -124,9 +123,11 @@ kör ett exec-systemanrop för att köra ett externt program, etc. är anledning
 som gör det intressant att övervaka systemanrop. För att implementera detta i
 AMBA bör det undersökas om det finns hooks för detta.
 
-I nuläget sparas inte resultatet från SMT-lösaren för ett givet path constraint
+I nuläget sparas inte resultatet för ett givet path constraint
 och därför får användaren inte heller mer informatiom om vilken input som ledde
 till att vägen nåddes i exekveringen. Optimalt hade varit om användaren kunde se
 vilken indata som ledde till en särskild väg för fortsatt analys. \stoe{} har
-denna information, men i nuläget sparas den inte av AMBA.
-
+denna information, men i nuläget sparas den inte av AMBA. Dessutom hade det
+varit intressant för användare om en SMT-lösare användes för att lösa ett givet
+path constraint och därmed få indata som leder till att den vägen tas i
+exekveringen.
