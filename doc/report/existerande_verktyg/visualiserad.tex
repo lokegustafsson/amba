@@ -1,1 +1,35 @@
-TODO prata om Symnav~\cite{symnav}
+De i avsnitt~\ref{sec:existerande-disasm},\ \ref{sec:existerande-ramverk} samt\
+\ref{sec:existerande-automatisk} presenterade kategorierna av binäranalysverktyg
+är alla etablerade kategorier som AMBA inte faller under. Kategorin som AMBA
+tillhör kallar vi ''visualiserad symbolisk fuzzing'' och detta avsnitt
+diskuterar det fåtal existerande verktyg vi anser faller inom kategorin.
+
+Verktyget Symbolic Execution Debugger
+(\textsc{SED})~\cite{symbolic_execution_debugger} är en debugger för Java 1.4
+utan multitrådning, reflektion och flyttalsaritmetik. Användaren använder
+\textsc{SED} som ett Eclipse-plugin, i vilket valfri metod kan väljas och
+analyseras med symbolisk exekvering. Exekveringsträdet visas för användaren
+tillsammans med källkodsrader och de vägvillkor som tar exekveringen dit.
+
+Att \textsc{SED} är utformat som en debugger som kan starta exekveringen vid
+valfri Javametod gör verktyget väl utformat till formell verifiering. Verktyget
+förlitar sig på tillgång till källkod och att användaren vet vilken indata som
+anses giltig för metoden. Begränsningen till enskilda metoder gör samtidigt den
+symboliska exekveringen mer överblicklig för användaren, då användaren i mindre
+grad själv behöver exkludera det som analysen inte bör lägga fokus på.
+
+Att \textsc{SED} inriktar sig på en delmängd av Java innebär att det är mindre
+applicerbart för datasäkerhet och binäranalys då dessa sammanhang ofta kräver
+analys av exekverbara binärer, ofta utan tillgång till källkod. Eftersom Java är
+ett språk på högre nivå än maskinkod innebär samtidigt en inriktning mot Java
+att många implementationsdetaljer i hur koden skulle göras på en riktig dator
+kan ignoreras. Dynamisk minneshantering är ett exempel på detta, där analys av
+Javakod kan abstrahera bort exekveringsmiljöns anrop till \verb|malloc()| och
+\verb|free()| medan analys av maskinkod nödvändigtvis behöver hantera
+komplexiteten i deras implementationer. Symbolisk exekvering i en högnivåmiljö
+exkluderar därmed också många detaljer som verktyget eller användaren annars på
+annat vis hade behövt filtrera bort.
+
+Verktyget SymNav~\cite{symnav} kan visualisera och kontrollera analysen av en
+exekverbar binär inuti angr. angr beskrivs ingående i
+avsnitt~\cite{sec:existerande-ramverk}.
