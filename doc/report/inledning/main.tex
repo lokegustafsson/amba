@@ -4,7 +4,7 @@ minst en gång inom 24 månader~\cite{cyberreason2021,
     cyberreason2022}. Till exempel påverkades Irlands offentliga sjukhussystem
 kraftigt när utpressningsprogram (jfr eng. \emph{ransomeware}) tog över en stor del av deras digitala
 infrastruktur~\cite{hse_report, gallagher2023}. Några av de direkta påföljderna
-av att en lyckad attack är: höga kostnader för organisationen; stoppad
+av en lyckad attack är: höga kostnader för organisationen; stoppad
 produktion; juridiska konsekvenser; och skadat
 anseende~\cite{cyberreason2021, cyberreason2022}. Dessutom leder de höga
 kostnaderna till bland annat uppsägningar av anställda för att
@@ -32,8 +32,8 @@ analyseras oftast endast tillgänglig som maskinkod~\cite{andriesse2018}.
 Däremot är binäranalys (jfr eng. \emph{binaryanalysis}) ofta komplicerat och
 tidskrävande. Skadeprogram tilltar ofta flera metoder för att försvåra
 analys och vilseleda analysverktyg. Därför krävs en utforskande metod för att
-analysera och förstå ett skadeprogram och testa ett antal metoder för att förstå
-och känneteckna sårbarheter som skadeprogrammet utnyttjar. Detta kräver ett
+analysera och förstå ett skadeprogram och testa ett antal metoder för att känneteckna 
+sårbarheter som skadeprogrammet utnyttjar. Detta kräver ett
 interaktivt och utforskande analysverktyg som tillåter användaren att
 känneteckna problematik i en analys och styra analysen åt ett håll som medför
 resultat.
@@ -41,28 +41,28 @@ resultat.
 Symbolisk exekvering, beskrivet i detalj i avsnitt~\ref{sec:symbolic_execution},
 är en kraftfull teknik som har möjliggjort stora mängder
 binäranalysmetoder\cite{survey_symb_exc, symnav}. Inom skadeprogramsanalys
-tillåter det att ``upptäcka sårbarheter, kringgå autentisering eller
-skyddssystem, eller förstå deras inre delar''~\cite{symnav}. Det är en ett sätt
+tillåter tekniken att ``upptäcka sårbarheter, kringgå autentisering eller
+skyddssystem, eller förstå deras inre delar''~\cite{symnav}. Det är ett sätt
 att exekvera ett program abstrakt där en exekvering betraktar alla möjliga
-indata som delar en viss exekveringsstig (jfr eng. \emph{execution path}) genom
+indata som delar en viss exekveringsväg (jfr eng. \emph{execution path}) genom
 programflödet. Detta möjliggörs genom att betrakta indatan som symbolisk där en
-viss stig ackumulerar stigvillkor (jfr eng. \emph{path conditions}) på symbolen
+viss väg ackumulerar vägvillkor (jfr eng. \emph{path conditions}) på symbolen
 vars lösning/lösningar beskriver alla värden på symbolen som leder till att
-programmet följer motsvarande stig i programflödet. Trots kraftfullheten i
+programmet följer motsvarande väg i programflödet. Trots kraftfullheten i
 symbolisk exekvering, finns det ett antal problem med tekniken. Det är en metod
 som oftast leder till en långsam exekvering och begränsas även av
-stigexplosionsproblemet (jfr eng. \emph{path explosion}), som orsakas av ett
+vägexplosionsproblemet (jfr eng. \emph{path explosion}), som orsakas av ett
 stort antal villkorstest på symbolisk data, i bl.a.\ loopar, rekursion och
 undantag (jfr eng. \emph{exceptions}). Det finns ett antal metoder för att
-kringgå stigexplosionsproblemet men lägger stor börda på analytikern som ofta
-har ett väldigt begränsad vy in i vad som händer under exekveringen, oftast
-genom en textuell gränssnitt. Dessa problem kan utnyttjas av skadeprogram för
+kringgå vägexplosionsproblemet men lägger stor börda på analytikern som ofta
+har en väldigt begränsad insikt i vad som händer under exekveringen, oftast
+genom ett textuellt gränssnitt. Dessa problem kan utnyttjas av skadeprogram för
 att vilseleda binäranalysmetoder som förlitar sig på symbolisk exekvering.
 
 I den här rapporten föreslår vi AMBA för att, genom bättre kommunikation till
-användaren, skapa möjligheter för användaren att känneteckna stigexplosion och
-tillåta styrning bort från dessa stigar som orsakar problem. AMBA kommer även
-att undersöka alla stigar i programflödet vilket är känd som symbolisk fuzzing.
+användaren, skapa möjligheter för användaren att känneteckna vägexplosion och
+tillåta styrning bort från dessa vägar som orsakar problem. AMBA kommer även
+att undersöka alla vägar i programflödet vilket är känt som symbolisk fuzzing.
 
 SymNav~\cite{symnav}, som beskrvis i mer detalj i
 avsnitt~\ref{sec:existerande-visualiserad}, har tidigare undersökt samma problem och
