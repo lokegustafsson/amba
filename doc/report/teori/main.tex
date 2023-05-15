@@ -10,14 +10,14 @@ och några möjliga lösningar till dessa problem.
 
 \section{Binäranalys}
 \label{sec:binar_analys}
-Som tidigare nämnt, är ofta endast maskinkoden som är tillgänglig inom domänen
+Som tidigare nämnt, är det ofta endast maskinkoden som är tillgänglig inom domänen
 för skadeprogramsanalys och \emph{reverse engeneering}. Binäranalys är dessutom
 viktigt för att upptäcka och undersöka minnessårbarheter. Det beror på det
 semantiska gapet mellan en högnivå programspråk och maskinkod. Det är inte
 trivialt att argumentera för programmets beteende innan och efter kompilering
 till maskinkod och hur väl dessa mostsvarar varandra. Genom att betrakta
 maskinkoden kan man ``undersöka vad programmet faktiskt gör istället för vad
-man tror att den gör''~\cite{andriesse2018}. Avslutningsvis, kan sårbarheter
+man tror att det gör''~\cite{andriesse2018}. Avslutningsvis, kan sårbarheter
 introduceras i kompileringssteget på grund av fel i kompilatorer som oftast är
 sällsynta men inte obefintliga~\cite{silentbugsmatter}.
 
@@ -86,7 +86,7 @@ utelämna detta fullständigt vilket är vad avsaknaden av testfall visar sig so
 % hela spektrumet.
 
 \subsection{Automatiska och manuella metoder för binäranalys}
-För att klargöra distinktionen mellan manuell och automatiska metoder för
+För att klargöra distinktionen mellan manuella och automatiska metoder för
 binäranalys kan vi betrakta följande exempel:
 
 \begin{figure}
@@ -102,14 +102,14 @@ if sha256(s) == saved_hash:
 else:
   deny_access()
 \end{lstlisting}
-    \caption{Exempelprogram där det är fördel att använda manuella metoder för binäranalys}
+    \caption{Exempelprogram där det är fördelaktigt att att använda manuella metoder för binäranalys}
     \label{fig:manual_method_example}
 \end{figure}
 
 I fall där det existerar kända konstanter, något som är typiskt i fall som
 involverar kryptografi i olika utsträckning, är det rimligt att tillämpa
 manuella metoder för att bilda förståelse om programmet. Genom att inspektera
-ett maskinkod för program mostvarande figur~\ref{fig:manual_method_example} kan
+maskinkoden för program motsvarande figur~\ref{fig:manual_method_example} kan
 det enkelt hittas en konstant associerad till sha256 algoritmen for att beräkna
 hash funktionen och därmed bilda förståelse om programmet. I detta fall är det
 dessutom orimligt att tillämpa automatiska metoder eftersom dessa, såsom
@@ -131,7 +131,7 @@ if s == "secret":
 else:
   deny_access()
 \end{lstlisting}
-    \caption{Exempelprogram där det är fördel att använda automatiska metoder för binäranalys}
+    \caption{Exempelprogram där det är fördelaktigt att att använda automatiska metoder för binäranalys}
     \label{fig:automatic_method_example}
 \end{figure}
 
@@ -178,9 +178,9 @@ Låt oss betrakta några vanliga sårbarheter som har upptäckts med metoder
 baserade på symbolisk exekvering.
 
 \subsection{Minnessårbarheter}
-I praktiken består ungefär 70 procent av sårbarheter av
-minnessårbarheter.~\cite{miller19}. Minnessårbarheter kan påverka programflödet
-(jfr eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
+I praktiken uppgör minnessäkerhetsbrister ungefär 70 procent av alla
+sårbarheter~\cite{miller19}. Minnessårbarheter kan påverka programflödet (jfr
+eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
 vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
 läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
 angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
