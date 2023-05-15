@@ -2,7 +2,7 @@
 all: check group_64_project_report.pdf
 
 check:
-	latexindent --local --overwriteIfDifferent -k *.tex */*.tex *.bib
+	latexindent --local --overwriteIfDifferent --slient -k *.tex */*.tex *.bib
 	-rm *.bak0
 	-rm */*.bak0
 	chktex --nowarn 32 main
