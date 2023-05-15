@@ -11,9 +11,7 @@ group_64_project_report.pdf: \
   amba/main.tex \
   begreppslista.tex \
   cover.tex \
-  evaluering/begransningar.tex \
   evaluering/main.tex \
-  evaluering/metod.tex \
   existerande_verktyg/dynamiska_binaranalysramverk.tex \
   existerande_verktyg/main.tex \
   existerande_verktyg/statisk_disassemblering.tex \
