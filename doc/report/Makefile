@@ -15,6 +15,8 @@ group_64_project_report.pdf: \
   existerande_verktyg/dynamiska_binaranalysramverk.tex \
   existerande_verktyg/main.tex \
   existerande_verktyg/statisk_disassemblering.tex \
+  existerande_verktyg/automatiska_fuzzers.tex \
+  existerande_verktyg/visualiserad.tex \
   implementation/main.tex \
   inledning/avgransningar.tex \
   inledning/main.tex \
