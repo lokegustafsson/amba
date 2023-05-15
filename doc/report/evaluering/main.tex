@@ -1,4 +1,3 @@
-% result and process discussion - limitation - future work  
 För att evaluera verktyget används existerande verktyg som jämförelse i
 kombination med att dess fördelar och nackdelar vägs mot AMBA. Dessutom
 presenteras en diskussion kring utvecklingsprocessens gång och
@@ -85,7 +84,7 @@ ta bort states som inte är intressanta medan i AMBA kan användare prioritera
 states som ska analyseras. Dessutom presenteras funktionaliteten i SymNav på ett
 mer användarvänligt sätt: vyn splittar upp respektive funktionalitet i
 applikationen och presenterar detta i stil med designmönstret \emph{Grid of
-Equals}.
+equals}.
 
 Utöver detta är den stora skillnaden vilken symbolisk exekveringsmotor som
 används. SymNav använder Angr, och AMBA använder, som tidigare nämnt, \stoe{}
@@ -112,35 +111,22 @@ Denna del av arbetet ledde till att mycket av planeringen blev förskjutet och
 således fanns det mindre tid till att utveckla all funktionalitet som var tänkt.
 
 \section{Vidareutveckling}
+En särskilt eftertraktad funktionalitet är \textit{State merging}. Syftet med
+state merging är att minska antalet exekveringsvägar genom att förena symboliska
+tillstånd som är ekvivalenta. Genom att introducera state merging ökar
+prestandan för den symboliska exekveringen som gör det möjligt att skicka fler
+förfrågningar (jfr. eng. \emph{queries}) till SMT-lösaren.
 
+Övervakning av systemanrop (jfr. eng. \emph{syscalls}) ger användaren en större
+insikt i vad som sker i en specifik del av grafen, exempelvis om det sker
+inmatning eller utmatning, om en process signaleras att stängas av, om binären
+kör ett exec-systemanrop för att köra ett externt program, etc. är anledningar
+som gör det intressant att övervaka systemanrop. För att implementera detta i
+AMBA bör det undersökas om det finns hooks för detta.
 
-% Vad ska vi evaluera? jämförelse med andra verktyg, hur står sig vårt verktyg
-% mot andra verktyg? vi använder idén om att användare får ge input till
-% verktyget för att analysera specifika vägar, eller särskilda constraints.
-% prestandamässigt, hur skiljer sig vårt verktyg från andra white-box fuzzers?
-% Hur evaluerar vi det?
-
-% Varför har vi valt att evaluera på detta sättet (rimligt att ta upp?)
-
-
-% Vad har vi för features? node colouring, disassembly debuginfo (for every
-% node?), state prioritization (hur får vi med det?)
-
-% Text under titel
-
-% Ghidra does this Amba doesn't What does AMBA do? How is it different, what
-% does this entail?
-
-% walkthrough på ett exempel
-
-% ^vi gör också detta, fast på ett annat sätt och med fler alternativ (eller
-% sätt att visualisera grafen med olika typer av grafer).
-
-% Vad gör vi bättre? Vad gör vi sämre? Vad gör vi annorlunda? Hur ska denna del
-% struktureras?
-
-%\subsection{AMBA vs angr} \subsection{AMBA vs Ghidra} \subsection{AMBA vs
-%SymQEMU} \subsection{AMBA vs SAGE} \subsection{Vidareutveckling} Lägga till
-%future work, vad behandlar inte den här rapporten, vad hade vi velat att
-%verkyget kunde göra? osv
+I nuläget sparas inte resultatet från SMT-lösaren för ett givet path constraint
+och därför får användaren inte heller mer informatiom om vilken input som ledde
+till att vägen nåddes i exekveringen. Optimalt hade varit om användaren kunde se
+vilken indata som ledde till en särskild väg för fortsatt analys. \stoe{} har
+denna information, men i nuläget sparas den inte av AMBA.
 
