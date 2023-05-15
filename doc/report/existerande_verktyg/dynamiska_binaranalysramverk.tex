@@ -22,3 +22,23 @@ avgörande optimeringar för att hantera stora exekverings-spår (jmf.\ engelska
 För att skala upp till stora exekverings-spår använder SAGE flera tekniker för att förbättra hastigheten och
 minnesanvändningen för constraint generering, exempelvis så kartläggs ekvivalenta symboliska uttryck till samma
 objekt och constraints som redan är tillagda hoppas över~\cite{sage}.
+
+Ett binäranalysverktyg med stöd för både statiska och dynamiska analyser
+med hjälp av symbolisk exekvering är angr. Verktyget är ett ramverk för binäranalys och 
+har stöd för disassemblering till pseudo-C-kod och många analyser man kan utföra.
+Baserat på en emulator skriven i Python, stödjer angr symbolisk exekvering och 
+analyser utförs genom Python-skript som interagerar med angrs API."\@ angr har
+använts för att framställa skript som kan utföra \emph{reverse engineering},
+sårbarhetssökning och fungera som exploateringsverktyg~\cite{angr_docs}. År 2016 
+så vann ett system som heter Mayhem, som använde angr som symbolisk 
+exekveringsmotor, Cyber Grand Challenge, som hålls av the Defense Advanced Research 
+Projects Agency (DARPA). 
+
+För att accelerera den symboliska exekveringen kan angr användas i kombination 
+med Unicorn CPU-emulatorn, ett lättviktigt ramverk för emulering som stödjer 
+många arkitekturer och baseras på QEMU~\cite{UnicornEngine}. Detta är möjligt 
+med hjälp av komponenten \emph{angr.engines.unicorn}. Genom att använda komponenten 
+kan man exekvera med konkreta input när det är möjligt och fördelaktigt men stödja 
+detta med symbolisk exekvering då flera exekveringsvägar behöver utforskas 
+eller programmets beteende inte är deterministiskt~\cite{angr_uni}. 
+
