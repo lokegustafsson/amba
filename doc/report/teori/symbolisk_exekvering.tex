@@ -40,8 +40,8 @@ undvika path explosion är \emph{state-merging} och \emph{heuristics}.
 För att illustrera symbolisk exekvering används följande pseudokod:
 
 \begin{figure}[H]
-  \begin{subfigure}[b]{0.58\textwidth}
-    \begin{lstlisting}[language=Python, frame=single, basicstyle=\small]
+    \begin{subfigure}[b]{0.58\textwidth}
+        \begin{lstlisting}[language=Python, frame=single, basicstyle=\small]
 x = input()
 y = input()
 z = 2 * y
@@ -56,27 +56,27 @@ if x == 100000:
 else:
   run_important_code()
 \end{lstlisting}
-    \caption{} % används för att rendera a) som caption
-    \label{fig:symbex_example_code}
-  \end{subfigure}
-  \hspace*{\fill}
-  \begin{subfigure}[t]{0.5\textwidth}
-    \centering
-    \includegraphics[scale=0.38]{figures/final_symbolic_example_graph.png}
-    \caption{} % används för rendera b) som caption
-    \label{fig:symbex_example_graph}
-  \end{subfigure}
-  \begin{align*}
-    \mathcal{S} & = \{ &\\
-    &\sigma := \{\phi_1 = \alpha_1, \phi_2 = \alpha_2, \phi_3 = \phi_2 *
-    2\},&\\
-    &x \rightarrow \phi_1,&\\
-    &y \rightarrow \phi_2,&\\
-    &z \rightarrow \phi_3&\\
-    \}
-  \end{align*}
-  \caption{Exempel för att visa symbolisk exekvering: pseudokod (a) och path
-  constraint och symboliskt tillstånd för alla stigar i pseudokoden angett i (b)}
+        \caption{} % används för att rendera a) som caption
+        \label{fig:symbex_example_code}
+    \end{subfigure}
+    \hspace*{\fill}
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.38]{figures/final_symbolic_example_graph.png}
+        \caption{} % används för rendera b) som caption
+        \label{fig:symbex_example_graph}
+    \end{subfigure}
+    \begin{align*}
+        \mathcal{S} & = \{                                                                & \\
+                    & \sigma := \{\phi_1 = \alpha_1, \phi_2 = \alpha_2, \phi_3 = \phi_2 *
+        2\},        &                                                                       \\
+                    & x \rightarrow \phi_1,                                               & \\
+                    & y \rightarrow \phi_2,                                               & \\
+                    & z \rightarrow \phi_3                                                & \\
+        \}
+    \end{align*}
+    \caption{Exempel för att visa symbolisk exekvering: pseudokod (a) och path
+        constraint och symboliskt tillstånd för alla stigar i pseudokoden angett i (b)}
 \end{figure}
 
 Exempletprogrammet i figur~\ref{fig:symbex_example_code} använder symbolisk
