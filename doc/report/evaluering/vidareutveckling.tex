@@ -1,0 +1,23 @@
+En särskilt eftertraktad funktionalitet är \textit{State merging}. Syftet
+med state merging är att minska antalet exekveringsvägar genom att förena
+symboliska tillstånd som är ekvivalenta. Ett förslag är att ge uppgiften till
+användaren att interaktivt välja vilka tillstånd som sammanfogas. Således ökar
+prestandan för den symboliska exekveringen som gör det möjligt att skicka fler
+förfrågningar (jfr. eng. \emph{queries}) till SMT-lösaren.
+
+Övervakning av systemanrop (jfr. eng. \emph{syscalls}) ger användaren en större
+insikt i vad som sker i en specifik del av grafen, exempelvis om det sker
+inmatning eller utmatning, om en process signaleras att stängas av, om binären
+kör ett exec-systemanrop för att köra ett externt program, etc. är anledningar
+som gör det intressant att övervaka systemanrop. För att implementera detta i
+AMBA bör det undersökas om det finns hooks för detta.
+
+I nuläget sparas inte resultatet för ett givet path constraint
+och därför får användaren inte heller mer informatiom om vilken input som ledde
+till att vägen nåddes i exekveringen. Optimalt hade varit om användaren kunde se
+vilken indata som ledde till en särskild väg för fortsatt analys. \stoe{} har
+denna information, men i nuläget sparas den inte av AMBA. Dessutom hade det
+varit intressant för användare om en SMT-lösare användes för att lösa ett givet
+path constraint och därmed få indata som leder till att den vägen tas i
+exekveringen.
+

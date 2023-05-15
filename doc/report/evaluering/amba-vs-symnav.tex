@@ -1,0 +1,17 @@
+SymNav tillhandahåller samma funktionalitet som AMBA gör bortsett från en
+detalj: användare kan genom SymNav ta bort states som inte är intressanta medan
+i AMBA kan användare prioritera states som ska analyseras. Dessutom presenteras
+funktionaliteten i SymNav på ett mer användarvänligt sätt: vyn splittar upp
+respektive funktionalitet i applikationen och presenterar detta i stil med
+designmönstret \emph{Grid of equals}.
+
+Utöver detta är den stora skillnaden vilken symbolisk exekveringsmotor som
+används. SymNav använder Angr, och AMBA använder, som tidigare nämnt, \stoe{}
+vilket innebär att SymNav får en enklare kodbas eftersom mycket av koden som
+interagerar med Angr är pythonskript likt API-anrop vilket kräver mindre total
+kod för att uppnå samma sak som med \stoe{} men är istället begränsad i
+skalbarhet. \stoe{} har inbyggda plugins som tillhandahåller mycket
+funktionalitet, till exempel \emph{ExecutionTracer} som övervakar och
+registrerar information längs med exekveringen för en given branch vilket
+tillåter en att undersöka vad som orsakar path explosion eller vilken branch som
+gör flest förgreningar.

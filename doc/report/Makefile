@@ -14,6 +14,11 @@ group_64_project_report.pdf: \
   abstract.tex \
   sammandrag.tex \
   evaluering/main.tex \
+  evaluering/amba-vs-angr.tex \
+  evaluering/amba-vs-ghidra.tex \
+  evaluering/amba-vs-symnav.tex \
+  evaluering/arbetsprocess.tex \
+  evaluering/vidareutveckling.tex \
   existerande_verktyg/dynamiska_binaranalysramverk.tex \
   existerande_verktyg/main.tex \
   existerande_verktyg/statisk_disassemblering.tex \
