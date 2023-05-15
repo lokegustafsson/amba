@@ -11,6 +11,8 @@ group_64_project_report.pdf: \
   amba/main.tex \
   begreppslista.tex \
   cover.tex \
+  abstract.tex \
+  sammandrag.tex \
   evaluering/main.tex \
   existerande_verktyg/dynamiska_binaranalysramverk.tex \
   existerande_verktyg/main.tex \

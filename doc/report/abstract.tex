@@ -1,0 +1,28 @@
+
+This thesis project presents the development of AMBA, a binary analysis tool
+that utilizes symbolic execution and fuzzing to create an interactive
+visualisation of the program's execution. The objective of AMBA is to provide a
+way to analyze binary code in order to identify potential memory-related
+security vulnerabilities by combining the benefits of automatic computing power
+and human intuition. AMBA is created as a set of subsystems using \stoe{} to
+execute a binary symbolically. The methodology of the project involved
+developing a custom \stoe{} plugin to integrate symbolic execution with dynamic
+binary analysis. AMBA uses this plugin to collect information during symbolic
+execution in order to visualise the execution to the user as an interactive
+graph of the program's states. The graph allows the user to explore different
+paths through the program and identify potential vulnerabilities related to
+memory usage, such as buffer overflows. AMBA could in the future be extended
+with state-merging to enable analysis of larger programs with many possible
+paths, as well as monitoring of system calls executed by the binary and adding
+output of meaningful information resulting from the symbolic fuzzing. AMBA is
+evaluated through a theoretical comparison with existing tools with the
+conclusion that AMBA provides a useful basis for binary analysis and has
+potential to become increasingly beneficial if the suggested future work is
+implemented. By providing an interactive visualization of the program's
+execution, AMBA can be used by security researchers and developers to identify
+vulnerabilities in software applications.
+
+% something about demos?
+
+keywords: AMBA, symbolic execution, binary analysis, \stoe{},
+fuzzing, vulnerability detection, memory-related vulnerabilities.
