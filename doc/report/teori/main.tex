@@ -18,7 +18,7 @@ vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
 läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
 angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
 datorn som kör programmet~\cite{computer_security_cs161}, alltså \emph{remote
-code execution}.
+    code execution}.
 
 I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
 det är inte möjligt på grund av mänskliga fel och konsekvenser av de verktyg vi
@@ -26,7 +26,7 @@ använder. För att undvika, exempelvis, 100\% av minnessårbarheter krävs
 användning av minnessäkra programspråk (jfr eng. \emph{memory-safe language}).
 Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
 \emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile
-time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
+    time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
 många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
 prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är svåra att
 skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
@@ -34,7 +34,7 @@ exempelvis Rust, som kan konkurrera med C relativt ny och det krävs tid för
 övergången mellan språken.
 
 Två exempel på minnessårbarheter är buffertöverflöden (jfr eng. \emph{buffer
-overflow}) och formatsträng (jfr eng. \emph{format string}). Den
+    overflow}) och formatsträng (jfr eng. \emph{format string}). Den
 vanligaste av de är buffertöverflöde vilket uppstår av otillräckliga
 gränskontroller, vilket utlöser en åtkomst bortom gränserna för viss
 minnesregion. Angripare kan utnyttja detta för att korrumpera programmets
@@ -68,11 +68,11 @@ Ett flertal metoder används för att analysera maskinkod:
 \begin{enumerate}
     \item disassemblera binären och läsa dess funktioner för att förstå vad de gör~\cite{ghidra_website}.
     \item dekompilera maskinkoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
-        läsbara koden~\cite{ghidra_website}.
+          läsbara koden~\cite{ghidra_website}.
     \item fuzztesta programmet, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
           annat oönskat beteende~\cite{8371326}.
     \item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
-        lösa för testfall som orsakar annorlunda programhopp~\cite{sage}.
+          lösa för testfall som orsakar annorlunda programhopp~\cite{sage}.
 \end{enumerate}
 
 % Problematisk minneshantering har potential att påverka ett programs korrekthet och
