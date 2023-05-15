@@ -6,17 +6,26 @@ exekverar binären som analyseras.
 Ett av projektets mål var att med visuella representationer av exekveringsstigar
 göra det enklare för binäranalytiken att förstå binären. Med möjligheten att
 ändra visualiseringen binärs kontrollflöde mellan tre olika grafer, och därmed
-tre olika perspektiv.
+tre olika perspektiv. Idag uppnår AMBA det här målet under väldigt begränsade
+förhållanden. Under arbetets gång observerades att skapa ett generellt
+visualiseringsverktyg av symbolisk fuzzingtestning är för omfattande för att
+hinnas med under ett kandidatarbete. Med vidareutveckling, som diskuteras mer
+i detalj i avsnitt \ref{sec:vidareutveckling}, tror vi att AMBA kommer vara
+praktiskt användbar under mer generella förhållanden.
 
-AMBA kan även göra statiska analyser av maskinkod, vilket förenklar för
-användaren då användaren inte behöver använda líka många självständiga
-analysprogram.
-
-Att bygga AMBAs beroenden visades vara mycket svårt, vilket medförde att
-slutprodukten fick lida på bekostnad av projektets byggsystem. Medan beroendrna
-medför en större teoretisk potential var konsekvenserna av beroenderar
-koplexitet att den praktiska potentialen blev mindre.
+Som diskuterat i avsnitt \ref{sec:arbetsprocess} var ett av våra mål att
+paketera AMBA tillsammans med dess komplexa beroenden. Att bygga AMBAs beroenden
+visades vara mycket svårt då \stoe{}s bygginstruktioner är utdaterade och
+fungerar inte längre. Till exempel hade \stoe{} projektets kopia av QEMU
+flyttats, men länken hade inte uppdaterats i git vilket ledde till att kopian
+behövde manuellt lokaliseras. Som nämnts i avsnitt \ref{sec:arbetsprocess} lades
+även en ansenlig mängd tid på att försöka bygga operativsystemet Ubuntu som
+körs i QEMU, men då ingen lösning hittades beslutade vi att använda färdigbyggda
+kopior distribuerade av \stoe{} från Google Drive. Då mycket tid behövde
+dedikeras till att korrigera byggsystemet innebar det att mindre tid kunde
+allokeras till utveclandet av slutprodukten.
 
 Våra förhoppningar är att AMBA antingen kommer att vidareutvecklas, eller ligga
 till grund för ett nytt verktyg, med funktionerna som diskuterades i avsnitt
-\ref{sec:vidareutveckling}.
+\ref{sec:vidareutveckling}. För närvarande anser vi inte att AMBA är praktiskt
+användbart, men att det finns en stor potential vid vidarutvecklingen av AMBA.
