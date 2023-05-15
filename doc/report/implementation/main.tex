@@ -1,8 +1,5 @@
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/arkitektur.jpg}
-    \caption{[PLACEHOLDER] Systemöversikt över AMBA}\label{fig:arkitektur}
-\end{figure}
+Avsnitt~\ref{sec:run-amba} beskriver hur du kan installera och köra AMBA. Detta
+avsnitt diskuterar utvalda delar av AMBAs implementationsdetaljer.
 
 AMBA ska betraktas som ett system bestående av en huvudprocess och en
 bakgrundsprocess. Huvudprocessen är ett grafiskt Rust-program bestående av flera
@@ -13,38 +10,60 @@ huvudprocessen och \stoe{} självt. IPC mellan huvudprocessen och
 bakgrundsprocessen sker över två Unix-socketar. Figur~\ref{fig:arkitektur} visar
 en översikt av AMBAs arkitektur.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/arkitektur.jpg}
+    \caption{[PLACEHOLDER] Systemöversikt över AMBA}\label{fig:arkitektur}
+\end{figure}
+
 \section{Huvudprocess}
 
-% Outline
-% 1. Läser in en Recipe fil. (insällningar till s2e)
-% (optional) 2. Startar GUI
-% 3. Spawnar controller thread (gui gör det om man kör med GUI, annars amba direkt)
-% 4. Controller spawnar QEMU (S2E); QMP listener (kommunikation mellan
-%     controller och QEMU); IPC mekanism mellan libamba och controller; och
-%     Embedder som layoutar en 2D graph för visualisering givet en CFG.
+Huvudprocessen kör 6 beständiga trådar.
 
-Systemet tar
-som indata en configurationsfil som bland annat specificerar sökvägen till
-binären som ska analyseras samt inställningar till S2E. Utdatan är en
-interaktiv graf baserad på symboliska uttryck som baseras på binärens maskinkod.
-Grafen ger en visualisering över vilka möjliga vägar som exekveringen kan ta när
-binären körs på en maskin.
-Med hjälp av inställningarna från
-konfigurationsfilen startas sedan QEMU och \stoe{} med vårt \stoe{} plugin
-AmbaPlugin. Ett operativsystem och binären laddas in och börjar exekveras.
-\stoe{} anropar callbackfunktioner definierade i AmbaPlugin, vilka är tillagda i
-utvalda \stoe{} hooks, som sedan uppdaterar vyn i vislualiseringen.
+Huvudtråden eller GUI-tråden, som äger och hanterar det grafiska gränssnittet.
+
+Kontrolltråden (controller), som är mellanhand i all meddelandebaserad
+kommunikation mellan trådar och även är avsändare för IPC till AmbaPlugin.
+
+Utplaceringstråden (embedder), som tar emot instruktioner från kontrolltråden,
+kör den beräkningsmässigt tunga nodutplaceringen på de tre graferna och skriver
+denna till minne tillgängligt från GUI-tråden.
+
+IPC-tråden, som tar emot meddelanden över IPC från AmbaPlugin.
+
+QMP-tråden, som tar emot och skickar meddelanden till QEMU.\@ QMP står för QEMU
+Machine Protocol och möjliggör programmatisk kontroll av QEMU-instansen direkt.
+QMP-tråden har en väldigt begränsad funktion och är inte nödvändig för AMBAs
+nuvarande funktionalitet.
+
+QEMU-tråden, som startar QEMU/\stoe{}-instansen och inväntar dess avslutande.
+Detta inväntande är bland annat nödvändigt för att hantera en crash i \stoe{}
+eller AmbaPlugin på ett bra sätt.
 
 \subsection{Uppstart}
 
-TODO
+Som beskrivet i avsnitt~\ref{sec:run-amba} startas AMBA av användaren med en
+angiven receptfil. Huvudprocessen tolkar receptfilen och genererar den
+konfiguration som \stoe{} behöver för att köra den analyserade binären så som
+receptfilen specifierat. Huvudprocessen startar alla beständiga trådar och
+QEMU-tråden startar QEMU.\@ QEMU startas från en minnesavbild av en virtuell
+maskin anpassad till \stoe{}, och en process kallad bootstrap körs som
+förbereder den virtuela maskinen inför den symboliska exekvering. Denna
+förberedelse innebär till exempel att \verb|/tmp/| som innehåller de symboliska
+filerna placeras i ett RAM-uppbackat tmpfs och att de symboliska filerna görs
+symboliska. Binären som ska analyseras skickas in i QEMU, startas och hooks till
+AmbaPlugin börjar sampla data som ska skickas till huvudprocessen. Datan skickas
+till huvudprocessen som börjar visa grafen när den byggs och samtidigt
+kontinuerligt utplaceras.
 
 \subsection{GUI}
 
-AMBA-processen använder immediate-mode-gui-biblioteket egui~\cite{egui} för att
-rita sitt gränssnitt. Detta innebär att hela fönstret ritas om varje bildruta.
-Processen samlar kantinformation som AmbaPlugin skickar och bygger de tre
-graferna nämnda tidigare.
+Huvudprocessen använder immediate-mode-gui-biblioteket egui~\cite{egui} för att
+rita sitt gränssnitt. Detta innebär att hela fönstret ritas om varje bildruta,
+mer likt typisk spelgrafik än klassiska grafiska gränssnitt. egui är enkelt att
+utveckla för vilket var kritiskt för att utveckla prototypen AMBA under detta
+kandidatarbete. Grafvykomponenten är byggd från grundläggande egui-komponenter
+vilket gjorde bibliotekets utvecklarergonomi viktig.
 
 \section{\stoe{}}
 
