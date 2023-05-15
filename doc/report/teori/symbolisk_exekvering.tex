@@ -1,5 +1,5 @@
 Att exekvera ett program symboliskt innebär att representera värden utefter
-programflödet som symboliska restriktioner (jfr eng.\ \emph{constraints}), vilka kan
+programflödet som symboliska restriktioner (jfr eng. \emph{constraints}), vilka kan
 lösas av automatiserade teoremlösare (\emph{SMT solver}). En symbolisk körning
 representerar flera konkreta körningar eftersom de (symboliska) värden som
 används representerar grupper av konkreta värden vilka har gemensamt hur de
@@ -20,9 +20,9 @@ på grund av någon eller några gemensamma egenskaper, orsakar gemensamma betee
 i programmet~\cite{Cadar}.
 
 En symbolisk exekveringsmotor arbetar genom att först representera programmets
-input som symboliska variablar, vilka vid starten inte har några begränsningar.
+indata som symboliska variabler, vilka vid starten inte har några begränsningar.
 När programflödet når en branch som baseras på någon av de symboliska
-variablerna, väljer motorn en branch och tillsätter dess path constraint på den
+variablerna, väljer motorn en branch och tillsätter dess vägvillkor på den
 symboliska variabeln för alla vägar som fortsätter utefter branchen. Operationer
 på värden under körningens väg översätts till symboliska operationer på
 motsvarande symboliska variabler. När körning utefter branchen är
@@ -75,27 +75,29 @@ else:
 \end{figure}
 
 Exempelprogrammet i figur~\ref{fig:symbex_example_code} använder symbolisk
-exekvering för att hitta vilken input som leder till de olika vägarna. I många
-fall är det intressant att göra en uttömmande sökning och hitta alla möjliga
-vägar i ett program, något som är möjligt i detta program men inte alla program.
-Ett motexempel är komplexa program som på grund av path explosion inte hittar
-alla möjliga vägar.
+exekvering för att hitta vilken indata som leder programexekveringen till de
+olika grenarna i programflödet. I många fall är det intressant att göra en
+uttömmande sökning och hitta alla möjliga vägar i ett program, något som är
+möjligt i detta program men inte alla program. Ett motexempel är komplexa
+program som på grund av path explosion inte hittar alla möjliga vägar.
 Variablerna \emph{x} och \emph{y} sätts till symboliska värden som sedan används
-för att beräkna path constraint och de symboliska uttryck som variablerna
-utvecklas till för en vald branch. Därefter används dessa uttryck och path
-constraint tillsammans för att bilda en ekvation som kan lösas med hjälp av en
-SMT-lösare och därmed få ut ett konkret värde.
-Figur~\ref{fig:symbex_example_graph} visar hur det symboliska tillståndet
-förändras för alla möjliga branches i programmet.
+för att beräkna vägvillkoret och de symboliska uttryck som variablerna utvecklas
+till för en vald branch. Därefter används dessa uttryck och path constraint
+tillsammans för att bilda en ekvation som kan lösas med hjälp av en SMT-lösare
+och därmed få ut ett konkret värde. Figur~\ref{fig:symbex_example_graph} visar
+hur det symboliska tillståndet förändras för alla möjliga branches i programmet.
 
-I~\ref{fig:symbex_example_graph} används $\pi$ för att ange path constraint
-vilket är initialt satt till $\top$ eftersom villkoret är sant från början och
-$\sigma$ används för att visa mappningen för symboliska värden. $\pi$ och
-$\sigma$ populeras längs med exekveringen, och \emph{x} och \emph{y} mappas till
+I~\ref{fig:symbex_example_graph} används $\pi$ för att ange vägvillkoret vilket
+är initialt satt till $\top$ eftersom villkoret är sant från början och $\sigma$
+används för att visa mappningen för symboliska värden. $\pi$ och $\sigma$
+populeras längs med exekveringen, och \emph{x} och \emph{y} mappas till
 symboliska värden. Beroende på vilken stig som väljs i exekveringen, uppdateras
-path constraint. I andra noden sett uppifrån finns det två skillnader i
-jämförelse med den första noden: \emph{x} tilldelas $\phi_1$ som är en symbolisk
-mappning till $\alpha_1$. Efter den fjärde noden sett uppifrån görs ett val och
-path constraint förändras beroende på vilken väg som tas -- path constraint
-uppdateras till $\phi_1 > 100000$ om $x < z$ och annars uppdateras det till
-$\phi_1 <= 100000$.
+vägvillkoret. I andra noden sett uppifrån finns det två skillnader i jämförelse
+med den första noden: \emph{x} tilldelas $\phi_1$ som är en symbolisk mappning
+till $\alpha_1$. Efter den fjärde noden sett uppifrån görs ett val och
+vägvillkoret förändras beroende på vilken väg som tas -- vägvillkoret uppdateras
+till $\phi_1 > 100000$ om $x < z$ och annars uppdateras det till $\phi_1 <=
+100000$. På samma sätt uppdateras $\pi$ och $\phi$ längs andra exekveringsvägar
+och vilket till slut leder till ett komplett programflödesdiagram som beror på
+\emph{x, y, z}. I varje nod kan en SMT-lösare appliceras för att ge ett konkret
+värde som uppfyller vägvillkoren.
