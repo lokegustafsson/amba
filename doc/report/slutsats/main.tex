@@ -1,13 +1,13 @@
-Syftet med arbetet var att utveckla ett binäranalysverktyg för att interaktivt
-visualisera symbolisk fuzztestning. Visualiseringen skulle presenteras i ett
-grafiskt gränssnitt där användaren kan integrera med den virtulla maskinen som
-exekverar binären som analyseras.
+I avsnitt \ref{sec:syfte} beskriver vi projektets syftet som att utveckla ett
+binäranalysverktyg för att interaktivt visualisera symbolisk fuzztestning.
+Visualiseringen presenteras i ett grafiskt gränssnitt där användaren kan
+integrera med den virtulla maskinen som exekverar binären som analyseras.
 
 Ett av projektets mål var att med visuella representationer av exekveringsstigar
-göra det enklare för binäranalytiken att förstå binären. Med möjligheten att
-ändra visualiseringen binärs kontrollflöde mellan tre olika grafer, och därmed
+göra det enklare för binäranalytikern att förstå binären. Med möjligheten att
+ändra visualiseringen av en binärs kontrollflöde mellan tre olika grafer, och därmed
 tre olika perspektiv. Idag uppnår AMBA det här målet under väldigt begränsade
-förhållanden. Under arbetets gång observerades att skapa ett generellt
+förhållanden. Under arbetets gång observerade di att skapa ett generellt
 visualiseringsverktyg av symbolisk fuzzingtestning är för omfattande för att
 hinnas med under ett kandidatarbete. Med vidareutveckling, som diskuteras mer
 i detalj i avsnitt \ref{sec:vidareutveckling}, tror vi att AMBA kommer vara
@@ -18,12 +18,20 @@ paketera AMBA tillsammans med dess komplexa beroenden. Att bygga AMBAs beroenden
 visades vara mycket svårt då \stoe{}s bygginstruktioner är utdaterade och
 fungerar inte längre. Till exempel hade \stoe{} projektets kopia av QEMU
 flyttats, men länken hade inte uppdaterats i git vilket ledde till att kopian
-behövde manuellt lokaliseras. Som nämnts i avsnitt \ref{sec:arbetsprocess} lades
-även en ansenlig mängd tid på att försöka bygga operativsystemet Ubuntu som
-körs i QEMU, men då ingen lösning hittades beslutade vi att använda färdigbyggda
-kopior distribuerade av \stoe{} från Google Drive. Då mycket tid behövde
-dedikeras till att korrigera byggsystemet innebar det att mindre tid kunde
-allokeras till utveclandet av slutprodukten.
+behövde lokaliseras manuellt. Som nämnts i avsnitt \ref{sec:arbetsprocess} lades
+även en ansenlig mängd tid på att försöka bygga guest images som skulle köras
+inuti QEMU, men då vi inte lyckade producera samtliga artefakter beslutade vi
+att använda de färdigbyggda guest images distribuerade av \stoe{} från Google
+Drive. Då mycket tid behövde dedikeras till att korrigera byggsystemet innebar
+det att mindre tid kunde allokeras till utveclandet av slutprodukten.
+
+Vi försökte även minimera mängden C++ kod som behövde skrivas genom att använda
+Autocxx för att generera kopplingar mellan C++ och Rust. Tanken var att med
+hjälp av Autocxx skulle det endast ett fåtal rader C++, och att merparten av
+källkoden skulle skrivas i Rust. Tyvärr stötte vi på en bug i Autocxx, då den
+bland annat genererade syntaktiskt inkorrekt kod. Då vi upptäckte att Autocxx
+saknade viktiga funktioner beslutade vi oss efter några veckor att överge tanken
+att generera kopplingar, för att skriva en större mängd C++ kod.
 
 Våra förhoppningar är att AMBA antingen kommer att vidareutvecklas, eller ligga
 till grund för ett nytt verktyg, med funktionerna som diskuterades i avsnitt
