@@ -1,4 +1,4 @@
-Avsnitt~\ref{sec:run-amba} beskriver hur du kan installera och köra AMBA. Detta
+Avsnitt~\ref{sec:run-amba} beskriver hur AMBA installeras och körs. Detta
 avsnitt diskuterar utvalda delar av AMBAs implementationsdetaljer.
 
 AMBA ska betraktas som ett system bestående av en huvudprocess och en
@@ -19,23 +19,17 @@ en översikt av AMBAs arkitektur.
 \section{Huvudprocess}
 
 Huvudprocessen kör 6 beständiga trådar.
-
 Huvudtråden eller GUI-tråden, som äger och hanterar det grafiska gränssnittet.
-
 Kontrolltråden (controller), som är mellanhand i all meddelandebaserad
 kommunikation mellan trådar och även är avsändare för IPC till AmbaPlugin.
-
 Utplaceringstråden (embedder), som tar emot instruktioner från kontrolltråden,
 kör den beräkningsmässigt tunga nodutplaceringen på de tre graferna och skriver
 denna till minne tillgängligt från GUI-tråden.
-
 IPC-tråden, som tar emot meddelanden över IPC från AmbaPlugin.
-
 QMP-tråden, som tar emot och skickar meddelanden till QEMU.\@ QMP står för QEMU
 Machine Protocol och möjliggör programmatisk kontroll av QEMU-instansen direkt.
 QMP-tråden har en väldigt begränsad funktion och är inte nödvändig för AMBAs
 nuvarande funktionalitet.
-
 QEMU-tråden, som startar QEMU/\stoe{}-instansen och inväntar dess avslutande.
 Detta inväntande är bland annat nödvändigt för att hantera en crash i \stoe{}
 eller AmbaPlugin på ett bra sätt.
@@ -48,7 +42,7 @@ konfiguration som \stoe{} behöver för att köra den analyserade binären så s
 receptfilen specifierat. Huvudprocessen startar alla beständiga trådar och
 QEMU-tråden startar QEMU.\@ QEMU startas från en minnesavbild av en virtuell
 maskin anpassad till \stoe{}, och en process kallad bootstrap körs som
-förbereder den virtuela maskinen inför den symboliska exekvering. Denna
+förbereder den virtuella maskinen inför den symboliska exekveringen. Denna
 förberedelse innebär till exempel att \verb|/tmp/| som innehåller de symboliska
 filerna placeras i ett RAM-uppbackat tmpfs och att de symboliska filerna görs
 symboliska. Binären som ska analyseras skickas in i QEMU, startas och hooks till
@@ -114,15 +108,15 @@ iterativa informationsuppdateringen är nödvändigt för uppdatera
 användargränssnittet i realtid, alltså flera gånger per sekund. Få verkliga
 binärer har tillståndsgrafer som kan konstrueras fullständigt.
 
-\subsection{Packetering i pakethanteraren Nix}
+\subsection{Paketering i pakethanteraren Nix}
 
 \stoe{} är ett komplicerat system som innehåller bland annat QEMU, Linux, KLEE
 och LLVM.\@ Dess bygge var trasigt när vi påbörjade detta kandidatarbete (t.ex.\
 felaktiga git-remote-url:er för QEMU-projektet), flera andra småsaker hindrade
 byggande och utöver allt detta rekommenderades en Docker-miljö för att hantera
 bygget med dess alla beroende komponenter. För att förbättra bygget, uppnå
-bättre reproducerbarhet samt bättre samspel med en grafisk applikation bestämde
-vi oss därmed för att packetera \stoe{} i Nix.
+bättre reproducerbarhet samt bättre samspel med en grafisk applikation paketeras
+\stoe{} i Nix.
 
 Nix-paketet \stoe{} har framställts för utveckling av AMBA och är inte lämplig
 för upstreaming till \stoe{} i nuvarande form men detta kan vara möjligt efter
