@@ -26,5 +26,5 @@ int main() {
 	int b = f(5, 4);
 	mprotect(f, 128, PROT_READ | PROT_WRITE);
 
-	printf("%d, %d", a, b);
+	return a + b;
 }
