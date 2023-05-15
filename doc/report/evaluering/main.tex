@@ -1,32 +1,32 @@
 För att evaluera verktyget används existerande verktyg som jämförelse i
 kombination med att dess fördelar och nackdelar vägs mot AMBA. Dessutom
 presenteras en diskussion kring utvecklingsprocessens gång och
-vidareutvecklingspotential. 
+vidareutvecklingspotential.
 
 \section{Jämförelse mellan AMBA och Ghidra} Ghidra är ett avancerat verktyg som
 gör statisk analys bortom syftet med AMBA, men AMBA har ett par likheter. Ghidra
 kan representera en kontrollflödesgraf för en given binär på två olika sätt:
-\textit{Flow Graph} och \textit{Code Flow Graph}~\cite{ghidra_website}. 
+\textit{Flow Graph} och \textit{Code Flow Graph}~\cite{ghidra_website}.
 
 \begin{figure}[H]
-  \begin{subfigure}{0.3\textwidth}
-    \includegraphics[width=\linewidth]{figures/ghidra_code_listing.png}
-    \caption{Ghidras code listing.} \label{fig:ghidra_code_listing}
-  \end{subfigure}
-  \hspace*{\fill}   
-  \begin{subfigure}{0.3\textwidth}
-    \includegraphics[width=\linewidth]{figures/ghidra_block_flow_graph.png}
-    \caption{Ghidras block-flow-graph.} 
-    \label{fig:ghidra_block_graph}
-  \end{subfigure}
-  \hspace*{\fill}   
-  \begin{subfigure}{0.3\textwidth}
-    \includegraphics[width=\linewidth]{figures/ghidra_code_flow.png}
-    \caption{Ghidras code-flow-graph.} \label{fig:ghidra_code_flow_graph}
-  \end{subfigure}
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth]{figures/ghidra_code_listing.png}
+        \caption{Ghidras code listing.} \label{fig:ghidra_code_listing}
+    \end{subfigure}
+    \hspace*{\fill}
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth]{figures/ghidra_block_flow_graph.png}
+        \caption{Ghidras block-flow-graph.}
+        \label{fig:ghidra_block_graph}
+    \end{subfigure}
+    \hspace*{\fill}
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth]{figures/ghidra_code_flow.png}
+        \caption{Ghidras code-flow-graph.} \label{fig:ghidra_code_flow_graph}
+    \end{subfigure}
 
-  \caption{Tre primära vyer i verktyget Ghidra för att representera ett programs
-  kontrollflödesgraf.} \label{fig:ghidra_figures}
+    \caption{Tre primära vyer i verktyget Ghidra för att representera ett programs
+        kontrollflödesgraf.} \label{fig:ghidra_figures}
 \end{figure}
 
 Ghidra kompletterar dessa vyer med en \textit{code listing}, en primär vy där
@@ -38,12 +38,12 @@ figur~\ref{fig:graf-basic}, och kan visualisera binärens fullständiga
 disassemblerade kod för en given nod, om debugdata finns tillgänglig, men saknar
 större kontext likt Ghidras code listing. En fördel mot Ghidras representation
 är AMBAs tre olika sätt att representera en binärs kontrollflöde på: \textit{Raw
-Basic Block Graph}, \textit{Compressed Block Graph}, och \textit{State Graph}.
+    Basic Block Graph}, \textit{Compressed Block Graph}, och \textit{State Graph}.
 Genom att använda dessa tre olika vyer kan en användare bilda en större
 förståelse om en given binär, dels genom att exempelvis visualisera alla
 symboliska tillstånd som \stoe{} skapar i kombination med färgade noder som
 indikerar på starkt kopplade komponenter (jfr. eng. \emph{strongly connected
-components}).
+    components}).
 
 Kännedom om starkt kopplade komponenter i en kontrollflödesgraf är i synnerhet
 intressant vid analys av binärer utan källkod, eftersom dessa delgrafer speglar
@@ -58,7 +58,7 @@ nodernas minnesaddresser för att visualisera samma sektion i ett mer avancerat
 verktyg som Ghidra. Ett typiskt användningsfall skulle kunna vara att i Ghidra
 söka efter strängar som ger mer information i den givna kodsektionen från AMBA
 eller använda Ghidras analysmetoder för att dekompilera binärens instruktioner
-till ett mer läsbart format i form av pseudokod. 
+till ett mer läsbart format i form av pseudokod.
 
 \section{Jämförelse mellan S2E och Angr som \\ backend} Eftersom AMBA använder
 \stoe{} som symbolisk exekveringsmotor har AMBA således en teoretisk fördel i
@@ -68,7 +68,7 @@ i~\cite[Figur~1-5]{systematic_comparison_symbex}. Delvis beror detta på att Ang
 C++ som är ett kompilerat språk. Detta innebär att AMBA inte nödvändigtvis i
 nuläget har bättre prestanda mot applikationer utvecklade med Angr som
 \emph{backend}. Dock betyder det att AMBA har en teoretisk konkurrenskraftig
-prestanda. 
+prestanda.
 
 Angr är dock ett mer flexibelt verktyg som har den funktionalitet som \stoe{}
 tillhandahåller, och är dessutom i allmänhet enklare att påbörja utveckling med
@@ -76,7 +76,7 @@ och onekligen eklare att bygga. Dessutom är Angr i synnerhet ett eftertraktat
 verktyg att använda som symbolisk exekveringsmotor eftersom det bland annat
 tillhandahåller funktionalitet såsom \emph{Control-Flow Graph Recovery} och
 disassemblering som möjliggör mycket av funktionalitet som annars behövdes
-implementeras i AMBA. 
+implementeras i AMBA.
 
 \section{Jämförelse mellan AMBA och SymNav} SymNav tillhandahåller samma
 funktionalitet som AMBA gör bortsett från en detalj: användare kan genom SymNav
@@ -84,7 +84,7 @@ ta bort states som inte är intressanta medan i AMBA kan användare prioritera
 states som ska analyseras. Dessutom presenteras funktionaliteten i SymNav på ett
 mer användarvänligt sätt: vyn splittar upp respektive funktionalitet i
 applikationen och presenterar detta i stil med designmönstret \emph{Grid of
-equals}.
+    equals}.
 
 Utöver detta är den stora skillnaden vilken symbolisk exekveringsmotor som
 används. SymNav använder Angr, och AMBA använder, som tidigare nämnt, \stoe{}
@@ -105,7 +105,7 @@ att köra \stoe{}. Detta var en komplicerad och tidskrävande uppgift eftersom
 mycket av \stoe{}s byggsystem var tvunget att återimplementeras eller kringgås
 när tvetydiga och icke-triviala problem uppstod. Ett sådant problem var
 nedladdningen och byggningen av guest images som \stoe{} lagrades på google
-drive där lösningen var att istället ladda ner färdiga guest images. 
+drive där lösningen var att istället ladda ner färdiga guest images.
 
 Denna del av arbetet ledde till att mycket av planeringen blev förskjutet och
 således fanns det mindre tid till att utveckla all funktionalitet som var tänkt.
