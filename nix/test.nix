@@ -30,6 +30,16 @@ let
       cp state-splitter.c state-splitter state-splitter.recipe.json $out/
     '';
   };
+  self-modifying = pkgs.stdenv.mkDerivation {
+    name = "self-modifying";
+    src = ../demos;
+    nativeBuildInputs = [ pkgs.musl ];
+    buildPhase = "make self-modifying";
+    installPhase = ''
+      mkdir -p $out/
+      cp self-modifying.c self-modifying self-modifying.recipe.json $out/
+    '';
+  };
   test-amba-hello = pkgs.writeShellApplication {
     name = "test-amba-hello";
     text = ''
@@ -58,6 +68,16 @@ let
       ${amba.amba}/bin/amba init --download
       # Run musl state-splitter
       time ${amba.amba}/bin/amba run ${state-splitter}/state-splitter.recipe.json --no-gui
+    '';
+  };
+  test-amba-self-modifying = pkgs.writeShellApplication {
+    name = "test-amba-self-modifying";
+    text = ''
+      export RUST_BACKTRACE=full
+      # Amba skips unnecessary download internally
+      ${amba.amba}/bin/amba init --download
+      # Run musl self-modifying
+      time ${amba.amba}/bin/amba run ${self-modifying}/self-modifying.recipe.json --no-gui
     '';
   };
 in {

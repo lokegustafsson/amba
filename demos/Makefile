@@ -21,6 +21,10 @@ state-splitter: state-splitter.c
 state-splitter.S: state-splitter
 	objdump -S state-splitter > state-splitter.S
 
+self-modifying: self-modifying.c
+self-modifying.S: self-modifying
+	objdump -S self-modifying > self-modifying.S
+
 hello: hello.c
 hello.S: hello
 	objdump -S hello > hello.S

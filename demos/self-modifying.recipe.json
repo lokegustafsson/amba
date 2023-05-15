@@ -1,0 +1,11 @@
+{
+	"files": {
+		"self-modifying": "./self-modifying",
+		"input.txt": {
+			"seed": "a",
+			"symbolic": [0]
+		}
+	},
+	"executable_path": "./self-modifying",
+	"stdin_path": "/tmp/input.txt",
+}
