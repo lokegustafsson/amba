@@ -24,7 +24,6 @@ group_64_project_report.pdf: \
   slutsats/main.tex \
   teori/arkitektur_for_binaranalysverktyg.tex \
   teori/main.tex \
-  teori/statisk_dynamisk_binaranalys.tex \
   teori/symbolisk_exekvering.tex \
   teori/fuzzing.tex \
   titlepage.tex \
