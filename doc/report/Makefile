@@ -12,7 +12,7 @@ group_64_project_report.pdf: \
   begreppslista.tex \
   cover.tex \
   evaluering/main.tex \
-  evaluering/amba-vs-angr.tex
+  evaluering/amba-vs-angr.tex \
   evaluering/amba-vs-ghidra.tex \
   evaluering/amba-vs-symnav.tex \
   evaluering/arbetsprocess.tex \
