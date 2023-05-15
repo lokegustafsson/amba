@@ -1,32 +1,17 @@
-% TO BE INSERTED INTO ACRONYMS SECTION:
-
-% SSG - symbolic state graph
-% CFG - control flow graph
-% BB - Basic Block
-
-% tala en highlevel description of implementation, liknande revgen paper section 4.
-% https://dslab.epfl.ch/pubs/revgen.pdf
-
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{figures/arkitektur.jpg}
     \caption{[PLACEHOLDER] Systemöversikt över AMBA}\label{fig:arkitektur}
 \end{figure}
 
-%
-
-AMBA ska betraktas som ett system bestående av ett flertalet subsystem som
-kommunicerar med varandra med delade objekt eller unix socklar. Systemet tar
-som indata en configurationsfil som bland annat specificerar sökvägen till
-binären som ska analyseras samt inställningar till S2E. Utdatan är en
-interaktiv graf baserad på symboliska uttryck som baseras på binärens maskinkod.
-Grafen ger en visualisering över vilka möjliga vägar som exekveringen kan ta när
-binären körs på en maskin. En översikt av systemets arkitektur finns i
-figur~\ref{fig:arkitektur}. Med hjälp av inställningarna från
-konfigurationsfilen startas sedan QEMU och \stoe{} med vårt \stoe{} plugin
-AmbaPlugin. Ett operativsystem och binären laddas in och börjar exekveras.
-\stoe{} anropar callbackfunktioner definierade i AmbaPlugin, vilka är tillagda i
-utvalda \stoe{} hooks, som sedan uppdaterar vyn i vislualiseringen.
+AMBA ska betraktas som ett system bestående av en huvudprocess och en
+bakgrundsprocess. Huvudprocessen är ett grafiskt Rust-program bestående av flera
+beständiga trådar som kommunicerar med varandra genom delat minne och
+meddelanden. Bakgrundsprocessen är en \stoe{}-instans startad av huvudprocessen
+med \stoe{}-pluginet AmbaPlugin som möjliggör kommunikation mellan
+huvudprocessen och \stoe{} självt. IPC mellan huvudprocessen och
+bakgrundsprocessen sker över två Unix-socketar. Figur~\ref{fig:arkitektur} visar
+en översikt av AMBAs arkitektur.
 
 \section{Huvudprocess}
 
@@ -37,6 +22,18 @@ utvalda \stoe{} hooks, som sedan uppdaterar vyn i vislualiseringen.
 % 4. Controller spawnar QEMU (S2E); QMP listener (kommunikation mellan
 %     controller och QEMU); IPC mekanism mellan libamba och controller; och
 %     Embedder som layoutar en 2D graph för visualisering givet en CFG.
+
+Systemet tar
+som indata en configurationsfil som bland annat specificerar sökvägen till
+binären som ska analyseras samt inställningar till S2E. Utdatan är en
+interaktiv graf baserad på symboliska uttryck som baseras på binärens maskinkod.
+Grafen ger en visualisering över vilka möjliga vägar som exekveringen kan ta när
+binären körs på en maskin.
+Med hjälp av inställningarna från
+konfigurationsfilen startas sedan QEMU och \stoe{} med vårt \stoe{} plugin
+AmbaPlugin. Ett operativsystem och binären laddas in och börjar exekveras.
+\stoe{} anropar callbackfunktioner definierade i AmbaPlugin, vilka är tillagda i
+utvalda \stoe{} hooks, som sedan uppdaterar vyn i vislualiseringen.
 
 \subsection{Uppstart}
 
@@ -51,10 +48,24 @@ graferna nämnda tidigare.
 
 \section{\stoe{}}
 
-\stoe{} använder sig av en modifierad QEMU instans för exekvering av olika
-binärer och har en modulär arkitektur bestående av plugin som möjliggör analys
-av binärer. Plugin har möjlighet att följa \stoe{}:s exekvering och undersöka
-egenskaper för att spåra och forma analyser~\cite{Chipounov12}.
+Den symboliska exekveringsmotorn \stoe{} beskrivs mer översiktligt i
+avsnitt~\ref{sec:existerande-ramverk}. Detta avsnitt diskuterar dess användning
+i AMBA och den funktionalitet som är relevant för detta.\@
+
+\stoe{} tillhandahåller en hel virtuell maskin med stöd för symbolisk exekvering
+genom att bygga ovanpå på QEMU.\@ \stoe{} är ett dynamisk bibliotek som
+\verb|LD_PRELOAD|:as i en modifierad QEMU 3.0.0 och lägger till stöd för
+symboliska värden i register och RAM.\@
+
+\stoe{} kan fristående agera som automatisk symbolisk fuzzer och producera
+konkret indata motsvarande olika symboliska lövtillstånd. Men \stoe{} är
+komplext, har mycket som kan konfigureras och dess fulla kraft är tillgänglig
+endast för \stoe{}-plugin~\cite{Chipounov12}.
+
+Plugin har möjlighet att följa \stoe{}:s exekvering genom callbackfunktioner och
+undersöka egenskaper för att spåra och forma analyser. Plugin kan även påverka
+den symboliska exekveringen, till exempel genom att i realtid ange vilka
+tillstånd som ska exekveras och vilka som ska pausas.
 
 Konceptuellt består ett S2E plugin av ett tillstånd och en initieringsfuktion.
 Tillståndet ärvs från ett kärn-plugin som innehåller information om bl.a.\
@@ -67,33 +78,35 @@ motsvarande villkor för en hook uppfylls.
 
 AmbaPlugin är ett S2E plugin som har utvecklats för att samla information under
 exekvering av en binär ämnat för att visualisera exekveringen i AMBA.\@
+AmbaPlugin kan även bestämma ett subträd av tillstånd vars exekvering ska
+prioriteras före andra.
 
 \subsection{AmbaPlugin}
 
-AmbaPlugin registrerar callbacks för ett antal hooks bland vilka
-\texttt{onStateFork} och \texttt{onBlockStart}. När dessa hooks aktiveras
-samlas information om S2E:s state id, generation för ett block i fallet av
-självmodifierande kod, uttrycket för villkoret för att programexekveringen ska
-nå denna state och ett id som utdelas till olika states. Utifrån detta
-framställs kantinformation för CFG och Symbolisk state graf som kontinuerligt
-skickas över IPC till GUI processen. Även annan information om varje nod i de
-olika graferna samlas och skickas över IPC till GUI processen. Denna iterativa
-informationsuppdateringen är tänkt att kommunicera framsteg till användaren
-eftersom exekveringen kan ta lång tid beroende på den binär som analyseras.
+AmbaPlugin registrerar callbacks för ett antal hooks, inklusive bland annat
+\texttt{onStateFork}, \texttt{onTranslateBlockComplete} och
+\texttt{onBlockStart}. När dessa hooks anropas samlas information om S2E:s
+tillståndsid, generation för ett block i fallet av självmodifierande kod,
+virtuell adress, maskinkod etc.
+
+Utifrån detta framställs kantinformation för kontrollflödesgrafen och
+tillståndsgrafen som kontinuerligt skickas över IPC till huvudprocessen. Denna
+iterativa informationsuppdateringen är nödvändigt för uppdatera
+användargränssnittet i realtid, alltså flera gånger per sekund. Få verkliga
+binärer har tillståndsgrafer som kan konstrueras fullständigt.
 
 \subsection{Packetering i pakethanteraren Nix}
 
-S2E är ett komplicerat system och består av bland annat QEMU och behöver mycket
-konfiguration för att sätta % upp en miljö för symbolisk exekvering. Verktyget
-\textit{s2e-env} har tidigare utvecklats för att underlätta många steg som
-skapandet av gäst-VM-avbild~\cite{s2e_website_s2eenv}. \textit{s2e-env} antar
-däremot \textit{Ubuntu 18.04 LTS 64-bit OS} som värd för att kunna hämta rätt
-beroenden~\cite{s2eenv_github}. Detta % har varit en svåröverkomlig krav för
-utvecklandet av AMBA och därför har en nix-miljö framställts för att hantera och
-bygga alla beroenden som krävs för att bygga och köra S2E med QEMU.
+\stoe{} är ett komplicerat system som innehåller bland annat QEMU, Linux, KLEE
+och LLVM.\@ Dess bygge var trasigt när vi påbörjade detta kandidatarbete (t.ex.\
+felaktiga git-remote-url:er för QEMU-projektet), flera andra småsaker hindrade
+byggande och utöver allt detta rekommenderades en Docker-miljö för att hantera
+bygget med dess alla beroende komponenter. För att förbättra bygget, uppnå
+bättre reproducerbarhet samt bättre samspel med en grafisk applikation bestämde
+vi oss därmed för att packetera \stoe{} i Nix.
 
-Nix-miljön har framställts för utveckling av AMBA och är inte lämplig för
-upstreaming till \textit{s2e-env} i nuvarande form men kan vara möjligt efter
+Nix-paketet \stoe{} har framställts för utveckling av AMBA och är inte lämplig
+för upstreaming till \stoe{} i nuvarande form men detta kan vara möjligt efter
 utökningar och modifieringar.
 
 \section{Grafbehandling}
