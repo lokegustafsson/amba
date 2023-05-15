@@ -13,7 +13,7 @@ och några möjliga lösningar till dessa problem.
 Som tidigare nämnt, är det ofta endast maskinkoden som är tillgänglig inom domänen
 för skadeprogramsanalys och \emph{reverse engeneering}. Binäranalys är dessutom
 viktigt för att upptäcka och undersöka minnessårbarheter. Det beror på det
-semantiska gapet mellan en högnivå programspråk och maskinkod. Det är inte
+semantiska gapet mellan ett högnivå programspråk och maskinkod. Det är inte
 trivialt att argumentera för programmets beteende innan och efter kompilering
 till maskinkod och hur väl dessa mostsvarar varandra. Genom att betrakta
 maskinkoden kan man ``undersöka vad programmet faktiskt gör istället för vad
@@ -28,7 +28,7 @@ Ett flertal metoder används för att analysera maskinkod:
           läsbara koden~\cite{ghidra_website}.
     \item fuzztesta programmet, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
           annat oönskat beteende~\cite{8371326}.
-    \item använda concolic testing, alltså fuzzing där en SMT solver genererar nya testfall genom att
+    \item använda konkolisk testning, alltså fuzzing där en SMT solver genererar nya testfall genom att
           lösa för testfall som orsakar annorlunda programhopp~\cite{sage}.
 \end{enumerate}
 
@@ -67,7 +67,7 @@ bilda en korrekt förståelse genom att enbart läsa kod.
 Metod 3-4, att köra programmet på testfall, ger framförallt en
 black-box-förståelse av programmet. Tillgången till binären och
 exekveringsmiljön används endast som ett verktyg för att generera nya testfall.
-Fuzzing och concolic testing kan köras helautomatiskt och är korrekta.
+Fuzzing och konkolisk testning kan köras helautomatiskt och är korrekta.
 Men ofta är en tillräckligt täckande sökning av indatarummet omöjlig, och då kan
 den automatiska analysen ha missat ett kvalitativt annorlunda beteende. Dessutom
 ger en omfattande uppsättning indata-utdata-par inte användaren samma
@@ -110,12 +110,12 @@ I fall där det existerar kända konstanter, något som är typiskt i fall som
 involverar kryptografi i olika utsträckning, är det rimligt att tillämpa
 manuella metoder för att bilda förståelse om programmet. Genom att inspektera
 maskinkoden för program motsvarande figur~\ref{fig:manual_method_example} kan
-det enkelt hittas en konstant associerad till sha256 algoritmen for att beräkna
+det enkelt hittas en konstant associerad till sha256-algoritmen for att beräkna
 hash funktionen och därmed bilda förståelse om programmet. I detta fall är det
 dessutom orimligt att tillämpa automatiska metoder eftersom dessa, såsom
-concolic testing, genererar alltför stora symboliska representationer och hade
-i det ovan exemplet krävt att det går att hitta inversen till en given sha256
-hash vilket idag är omöjligt och leder därmed till att alla stigar i
+konkolisk testning, genererar alltför stora symboliska representationer och hade
+i det ovan exemplet krävt att det går att hitta inversen till en given
+sha256-hash vilket idag är omöjligt och leder därmed till att alla stigar i
 programflödet inte undersöks.
 
 \begin{figure}
@@ -138,8 +138,8 @@ else:
 Ett motsatt fall är exemplet i figur~\ref{fig:automatic_method_example} och
 lämpas väl att undersökas med automatiska metoder eftersom det är tidskrävande
 att manuellt välja slumpvalda värden på \texttt{s} för att hitta den korrekta
-stigen. Istället lämpar concolic testing sig väl i detta fallet. Eftersom
-concolic testing väljer olika konkreta värden samtidigt som den tillämpar
+stigen. Istället lämpar konkolisk testning sig väl i detta fallet. Eftersom
+konkolisk testning väljer olika konkreta värden samtidigt som den tillämpar
 symbolisk exekvering med symboliska värden som följer den givna stigen, t.ex.\
 om \lstinline{s == "annat"} vilket motsvarar att programmet väljer else-stigen
 \lstinline{deny_access()}. Detta upprepas med nya exekveringsstigar och till slut
@@ -172,7 +172,7 @@ egenskaper krävs kontroll av flertal olika exekveringsvägar vilket är svårt 
 vanlig exekvering (konkret exekvering) men enkelt genom symbolisk exekvering.
 Symbolisk exekvering tillåter dynamisk binäranalys och både manuella och
 automatiska sådana. Som tidigare nämnts, är metoder baserade på symbolisk
-exekvering även kända som concolic testing och symbolisk fuzzing.
+exekvering även kända som konkolisk testning och symbolisk fuzzing.
 
 Låt oss betrakta några vanliga sårbarheter som har upptäckts med metoder
 baserade på symbolisk exekvering.
@@ -197,13 +197,13 @@ Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
 många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
 prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är svåra att
 skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
-exempelvis Rust, som kan konkurrera med C relativt ny och det krävs tid för
-övergången mellan språken.
+exempelvis Rust eller Swift, som kan konkurrera med C relativt nya och det
+krävs tid för övergången mellan språken.
 
 Två exempel på minnessårbarheter är buffertöverflöden (jfr eng. \emph{buffer
-    overflow}) och formatsträng (jfr eng. \emph{format string}). Den
+    overflow}) och formatsträngsbugg (jfr eng. \emph{format string bug}). Den
 vanligaste av de är buffertöverflöde vilket uppstår av otillräckliga
-gränskontroller, vilket utlöser en åtkomst bortom gränserna för viss
+gränskontroller (jfr\. eng\. \emph{bounds checks}), vilket utlöser en åtkomst bortom gränserna för viss
 minnesregion. Angripare kan utnyttja detta för att korrumpera programmets
 normala beteende genom att skriva bortom gränserna. Formatsträngsbugg uppstår
 när någon typ av indata tolkas och används som input till vanliga
