@@ -202,29 +202,30 @@
 \pagenumbering{gobble} % turn off page numbers
 
 \input{cover_svenska.tex}
-\newpage\null{} % empty page after cover to present better for printing on both faces of paper
-\newpage
+\cleardoublepage
 \input{titlepage_svenska.tex}
 
-\newpage
+\cleardoublepage
 \pagenumbering{roman} % turn on roman page numbers
 \setcounter{page}{3}
 
+\phantomsection
+\addcontentsline{toc}{chapter}{Abstract}
 \chapter*{Abstract}
 \input{abstract.tex}
 
+\phantomsection
+\addcontentsline{toc}{chapter}{Sammandrag}
 \chapter*{Sammandrag}
 \input{abstract_svenska.tex}
-\newpage
+\cleardoublepage
 
 \tableofcontents
-\newpage
 
-\addcontentsline{toc}{section}{Begreppslista}
+\phantomsection
+\addcontentsline{toc}{chapter}{Begreppslista}
 \chapter*{Begreppslista}
 \input{begreppslista.tex}
-
-\newpage
 
 \pagenumbering{arabic} % turn on arabic page numbers
 
@@ -238,10 +239,7 @@
 \input{inledning/syfte.tex}
 \section{Rapportstruktur}
 \input{inledning/rapportstruktur.tex}
-% haha lol ugly hack but it works and we will use it everywhere >:)
-\let\clearpage\relax
-\let\cleardoublepage\clearpage
-\newpage
+
 \chapter{Teori}\label{chap:teori}
 \input{teori/main.tex}
 \section{Symbolisk exekvering}\label{sec:symbolic_execution}
@@ -250,10 +248,7 @@
 \input{teori/fuzzing.tex}
 \section{Exekveringsmotor}
 \input{teori/arkitektur_for_binaranalysverktyg.tex}
-% haha lol ugly hack but it works and we will use it everywhere >:)
-\let\clearpage\relax
-\let\cleardoublepage\clearpage
-\newpage
+``
 \chapter{Existerande verktyg}\label{chap:existerande_verktyg}
 \input{existerande_verktyg/main.tex}
 \section{Statisk disassemblering}\label{sec:existerande-disasm}
