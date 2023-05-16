@@ -1,0 +1,53 @@
+\subsection*{Projektplanering och design}
+
+\begin{itemize}
+
+	\item Jag presenterade projektförslaget för detta kandidatarbetet i höstas. Därför var det
+	      rimligt att i början av projektet skrev dokumentation om mina designidéer samt samlade ihop
+	      underlag för att inför gruppen presentera alternativen: 1. Bygga egen symbolisk
+	      exekveringsmotor, 2. Använda SymQEMU, 3. Använda S2E. I LP3LV2 bestämde vi under ett gruppmöte
+	      oss för att välja S2E.
+
+	\item Till planeringsrapporten skrev jag stora delar av avsnitten Bakgrund, Problem/Uppgift samt
+	      Avgränsningar.
+
+\end{itemize}
+
+\subsection*{Programmering och S2E-bygge}
+
+\begin{itemize}
+
+	\item LP3LV2 till LP3LV8 lade jag ned ca 110h på att bygga och köra S2E. Detta var svårare än vi
+	      förväntade oss, pga trasiga och ofullständiga bygginstruktioner. Jag skrev här även den största
+	      delen av grundkoden i AMBA/huvudprocessen, för att generera S2E-config och starta QEMU.\@
+
+	\item Jag skrev huvudprocesskomponenterna QMP (pratar med QEMU), IPC (pratar med
+	      AmbaPlugin), QEMU (som startar qemu). Jag skrev också QEMU-gäst-komponenten bootstrap.
+
+	\item Jag integrerade egui i huvudprocessen (trådarna GUI, EMBEDDER, CONTROL), skrev
+	      grafvy-egui-komponenten och grafutplaceringsalgoritmen.
+
+	\item Slutligen implementerade jag visning av disassembly, addresser och all annan nodmetadata
+	      som visas i GUI:n. Här använde jag vissa färdiga komponenter, som Enayas wrapper kring ett
+	      debugdatabibliotek och AmbaPlugins existerande arkitektur (som Samuel+fler skrivit).
+
+\end{itemize}
+
+Sammanfattningsvis, programmeringsmässigt, av koden som används i slutprodukten och inte tagits bort
+längs vägen, har jag skrivit: 1.\ Hela paketeringskoden för S2E. 2.\ Nästan all huvudprocesskod med de
+viktiga undantagen: debugdataextraktion ur binär, linjegrafskompression, och starkt anslutna
+komponenter. 3.\ bootstrap-binären som kör inuti QEMU innan den analyserade binären samt en relativt
+liten del av AmbaPlugin.
+
+\subsection*{Slutrapporten}
+
+\begin{itemize}
+
+	\item Hela \textit{3.4 Visualiserad Symbolisk Fuzzing}.
+
+	\item I princip hela \textit{4 AMBA}.
+
+	\item I princip hela \textit{5 Implementation}. Detta var dock en omskrivning, inte nyskrivning,
+	      så en del av innehållet är starkt inspirerat av texten som var där innan jag skrev om.
+
+\end{itemize}

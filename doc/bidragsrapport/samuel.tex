@@ -1,0 +1,48 @@
+Jag har spenderat en överväldigande majoritet av min tid med koden
+istället för texten. I projektplanen skrev jag på avsnitt 3 (Problem)
+och 4 (Avgränsningar) tillsammans med Clara, primärt avsnitt 3. Sen
+blev i princip all text jag skrev reviderad och omskriven av andra i
+den slutgiltiga inlämnade versionen.
+
+I början av implementationen av projektet har jag undersökt
+möjligheterna att skriva så lite C++ som möjligt, med bindgen, cxx och
+till slut autocxx.  Striden med autocxx tog mycket tid i början och en
+större bugg i projektet upptäcktes och rapporterades uppstream (och
+fixades rätt fort). Till slut bestämde jag dock att det var för mycket
+och övertalade gruppen istället att acceptera en mer polyglot
+situation.
+
+Sen gjorde jag också tidig research av rimliga gui-situationer, om det
+var vettigt att hålla saker inom redan avnända språk i projeket (=
+Rust) eller om det var vettigare att använda en webbfrontend. Kom till
+slutsatsen att GTK4 hade varit rimligt nog och lämnade sen över frågan
+till Clara och Albin (som sen valde att använda egui istället på grund
+av ett nodrenderingsbibliotek de hittade men inte använde till slut).
+
+Sen var jag den första som började skriva kod på AMBA. Under
+sportlovet var jag isolerad från resten av gruppen och använde S2E för
+att skriva en Valgrindklon som spårade allokationer och om
+minnesaccesser var inom dessa allokationer eller stacken (ja, jag
+glömde bss). Dock så var inte Lokes bråk med S2E lösta vid det här
+laget och inget var körbart utan var mer en utforskning av S2Es
+pluginapi. Koden fungerade inte och komponenten användes inte till slut.
+
+Sen skrev jag en större komponent för att bygga, optimera/minimera och
+spåra riktade grafer, som vi sen kopplade in i S2E och utgjorde
+grunden till vad som sen transformeras till grafen som visas.  Hade
+stora strider med prestandan och lyckades optimera en grafkomprimering
+från 11 minuter ner till 50ms, något som sen förbättrades ytterligare
+genom att göra byggandet av den optimerade grafen inkrementellt med
+varje ny kant som lades till.
+
+Sen jobbade jag på att beräkna strongly connected components, vilket
+används för färgläggningen av noder.
+
+Integrerade också grafbyggandet in i AmbaPlugin.
+
+Närmare slutet jobbade jag på att få in prioriteringen av states i
+AmbaPlugin och att koppla detta mot guin.
+
+Utöver detta har jag supportat andra med deras kodproblem, granskat
+alla andras PR och deltagit starkt i gruppdiskussioner om vad som ska
+göras.
