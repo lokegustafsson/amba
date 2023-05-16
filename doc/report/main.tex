@@ -180,6 +180,10 @@
         \fontdimen3\font=\origiwstr{}
     }
 
+
+% Prevent Latex from being mean to Albin
+\hyphenation{Albin}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COMMANDS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\stoe}{S$^2$E\xspace}
 
@@ -189,6 +193,7 @@
 \newcommand{\ambaCityCountryYearSwedish}{Göteborg, Sverige \the\year}
 \newcommand{\ambaDepartment}{Department of Computer Science and Engineering}
 \newcommand{\ambaDepartmentSwedish}{Institutionen för Data och Informationsteknik}
+\newcommand\smallcaps[1]{\textsc{\MakeLowercase{#1}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT STRUCTURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -207,14 +212,9 @@
 
 \chapter*{Abstract}
 \input{abstract.tex}
-\newpage
 
 \chapter*{Sammandrag}
 \input{abstract_svenska.tex}
-\newpage
-
-\chapter*{Sammandrag}
-\input{sammandrag.tex}
 \newpage
 
 \tableofcontents
@@ -238,7 +238,10 @@
 \input{inledning/syfte.tex}
 \section{Rapportstruktur}
 \input{inledning/rapportstruktur.tex}
-
+% haha lol ugly hack but it works and we will use it everywhere >:)
+\let\clearpage\relax
+\let\cleardoublepage\clearpage
+\newpage
 \chapter{Teori}\label{chap:teori}
 \input{teori/main.tex}
 \section{Symbolisk exekvering}\label{sec:symbolic_execution}
@@ -247,7 +250,10 @@
 \input{teori/fuzzing.tex}
 \section{Exekveringsmotor}
 \input{teori/arkitektur_for_binaranalysverktyg.tex}
-
+% haha lol ugly hack but it works and we will use it everywhere >:)
+\let\clearpage\relax
+\let\cleardoublepage\clearpage
+\newpage
 \chapter{Existerande verktyg}\label{chap:existerande_verktyg}
 \input{existerande_verktyg/main.tex}
 \section{Statisk disassemblering}\label{sec:existerande-disasm}
@@ -269,7 +275,7 @@
 \input{evaluering/main.tex}
 \section{Jämförelse mellan AMBA och Ghidra}\label{sec:amba-vs-ghidra}
 \input{evaluering/amba-vs-ghidra.tex}
-\section{Jämförelse mellan S2E och Angr som \\ backend}\label{sec:amba-vs-ghidra}
+\section{Jämförelse mellan \stoe{} och Angr som \\ backend}\label{sec:amba-vs-ghidra}
 \input{evaluering/amba-vs-angr.tex}
 \section{Jämförelse mellan AMBA och SymNav}\label{sec:amba-vs-symnav}
 \input{evaluering/amba-vs-symnav.tex}
@@ -281,6 +287,6 @@
 \chapter{Slutsats}\label{chap:slutsats}
 \input{slutsats/main.tex}
 
-\printbibliography{}
+\printbibliography[title=Referenser]
 
 \end{document}

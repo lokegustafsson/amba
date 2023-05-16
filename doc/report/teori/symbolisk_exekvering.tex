@@ -11,7 +11,7 @@ programmets variabler --- vilka egenskaper de måste uppnå för att just denna 
 ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan
 evalueras eftersom de krav som måste uppfyllas för att följa vägen dit dokumenteras
 under den symboliska körningen, och resulterar i fullständiga symboliska representationer
-som en automatiserad teoremlösare (jmf.\ engelska SMT solver) kan appliceras på.
+som en automatiserad teoremlösare (jfr. eng. SMT solver) kan appliceras på.
 
 Eftersom de symboliska värdena har kapacitet att representera grupperingar av konkreta
 värden istället för enskilda sådana, utförs en generaliserad testning av programmet,
@@ -31,11 +31,11 @@ alternativ. De tillståndsvillkor som en viss väg visas ha byggs därför
 successivt upp genom att motorn utökar de symboliska variablerna till
 villkorliga uttryck allt eftersom vägen följs~\cite{klee}.
 
-Eftersom symbolisk exekvering kan leda till \emph{path explosion}, vilket
+Eftersom symbolisk exekvering kan leda till stigexplosionsproblemet, vilket
 uppstår i program vars branches växer exponentiellt och resulterar i att en
 symbolisk exekvering aldrig terminerar~\cite{path_explo}, är det inte effektivt
 att alltid undersöka alla branchar i ett program. Exempel på metoder för att
-undvika path explosion är \emph{state-merging} och \emph{heuristics}.
+undvika path explosion är State Merging och heuristik.
 
 För att illustrera symbolisk exekvering används följande pseudokod:
 
