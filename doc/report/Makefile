@@ -12,7 +12,6 @@ group_64_project_report.pdf: \
   begreppslista.tex \
   cover.tex \
   abstract.tex \
-  sammandrag.tex \
   evaluering/main.tex \
   evaluering/amba-vs-angr.tex \
   evaluering/amba-vs-ghidra.tex \
