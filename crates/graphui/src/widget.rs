@@ -8,7 +8,25 @@ use crate::{
 	lod::LodText,
 };
 
-static COLOURS: Mutex<Vec<(Colour32, Colour32)>> = Mutex::new(Vec::new());
+static COLOURS: Mutex<Vec<(Colour32, Stroke)>> = Mutex::new(Vec::new());
+
+fn get_colour(idx: usize) -> (Colour32, Stroke) {
+	let mut colours = COLOURS.lock().unwrap();
+	if let Some(val) = colours.get(idx) {
+		return *val;
+	}
+
+	while idx < colours.len() {
+		colours.append(&mut vec![
+			(Colour32::BLUE, Stroke::NONE),
+			(Colour32::RED, Stroke::NONE),
+			(Colour32::YELLOW, Stroke::NONE),
+			(Colour32::GREEN, Stroke::NONE),
+		]);
+	}
+
+	colours[idx]
+}
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum ColouringMode {
@@ -288,9 +306,11 @@ fn draw_graph(
 					style_widgets.hovered.bg_fill,
 					style_widgets.hovered.bg_stroke,
 				),
-				ColouringMode::ByState => todo!(),
-				ColouringMode::StronglyConnectedComponents => todo!(),
-				ColouringMode::Function => todo!(),
+				ColouringMode::ByState => get_colour(graph.node_drawing_data[i].state),
+				ColouringMode::StronglyConnectedComponents => {
+					get_colour(graph.node_drawing_data[i].scc_group)
+				}
+				ColouringMode::Function => get_colour(graph.node_drawing_data[i].function),
 			};
 			let node = draw_node(
 				ui,
@@ -298,7 +318,7 @@ fn draw_graph(
 				style_selection,
 				pos,
 				node_size[i],
-				&graph.node_lod_texts[i],
+				&graph.node_drawing_data[i].lod_text,
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);

@@ -54,14 +54,17 @@ fn main() {
 		Graph2D::new(
 			(0..node_count)
 				.map(|i| {
-					let mut ret = LodText::new();
-					ret.coarser(i.to_string());
-					ret
+					let mut lod_text = LodText::new();
+					lod_text.coarser(i.to_string());
+					graphui::NodeDrawingData {
+						state: i % (node_count / 5),
+						scc_group: i % 3,
+						function: i % 32,
+						lod_text,
+					}
 				})
 				.collect(),
 			edges,
-			vec![0; node_count],
-			vec![0; node_count],
 		)
 	}));
 

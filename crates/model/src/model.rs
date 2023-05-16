@@ -6,7 +6,7 @@ use std::{
 	time::Instant,
 };
 
-use graphui::{EmbeddingParameters, Graph2D, LodText};
+use graphui::{EmbeddingParameters, Graph2D, LodText, NodeDrawingData};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
 use crate::control_flow::ControlFlowGraph;
@@ -50,7 +50,12 @@ impl Model {
 	) {
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
-		let new_lod_text = |(metadata, self_edge)| new_lod_text_impl(&metadata, self_edge);
+		let new_lod_text = |(metadata, self_edge)| NodeDrawingData {
+			state: 0,
+			scc_group: 0,
+			function: 0,
+			lod_text: new_lod_text_impl(&metadata, self_edge),
+		};
 
 		{
 			let mut block_control_flow = self.block_control_flow.write().unwrap();
@@ -68,17 +73,10 @@ impl Model {
 					.collect::<Vec<_>>();
 				(nodes, edges)
 			};
-			let scc_indicies = (0..raw_nodes.len()).map(|x| x % 10).collect();
-			let function_indicies = vec![0; raw_nodes.len()];
 			self.raw_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(
-					raw_nodes,
-					raw_edges,
-					scc_indicies,
-					function_indicies,
-				);
+				.seeded_replace_self_with(raw_nodes, raw_edges);
 
 			let (compressed_nodes, compressed_edges) = {
 				let (metadata, self_edge, edges) =
@@ -93,12 +91,7 @@ impl Model {
 			self.compressed_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(
-					compressed_nodes,
-					compressed_edges,
-					Vec::new(),
-					Vec::new(),
-				);
+				.seeded_replace_self_with(compressed_nodes, compressed_edges);
 		}
 
 		{
@@ -120,7 +113,7 @@ impl Model {
 			self.raw_state_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with(state_nodes, state_edges, Vec::new(), Vec::new());
+				.seeded_replace_self_with(state_nodes, state_edges);
 		}
 		mem::drop(mutex);
 	}
