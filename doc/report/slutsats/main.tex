@@ -25,15 +25,16 @@ att använda de färdigbyggda guest images distribuerade av \stoe{} från Google
 Drive. Då mycket tid behövde dedikeras till att korrigera byggsystemet innebar
 det att mindre tid kunde allokeras till utveclandet av slutprodukten.
 
-Vi försökte även minimera mängden C++ kod som behövde skrivas genom att använda
-Autocxx för att generera kopplingar mellan C++ och Rust. Tanken var att med
-hjälp av Autocxx skulle det endast ett fåtal rader C++, och att merparten av
-källkoden skulle skrivas i Rust. Tyvärr stötte vi på en bug i Autocxx, då den
-bland annat genererade syntaktiskt inkorrekt kod. Då vi upptäckte att Autocxx
-saknade viktiga funktioner beslutade vi oss efter några veckor att överge tanken
-att generera kopplingar, för att skriva en större mängd C++ kod.
+Vi försökte även minimera mängden \smallcaps{C++} kod som behövde skrivas genom
+att använda Autocxx för att generera kopplingar mellan \smallcaps{C++} och Rust.
+Tanken var att med hjälp av Autocxx skulle det endast ett fåtal rader
+\smallcaps{C++}, och att merparten av källkoden skulle skrivas i Rust. Tyvärr
+stötte vi på en bug i \smallcaps{Autocxx}, då den bland annat genererade
+syntaktiskt inkorrekt kod. Då vi upptäckte att \smallcaps{Autocxx} saknade
+viktiga funktioner beslutade vi oss efter några veckor att överge tanken att
+generera kopplingar, för att skriva en större mängd \smallcaps{C++} kod.
 
 Våra förhoppningar är att AMBA antingen kommer att vidareutvecklas, eller ligga
 till grund för ett nytt verktyg, med funktionerna som diskuterades i avsnitt
 \ref{sec:vidareutveckling}. För närvarande anser vi inte att AMBA är praktiskt
-användbart, men att det finns en stor potential vid vidarutvecklingen av AMBA.
+användbart, men att det finns en stor potential vid vidareutvecklingen av AMBA.
