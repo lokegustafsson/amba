@@ -2,16 +2,14 @@
 
 \begin{itemize}
 
-	\item Jag presenterade projektförslaget för detta kandidatarbetet i höstas. Därmed bidrog jag i
-	      början av projektet genom att skriva dokumentation om mina designidéer samt samla ihop det
-	      underlag jag behövde för att inför gruppen presentera alternativen: 1. Bygga egen symbolisk
-	      exekveringsmotor (annan inriktning på projektet i stort), 2. Använda SymQEMU (bättre prestanda,
-	      sämre docs), 3. Använda S2E (bättre docs). I LP3LV2 bestämde vi under ett gruppmöte oss för att
-	      välja S2E
+	\item Jag presenterade projektförslaget för detta kandidatarbetet i höstas. Därför var det
+	      rimligt att i början av projektet skrev dokumentation om mina designidéer samt samlade ihop
+	      underlag för att inför gruppen presentera alternativen: 1. Bygga egen symbolisk
+	      exekveringsmotor, 2. Använda SymQEMU, 3. Använda S2E. I LP3LV2 bestämde vi under ett gruppmöte
+	      oss för att välja S2E.
 
-	\item Till planeringsrapporten skrev jag stora delar av första utkasten till avsnitten Bakgrund,
-	      Problem/Uppgift samt Avgränsningar. Dessa avsnitt tar sammalagt totalt upp ca halva
-	      planeringsrapporten (men de putsades alla rätt noga av andra i gruppen också!)
+	\item Till planeringsrapporten skrev jag stora delar av avsnitten Bakgrund, Problem/Uppgift samt
+	      Avgränsningar.
 
 \end{itemize}
 
@@ -20,41 +18,36 @@
 \begin{itemize}
 
 	\item LP3LV2 till LP3LV8 lade jag ned ca 110h på att bygga och köra S2E. Detta var svårare än vi
-	      förväntade oss, pga trasiga och ofullständiga bygginstruktioner. Jag skrev även den största
-	      delen av grundkoden i AMBA/huvudprocessen, för att generera S2E-config och starta QEMU.
+	      förväntade oss, pga trasiga och ofullständiga bygginstruktioner. Jag skrev här även den största
+	      delen av grundkoden i AMBA/huvudprocessen, för att generera S2E-config och starta QEMU.\@
 
-	\item Jag skrev huvudprocesskomponenterna QMP, IPC, extraherade run\_QEMU till egen tråd och
-	      skrev QEMU-gäst-komponenten bootstrap.
+	\item Jag skrev huvudprocesskomponenterna QMP (pratar med QEMU), IPC (pratar med
+	      AmbaPlugin), QEMU (som startar qemu). Jag skrev också QEMU-gäst-komponenten bootstrap.
 
-	\item Jag integrerade egui i huvudprocessen, skrev grafvy-egui-komponenten och
-	      grafutplaceringsalgoritmen. Jag förbättrade successivt sedan grafutplaceringskoden kontinuerligt
-	      under projektet.
+	\item Jag integrerade egui i huvudprocessen (trådarna GUI, EMBEDDER, CONTROL), skrev
+	      grafvy-egui-komponenten och grafutplaceringsalgoritmen.
 
-	\item Slutligen implementerade jag visning av disassembly, addresser och allt annan nodmetadata
-	      som visas i GUI:n. Här skrev jag inte alla delar själv, utan använde Albins disassembler, Enayas
-	      debugdata och AmbaPlugins existerande arkitektur som flera skrivit, men framförallt Samuel.
+	\item Slutligen implementerade jag visning av disassembly, addresser och all annan nodmetadata
+	      som visas i GUI:n. Här använde jag vissa färdiga komponenter, som Enayas wrapper kring ett
+	      debugdatabibliotek och AmbaPlugins existerande arkitektur (som Samuel+fler skrivit).
 
 \end{itemize}
 
 Sammanfattningsvis, programmeringsmässigt, av koden som används i slutprodukten och inte tagits bort
-längs vägen, har jag skrivit: Hela paketeringskoden för S2E, nästan all huvudprocesskod med de
+längs vägen, har jag skrivit: 1.\ Hela paketeringskoden för S2E. 2.\ Nästan all huvudprocesskod med de
 viktiga undantagen: debugdataextraktion ur binär, linjegrafskompression, och starkt anslutna
-komponenter. Utöver detta har jag skrivit bootstrap-binären som kör inuti QEMU innan den analyserade
-binären samt en relativt liten del av AmbaPlugin.
+komponenter. 3.\ bootstrap-binären som kör inuti QEMU innan den analyserade binären samt en relativt
+liten del av AmbaPlugin.
 
 \subsection*{Slutrapporten}
 
 \begin{itemize}
 
-	\item Av planeringsrapporten är i princip allt jag skrev utbytt, utöver kanske delar av
-	      teoriavsnittet "Binäranalys" samt figur 2.4 i teoriavsnittet "Exekveringsmotor".
-
-	\item Hela \textit{3 Existerande Verktyg / 3.4 Visualiserad Symbolisk Fuzzing}.
+	\item Hela \textit{3.4 Visualiserad Symbolisk Fuzzing}.
 
 	\item I princip hela \textit{4 AMBA}.
 
-	\item I princip hela \textit{5 Implementation} undantaget arkitekturdiagrammet (som ändå är
-	      handritad placeholder atm). Detta var dock en omskrivning, inte nyskrivning, så en del av
-	      innehållet är starkt inspirerat av texten som var där innan jag skrev om.
+	\item I princip hela \textit{5 Implementation}. Detta var dock en omskrivning, inte nyskrivning,
+	      så en del av innehållet är starkt inspirerat av texten som var där innan jag skrev om.
 
 \end{itemize}
