@@ -1,0 +1,43 @@
+Eftersom vår projektgrupp har arbetat med en taskbaserad arbetsmetod har vi
+inte utdelat specifika roller. Därför kommer jag lista, översiktligt, vad de
+task jag har arbetat med har inneburit.
+
+Även till rapportskrivningen har vi samarbetat och omarbetat varandras texter
+och det inte är en enda person som står ensam för text i rapporten i stora
+drag. Men för att exemplifiera har jag omarbetat om skrivit om
+inledningsavsnittet. Det fanns också text till inledningen skriven innan som
+jag har skrivit om i nästan sin helhet till slutrapporten. Det finns också
+delar som Linus och Albin hade skrivit som jag har omarbetat såsom början och
+syfte. Vidare har jag skrivit nya delavsnitt och omarbetat teoriavsnittet för
+att bli mer sammanhållet. Avsnitt som jag i stora drag har skrivit
+självständigt är avsnitt 2.2 (Motivering till symbolisk exekvering) och 2.5
+(Exekveringsmotor). Det har tagits fram genom att skriva nytt men också
+omarbeta gammal text skrivna av andra. Jag har också skrivit några andra delar,
+exempelvis avsnitt 5.2 till 5.2.1. (S2E och AmbaPlugin).
+
+När det gäller den tekniska biten av projektet har även det varit taskbaserad.
+De task jag har utfört har inneburit exempelvis funktionalitet för att gräva
+fram källkodsrader motsvarande en intervall av binär maskinkod. Detta används i
+projektet för att visa en rikare dissambly i noder i grafvyn och förenklar
+debugging under utvecklingen. Vidare har jag läst relativt stora mängder
+källkod till det verktyg (S2E) vi har baserat vårt verktyg på. Detta för att ta
+reda på hur andra plugin har utfört olika saker och de funktionaliteter i S2E
+som vi kan utnyttja i vårt projekt. Detta har resulterat t.ex. i det jag gjort
+för att filtrera bort all kernelkod och userspace kod som körs under analysen.
+Eftersom S2E tillåter undersökning av all kernelspace och userspace kod när man
+kör en analys skulle en control flow graf eller andra graf bli väldigt stora om
+vi tillät inspektion av all kod som körs från uppstart till nedstängning. Detta
+är alltså onödigt och vi bryr oss endast om kod som körs under tiden vårt
+program som analyseras är igång och körs i virtuella maskinen (QEMU). Jag har
+vidare gjort små tasks för att t.ex. undersöka och införa ett sätt att använda
+QMP för att kommunicera till QEMU instansen men detta visade sig vara onödigt
+och vi hade ingen användning av att prata med QEMU via QMP då det bara styr
+interna saker relaterade till QEMU och inte S2E som kör inuti den. Jag har
+också undersökt en del hur vi kan utvinna symboliska uttryck i en textuell
+representerbar form men detta medförde inte mycket resultat.
+
+Vidare har jag varit sekreterare och tagit mötesanteckningar under de flesta
+gruppmöten vi har haft och tagit på mig att boka grupprum till våra möten
+(förutom mot slutet då). Jag har periodvis varit mindre aktiv men jag är
+överlag nöjd med mina bidrag.
+
