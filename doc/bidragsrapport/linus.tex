@@ -1,0 +1,48 @@
+\subsection*{Projektplanering}
+\begin{itemize}
+	\item Skrev och reviderade syfte samt hela metodavsnittet.
+\end{itemize}
+
+\subsection*{Teknisk design och kod}
+\begin{itemize}
+	\item Var delaktig i beslutstagande om viktiga design beslut såsom
+	      systemarkitektur, beslut om symbolisk exekveringsmotor vs bygga egen
+	      symbolisk exekveringsmotor, etc.
+
+	\item Prioritering av grafrendering. Beroende på hur mycket som är kvar att
+	      rendera för en given graf prioriteras nästa graf.
+
+	\item Undersökte och skrev kod för IPC som använde protobuf, något vi senare
+	      valde att avveckla och ersätta med unix-sockets och serde istället för
+	      protobuf för serialisering.
+
+	\item Undersökte om QMP (QEMU Machine Protocol) var rimligt (detta gjorde även Enaya) att använda,
+	      men bortprioriterades för 'vanlig' IPC då protokollet var bristfälligt och
+	      saknade den funktionalitet vi sökte.
+\end{itemize}
+
+\subsection*{Slutrapporten}
+\begin{itemize}
+	\item Revidering av syfte, inledning, existerande verktyg, etc.
+
+	\item Delar i \textit{2.3 Symbolisk exekvering}: exempelfigurer, figurtext, ytterligare
+	      förklaringar om symbolisk exekvering, etc.
+
+	\item Hela \textit{2.4 Fuzzing}.
+
+	\item Hela \textit{6. Evaluering}.
+\end{itemize}
+
+Vi har inte haft några tydliga roller, utan skapat uppgifter baserat på vad som
+behövdes göras avseende tidsplanen. Den enda rollen som roterat något är rollen
+som sekreterare som varierat främst mellan mig, Enaya och Samuel, men Enaya har främst
+besuttit denna roll.
+
+Sammanfattningsvis har vi alla samarbetat för att ta oss igenom olika delar av
+rapporten där även tekniska beslut, antingen genom 1on1 diskussioner eller
+helgrupp tagits tillsammans. Vi har även haft ett review-system, där vi skapat
+ett pull-request i github för en task som sedan reviewats av andra
+gruppmedlemmar tills det approvas och läggs till i kodbasen eller rapporten.
+
+
+
