@@ -193,6 +193,7 @@
 \newcommand{\ambaCityCountryYearSwedish}{Göteborg, Sverige \the\year}
 \newcommand{\ambaDepartment}{Department of Computer Science and Engineering}
 \newcommand{\ambaDepartmentSwedish}{Institutionen för Data och Informationsteknik}
+\newcommand\smallcaps[1]{\textsc{\MakeLowercase{#1}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT STRUCTURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -237,7 +238,10 @@
 \input{inledning/syfte.tex}
 \section{Rapportstruktur}
 \input{inledning/rapportstruktur.tex}
-
+% haha lol ugly hack but it works and we will use it everywhere >:)
+\let\clearpage\relax
+\let\cleardoublepage\clearpage
+\newpage
 \chapter{Teori}\label{chap:teori}
 \input{teori/main.tex}
 \section{Symbolisk exekvering}\label{sec:symbolic_execution}
@@ -246,7 +250,10 @@
 \input{teori/fuzzing.tex}
 \section{Exekveringsmotor}
 \input{teori/arkitektur_for_binaranalysverktyg.tex}
-
+% haha lol ugly hack but it works and we will use it everywhere >:)
+\let\clearpage\relax
+\let\cleardoublepage\clearpage
+\newpage
 \chapter{Existerande verktyg}\label{chap:existerande_verktyg}
 \input{existerande_verktyg/main.tex}
 \section{Statisk disassemblering}\label{sec:existerande-disasm}
@@ -280,6 +287,6 @@
 \chapter{Slutsats}\label{chap:slutsats}
 \input{slutsats/main.tex}
 
-\printbibliography{}
+\printbibliography[title=Referenser]
 
 \end{document}

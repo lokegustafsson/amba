@@ -88,7 +88,7 @@ på disk. Symbolisk input till AMBA i dess nuvarande kan inte skickas som
 programargument (\verb|argc|, \verb|argv|), miljövariabler (\verb|envp|) eller i
 form av symbolisk hårdvara (t.ex.\ registret TSC/Time Stamp Counter). Detta är
 inte en fundamental begränsning utan endast oimplementerad funktionalitet som
-lämnas som utvecklingsmöjlighet, se avsnittet \nameref{sec:futurework}.
+lämnas som utvecklingsmöjlighet, se avsnittet \nameref{sec:vidareutveckling}.
 
 En stor begränsning vid användandet av AMBA och mycket symbolisk fuzzing i
 allmänhet är hanterandet av program med väldigt många symboliska tillstånd.
@@ -173,7 +173,7 @@ i tillståndsutforskningen. Dessa kan anges med antingen
 \verb|"seed": "<förtursvärden>"| eller
 \verb|"host_path": "<värddatorsökväg till förtursvärden>"|.
 
-När AMBA körs med \lstinline{nix run . -- run path/to/a/recipe.json"} öppnas det
+När AMBA körs med \lstinline{nix run . -- run path/to/a/recipe.json} öppnas det
 grafiska gränssnittet samtidigt som QEMU/\stoe{} startas i bakgrunden.
 Grafuppdateringar skickas regelbundet tillbaka tills alla tillstånd utforskats
 eller programmet stänger ned. Både före och efter alla tillstånd utforskats kan
