@@ -340,7 +340,10 @@ fn new_lod_text_impl(
 		NodeMetadata::State {
 			amba_state_id,
 			s2e_state_id,
+			// concrete_inputs, // TODO: use
+			..
 		} => {
+			// ret.coarser(format!("{amba_state_id} ({s2e_state_id}) ({concrete_inputs:#?})"));
 			ret.coarser(format!("{amba_state_id} ({s2e_state_id})"));
 			ret.coarser(format!("{amba_state_id}"));
 		}
