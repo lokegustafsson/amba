@@ -285,14 +285,14 @@ fn draw_graph(
 				}
 				ColouringMode::Function => get_colour(graph.node_drawing_data[i].function),
 			};
-			let (bg_color, stroke) = if active_node_and_pan.map_or(false, |(node, _)| node == i) {
+			let (bg_colour, stroke) = if active_node_and_pan.map_or(false, |(node, _)| node == i) {
 				(style_selection.bg_fill, style_selection.stroke)
 			} else {
 				(default_colour, style_widgets.hovered.bg_stroke)
 			};
 			let node = draw_node(
 				ui,
-				bg_color,
+				bg_colour,
 				stroke,
 				pos,
 				node_size[i],
@@ -328,7 +328,7 @@ fn draw_graph(
 
 fn draw_node(
 	ui: &mut Ui,
-	bg_color: Colour32,
+	bg_colour: Colour32,
 	stroke: Stroke,
 	pos: egui::Pos2,
 	node_width: f32,
@@ -360,12 +360,12 @@ fn draw_node(
 
 	ui.put(rect, move |ui: &mut Ui| {
 		if lod_text.is_empty() {
-			ui.painter().rect_filled(rect, rounding, bg_color);
+			ui.painter().rect_filled(rect, rounding, bg_colour);
 			ui.painter().rect_stroke(rect, rounding, stroke);
 		} else {
 			egui::Frame::none()
 				.rounding(rounding)
-				.fill(bg_color)
+				.fill(bg_colour)
 				.stroke(stroke)
 				.inner_margin(egui::style::Margin::same(node_width * 0.1))
 				.show(ui, |ui| {
