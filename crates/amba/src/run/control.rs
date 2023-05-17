@@ -37,6 +37,7 @@ pub enum EmbedderMsg {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
 	WakeUp,
+	QemuShutdown,
 }
 
 pub struct Controller {
@@ -119,6 +120,9 @@ impl Controller {
 					if self.gui_context.is_none() {
 						return;
 					}
+					self.embedder_tx.as_ref().map(|tx| {
+						tx.send(EmbedderMsg::QemuShutdown);
+					});
 				}
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
 				ControllerMsg::UpdateEdges {
