@@ -4,7 +4,10 @@ use std::{
 	mem,
 	num::NonZeroU64,
 	ops::Deref,
-	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
+	sync::{
+		atomic::{AtomicU8, Ordering as MemoryOrdering},
+		Mutex, MutexGuard, RwLock, RwLockReadGuard,
+	},
 	time::Instant,
 };
 
@@ -22,6 +25,7 @@ pub struct Model {
 	raw_block_graph: RwLock<Graph2D>,
 	compressed_block_graph: RwLock<Graph2D>,
 	embedding_parameters: Mutex<EmbeddingParameters>,
+	graph_to_view: AtomicU8,
 	/// Model supports mixed read/write, but only by a single writer.
 	/// EXCLUDING `embedding_parameters` that can be written to by anyone.
 	modelwide_single_writer_lock: Mutex<()>,
@@ -36,6 +40,7 @@ impl Model {
 			raw_block_graph: RwLock::new(Graph2D::empty()),
 			compressed_block_graph: RwLock::new(Graph2D::empty()),
 			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
+			graph_to_view: AtomicU8::new(GraphToView::RawBlock as u8),
 			modelwide_single_writer_lock: Mutex::new(()),
 		}
 	}
@@ -153,16 +158,18 @@ impl Model {
 
 	pub fn run_layout_iterations(&self) -> EmbedderHasConverged {
 		let params: EmbeddingParameters = *self.embedding_parameters.lock().unwrap();
+		let graph_to_view = GraphToView::from_raw(self.graph_to_view.load(MemoryOrdering::SeqCst));
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
 		let timer = Instant::now();
 		let mut all_converged = EmbedderHasConverged::Yes;
 		const SUBSTEPS: usize = 100;
-		for graph in [
-			&self.raw_state_graph,
-			&self.raw_block_graph,
-			&self.compressed_block_graph,
-		] {
+		{
+			let graph: &RwLock<Graph2D> = match graph_to_view {
+				GraphToView::RawBlock => &self.raw_block_graph,
+				GraphToView::CompressedBlock => &self.compressed_block_graph,
+				GraphToView::State => &self.raw_state_graph,
+			};
 			let mut working_copy: Graph2D = graph.read().unwrap().clone();
 			working_copy.set_params(params);
 			all_converged = all_converged.and_also(working_copy.run_layout_iterations(SUBSTEPS));
@@ -181,7 +188,13 @@ impl Model {
 		all_converged
 	}
 
+	pub fn gui_set_graph_to_view(&self, which: GraphToView) {
+		self.graph_to_view
+			.store(which as u8, MemoryOrdering::SeqCst);
+	}
+
 	pub fn gui_get_graph(&self, which: GraphToView) -> RwLockReadGuard<'_, Graph2D> {
+		self.gui_set_graph_to_view(which);
 		match which {
 			GraphToView::RawBlock => self.raw_block_graph.read().unwrap(),
 			GraphToView::CompressedBlock => self.compressed_block_graph.read().unwrap(),
@@ -227,10 +240,11 @@ impl Model {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum GraphToView {
-	RawBlock,
-	CompressedBlock,
-	State,
+	RawBlock = 0,
+	CompressedBlock = 1,
+	State = 2,
 }
 
 impl fmt::Display for GraphToView {
@@ -241,6 +255,17 @@ impl fmt::Display for GraphToView {
 			GraphToView::State => "State Graph",
 		};
 		f.write_str(s)
+	}
+}
+
+impl GraphToView {
+	fn from_raw(num: u8) -> Self {
+		match num {
+			0 => Self::RawBlock,
+			1 => Self::CompressedBlock,
+			2 => Self::State,
+			d => panic!("invalid discriminant {d}"),
+		}
 	}
 }
 

@@ -27,7 +27,7 @@ pub enum ControllerMsg {
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
-	EmbeddingParamsUpdated,
+	EmbeddingParamsOrViewUpdated,
 	NewPriority(usize),
 }
 
@@ -132,7 +132,7 @@ impl Controller {
 						})
 					});
 				}
-				ControllerMsg::EmbeddingParamsUpdated => {
+				ControllerMsg::EmbeddingParamsOrViewUpdated => {
 					if let Some(tx) = self.embedder_tx.as_ref() {
 						let (Ok(_) | Err(_)) = tx.send(EmbedderMsg::WakeUp);
 					}
