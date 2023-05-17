@@ -7,6 +7,14 @@ use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, Parall
 use crate::LodText;
 
 #[derive(Clone, Debug)]
+pub struct NodeDrawingData {
+	pub state: usize,
+	pub scc_group: usize,
+	pub function: usize,
+	pub lod_text: LodText,
+}
+
+#[derive(Clone, Debug)]
 pub struct Graph2D {
 	pub(crate) node_positions: Vec<DVec2>,
 	pub(crate) node_lod_texts: Vec<LodText>,
