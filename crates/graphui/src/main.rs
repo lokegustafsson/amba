@@ -22,7 +22,11 @@ impl eframe::App for GraphTestGui {
 			if params_widget.changed() {
 				self.notify_params_changed.send(()).unwrap();
 			}
-			self.graph_widget.show(ui, &self.graph.read().unwrap());
+			self.graph_widget.show(
+				ui,
+				&self.graph.read().unwrap(),
+				graphui::ColouringMode::AllGrey,
+			);
 		});
 	}
 }

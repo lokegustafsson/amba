@@ -1,6 +1,6 @@
 use std::fmt;
 
-use egui::{self, Rect, Response, Sense, Ui, Widget};
+use egui::{self, Color32 as Colour32, Rect, Response, Sense, Stroke, Ui, Widget};
 use emath::Vec2;
 
 use crate::{EmbeddingParameters, Graph2D, LodText};
@@ -130,7 +130,7 @@ impl GraphWidget {
 		self.active_node_and_pan.map(|(node, _)| node)
 	}
 
-	pub fn show(&mut self, ui: &mut Ui, graph: &Graph2D) {
+	pub fn show(&mut self, ui: &mut Ui, graph: &Graph2D, colouring_mode: ColouringMode) {
 		egui::Frame::none()
 			.stroke(ui.visuals().widgets.inactive.fg_stroke)
 			.show(ui, |ui| {
@@ -154,6 +154,7 @@ impl GraphWidget {
 							&mut self.new_priority_node,
 							viewport,
 							graph,
+							colouring_mode,
 						)
 					});
 
@@ -236,6 +237,7 @@ fn draw_graph(
 	priority_node: &mut Option<usize>,
 	viewport: Rect,
 	graph: &Graph2D,
+	colouring_mode: ColouringMode,
 ) -> egui::Response {
 	let offset = ui.cursor().left_top().to_vec2();
 	let background = ui.allocate_rect(
@@ -274,9 +276,18 @@ fn draw_graph(
 
 	for (i, &pos) in scrollarea_node_pos.iter().enumerate() {
 		if expanded_viewport.contains(pos) {
+			let colours = match colouring_mode {
+				ColouringMode::AllGrey => (
+					style_widgets.hovered.bg_fill,
+					style_widgets.hovered.bg_stroke,
+				),
+				ColouringMode::ByState => todo!(),
+				ColouringMode::StronglyConnectedComponents => todo!(),
+				ColouringMode::Function => todo!(),
+			};
 			let node = draw_node(
 				ui,
-				style_widgets,
+				colours,
 				style_selection,
 				pos,
 				node_size[i],
@@ -313,7 +324,7 @@ fn draw_graph(
 
 fn draw_node(
 	ui: &mut Ui,
-	style_widgets: &egui::style::Widgets,
+	default_colours: (Colour32, Stroke),
 	style_selection: &egui::style::Selection,
 	pos: egui::Pos2,
 	node_width: f32,
@@ -328,10 +339,7 @@ fn draw_node(
 	let (bg_color, stroke) = if selected {
 		(style_selection.bg_fill, style_selection.stroke)
 	} else {
-		(
-			style_widgets.hovered.bg_fill,
-			style_widgets.hovered.bg_stroke,
-		)
+		default_colours
 	};
 	let (lod_text, lod_size, lod_center) = {
 		let useful_node_width = 0.6 * node_width;
