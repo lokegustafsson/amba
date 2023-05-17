@@ -436,18 +436,19 @@ fn glam_to_emath(v: glam::DVec2) -> emath::Vec2 {
 
 fn get_colour(i: usize) -> (Colour32, Stroke) {
 	// Not const because I can't call Default::default in a const context
+	#[rustfmt::skip]
 	let colours = [
-		(Colour32::from_rgb(0xA8, 0x58, 0x4D), Stroke::default()),
-		(Colour32::from_rgb(0xE1, 0xF5, 0xA2), Stroke::default()),
-		(Colour32::from_rgb(0xF5, 0x95, 0x89), Stroke::default()),
-		(Colour32::from_rgb(0x71, 0xA6, 0xF5), Stroke::default()),
-		(Colour32::from_rgb(0x56, 0x77, 0xA8), Stroke::default()),
-		(Colour32::from_rgb(0xA8, 0x97, 0x4D), Stroke::default()),
-		(Colour32::from_rgb(0x63, 0xF5, 0xEC), Stroke::default()),
-		(Colour32::from_rgb(0xF5, 0xE1, 0x89), Stroke::default()),
-		(Colour32::from_rgb(0xF5, 0x71, 0xE1), Stroke::default()),
-		(Colour32::from_rgb(0xA8, 0x56, 0x9C), Stroke::default()),
+		Colour32::from_rgb(0xA8, 0x58, 0x4D),
+		Colour32::from_rgb(0xE1, 0xF5, 0xA2),
+		Colour32::from_rgb(0xF5, 0x95, 0x89),
+		Colour32::from_rgb(0x71, 0xA6, 0xF5),
+		Colour32::from_rgb(0x56, 0x77, 0xA8),
+		Colour32::from_rgb(0xA8, 0x97, 0x4D),
+		Colour32::from_rgb(0x63, 0xF5, 0xEC),
+		Colour32::from_rgb(0xF5, 0xE1, 0x89),
+		Colour32::from_rgb(0xF5, 0x71, 0xE1),
+		Colour32::from_rgb(0xA8, 0x56, 0x9C),
 	];
 
-	colours[i % colours.len()]
+	(colours[i % colours.len()], Stroke::default())
 }
