@@ -9,7 +9,7 @@ use std::{
 };
 
 use disassembler::DisasmContext;
-use graphui::{EmbeddingParameters, Graph2D, LodText};
+use graphui::{EmbeddingParameters, Graph2D, LodText, NodeDrawingData};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
 use crate::control_flow::ControlFlowGraph;
@@ -48,45 +48,66 @@ impl Model {
 	) {
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
-		let mut new_lod_text =
-			|(metadata, has_self_edge)| new_lod_text_impl(&metadata, has_self_edge, disasm_context);
-
 		{
 			let mut block_control_flow = self.block_control_flow.write().unwrap();
 			for (from, to) in block_edges.into_iter() {
 				block_control_flow.update(from, to);
 			}
 
+			let (raw_nodes, raw_edges) = {
+				let (nodes, self_edge, edges) =
+					block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+				let scc_groups = block_control_flow.graph.inverse_tarjan();
+				(
+					nodes
+						.into_iter()
+						.zip(self_edge)
+						.enumerate()
+						.map(|(idx, (metadata, has_self_edge))| {
+							let NodeMetadata::BasicBlock {
+								symbolic_state_id,
+								..
+							} = metadata else {panic!()};
+							NodeDrawingData {
+								state: symbolic_state_id as _,
+								scc_group: scc_groups[&idx],
+								function: 0,
+								lod_text: new_lod_text_impl(
+									&metadata,
+									has_self_edge,
+									disasm_context,
+								),
+							}
+						})
+						.collect(),
+					edges,
+				)
+			};
 			self.raw_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with({
-					let (nodes, self_edge, edges) =
-						block_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
-					(
-						nodes
-							.into_iter()
-							.zip(self_edge)
-							.map(&mut new_lod_text)
-							.collect(),
-						edges,
-					)
-				});
+				.seeded_replace_self_with(raw_nodes, raw_edges);
+			let (compressed_nodes, compressed_edges) = {
+				let (nodes, self_edge, edges) =
+					block_control_flow.get_compressed_metadata_and_selfedge_and_sequential_edges();
+				(
+					nodes
+						.into_iter()
+						.zip(self_edge)
+						.map(|(metadata, has_self_edge)| NodeDrawingData {
+							state: 0,
+							scc_group: 0,
+							function: 0,
+							lod_text: new_lod_text_impl(&metadata, has_self_edge, disasm_context),
+						})
+						.collect(),
+					edges,
+				)
+			};
 			self.compressed_block_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with({
-					let (nodes, self_edge, edges) = block_control_flow
-						.get_compressed_metadata_and_selfedge_and_sequential_edges();
-					(
-						nodes
-							.into_iter()
-							.zip(self_edge)
-							.map(&mut new_lod_text)
-							.collect(),
-						edges,
-					)
-				});
+				.seeded_replace_self_with(compressed_nodes, compressed_edges);
 		}
 
 		{
@@ -95,21 +116,27 @@ impl Model {
 				state_control_flow.update(from, to);
 			}
 
+			let (state_nodes, state_edges) = {
+				let (nodes, self_edge, edges) =
+					state_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+				(
+					nodes
+						.into_iter()
+						.zip(self_edge)
+						.map(|(metadata, has_self_edge)| NodeDrawingData {
+							state: 0,
+							scc_group: 0,
+							function: 0,
+							lod_text: new_lod_text_impl(&metadata, has_self_edge, disasm_context),
+						})
+						.collect(),
+					edges,
+				)
+			};
 			self.raw_state_graph
 				.write()
 				.unwrap()
-				.seeded_replace_self_with({
-					let (nodes, self_edge, edges) =
-						state_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
-					(
-						nodes
-							.into_iter()
-							.zip(self_edge)
-							.map(&mut new_lod_text)
-							.collect(),
-						edges,
-					)
-				});
+				.seeded_replace_self_with(state_nodes, state_edges);
 		}
 		mem::drop(mutex);
 	}

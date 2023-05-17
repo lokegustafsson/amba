@@ -291,7 +291,7 @@ fn draw_graph(
 				style_selection,
 				pos,
 				node_size[i],
-				&graph.node_lod_texts[i],
+				&graph.node_drawing_data[i].lod_text,
 				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);
