@@ -112,8 +112,8 @@ impl Default for GraphWidget {
 }
 
 impl GraphWidget {
-	pub fn deselect(&mut self) {
-		self.active_node_and_pan = None;
+	pub fn reset_view(&mut self) {
+		*self = Self::default();
 	}
 
 	pub fn active_node_id(&self) -> Option<usize> {

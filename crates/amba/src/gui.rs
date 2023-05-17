@@ -79,39 +79,32 @@ impl App for Gui {
 			ui.horizontal(|ui| {
 				ui.heading("Drawing parameters");
 				let params_widget = ui.add(&mut *self.model.gui_lock_params());
-				let view_changed = {
-					let mut local_view = self.view;
-					egui::ComboBox::from_label("")
-						.selected_text(format!("{}", local_view))
-						.show_ui(ui, |ui| {
-							let first = ui.selectable_value(
-								&mut local_view,
-								GraphToView::RawBlock,
-								"Raw Basic Block Graph",
-							);
-							let second = ui.selectable_value(
-								&mut local_view,
-								GraphToView::CompressedBlock,
-								"Compressed Block Graph",
-							);
-							let third = ui.selectable_value(
-								&mut local_view,
-								GraphToView::State,
-								"State Graph",
-							);
+				let view_changed = egui::ComboBox::from_label("")
+					.selected_text(format!("{}", self.view))
+					.show_ui(ui, |ui| {
+						let first = ui.selectable_value(
+							&mut self.view,
+							GraphToView::RawBlock,
+							"Raw Basic Block Graph",
+						);
+						let second = ui.selectable_value(
+							&mut self.view,
+							GraphToView::CompressedBlock,
+							"Compressed Block Graph",
+						);
+						let third =
+							ui.selectable_value(&mut self.view, GraphToView::State, "State Graph");
 
-							if first.clicked() || second.clicked() || third.clicked() {
-								self.graph_widget.deselect();
-								self.colouring_mode = ColouringMode::AllGrey;
-							}
-						});
-					let view_changed = local_view != self.view;
-					if view_changed {
-						self.view = local_view;
-						self.model.gui_set_graph_to_view(local_view);
-					}
-					view_changed
-				};
+						first.clicked() || second.clicked() || third.clicked()
+					})
+					.inner
+					.unwrap_or(false);
+
+				if view_changed {
+					self.graph_widget.reset_view();
+					self.colouring_mode = ColouringMode::AllGrey;
+					self.model.gui_set_graph_to_view(self.view);
+				}
 				if params_widget.changed() || view_changed {
 					self.controller_tx
 						.send(ControllerMsg::EmbeddingParamsOrViewUpdated)
