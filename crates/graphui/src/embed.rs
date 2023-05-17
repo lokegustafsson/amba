@@ -129,7 +129,10 @@ impl Graph2D {
 		edges: Vec<(usize, usize)>,
 	) {
 		if !nodes.is_empty() {
-			assert_eq!(Self::connected_components_count(nodes.len(), &edges), 1);
+			assert_eq!(
+				Self::connected_components_count(nodes.len(), &edges),
+				1
+			);
 		}
 		let num_nodes = nodes.len();
 		let old = mem::replace(self, Self::new(nodes, edges));
@@ -148,7 +151,10 @@ impl Graph2D {
 		if nodes.is_empty() {
 			return Self::empty();
 		}
-		assert_eq!(Self::connected_components_count(nodes.len(), &edges), 1);
+		assert_eq!(
+			Self::connected_components_count(nodes.len(), &edges),
+			1
+		);
 
 		Self {
 			node_positions: Self::initial_node_positions(nodes.len(), &edges),

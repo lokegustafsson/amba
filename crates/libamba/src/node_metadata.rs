@@ -32,11 +32,11 @@ impl From<&NodeMetadataFFI> for ipc::NodeMetadata {
 				let concrete_inputs = state_concrete_inputs.into();
 
 				ipc::NodeMetadata::State {
-				amba_state_id,
-				s2e_state_id,
-				concrete_inputs,
+					amba_state_id,
+					s2e_state_id,
+					concrete_inputs,
+				}
 			}
-			},
 			1 => ipc::NodeMetadata::BasicBlock {
 				symbolic_state_id: amba_state_id,
 				basic_block_vaddr: NonZeroU64::new(basic_block_vaddr),
@@ -73,7 +73,13 @@ pub struct ConcreteInputsFFI {
 }
 
 impl From<&ConcreteInputsFFI> for Vec<(String, Vec<u8>)> {
-	fn from(ConcreteInputsFFI { names, byte_counts, bytes }: &ConcreteInputsFFI) -> Self {
+	fn from(
+		ConcreteInputsFFI {
+			names,
+			byte_counts,
+			bytes,
+		}: &ConcreteInputsFFI,
+	) -> Self {
 		let mut concrete_inputs: Vec<(String, Vec<u8>)> = Vec::new();
 		let bytes_slice = bytes.as_slice();
 		let mut byte_index = 0;
@@ -86,13 +92,12 @@ impl From<&ConcreteInputsFFI> for Vec<(String, Vec<u8>)> {
 
 		for (i, name) in names.iter().enumerate() {
 			let byte_count = *byte_counts.get(i).unwrap() as usize;
-			let this_bytes = &bytes_slice[byte_index..byte_index+byte_count];
+			let this_bytes = &bytes_slice[byte_index..byte_index + byte_count];
 			let elem = (name.to_string(), this_bytes.to_vec());
 			concrete_inputs.push(elem);
 			byte_index += byte_count;
 		}
 
 		concrete_inputs
-
 	}
 }
