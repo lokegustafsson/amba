@@ -18,10 +18,13 @@ void SymbolicGraph::onStateFork(
 ) {
 	const auto s2e_state_id = control_flow::getStateIdS2E(old_state);
 	const auto amba_state_id = this->getStateIdAmba(s2e_state_id);
+	ConcreteInputs parent_concrete_inputs = ConcreteInputs();
+	bool parent_success = old_state->getSymbolicSolution(parent_concrete_inputs);
+	AMBA_ASSERT(parent_success);
 	const auto from = (StateMetadata) {
 		.amba_state_id = amba_state_id,
 		.s2e_state_id = s2e_state_id,
-		.concrete_inputs = ConcreteInputs(),
+		.concrete_inputs = parent_concrete_inputs,
 	};
 
 	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
