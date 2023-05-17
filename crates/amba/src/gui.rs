@@ -102,38 +102,61 @@ impl App for Gui {
 
 						if first.clicked() || second.clicked() || third.clicked() {
 							self.graph_widget.deselect();
+							self.colouring_mode = ColouringMode::AllGrey;
 						}
 					});
-				if self.view == GraphToView::RawBlock {
-					// Required due to both dropdowns having the same label
-					ui.push_id(ui.id(), |ui| {
-						egui::ComboBox::from_label("")
-							.selected_text(format!("{}", self.colouring_mode))
-							.show_ui(ui, |ui| {
-								ui.selectable_value(
-									&mut self.colouring_mode,
-									ColouringMode::AllGrey,
-									"All grey",
-								);
-								ui.selectable_value(
-									&mut self.colouring_mode,
-									ColouringMode::ByState,
-									"By state",
-								);
-								ui.selectable_value(
-									&mut self.colouring_mode,
-									ColouringMode::StronglyConnectedComponents,
-									"Strongly Connected Components",
-								);
-								ui.selectable_value(
-									&mut self.colouring_mode,
-									ColouringMode::Function,
-									"By function (requires debug data)",
-								);
-							})
-					});
-				} else {
-					self.colouring_mode = ColouringMode::AllGrey;
+				match self.view {
+					GraphToView::RawBlock => {
+						// Required due to both dropdowns having the same label
+						ui.push_id(ui.id(), |ui| {
+							egui::ComboBox::from_label("")
+								.selected_text(format!("{}", self.colouring_mode))
+								.show_ui(ui, |ui| {
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::AllGrey,
+										"All grey",
+									);
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::ByState,
+										"By state",
+									);
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::StronglyConnectedComponents,
+										"Strongly Connected Components",
+									);
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::Function,
+										"By function (requires debug data)",
+									);
+								})
+						});
+					}
+					GraphToView::CompressedBlock => {
+						// Required due to both dropdowns having the same label
+						ui.push_id(ui.id(), |ui| {
+							egui::ComboBox::from_label("")
+								.selected_text(format!("{}", self.colouring_mode))
+								.show_ui(ui, |ui| {
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::AllGrey,
+										"All grey",
+									);
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::ByState,
+										"By state",
+									);
+								})
+						});
+					}
+					GraphToView::State => {
+						self.colouring_mode = ColouringMode::AllGrey;
+					}
 				}
 			})
 		});
@@ -161,7 +184,7 @@ impl App for Gui {
 		}
 
 		egui::CentralPanel::default().show(ctx, |ui| {
-			self.graph_widget.show(ui, &graph, self.colouring_mode)
+			self.graph_widget.show(ui, &graph, self.colouring_mode);
 		});
 
 		if let Some(new_priority) = mem::take(&mut self.graph_widget.new_priority_node) {
