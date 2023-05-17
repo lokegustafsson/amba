@@ -276,25 +276,27 @@ fn draw_graph(
 
 	for (i, &pos) in scrollarea_node_pos.iter().enumerate() {
 		if expanded_viewport.contains(pos) {
-			let colours = match colouring_mode {
-				ColouringMode::AllGrey => (
-					style_widgets.hovered.bg_fill,
-					style_widgets.hovered.bg_stroke,
-				),
+			let default_colour = match colouring_mode {
+				ColouringMode::AllGrey => style_widgets.hovered.bg_fill,
+
 				ColouringMode::ByState => get_colour(graph.node_drawing_data[i].state),
 				ColouringMode::StronglyConnectedComponents => {
 					get_colour(graph.node_drawing_data[i].scc_group)
 				}
 				ColouringMode::Function => get_colour(graph.node_drawing_data[i].function),
 			};
+			let (bg_color, stroke) = if active_node_and_pan.map_or(false, |(node, _)| node == i) {
+				(style_selection.bg_fill, style_selection.stroke)
+			} else {
+				(default_colour, style_widgets.hovered.bg_stroke)
+			};
 			let node = draw_node(
 				ui,
-				colours,
-				style_selection,
+				bg_color,
+				stroke,
 				pos,
 				node_size[i],
 				&graph.node_drawing_data[i].lod_text,
-				active_node_and_pan.map_or(false, |(node, _)| node == i),
 				offset,
 			);
 			if node.double_clicked() {
@@ -326,23 +328,17 @@ fn draw_graph(
 
 fn draw_node(
 	ui: &mut Ui,
-	default_colours: (Colour32, Stroke),
-	style_selection: &egui::style::Selection,
+	bg_color: Colour32,
+	stroke: Stroke,
 	pos: egui::Pos2,
 	node_width: f32,
 	text: &LodText,
-	selected: bool,
 	offset: Vec2,
 ) -> Response {
 	let rect =
 		Rect::from_center_size(pos, egui::Vec2::new(node_width, node_width)).translate(offset);
 	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
 	let rounding = node_width / 5.0;
-	let (bg_color, stroke) = if selected {
-		(style_selection.bg_fill, style_selection.stroke)
-	} else {
-		default_colours
-	};
 	let (lod_text, lod_size, lod_center) = {
 		let useful_node_width = 0.6 * node_width;
 		const SHAPE: f32 = 2.0;
@@ -434,8 +430,7 @@ fn glam_to_emath(v: glam::DVec2) -> emath::Vec2 {
 	emath::Vec2::from(<[f32; 2]>::from(v.as_vec2()))
 }
 
-fn get_colour(i: usize) -> (Colour32, Stroke) {
-	// Not const because I can't call Default::default in a const context
+const fn get_colour(i: usize) -> Colour32 {
 	#[rustfmt::skip]
 	let colours = [
 		Colour32::from_rgb(0xA8, 0x58, 0x4D),
@@ -450,5 +445,5 @@ fn get_colour(i: usize) -> (Colour32, Stroke) {
 		Colour32::from_rgb(0xA8, 0x56, 0x9C),
 	];
 
-	(colours[i % colours.len()], Stroke::default())
+	colours[i % colours.len()]
 }
