@@ -281,9 +281,11 @@ fn draw_graph(
 					style_widgets.hovered.bg_fill,
 					style_widgets.hovered.bg_stroke,
 				),
-				ColouringMode::ByState => todo!(),
-				ColouringMode::StronglyConnectedComponents => todo!(),
-				ColouringMode::Function => todo!(),
+				ColouringMode::ByState => get_colour(graph.node_drawing_data[i].state),
+				ColouringMode::StronglyConnectedComponents => {
+					get_colour(graph.node_drawing_data[i].scc_group)
+				}
+				ColouringMode::Function => get_colour(graph.node_drawing_data[i].function),
 			};
 			let node = draw_node(
 				ui,
