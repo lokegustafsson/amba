@@ -64,16 +64,6 @@ impl Widget for &mut EmbeddingParameters {
 				.union(
 					ui.add(
 						egui::Slider::new(
-							&mut self.repulsion_approximation,
-							0.0..=EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
-						)
-						.step_by(EmbeddingParameters::MAX_REPULSION_APPROXIMATION / STEPS)
-						.text("repulsion approximaton"),
-					),
-				)
-				.union(
-					ui.add(
-						egui::Slider::new(
 							&mut self.gravity,
 							0.0..=EmbeddingParameters::MAX_GRAVITY,
 						)

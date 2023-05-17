@@ -1,10 +1,60 @@
-use std::mem;
+use std::{
+	cmp::{Ordering, PartialEq},
+	mem,
+};
 
 use fastrand::Rng;
 use glam::DVec2;
 use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 use crate::LodText;
+
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+pub struct EmbeddingParameters {
+	pub noise: f64,
+	pub attraction: f64,
+	pub repulsion: f64,
+	pub gravity: f64,
+	pub statistic_updates_per_second: f64,
+}
+impl EmbeddingParameters {
+	pub const MAX_ATTRACTION: f64 = 0.2;
+	pub const MAX_GRAVITY: f64 = 2.0;
+	pub const MAX_NOISE: f64 = 20.0;
+	pub const MAX_REPULSION: f64 = 2.0;
+}
+impl Default for EmbeddingParameters {
+	fn default() -> Self {
+		Self {
+			noise: 0.0,
+			attraction: 0.1,
+			repulsion: 1.0,
+			gravity: 0.5,
+			statistic_updates_per_second: 1.0,
+		}
+	}
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum EmbedderHasConverged {
+	Yes,
+	No,
+}
+impl EmbedderHasConverged {
+	pub fn and_also(self, other: Self) -> Self {
+		match self {
+			Self::Yes => other,
+			Self::No => Self::No,
+		}
+	}
+
+	pub fn converged(self) -> bool {
+		match self {
+			Self::Yes => true,
+			Self::No => false,
+		}
+	}
+}
 
 #[derive(Clone, Debug)]
 pub struct NodeDrawingData {
@@ -21,6 +71,12 @@ pub struct Graph2D {
 	pub(crate) edges: Vec<(usize, usize)>,
 	pub(crate) min: DVec2,
 	pub(crate) max: DVec2,
+	// Convergence variables
+	params: EmbeddingParameters,
+	repulsion_approximation: f64,
+	time_step: f64,
+	best_potential_energy: f64,
+	iterations_since_improved_best_potential_energy: usize,
 }
 
 impl Default for Graph2D {
@@ -29,36 +85,14 @@ impl Default for Graph2D {
 	}
 }
 
-#[derive(Clone, Copy)]
-pub struct EmbeddingParameters {
-	pub noise: f64,
-	pub attraction: f64,
-	pub repulsion: f64,
-	pub gravity: f64,
-	pub repulsion_approximation: f64,
-	pub statistic_updates_per_second: f64,
-}
-impl EmbeddingParameters {
-	pub const MAX_ATTRACTION: f64 = 0.2;
-	pub const MAX_GRAVITY: f64 = 2.0;
-	pub const MAX_NOISE: f64 = 20.0;
-	pub const MAX_REPULSION: f64 = 2.0;
-	pub const MAX_REPULSION_APPROXIMATION: f64 = 0.4;
-}
-impl Default for EmbeddingParameters {
-	fn default() -> Self {
-		Self {
-			noise: 0.0,
-			attraction: 0.1,
-			repulsion: 1.0,
-			gravity: 0.5,
-			repulsion_approximation: 0.4,
-			statistic_updates_per_second: 1.0,
-		}
-	}
-}
-
 impl Graph2D {
+	const BARNES_HUT_CUTOFF: f64 = 0.1;
+	const ITERATIONS_PER_LEVEL: usize = 10;
+	const MAX_REPULSION_APPROXIMATION: f64 = 0.6;
+	const MAX_TIME_STEP: f64 = 1.0;
+	const STEP_REPULSION_APPROXIMATION: f64 = 0.1;
+	const STEP_TIME_STEP: f64 = 0.1;
+
 	pub fn empty() -> Self {
 		Self {
 			node_positions: Vec::new(),
@@ -66,7 +100,24 @@ impl Graph2D {
 			edges: Vec::new(),
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
+			params: EmbeddingParameters::default(),
+			repulsion_approximation: Self::MAX_REPULSION_APPROXIMATION,
+			time_step: Self::MAX_TIME_STEP,
+			best_potential_energy: f64::INFINITY,
+			iterations_since_improved_best_potential_energy: 0,
 		}
+	}
+
+	pub fn set_params(&mut self, mut params: EmbeddingParameters) {
+		params.statistic_updates_per_second = 1.0;
+		if self.params.partial_cmp(&params).unwrap() == Ordering::Equal {
+			return;
+		}
+		self.params = params;
+		self.repulsion_approximation = Self::MAX_REPULSION_APPROXIMATION;
+		self.time_step = Self::MAX_TIME_STEP;
+		self.best_potential_energy = f64::INFINITY;
+		self.iterations_since_improved_best_potential_energy = 0;
 	}
 
 	/// Equivalent to `*self = Graph2D::new(node_count, edges)`, but with a better
@@ -98,8 +149,7 @@ impl Graph2D {
 			node_positions: Self::initial_node_positions(nodes.len(), &edges),
 			node_drawing_data: nodes,
 			edges,
-			min: DVec2::ZERO,
-			max: DVec2::ZERO,
+			..Self::empty()
 		}
 	}
 
@@ -133,16 +183,16 @@ impl Graph2D {
 			.collect()
 	}
 
-	pub fn run_layout_iterations(&mut self, iterations: usize, params: EmbeddingParameters) -> f64 {
+	pub fn run_layout_iterations(&mut self, iterations: usize) -> EmbedderHasConverged {
 		if self.node_positions.is_empty() {
-			return 0.0;
+			return EmbedderHasConverged::Yes;
 		}
 		let mut node_velocity = vec![DVec2::ZERO; self.node_positions.len()];
 		let mut node_accel = vec![DVec2::ZERO; self.node_positions.len()];
 		let mut tree_buffer =
 			vec![BarnesHutRTree::default(); 2 * self.node_positions.len().next_power_of_two()];
 		let rng = &Rng::new();
-		let mut total_delta_pos: f64 = 0.0;
+		let mut potential_energy: f64 = 0.0;
 
 		for temperature in (0..iterations)
 			.map(|t| (t as f64 / iterations as f64).powi(2))
@@ -154,35 +204,50 @@ impl Graph2D {
 				const EDGE_ATTRACT_EXPONENT: f64 = 0.2;
 				let delta = self.node_positions[b] - self.node_positions[a];
 				let scale = delta.length().powf(EDGE_ATTRACT_EXPONENT);
-				let push = params.attraction * delta * scale;
+				// `F = k D^{1.2}`
+				let push = self.params.attraction * delta * scale;
 				node_accel[a] += push;
 				node_accel[b] -= push;
+				// `E = k D^{2.2} / 2.2
+				potential_energy +=
+					self.params.attraction * delta.length_squared() * scale / (2.0 + scale);
 			}
 			// Nodes repell with `F \propto D^-2`
-			if params.repulsion_approximation > 0.0 {
+			if self.repulsion_approximation > Self::BARNES_HUT_CUTOFF {
 				BarnesHutRTree::build_in(&mut tree_buffer, &mut self.node_positions.clone());
-				node_accel
+				potential_energy += node_accel
 					.par_iter_mut()
 					.zip_eq(&self.node_positions)
-					.for_each(|(accel, &pos)| {
-						*accel += params.repulsion
+					.map(|(accel, &pos)| {
+						let mut pot_en = 0.0;
+						*accel += self.params.repulsion
 							* BarnesHutRTree::force_on(
 								pos,
 								&tree_buffer,
-								params.repulsion_approximation.powi(2),
+								self.repulsion_approximation.powi(2),
+								&mut pot_en,
 							);
-					});
+						pot_en
+					})
+					.sum::<f64>();
 			} else {
-				node_accel
+				potential_energy += node_accel
 					.par_iter_mut()
 					.zip_eq(&self.node_positions)
-					.for_each(|(a_accel, &a_pos)| {
+					.map(|(a_accel, &a_pos)| {
+						let mut pot_en = 0.0;
 						for &b_pos in &self.node_positions {
 							let a_to_b = b_pos - a_pos;
-							let push = params.repulsion * a_to_b / (1.0 + a_to_b.length().powi(3));
+							let a_to_b_len = a_to_b.length();
+							// `F = k D / (1 + D^3)`
+							let push = self.params.repulsion * a_to_b / (1.0 + a_to_b_len.powi(3));
 							*a_accel -= push;
+							// `E = k / (1 + D)`
+							pot_en += self.params.repulsion / (1.0 + a_to_b_len);
 						}
-					});
+						pot_en
+					})
+					.sum::<f64>();
 			}
 			let a0 = node_accel[0];
 			for ((pos, vel), &(mut accel)) in self
@@ -193,8 +258,9 @@ impl Graph2D {
 				.skip(1)
 			{
 				// Gravity
-				accel += DVec2::Y * params.gravity;
+				accel += DVec2::Y * self.params.gravity;
 				accel -= a0;
+				potential_energy -= self.params.gravity * pos.y;
 				// Opposite accel and velocity => exponentially reduce velocity
 				if accel.dot(*vel) > 0.0 {
 					const VELOCITY_SPEEDUP: f64 = 1.1;
@@ -203,10 +269,10 @@ impl Graph2D {
 					const VELOCITY_SLOWDOWN: f64 = 0.9;
 					*vel *= VELOCITY_SLOWDOWN;
 				}
-				*vel += accel;
-				let delta_pos = *vel + random_dvec2(rng) * (params.noise * temperature);
+				*vel += accel * self.time_step;
+				let delta_pos =
+					*vel * self.time_step + random_dvec2(rng) * (self.params.noise * temperature);
 				*pos += delta_pos;
-				total_delta_pos += delta_pos.length_squared();
 				if !pos.is_finite() {
 					tracing::warn!("infinite node position; resetting graph");
 					*self = Self {
@@ -216,10 +282,9 @@ impl Graph2D {
 						),
 						node_drawing_data: mem::take(&mut self.node_drawing_data),
 						edges: mem::take(&mut self.edges),
-						min: DVec2::ZERO,
-						max: DVec2::ZERO,
+						..Self::empty()
 					};
-					return f64::INFINITY;
+					return EmbedderHasConverged::No;
 				}
 			}
 			let rotate_down_center_of_mass = {
@@ -242,7 +307,36 @@ impl Graph2D {
 			.fold((DVec2::ZERO, DVec2::ZERO), |(min, max), &val| {
 				(min.min(val), max.max(val))
 			});
-		total_delta_pos
+
+		if self.params.noise > 0.0 {
+			self.best_potential_energy = potential_energy;
+			return EmbedderHasConverged::No;
+		}
+
+		if potential_energy < self.best_potential_energy {
+			self.best_potential_energy = potential_energy;
+			self.iterations_since_improved_best_potential_energy = 0;
+		} else {
+			self.iterations_since_improved_best_potential_energy += 1;
+			if self.iterations_since_improved_best_potential_energy > 0
+				&& self.iterations_since_improved_best_potential_energy % Self::ITERATIONS_PER_LEVEL
+					== 0
+			{
+				self.repulsion_approximation = (self.repulsion_approximation
+					- Self::STEP_REPULSION_APPROXIMATION)
+					.clamp(0.0, Self::MAX_REPULSION_APPROXIMATION);
+				if self.repulsion_approximation == 0.0 {
+					self.time_step = (self.time_step / 2.0 - Self::STEP_TIME_STEP)
+						.clamp(0.0, Self::MAX_TIME_STEP);
+				}
+			}
+		}
+
+		if self.time_step == 0.0 {
+			EmbedderHasConverged::Yes
+		} else {
+			EmbedderHasConverged::No
+		}
 	}
 }
 
@@ -340,9 +434,16 @@ impl BarnesHutRTree {
 		}
 	}
 
-	fn force_on(pos: DVec2, tree: &[Self], approximation2: f64) -> DVec2 {
+	fn force_on(
+		pos: DVec2,
+		tree: &[Self],
+		approximation2: f64,
+		potential_energy: &mut f64,
+	) -> DVec2 {
 		match tree[0] {
-			Self::Leaf { point_mass } => Self::force_on_from_source(point_mass, pos),
+			Self::Leaf { point_mass } => {
+				Self::force_on_from_source(1.0, point_mass, pos, potential_energy)
+			}
 			Self::Split {
 				mass,
 				center_of_mass,
@@ -351,19 +452,27 @@ impl BarnesHutRTree {
 				let mid = (tight_bounding_box[0] + tight_bounding_box[1]) / 2.0;
 				let long_side = (tight_bounding_box[1] - tight_bounding_box[0]).max_element();
 				if approximation2 * mid.distance_squared(pos) > long_side * long_side {
-					mass * Self::force_on_from_source(center_of_mass, pos)
+					Self::force_on_from_source(mass, center_of_mass, pos, potential_energy)
 				} else {
 					let (_, tree_children) = tree.split_at(1);
 					let (tree_left, tree_right) = tree_children.split_at(tree_children.len() / 2);
-					Self::force_on(pos, tree_left, approximation2)
-						+ Self::force_on(pos, tree_right, approximation2)
+					Self::force_on(pos, tree_left, approximation2, potential_energy)
+						+ Self::force_on(pos, tree_right, approximation2, potential_energy)
 				}
 			}
 		}
 	}
 
-	fn force_on_from_source(source: DVec2, target: DVec2) -> DVec2 {
+	fn force_on_from_source(
+		mass: f64,
+		source: DVec2,
+		target: DVec2,
+		potential_energy: &mut f64,
+	) -> DVec2 {
 		let delta = target - source;
-		delta / (1.0 + delta.length().powi(3))
+		let delta_len = delta.length();
+		let force = mass * delta / (1.0 + delta_len.powi(3));
+		*potential_energy += mass / (1.0 + delta_len);
+		force
 	}
 }

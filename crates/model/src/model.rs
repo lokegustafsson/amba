@@ -3,13 +3,13 @@ use std::{
 	fmt::{self, Debug},
 	mem,
 	num::NonZeroU64,
-	ops::{BitOrAssign, Deref},
+	ops::Deref,
 	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
 	time::Instant,
 };
 
 use disassembler::DisasmContext;
-use graphui::{EmbeddingParameters, Graph2D, LodText, NodeDrawingData};
+use graphui::{EmbedderHasConverged, EmbeddingParameters, Graph2D, LodText, NodeDrawingData};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
 use crate::control_flow::ControlFlowGraph;
@@ -151,12 +151,12 @@ impl Model {
 		mem::drop(mutex);
 	}
 
-	pub fn run_layout_iterations(&self) -> LayoutMadeProgress {
+	pub fn run_layout_iterations(&self) -> EmbedderHasConverged {
 		let params: EmbeddingParameters = *self.embedding_parameters.lock().unwrap();
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
 		let timer = Instant::now();
-		let mut total_delta_pos = 0.0;
+		let mut all_converged = EmbedderHasConverged::Yes;
 		const SUBSTEPS: usize = 100;
 		for graph in [
 			&self.raw_state_graph,
@@ -164,36 +164,21 @@ impl Model {
 			&self.compressed_block_graph,
 		] {
 			let mut working_copy: Graph2D = graph.read().unwrap().clone();
-			total_delta_pos += working_copy.run_layout_iterations(SUBSTEPS, params);
+			working_copy.set_params(params);
+			all_converged = all_converged.and_also(working_copy.run_layout_iterations(SUBSTEPS));
 			*graph.write().unwrap() = working_copy;
 		}
-		let (ret, updates_per_second, delta_repulsion_approximation) = if total_delta_pos < 0.1 {
-			(LayoutMadeProgress::NoJustTiny, 0.0, 0.0)
-		} else if total_delta_pos < 100.0 {
-			(
-				LayoutMadeProgress::YesALittle,
-				timer.elapsed().as_secs_f64().recip(),
-				-0.01,
-			)
-		} else {
-			(
-				LayoutMadeProgress::YesALot,
-				timer.elapsed().as_secs_f64().recip(),
-				0.01,
-			)
+		let updates_per_second = match all_converged {
+			EmbedderHasConverged::Yes => 0.0,
+			EmbedderHasConverged::No => timer.elapsed().as_secs_f64().recip(),
 		};
 
 		mem::drop(mutex);
 		{
 			let mut params = self.embedding_parameters.lock().unwrap();
 			params.statistic_updates_per_second = SUBSTEPS as f64 * updates_per_second;
-			params.repulsion_approximation =
-				(params.repulsion_approximation + delta_repulsion_approximation).clamp(
-					0.0,
-					EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
-				);
 		}
-		ret
+		all_converged
 	}
 
 	pub fn gui_get_graph(&self, which: GraphToView) -> RwLockReadGuard<'_, Graph2D> {
@@ -256,22 +241,6 @@ impl fmt::Display for GraphToView {
 			GraphToView::State => "State Graph",
 		};
 		f.write_str(s)
-	}
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum LayoutMadeProgress {
-	YesALot,
-	YesALittle,
-	NoJustTiny,
-}
-impl BitOrAssign for LayoutMadeProgress {
-	fn bitor_assign(&mut self, rhs: Self) {
-		match (&self, &rhs) {
-			(Self::NoJustTiny, _) => *self = rhs,
-			(Self::YesALittle, Self::YesALot) => *self = Self::YesALot,
-			(..) => {}
-		}
 	}
 }
 

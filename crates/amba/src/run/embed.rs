@@ -4,7 +4,8 @@ use std::sync::mpsc;
 
 use disassembler::DisasmContext;
 use eframe::egui::Context;
-use model::{LayoutMadeProgress, Model};
+use graphui::EmbedderHasConverged;
+use model::Model;
 
 use crate::{run::control::EmbedderMsg, SessionConfig};
 
@@ -49,8 +50,8 @@ pub fn run_embedder(
 			}
 		}
 		match model.run_layout_iterations() {
-			LayoutMadeProgress::YesALot | LayoutMadeProgress::YesALittle => {}
-			LayoutMadeProgress::NoJustTiny => blocking = true,
+			EmbedderHasConverged::Yes => blocking = true,
+			EmbedderHasConverged::No => {}
 		}
 
 		if let Some(ctx) = gui_context.as_ref() {
