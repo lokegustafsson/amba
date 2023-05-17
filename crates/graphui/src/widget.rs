@@ -430,9 +430,8 @@ fn glam_to_emath(v: glam::DVec2) -> emath::Vec2 {
 	emath::Vec2::from(<[f32; 2]>::from(v.as_vec2()))
 }
 
-const fn get_colour(i: usize) -> Colour32 {
-	#[rustfmt::skip]
-	let colours = [
+fn get_colour(i: usize) -> Colour32 {
+	const COLOURS: [Colour32; 10] = [
 		Colour32::from_rgb(0xA8, 0x58, 0x4D),
 		Colour32::from_rgb(0xE1, 0xF5, 0xA2),
 		Colour32::from_rgb(0xF5, 0x95, 0x89),
@@ -445,5 +444,5 @@ const fn get_colour(i: usize) -> Colour32 {
 		Colour32::from_rgb(0xA8, 0x56, 0x9C),
 	];
 
-	colours[i % colours.len()]
+	COLOURS[i % COLOURS.len()]
 }
