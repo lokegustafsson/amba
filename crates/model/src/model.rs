@@ -97,11 +97,8 @@ impl Model {
 						.zip(self_edge)
 						.map(|(metadata, has_self_edge)| {
 							let NodeMetadata::CompressedBasicBlock(ref block) = metadata else {panic!()};
-							let state = block
-								.symbolic_state_ids
-								.first()
-								.copied()
-								.unwrap_or(0) as usize;
+							let state =
+								block.symbolic_state_ids.first().copied().unwrap_or(0) as usize;
 							NodeDrawingData {
 								state,
 								scc_group: 0,
