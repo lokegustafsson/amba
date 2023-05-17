@@ -4,4 +4,4 @@ mod widget;
 
 pub use embed::{EmbeddingParameters, Graph2D};
 pub use lod::LodText;
-pub use widget::GraphWidget;
+pub use widget::{ColouringMode, GraphWidget};

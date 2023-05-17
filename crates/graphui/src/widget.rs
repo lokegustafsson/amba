@@ -3,6 +3,14 @@ use emath::Vec2;
 
 use crate::{EmbeddingParameters, Graph2D, LodText};
 
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum ColouringMode {
+	AllGrey,
+	ByState,
+	StronglyConnectedComponents,
+	Function,
+}
+
 impl Widget for &mut EmbeddingParameters {
 	fn ui(self, ui: &mut Ui) -> Response {
 		const STEPS: f64 = 10.0;
