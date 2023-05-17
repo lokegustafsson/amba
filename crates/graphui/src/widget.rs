@@ -1,3 +1,5 @@
+use std::fmt;
+
 use egui::{self, Rect, Response, Sense, Ui, Widget};
 use emath::Vec2;
 
@@ -9,6 +11,19 @@ pub enum ColouringMode {
 	ByState,
 	StronglyConnectedComponents,
 	Function,
+}
+
+impl fmt::Display for ColouringMode {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		match self {
+			ColouringMode::AllGrey => write!(f, "All grey"),
+			ColouringMode::ByState => write!(f, "By state"),
+			ColouringMode::StronglyConnectedComponents => {
+				write!(f, "Strongly connected components")
+			}
+			ColouringMode::Function => write!(f, "Function"),
+		}
+	}
 }
 
 impl Widget for &mut EmbeddingParameters {
