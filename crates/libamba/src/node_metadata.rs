@@ -64,7 +64,7 @@ impl From<&NodeMetadataFFIPair> for (ipc::NodeMetadata, ipc::NodeMetadata) {
 #[repr(C)]
 pub struct ConcreteInputsFFI {
 	pub names: cxx::UniquePtr<CxxVector<CxxString>>,
-	pub byte_counts: cxx::UniquePtr<CxxVector<u8>>,
+	pub byte_counts: cxx::UniquePtr<CxxVector<i32>>,
 	pub bytes: cxx::UniquePtr<CxxVector<u8>>,
 }
 

@@ -10,7 +10,7 @@ struct Ipc;
 
 struct ConcreteInputsFFI {
 	std::unique_ptr<std::vector<std::string>> names;
-	std::unique_ptr<std::vector<u8>> byte_counts;
+	std::unique_ptr<std::vector<i32>> byte_counts;
 	std::unique_ptr<std::vector<u8>> bytes;
 };
 

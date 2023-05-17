@@ -30,7 +30,7 @@ NodeMetadataFFI BasicBlockMetadata::into_ffi() const {
 		.basic_block_content = std::make_unique<std::vector<u8>>(this->basic_block_content),
 		.state_concrete_inputs = {
 			.names = std::make_unique<std::vector<std::string>>(),
-			.byte_counts = std::make_unique<std::vector<u8>>(),
+			.byte_counts = std::make_unique<std::vector<i32>>(),
 			.bytes = std::make_unique<std::vector<u8>>(),
 		},
 	};
@@ -42,12 +42,12 @@ StateIdS2E getStateIdS2E(s2e::S2EExecutionState *state) {
 
 ConcreteInputsFFI concreteInputsIntoFFI(ConcreteInputs inputs) {
 	std::vector<std::string> names;
-	std::vector<u8> byte_counts;
+	std::vector<i32> byte_counts;
 	std::vector<u8> bytes;
 	for (auto input : inputs) {
 		std::string name = input.first;
 		auto this_bytes = input.second;
-		u8 byte_count = (u8) bytes.size();
+		i32 byte_count = (i32) bytes.size();
 
 		names.push_back(name);
 		byte_counts.push_back(byte_count);
@@ -59,7 +59,7 @@ ConcreteInputsFFI concreteInputsIntoFFI(ConcreteInputs inputs) {
 	}
 	return (ConcreteInputsFFI) {
 		.names = std::make_unique<std::vector<std::string>>(names),
-		.byte_counts = std::make_unique<std::vector<u8>>(byte_counts),
+		.byte_counts = std::make_unique<std::vector<i32>>(byte_counts),
 		.bytes = std::make_unique<std::vector<u8>>(bytes),
 	};
 }
