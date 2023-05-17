@@ -237,6 +237,7 @@ mod test {
 		NodeMetadata::State {
 			amba_state_id: i,
 			s2e_state_id: i as i32,
+			concrete_inputs: Vec::new(),
 		}
 	}
 
