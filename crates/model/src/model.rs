@@ -87,6 +87,7 @@ impl Model {
 				.write()
 				.unwrap()
 				.seeded_replace_self_with(raw_nodes, raw_edges);
+
 			let (compressed_nodes, compressed_edges) = {
 				let (nodes, self_edge, edges) =
 					block_control_flow.get_compressed_metadata_and_selfedge_and_sequential_edges();
@@ -94,11 +95,23 @@ impl Model {
 					nodes
 						.into_iter()
 						.zip(self_edge)
-						.map(|(metadata, has_self_edge)| NodeDrawingData {
-							state: 0,
-							scc_group: 0,
-							function: 0,
-							lod_text: new_lod_text_impl(&metadata, has_self_edge, disasm_context),
+						.map(|(metadata, has_self_edge)| {
+							let NodeMetadata::CompressedBasicBlock(ref block) = metadata else {panic!()};
+							let state = block
+								.symbolic_state_ids
+								.first()
+								.copied()
+								.unwrap_or(0) as usize;
+							NodeDrawingData {
+								state,
+								scc_group: 0,
+								function: 0,
+								lod_text: new_lod_text_impl(
+									&metadata,
+									has_self_edge,
+									disasm_context,
+								),
+							}
 						})
 						.collect(),
 					edges,
