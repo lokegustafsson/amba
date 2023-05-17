@@ -102,6 +102,7 @@ impl App for Gui {
 
 						if first.clicked() || second.clicked() || third.clicked() {
 							self.graph_widget.deselect();
+							self.colouring_mode = ColouringMode::AllGrey;
 						}
 					});
 				if self.view == GraphToView::RawBlock {
