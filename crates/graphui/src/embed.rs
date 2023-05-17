@@ -20,7 +20,7 @@ pub struct EmbeddingParameters {
 impl EmbeddingParameters {
 	pub const MAX_ATTRACTION: f64 = 0.2;
 	pub const MAX_GRAVITY: f64 = 2.0;
-	pub const MAX_NOISE: f64 = 20.0;
+	pub const MAX_NOISE: f64 = 0.02;
 	pub const MAX_REPULSION: f64 = 2.0;
 }
 impl Default for EmbeddingParameters {
@@ -270,8 +270,9 @@ impl Graph2D {
 					*vel *= VELOCITY_SLOWDOWN;
 				}
 				*vel += accel * self.time_step;
-				let delta_pos =
-					*vel * self.time_step + random_dvec2(rng) * (self.params.noise * temperature);
+				let delta_pos = *vel * self.time_step
+					+ random_dvec2(rng)
+						* (self.params.noise * temperature * self.node_drawing_data.len() as f64);
 				*pos += delta_pos;
 				if !pos.is_finite() {
 					tracing::warn!("infinite node position; resetting graph");
