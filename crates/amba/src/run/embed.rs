@@ -16,7 +16,7 @@ pub fn run_embedder(
 	config: &SessionConfig,
 ) -> Result<(), ()> {
 	let mut blocking = true;
-	let mut debug_info_context = DisasmContext::new(
+	let mut disasm_context = DisasmContext::new(
 		&config.executable_host_path(),
 		config.recipe_path.parent().unwrap(),
 	)
@@ -34,7 +34,7 @@ pub fn run_embedder(
 				block_edges,
 				state_edges,
 			}) => {
-				model.add_new_edges(state_edges, block_edges, &mut debug_info_context);
+				model.add_new_edges(state_edges, block_edges, &mut disasm_context);
 
 				blocking = false;
 				continue;
