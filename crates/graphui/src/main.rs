@@ -4,7 +4,7 @@ use std::{
 	time::Instant,
 };
 
-use graphui::{EmbeddingParameters, Graph2D, GraphWidget, LodText};
+use graphui::{EmbeddingParameters, Graph2D, GraphWidget, LodText, NodeDrawingData};
 use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
 mod example_graph;
@@ -22,7 +22,11 @@ impl eframe::App for GraphTestGui {
 			if params_widget.changed() {
 				self.notify_params_changed.send(()).unwrap();
 			}
-			self.graph_widget.show(ui, &self.graph.read().unwrap());
+			self.graph_widget.show(
+				ui,
+				&self.graph.read().unwrap(),
+				graphui::ColouringMode::AllGrey,
+			);
 		});
 	}
 }
@@ -52,7 +56,12 @@ fn main() {
 				.map(|i| {
 					let mut ret = LodText::new();
 					ret.coarser(i.to_string());
-					ret
+					NodeDrawingData {
+						state: 0,
+						scc_group: 0,
+						function: 0,
+						lod_text: ret,
+					}
 				})
 				.collect(),
 			edges,

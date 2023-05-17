@@ -436,6 +436,13 @@ impl Graph {
 		state.out
 	}
 
+	pub fn inverse_tarjan(&self) -> Map<usize, usize> {
+		self.tarjan()
+			.into_values()
+			.flat_map(|Node { id, of, .. }| of.into_iter().map(move |o| (o as usize, id as usize)))
+			.collect()
+	}
+
 	/// Returns a new graph of strongly connected components using
 	/// [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
 	pub fn to_strongly_connected_components_tarjan(&self) -> Self {

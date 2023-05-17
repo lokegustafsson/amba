@@ -7,9 +7,17 @@ use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, Parall
 use crate::LodText;
 
 #[derive(Clone, Debug)]
+pub struct NodeDrawingData {
+	pub state: usize,
+	pub scc_group: usize,
+	pub function: usize,
+	pub lod_text: LodText,
+}
+
+#[derive(Clone, Debug)]
 pub struct Graph2D {
 	pub(crate) node_positions: Vec<DVec2>,
-	pub(crate) node_lod_texts: Vec<LodText>,
+	pub(crate) node_drawing_data: Vec<NodeDrawingData>,
 	pub(crate) edges: Vec<(usize, usize)>,
 	pub(crate) min: DVec2,
 	pub(crate) max: DVec2,
@@ -54,7 +62,7 @@ impl Graph2D {
 	pub fn empty() -> Self {
 		Self {
 			node_positions: Vec::new(),
-			node_lod_texts: Vec::new(),
+			node_drawing_data: Vec::new(),
 			edges: Vec::new(),
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
@@ -65,7 +73,8 @@ impl Graph2D {
 	/// initial layout guess.
 	pub fn seeded_replace_self_with(
 		&mut self,
-		(nodes, edges): (Vec<LodText>, Vec<(usize, usize)>),
+		nodes: Vec<NodeDrawingData>,
+		edges: Vec<(usize, usize)>,
 	) {
 		let num_nodes = nodes.len();
 		let old = mem::replace(self, Self::new(nodes, edges));
@@ -80,14 +89,14 @@ impl Graph2D {
 			.for_each(|pos| *pos += INITIAL_NOISE * random_dvec2(rng));
 	}
 
-	pub fn new(nodes: Vec<LodText>, edges: Vec<(usize, usize)>) -> Self {
+	pub fn new(nodes: Vec<NodeDrawingData>, edges: Vec<(usize, usize)>) -> Self {
 		if nodes.is_empty() {
 			return Self::empty();
 		}
 
 		Self {
 			node_positions: Self::initial_node_positions(nodes.len(), &edges),
-			node_lod_texts: nodes,
+			node_drawing_data: nodes,
 			edges,
 			min: DVec2::ZERO,
 			max: DVec2::ZERO,
@@ -95,7 +104,7 @@ impl Graph2D {
 	}
 
 	pub fn get_node_text(&self, node_id: usize) -> &str {
-		self.node_lod_texts[node_id].get_full()
+		self.node_drawing_data[node_id].lod_text.get_full()
 	}
 
 	fn initial_node_positions(node_count: usize, edges: &[(usize, usize)]) -> Vec<DVec2> {
@@ -205,7 +214,7 @@ impl Graph2D {
 							self.node_positions.len(),
 							&self.edges,
 						),
-						node_lod_texts: mem::take(&mut self.node_lod_texts),
+						node_drawing_data: mem::take(&mut self.node_drawing_data),
 						edges: mem::take(&mut self.edges),
 						min: DVec2::ZERO,
 						max: DVec2::ZERO,

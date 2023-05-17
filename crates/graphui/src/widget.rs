@@ -1,7 +1,30 @@
-use egui::{self, Rect, Response, Sense, Ui, Widget};
+use std::fmt;
+
+use egui::{self, Color32 as Colour32, Rect, Response, Sense, Stroke, Ui, Widget};
 use emath::Vec2;
 
 use crate::{EmbeddingParameters, Graph2D, LodText};
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum ColouringMode {
+	AllGrey,
+	ByState,
+	StronglyConnectedComponents,
+	Function,
+}
+
+impl fmt::Display for ColouringMode {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		match self {
+			ColouringMode::AllGrey => write!(f, "All grey"),
+			ColouringMode::ByState => write!(f, "By state"),
+			ColouringMode::StronglyConnectedComponents => {
+				write!(f, "Strongly connected components")
+			}
+			ColouringMode::Function => write!(f, "Function"),
+		}
+	}
+}
 
 impl Widget for &mut EmbeddingParameters {
 	fn ui(self, ui: &mut Ui) -> Response {
@@ -107,7 +130,7 @@ impl GraphWidget {
 		self.active_node_and_pan.map(|(node, _)| node)
 	}
 
-	pub fn show(&mut self, ui: &mut Ui, graph: &Graph2D) {
+	pub fn show(&mut self, ui: &mut Ui, graph: &Graph2D, colouring_mode: ColouringMode) {
 		egui::Frame::none()
 			.stroke(ui.visuals().widgets.inactive.fg_stroke)
 			.show(ui, |ui| {
@@ -131,6 +154,7 @@ impl GraphWidget {
 							&mut self.new_priority_node,
 							viewport,
 							graph,
+							colouring_mode,
 						)
 					});
 
@@ -213,6 +237,7 @@ fn draw_graph(
 	priority_node: &mut Option<usize>,
 	viewport: Rect,
 	graph: &Graph2D,
+	colouring_mode: ColouringMode,
 ) -> egui::Response {
 	let offset = ui.cursor().left_top().to_vec2();
 	let background = ui.allocate_rect(
@@ -251,14 +276,27 @@ fn draw_graph(
 
 	for (i, &pos) in scrollarea_node_pos.iter().enumerate() {
 		if expanded_viewport.contains(pos) {
+			let default_colour = match colouring_mode {
+				ColouringMode::AllGrey => style_widgets.hovered.bg_fill,
+
+				ColouringMode::ByState => get_colour(graph.node_drawing_data[i].state),
+				ColouringMode::StronglyConnectedComponents => {
+					get_colour(graph.node_drawing_data[i].scc_group)
+				}
+				ColouringMode::Function => get_colour(graph.node_drawing_data[i].function),
+			};
+			let (bg_colour, stroke) = if active_node_and_pan.map_or(false, |(node, _)| node == i) {
+				(style_selection.bg_fill, style_selection.stroke)
+			} else {
+				(default_colour, style_widgets.hovered.bg_stroke)
+			};
 			let node = draw_node(
 				ui,
-				style_widgets,
-				style_selection,
+				bg_colour,
+				stroke,
 				pos,
 				node_size[i],
-				&graph.node_lod_texts[i],
-				active_node_and_pan.map_or(false, |(node, _)| node == i),
+				&graph.node_drawing_data[i].lod_text,
 				offset,
 			);
 			if node.double_clicked() {
@@ -290,26 +328,17 @@ fn draw_graph(
 
 fn draw_node(
 	ui: &mut Ui,
-	style_widgets: &egui::style::Widgets,
-	style_selection: &egui::style::Selection,
+	bg_colour: Colour32,
+	stroke: Stroke,
 	pos: egui::Pos2,
 	node_width: f32,
 	text: &LodText,
-	selected: bool,
 	offset: Vec2,
 ) -> Response {
 	let rect =
 		Rect::from_center_size(pos, egui::Vec2::new(node_width, node_width)).translate(offset);
 	let resp = ui.allocate_rect(rect, Sense::click_and_drag());
 	let rounding = node_width / 5.0;
-	let (bg_color, stroke) = if selected {
-		(style_selection.bg_fill, style_selection.stroke)
-	} else {
-		(
-			style_widgets.hovered.bg_fill,
-			style_widgets.hovered.bg_stroke,
-		)
-	};
 	let (lod_text, lod_size, lod_center) = {
 		let useful_node_width = 0.6 * node_width;
 		const SHAPE: f32 = 2.0;
@@ -331,12 +360,12 @@ fn draw_node(
 
 	ui.put(rect, move |ui: &mut Ui| {
 		if lod_text.is_empty() {
-			ui.painter().rect_filled(rect, rounding, bg_color);
+			ui.painter().rect_filled(rect, rounding, bg_colour);
 			ui.painter().rect_stroke(rect, rounding, stroke);
 		} else {
 			egui::Frame::none()
 				.rounding(rounding)
-				.fill(bg_color)
+				.fill(bg_colour)
 				.stroke(stroke)
 				.inner_margin(egui::style::Margin::same(node_width * 0.1))
 				.show(ui, |ui| {
@@ -399,4 +428,21 @@ fn translate_embed_to_scrollarea_pos(
 
 fn glam_to_emath(v: glam::DVec2) -> emath::Vec2 {
 	emath::Vec2::from(<[f32; 2]>::from(v.as_vec2()))
+}
+
+fn get_colour(i: usize) -> Colour32 {
+	const COLOURS: [Colour32; 10] = [
+		Colour32::from_rgb(0xA8, 0x58, 0x4D),
+		Colour32::from_rgb(0xE1, 0xF5, 0xA2),
+		Colour32::from_rgb(0xF5, 0x95, 0x89),
+		Colour32::from_rgb(0x71, 0xA6, 0xF5),
+		Colour32::from_rgb(0x56, 0x77, 0xA8),
+		Colour32::from_rgb(0xA8, 0x97, 0x4D),
+		Colour32::from_rgb(0x63, 0xF5, 0xEC),
+		Colour32::from_rgb(0xF5, 0xE1, 0x89),
+		Colour32::from_rgb(0xF5, 0x71, 0xE1),
+		Colour32::from_rgb(0xA8, 0x56, 0x9C),
+	];
+
+	COLOURS[i % COLOURS.len()]
 }
