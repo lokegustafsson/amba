@@ -132,6 +132,8 @@ impl App for Gui {
 								);
 							})
 					});
+				} else {
+					self.colouring_mode = ColouringMode::AllGrey;
 				}
 			})
 		});
