@@ -77,6 +77,12 @@ impl From<&ConcreteInputsFFI> for Vec<(String, Vec<u8>)> {
 		println!("Names: {}, byte_counts: {}, bytes: {}", names.len(), byte_counts.len(), bytes.len());
 		// assert!(names.len() == byte_counts.len());
 
+		assert_eq!(
+			bytes.len(),
+			byte_counts.iter().map(|&x| x as usize).sum(),
+			"{bytes:#?}, {byte_counts:#?}\n"
+		);
+
 		for (i, name) in names.iter().enumerate() {
 			let byte_count = *byte_counts.get(i).unwrap() as usize;
 			let this_bytes = &bytes_slice[byte_index..byte_index+byte_count];
