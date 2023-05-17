@@ -121,7 +121,7 @@ impl Controller {
 						return;
 					}
 					self.embedder_tx.as_ref().map(|tx| {
-						tx.send(EmbedderMsg::QemuShutdown);
+						tx.send(EmbedderMsg::QemuShutdown).unwrap();
 					});
 				}
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
@@ -134,6 +134,7 @@ impl Controller {
 							block_edges,
 							state_edges,
 						})
+						.unwrap();
 					});
 				}
 				ControllerMsg::EmbeddingParamsOrViewUpdated => {

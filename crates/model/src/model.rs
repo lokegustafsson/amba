@@ -340,7 +340,21 @@ fn new_lod_text_impl(
 		NodeMetadata::State {
 			amba_state_id,
 			s2e_state_id,
+			concrete_inputs,
 		} => {
+			use std::fmt::Write;
+
+			let mut full = format!("{amba_state_id} ({s2e_state_id})\n");
+			for (var_name, var_value) in concrete_inputs {
+				write!(
+					full,
+					"\n{var_name}:\n=\t{:?}\n=\t{}",
+					&var_value,
+					String::from_utf8_lossy(&var_value)
+				)
+				.unwrap();
+			}
+			ret.coarser(full);
 			ret.coarser(format!("{amba_state_id} ({s2e_state_id})"));
 			ret.coarser(format!("{amba_state_id}"));
 		}

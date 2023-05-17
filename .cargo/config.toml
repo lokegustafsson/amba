@@ -78,8 +78,9 @@ rustflags = [
     # END - Embark standard lints v6 for Rust 1.55+
     "-Aclippy::explicit_into_iter_loop",
     "-Aclippy::fallible-impl-from",
+    "-Aclippy::result-unit-err",
     "-Aclippy::single-match",
     "-Aclippy::too-many-arguments",
+    "-Aclippy::type-complexity",
     "-Aclippy::unused-self",
-    "-Aclippy::result-unit-err",
 ]

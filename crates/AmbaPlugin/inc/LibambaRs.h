@@ -8,6 +8,13 @@
 struct ControlFlowGraph;
 struct Ipc;
 
+struct ConcreteInputsFFI {
+	std::unique_ptr<std::vector<std::string>> names;
+	std::unique_ptr<std::vector<i32>> byte_counts;
+	std::unique_ptr<std::vector<u8>> bytes;
+};
+
+
 struct NodeMetadataFFI {
 	u32 metadata_type;
 	u32 amba_state_id;
@@ -16,6 +23,7 @@ struct NodeMetadataFFI {
 	u64 basic_block_generation;
 	u64 basic_block_elf_vaddr;
 	std::unique_ptr<std::vector<u8>> basic_block_content;
+	ConcreteInputsFFI state_concrete_inputs;
 };
 
 struct NodeMetadataFFIPair {

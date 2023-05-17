@@ -18,20 +18,30 @@ void SymbolicGraph::onStateFork(
 ) {
 	const auto s2e_state_id = control_flow::getStateIdS2E(old_state);
 	const auto amba_state_id = this->getStateIdAmba(s2e_state_id);
+	ConcreteInputs parent_concrete_inputs = ConcreteInputs();
+	bool parent_success = old_state->getSymbolicSolution(parent_concrete_inputs);
+	AMBA_ASSERT(parent_success);
 	const auto from = (StateMetadata) {
 		.amba_state_id = amba_state_id,
 		.s2e_state_id = s2e_state_id,
+		.concrete_inputs = parent_concrete_inputs,
 	};
 
 	this->incrementStateIdAmba(control_flow::getStateIdS2E(old_state));
 	for (auto &new_state : new_states) {
 		const auto to_s2e_state_id = control_flow::getStateIdS2E(new_state);
 		const auto to_amba_state_id = this->getStateIdAmba(to_s2e_state_id);
+
+		ConcreteInputs concrete_inputs;
+		bool success = new_state->getSymbolicSolution(concrete_inputs);
+
 		const auto to = (StateMetadata) {
 			.amba_state_id = to_amba_state_id,
 			.s2e_state_id = to_s2e_state_id,
+			.concrete_inputs = concrete_inputs,
 		};
 		AMBA_ASSERT(from.amba_state_id != to.amba_state_id);
+		AMBA_ASSERT(success);
 
 		this->m_new_edges.push_back(
 			(NodeMetadataFFIPair) {
@@ -52,16 +62,19 @@ void SymbolicGraph::onStateMerge(
 	const auto from_left = (StateMetadata) {
 		.amba_state_id = this->getStateIdAmba(dest_id),
 		.s2e_state_id = dest_id,
+		.concrete_inputs = ConcreteInputs(),
 	};
 	const auto from_right = (StateMetadata) {
 		.amba_state_id = this->getStateIdAmba(src_id),
 		.s2e_state_id = src_id,
+		.concrete_inputs = ConcreteInputs(),
 	};
 
 	this->incrementStateIdAmba(dest_id);
 	const auto to = (StateMetadata) {
 		.amba_state_id = this->getStateIdAmba(dest_id),
 		.s2e_state_id = dest_id,
+		.concrete_inputs = ConcreteInputs(),
 	};
 
 	this->m_new_edges.push_back(

@@ -2044,6 +2044,7 @@ in
     src = fetchCrateLocal (workspaceSrc + "/crates/graphui");
     dependencies = {
       arrayvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".arrayvec."0.7.2" { inherit profileName; };
+      data_structures = rustPackages."unknown".data-structures."0.1.0" { inherit profileName; };
       eframe = rustPackages."registry+https://github.com/rust-lang/crates.io-index".eframe."0.21.3" { inherit profileName; };
       egui = rustPackages."registry+https://github.com/rust-lang/crates.io-index".egui."0.21.0" { inherit profileName; };
       emath = rustPackages."registry+https://github.com/rust-lang/crates.io-index".emath."0.21.0" { inherit profileName; };

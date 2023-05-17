@@ -20,6 +20,7 @@ pub enum NodeMetadata {
 	State {
 		amba_state_id: u32,
 		s2e_state_id: i32,
+		concrete_inputs: Vec<(String, Vec<u8>)>,
 	},
 	BasicBlock {
 		symbolic_state_id: u32,

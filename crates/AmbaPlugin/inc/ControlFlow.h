@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <s2e/S2EExecutionState.h>
 
 #include <unordered_map>
@@ -18,10 +19,13 @@ using StateIdS2E = hashable_wrapper::HashableWrapper<i32, 0>;
 using StateIdAmba = hashable_wrapper::HashableWrapper<u64, 1>;
 using StatePC = hashable_wrapper::HashableWrapper<u64, 2>;
 using BasicBlockGeneration = hashable_wrapper::HashableWrapper<u8, 3>;
+using VarValuePair = std::pair<std::string, std::vector<unsigned char>>;
+using ConcreteInputs = std::vector<VarValuePair>;
 
 struct StateMetadata {
 	StateIdAmba amba_state_id;
 	StateIdS2E s2e_state_id;
+	ConcreteInputs concrete_inputs;
 
 	NodeMetadataFFI into_ffi()  const;
 };
@@ -41,6 +45,8 @@ struct BasicBlockMetadata {
 using namespace types;
 
 StateIdS2E getStateIdS2E(s2e::S2EExecutionState *);
+
+ConcreteInputsFFI concreteInputsIntoFFI(ConcreteInputs);
 
 class ControlFlow {
   public:
