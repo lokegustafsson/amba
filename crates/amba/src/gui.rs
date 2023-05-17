@@ -79,12 +79,7 @@ impl App for Gui {
 			ui.horizontal(|ui| {
 				ui.heading("Drawing parameters");
 				let params_widget = ui.add(&mut *self.model.gui_lock_params());
-				if params_widget.changed() {
-					self.controller_tx
-						.send(ControllerMsg::EmbeddingParamsUpdated)
-						.unwrap();
-				}
-				egui::ComboBox::from_label("")
+				let view_changed = egui::ComboBox::from_label("")
 					.selected_text(format!("{}", self.view))
 					.show_ui(ui, |ui| {
 						let first = ui.selectable_value(
@@ -100,11 +95,21 @@ impl App for Gui {
 						let third =
 							ui.selectable_value(&mut self.view, GraphToView::State, "State Graph");
 
-						if first.clicked() || second.clicked() || third.clicked() {
-							self.graph_widget.deselect();
-							self.colouring_mode = ColouringMode::AllGrey;
-						}
-					});
+						first.clicked() || second.clicked() || third.clicked()
+					})
+					.inner
+					.unwrap_or(false);
+
+				if view_changed {
+					self.graph_widget.reset_view();
+					self.colouring_mode = ColouringMode::AllGrey;
+					self.model.gui_set_graph_to_view(self.view);
+				}
+				if params_widget.changed() || view_changed {
+					self.controller_tx
+						.send(ControllerMsg::EmbeddingParamsOrViewUpdated)
+						.unwrap();
+				}
 				match self.view {
 					GraphToView::RawBlock => {
 						// Required due to both dropdowns having the same label

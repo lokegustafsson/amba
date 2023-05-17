@@ -3,13 +3,16 @@ use std::{
 	fmt::{self, Debug},
 	mem,
 	num::NonZeroU64,
-	ops::{BitOrAssign, Deref},
-	sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard},
+	ops::Deref,
+	sync::{
+		atomic::{AtomicU8, Ordering as MemoryOrdering},
+		Mutex, MutexGuard, RwLock, RwLockReadGuard,
+	},
 	time::Instant,
 };
 
 use disassembler::DisasmContext;
-use graphui::{EmbeddingParameters, Graph2D, LodText, NodeDrawingData};
+use graphui::{EmbedderHasConverged, EmbeddingParameters, Graph2D, LodText, NodeDrawingData};
 use ipc::{CompressedBasicBlock, NodeMetadata};
 
 use crate::control_flow::ControlFlowGraph;
@@ -22,6 +25,7 @@ pub struct Model {
 	raw_block_graph: RwLock<Graph2D>,
 	compressed_block_graph: RwLock<Graph2D>,
 	embedding_parameters: Mutex<EmbeddingParameters>,
+	graph_to_view: AtomicU8,
 	/// Model supports mixed read/write, but only by a single writer.
 	/// EXCLUDING `embedding_parameters` that can be written to by anyone.
 	modelwide_single_writer_lock: Mutex<()>,
@@ -36,6 +40,7 @@ impl Model {
 			raw_block_graph: RwLock::new(Graph2D::empty()),
 			compressed_block_graph: RwLock::new(Graph2D::empty()),
 			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
+			graph_to_view: AtomicU8::new(GraphToView::RawBlock as u8),
 			modelwide_single_writer_lock: Mutex::new(()),
 		}
 	}
@@ -151,52 +156,45 @@ impl Model {
 		mem::drop(mutex);
 	}
 
-	pub fn run_layout_iterations(&self) -> LayoutMadeProgress {
+	pub fn run_layout_iterations(&self) -> EmbedderHasConverged {
 		let params: EmbeddingParameters = *self.embedding_parameters.lock().unwrap();
+		let graph_to_view = GraphToView::from_raw(self.graph_to_view.load(MemoryOrdering::SeqCst));
 		let mutex: MutexGuard<'_, ()> = self.modelwide_single_writer_lock.lock().unwrap();
 
 		let timer = Instant::now();
-		let mut total_delta_pos = 0.0;
+		let mut all_converged = EmbedderHasConverged::Yes;
 		const SUBSTEPS: usize = 100;
-		for graph in [
-			&self.raw_state_graph,
-			&self.raw_block_graph,
-			&self.compressed_block_graph,
-		] {
+		{
+			let graph: &RwLock<Graph2D> = match graph_to_view {
+				GraphToView::RawBlock => &self.raw_block_graph,
+				GraphToView::CompressedBlock => &self.compressed_block_graph,
+				GraphToView::State => &self.raw_state_graph,
+			};
 			let mut working_copy: Graph2D = graph.read().unwrap().clone();
-			total_delta_pos += working_copy.run_layout_iterations(SUBSTEPS, params);
+			working_copy.set_params(params);
+			all_converged = all_converged.and_also(working_copy.run_layout_iterations(SUBSTEPS));
 			*graph.write().unwrap() = working_copy;
 		}
-		let (ret, updates_per_second, delta_repulsion_approximation) = if total_delta_pos < 0.1 {
-			(LayoutMadeProgress::NoJustTiny, 0.0, 0.0)
-		} else if total_delta_pos < 100.0 {
-			(
-				LayoutMadeProgress::YesALittle,
-				timer.elapsed().as_secs_f64().recip(),
-				-0.01,
-			)
-		} else {
-			(
-				LayoutMadeProgress::YesALot,
-				timer.elapsed().as_secs_f64().recip(),
-				0.01,
-			)
+		let updates_per_second = match all_converged {
+			EmbedderHasConverged::Yes => 0.0,
+			EmbedderHasConverged::No => timer.elapsed().as_secs_f64().recip(),
 		};
 
 		mem::drop(mutex);
 		{
 			let mut params = self.embedding_parameters.lock().unwrap();
 			params.statistic_updates_per_second = SUBSTEPS as f64 * updates_per_second;
-			params.repulsion_approximation =
-				(params.repulsion_approximation + delta_repulsion_approximation).clamp(
-					0.0,
-					EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
-				);
 		}
-		ret
+		all_converged
+	}
+
+	pub fn gui_set_graph_to_view(&self, which: GraphToView) {
+		self.graph_to_view
+			.store(which as u8, MemoryOrdering::SeqCst);
 	}
 
 	pub fn gui_get_graph(&self, which: GraphToView) -> RwLockReadGuard<'_, Graph2D> {
+		self.gui_set_graph_to_view(which);
 		match which {
 			GraphToView::RawBlock => self.raw_block_graph.read().unwrap(),
 			GraphToView::CompressedBlock => self.compressed_block_graph.read().unwrap(),
@@ -242,10 +240,11 @@ impl Model {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum GraphToView {
-	RawBlock,
-	CompressedBlock,
-	State,
+	RawBlock = 0,
+	CompressedBlock = 1,
+	State = 2,
 }
 
 impl fmt::Display for GraphToView {
@@ -259,18 +258,13 @@ impl fmt::Display for GraphToView {
 	}
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum LayoutMadeProgress {
-	YesALot,
-	YesALittle,
-	NoJustTiny,
-}
-impl BitOrAssign for LayoutMadeProgress {
-	fn bitor_assign(&mut self, rhs: Self) {
-		match (&self, &rhs) {
-			(Self::NoJustTiny, _) => *self = rhs,
-			(Self::YesALittle, Self::YesALot) => *self = Self::YesALot,
-			(..) => {}
+impl GraphToView {
+	fn from_raw(num: u8) -> Self {
+		match num {
+			0 => Self::RawBlock,
+			1 => Self::CompressedBlock,
+			2 => Self::State,
+			d => panic!("invalid discriminant {d}"),
 		}
 	}
 }

@@ -27,7 +27,7 @@ pub enum ControllerMsg {
 		block_edges: Vec<(NodeMetadata, NodeMetadata)>,
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
-	EmbeddingParamsUpdated,
+	EmbeddingParamsOrViewUpdated,
 	NewPriority(usize),
 }
 
@@ -37,6 +37,7 @@ pub enum EmbedderMsg {
 		state_edges: Vec<(NodeMetadata, NodeMetadata)>,
 	},
 	WakeUp,
+	QemuShutdown,
 }
 
 pub struct Controller {
@@ -119,6 +120,9 @@ impl Controller {
 					if self.gui_context.is_none() {
 						return;
 					}
+					self.embedder_tx.as_ref().map(|tx| {
+						tx.send(EmbedderMsg::QemuShutdown);
+					});
 				}
 				ControllerMsg::TellQemuPid(pid) => self.qemu_pid = Some(pid),
 				ControllerMsg::UpdateEdges {
@@ -132,7 +136,7 @@ impl Controller {
 						})
 					});
 				}
-				ControllerMsg::EmbeddingParamsUpdated => {
+				ControllerMsg::EmbeddingParamsOrViewUpdated => {
 					if let Some(tx) = self.embedder_tx.as_ref() {
 						let (Ok(_) | Err(_)) = tx.send(EmbedderMsg::WakeUp);
 					}

@@ -103,6 +103,7 @@ dependencies = [
  "nix 0.26.2",
  "qmp-client",
  "rand",
+ "rayon",
  "recipe",
  "regex",
  "reqwest",

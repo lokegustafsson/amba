@@ -4,7 +4,9 @@ use std::{
 	time::Instant,
 };
 
-use graphui::{EmbeddingParameters, Graph2D, GraphWidget, LodText, NodeDrawingData};
+use graphui::{
+	EmbedderHasConverged, EmbeddingParameters, Graph2D, GraphWidget, LodText, NodeDrawingData,
+};
 use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
 mod example_graph;
@@ -87,23 +89,13 @@ fn main() {
 				let params = *worker_params.lock().unwrap();
 
 				let timer = Instant::now();
-				let total_delta_pos = working_copy.run_layout_iterations(100, params);
+				working_copy.set_params(params);
+				let converged = working_copy.run_layout_iterations(100);
 				{
 					let mut params = worker_params.lock().unwrap();
-					if total_delta_pos < 0.1 {
+					if converged == EmbedderHasConverged::Yes {
 						params.statistic_updates_per_second = 0.0;
 						let _ = notify_params_changed_rx.recv();
-						params.repulsion_approximation = (params.repulsion_approximation + 0.01)
-							.clamp(
-								0.0,
-								EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
-							);
-					} else if total_delta_pos < 100.0 {
-						params.repulsion_approximation = (params.repulsion_approximation - 0.01)
-							.clamp(
-								0.0,
-								EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
-							);
 					}
 				}
 

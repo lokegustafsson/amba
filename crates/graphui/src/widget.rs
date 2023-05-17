@@ -64,16 +64,6 @@ impl Widget for &mut EmbeddingParameters {
 				.union(
 					ui.add(
 						egui::Slider::new(
-							&mut self.repulsion_approximation,
-							0.0..=EmbeddingParameters::MAX_REPULSION_APPROXIMATION,
-						)
-						.step_by(EmbeddingParameters::MAX_REPULSION_APPROXIMATION / STEPS)
-						.text("repulsion approximaton"),
-					),
-				)
-				.union(
-					ui.add(
-						egui::Slider::new(
 							&mut self.gravity,
 							0.0..=EmbeddingParameters::MAX_GRAVITY,
 						)
@@ -122,8 +112,8 @@ impl Default for GraphWidget {
 }
 
 impl GraphWidget {
-	pub fn deselect(&mut self) {
-		self.active_node_and_pan = None;
+	pub fn reset_view(&mut self) {
+		*self = Self::default();
 	}
 
 	pub fn active_node_id(&self) -> Option<usize> {
