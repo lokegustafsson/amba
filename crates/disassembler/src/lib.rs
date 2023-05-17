@@ -45,7 +45,7 @@ impl DisasmContext {
 			recipe_dir: recipe_dir.to_owned(),
 			file_line_cache: FileLineCache::default(),
 			addr2line_context: {
-				let contents = fs::read(&filepath)?;
+				let contents = fs::read(filepath)?;
 				let parsed = ObjectFile::parse(&*contents)?;
 				addr2line::Context::new(&parsed)?
 			},
@@ -78,8 +78,8 @@ impl DisasmContext {
 				ret.push_str(" in ");
 			}
 			match frame.function {
-				Some(name) => ret.push_str(&*name.demangle()?),
-				None => ret.push_str("?"),
+				Some(name) => ret.push_str(&name.demangle()?),
+				None => ret.push('?'),
 			}
 		}
 		if ret.is_empty() {
