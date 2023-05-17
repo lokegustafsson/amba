@@ -30,8 +30,6 @@ impl From<&NodeMetadataFFI> for ipc::NodeMetadata {
 		match metadata_type {
 			0 => {
 				let concrete_inputs = state_concrete_inputs.into();
-				println!("amba_state_id: {amba_state_id:#?}, s2e_state_id: {s2e_state_id}");
-				println!("{:#?}", concrete_inputs);
 
 				ipc::NodeMetadata::State {
 				amba_state_id,

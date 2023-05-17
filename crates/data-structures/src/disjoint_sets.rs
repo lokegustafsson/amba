@@ -1,4 +1,6 @@
-use std::{collections::HashMap, mem};
+use std::{collections::{HashMap, HashSet}, mem};
+
+use itertools::Itertools;
 
 /// A disjoint-sets data structure
 ///

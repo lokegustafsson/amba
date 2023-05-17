@@ -3,6 +3,7 @@ use std::{
 	mem,
 };
 
+use data_structures::DisjointSets;
 use fastrand::Rng;
 use glam::DVec2;
 use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
@@ -127,6 +128,9 @@ impl Graph2D {
 		nodes: Vec<NodeDrawingData>,
 		edges: Vec<(usize, usize)>,
 	) {
+		if !nodes.is_empty() {
+			assert_eq!(Self::connected_components_count(nodes.len(), &edges), 1);
+		}
 		let num_nodes = nodes.len();
 		let old = mem::replace(self, Self::new(nodes, edges));
 
@@ -144,6 +148,7 @@ impl Graph2D {
 		if nodes.is_empty() {
 			return Self::empty();
 		}
+		assert_eq!(Self::connected_components_count(nodes.len(), &edges), 1);
 
 		Self {
 			node_positions: Self::initial_node_positions(nodes.len(), &edges),
@@ -338,6 +343,20 @@ impl Graph2D {
 		} else {
 			EmbedderHasConverged::No
 		}
+	}
+
+	fn connected_components_count(node_count: usize, edges: &Vec<(usize, usize)>) -> usize {
+		let mut set = DisjointSets::default();
+		for (a, b) in edges {
+			set.merge(*a as u64, *b as u64);
+		}
+		let mut count = 0;
+		for i in 0..(node_count as u64) {
+			if set.canonicalize(i) == i {
+				count += 1;
+			}
+		}
+		count
 	}
 }
 
