@@ -1,5 +1,6 @@
 #include <vector>
 
+#include "Amba.h"
 #include "ControlFlow.h"
 #include "AmbaException.h"
 #include "LibambaRs.h"
@@ -47,10 +48,9 @@ ConcreteInputsFFI concreteInputsIntoFFI(ConcreteInputs inputs) {
 	for (auto input : inputs) {
 		std::string name = input.first;
 		auto this_bytes = input.second;
-		i32 byte_count = (i32) bytes.size();
+		i32 byte_count = (i32) this_bytes.size();
 
 		names.push_back(name);
-		byte_counts.push_back(byte_count);
 		byte_counts.push_back(byte_count);
 
 		for (auto byte : this_bytes) {

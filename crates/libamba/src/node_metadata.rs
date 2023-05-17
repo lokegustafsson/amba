@@ -28,10 +28,16 @@ impl From<&NodeMetadataFFI> for ipc::NodeMetadata {
 		}: &NodeMetadataFFI,
 	) -> Self {
 		match metadata_type {
-			0 => ipc::NodeMetadata::State {
+			0 => {
+				let concrete_inputs = state_concrete_inputs.into();
+				println!("amba_state_id: {amba_state_id:#?}, s2e_state_id: {s2e_state_id}");
+				println!("{:#?}", concrete_inputs);
+
+				ipc::NodeMetadata::State {
 				amba_state_id,
 				s2e_state_id,
-				concrete_inputs: state_concrete_inputs.into(),
+				concrete_inputs,
+			}
 			},
 			1 => ipc::NodeMetadata::BasicBlock {
 				symbolic_state_id: amba_state_id,
@@ -74,13 +80,10 @@ impl From<&ConcreteInputsFFI> for Vec<(String, Vec<u8>)> {
 		let bytes_slice = bytes.as_slice();
 		let mut byte_index = 0;
 
-		println!("Names: {}, byte_counts: {}, bytes: {}", names.len(), byte_counts.len(), bytes.len());
-		// assert!(names.len() == byte_counts.len());
-
 		assert_eq!(
 			bytes.len(),
 			byte_counts.iter().map(|&x| x as usize).sum(),
-			"{bytes:#?}, {byte_counts:#?}\n"
+			"{names:#?}, {bytes:#?}, {byte_counts:#?}\n"
 		);
 
 		for (i, name) in names.iter().enumerate() {
