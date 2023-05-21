@@ -2,9 +2,8 @@
 all: group_64_project_presentation.pdf
 
 check:
-	latexindent --local --overwriteIfDifferent --silent -k *.tex */*.tex *.bib
+	latexindent --local --overwriteIfDifferent --silent -k *.tex
 	-rm *.bak0
-	-rm */*.bak0
 	chktex --nowarn 32 main
 
 group_64_project_presentation.pdf: \

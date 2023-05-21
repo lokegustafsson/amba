@@ -1,0 +1,86 @@
+\begin{frame}
+
+	\centering
+	AMBA is cool, but not useful
+
+\end{frame}
+
+\begin{frame}
+
+	\centering
+	AMBA is cool, but not (yet) useful
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+	\begin{columns}[t]
+		\begin{column}{0.4\textwidth}
+			\textbf{Possible improvements}
+			\small
+			\begin{enumerate}
+
+				\item Implementing state merging
+
+				\item Implementing syscall tracing
+
+				\item Testing on real-world programs
+
+				\item Dynamic symbolic input creation (time, \texttt{stdin}
+				      length, etc)
+
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\tiny
+			\begin{figure}
+				\begin{tikzpicture}
+
+					\node [draw, fill=lime, minimum
+						width=1cm, minimum height=1cm, ]  (user) {Användare};
+
+					\node [draw, fill=yellow, minimum width=1cm, minimum height=1cm,
+						right=1cm of user ] (tool) {Analysverktyg};
+
+					\node [draw, fill=orange, minimum width=1cm, minimum height=1cm,
+						right=1cm of tool ] (engine) {Exekveringsmotor};
+
+					\draw[->, line width=.4mm] (user.-30) to[out=-30, in=-150]
+					node[midway,below]{Beslut} (tool.-150);
+
+					\draw[->, line width=.4mm] (tool.150) to[out=150, in=30]
+					node[midway,above]{Visualisering} (user.30);
+
+					\draw[->, line width=.4mm] (tool.-30) to[out=-30, in=-150]
+					node[midway,below]{Kontroll} (engine.-150);
+
+					\draw[->, line width=.4mm] (engine.150) to[out=150, in=30]
+					node[midway,above]{Instrumentering} (tool.30);
+
+				\end{tikzpicture}
+				\caption{State merging, schematic example (TODO)}
+			\end{figure}
+
+		\end{column}
+	\end{columns}
+
+
+	{\tiny
+	\begin{figure}
+		\begin{lstlisting}
+(many lines elided)
+..
+getrandom("\xef\xd6\x9b\x35\x81\xc4\x7d\xb7", 8, GRND_NONBLOCK) = 8
+brk(NULL)                               = 0x1700000
+brk(0x1721000)                          = 0x1721000
+read(0, "a\n", 4096)                    = 2
+newfstatat(1, "", {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0x2), ...}, AT_EMPTY_PATH) = 0
+write(1, "16\n", 3)                     = 3
+lseek(0, -1, SEEK_CUR)                  = -1 ESPIPE (Illegal seek)
+exit_group(0)                           = ?
++++ exited with 0 +++
+\end{lstlisting}
+		\caption{\texttt{echo 'a' | strace ./control-flow}}
+	\end{figure}
+	}
+\end{frame}

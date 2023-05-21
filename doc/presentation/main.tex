@@ -7,14 +7,21 @@
 \useinnertheme{rectangles}
 \useoutertheme{infolines}
 
-\usepackage[swedish]{babel}
+% We present in english
+%\usepackage[swedish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{
-    xstring,
+	listings,
+    pgfgantt,
+    subcaption,
     xspace,
+    xstring,
 }
 
+\newcommand{\stoe}{S$^2$E\xspace}
+
 \begin{document}
+\year=2023
 
 \title{AMBA}
 \subtitle{Interaktiv visualisering av symbolisk fuzzing}
