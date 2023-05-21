@@ -14,6 +14,7 @@ group_64_project_presentation.pdf: \
   motivation.tex \
   potential.tex \
   process.tex \
+  conclusion.tex \
   symbex.tex
 	tectonic main.tex
 	mv main.pdf group_64_project_presentation.pdf
