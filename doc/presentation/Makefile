@@ -11,8 +11,6 @@ group_64_project_presentation.pdf: \
   amba.tex \
   binaryanalysis.tex \
   demo.tex \
-  main.fdb_latexmk \
-  main.synctex.gz \
   main.tex \
   motivation.tex \
   potential.tex \
