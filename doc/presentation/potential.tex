@@ -32,6 +32,7 @@
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.6\textwidth}
+			\pause{}
 			\tiny
 			\begin{figure}
 				\begin{tikzpicture}
@@ -77,9 +78,10 @@
 
 		\end{column}
 	\end{columns}
+	\pause{}
 	{\tiny
-	\begin{figure}
-		\begin{lstlisting}
+		\begin{figure}
+			\begin{lstlisting}
 (many lines elided)
 ..
 getrandom("\xef\xd6\x9b\x35\x81\xc4\x7d\xb7", 8, GRND_NONBLOCK) = 8
@@ -92,7 +94,7 @@ lseek(0, -1, SEEK_CUR)                  = -1 ESPIPE (Illegal seek)
 exit_group(0)                           = ?
 +++ exited with 0 +++
 \end{lstlisting}
-		\caption{\texttt{echo 'a' | strace ./control-flow}}
-	\end{figure}
+			\caption{\texttt{echo 'a' | strace ./control-flow}}
+		\end{figure}
 	}
 \end{frame}
