@@ -36,35 +36,47 @@
 			\begin{figure}
 				\begin{tikzpicture}
 
-					\node [draw, fill=lime, minimum
-						width=1cm, minimum height=1cm, ]  (user) {Användare};
+					\node [draw, fill=orange!80, minimum height=0.5cm]
+					(first) {In one way};
 
-					\node [draw, fill=yellow, minimum width=1cm, minimum height=1cm,
-						right=1cm of user ] (tool) {Analysverktyg};
+					\node [draw, fill=orange!80, minimum height=0.5cm, right=0.2cm of first]
+					(second) {In another way};
 
-					\node [draw, fill=orange, minimum width=1cm, minimum height=1cm,
-						right=1cm of tool ] (engine) {Exekveringsmotor};
+					\node [draw, fill=yellow!80, minimum
+						width=1cm, minimum height=0.5cm, above=0.8cm of second]  (entry) {Parse input};
 
-					\draw[->, line width=.4mm] (user.-30) to[out=-30, in=-150]
-					node[midway,below]{Beslut} (tool.-150);
+					\node [draw, circle, fill=black, minimum size=3pt, inner sep=0pt,
+						right=0.3cm of second] (third) {};
+					\node [draw, circle, fill=black, minimum size=3pt, inner sep=0pt,
+						right=0.3cm of third] (fourth) {};
+					\node [draw, circle, fill=black, minimum size=3pt, inner sep=0pt,
+						right=0.3cm of fourth] (fifth) {};
 
-					\draw[->, line width=.4mm] (tool.150) to[out=150, in=30]
-					node[midway,above]{Visualisering} (user.30);
+					\node [draw, fill=orange!80, minimum height=0.5cm, right=0.3cm of fifth]
+					(final) {Final way};
 
-					\draw[->, line width=.4mm] (tool.-30) to[out=-30, in=-150]
-					node[midway,below]{Kontroll} (engine.-150);
+					\node [draw, fill=yellow!80, minimum height=0.5cm,
+						below=0.8cm of second, text width=2cm ] (exit)
+					{Merged state, union of symbolic expressions};
 
-					\draw[->, line width=.4mm] (engine.150) to[out=150, in=30]
-					node[midway,above]{Instrumentering} (tool.30);
+					\draw[->, line width=.4mm] (entry) to
+					(first);
+					\draw[->, line width=.4mm] (first) to (exit);
+
+					\draw[->, line width=.4mm] (entry) to (second);
+					\draw[->, line width=.4mm] (second) to (exit);
+
+					\draw[->, line width=.4mm] (entry) to
+					node[auto,text width=3cm]{Symbolically conditional machine-code branches}
+					(final);
+					\draw[->, line width=.4mm] (final) to (exit);
 
 				\end{tikzpicture}
-				\caption{State merging, schematic example (TODO)}
+				\caption{State merging, schematic example}
 			\end{figure}
 
 		\end{column}
 	\end{columns}
-
-
 	{\tiny
 	\begin{figure}
 		\begin{lstlisting}
