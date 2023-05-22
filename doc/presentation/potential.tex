@@ -1,14 +1,74 @@
 \begin{frame}
 
 	\centering
-	AMBA is cool, but not useful
+    AMBA is cool, but not useful for real programs
 
 \end{frame}
 
 \begin{frame}
 
 	\centering
-	AMBA is cool, but not (yet) useful
+    AMBA is cool, but not (yet) useful for real programs
 
 \end{frame}
 
+\begin{frame}
+
+    \textbf{Why is it cool?}
+
+    In general:
+
+    \begin{itemize}
+
+        \item \underline{Visualized} symbolic fuzzing $\rightarrow$ Human domain
+
+        \item Visualized \underline{symbolic fuzzing} $\rightarrow$ Computer's
+            domain
+
+        \item Human $+$ Computer $\rightarrow$ More powerful analysis possible
+
+    \end{itemize}
+
+\end{frame}
+\begin{frame}
+
+
+    \textbf{Why is it cool?}
+
+    AMBA vs other tools:
+
+    \begin{itemize}
+
+        \item Very few other tools exist. We know of one targeting machine code
+            (SymNav). None based on \stoe{}
+
+        \item System virtualization within QEMU through \stoe{}
+            \begin{itemize}
+
+                \item Realistic execution environment
+
+                \item Easily extended to multi-process analysis
+
+                \item Maybe kernel, device drivers?
+
+            \end{itemize}
+
+        \item Higher performance ceiling
+
+        \item Real time architecture. No batching
+
+    \end{itemize}
+
+    \pause
+    BUT!
+
+    \pause
+    AMBA needs
+    \begin{itemize}
+        \item polish, quality-of-life features
+
+        \item real-world testing \& feedback incorporated
+
+    \end{itemize}
+
+\end{frame}

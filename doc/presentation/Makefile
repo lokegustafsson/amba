@@ -13,7 +13,7 @@ group_64_project_presentation.pdf: \
   main.tex \
   motivation.tex \
   potential.tex \
-  process.tex \
+  futurework.tex \
   conclusion.tex \
   symbex.tex
 	tectonic main.tex
