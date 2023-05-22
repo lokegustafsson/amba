@@ -41,6 +41,13 @@
           ];
         };
         lib = nixpkgs.lib;
+        docPkgs = let p = pkgs;
+        in [
+          p.gnumake
+          p.stable.tectonic
+          p.texlab
+          p.texlive.combined.scheme-medium
+        ];
 
         s2e = import ./nix/s2e { inherit lib pkgs; };
         libamba = import ./nix/libamba.nix { inherit lib pkgs s2e; };
@@ -65,10 +72,7 @@
               p.rust-bin.stable.latest.clippy
               p.rust-bin.stable.latest.default
               p.rust-bin.stable.latest.rust-analyzer
-              p.stable.tectonic
-              p.texlab
-              p.texlive.combined.scheme-medium
-            ];
+            ] ++ docPkgs;
             IMPURE_RUST = 1;
             inherit (amba)
               COMPILE_TIME_AMBA_DEPENDENCIES_DIR AMBA_BUILD_GUEST_IMAGES_SCRIPT;
@@ -79,6 +83,10 @@
             meta.description =
               "Rust, C++ and LaTeX tooling for developing AMBA";
           } // libamba.all-include-paths);
+
+          document = pkgs.mkShell {
+            packages = docPkgs;
+          };
         };
 
         packages = {
