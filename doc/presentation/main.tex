@@ -1,6 +1,6 @@
 % Create a beamer file with cool style.
 
-\documentclass{beamer}
+\documentclass[tikz]{beamer}
 \usetheme{Madrid}
 \usecolortheme{seahorse}
 \usefonttheme{serif}
@@ -15,7 +15,10 @@
     pgfgantt,
     xspace,
     xstring,
+    graphicx,
+    hyperref,
 }
+\usetikzlibrary{chains,shadows.blur}
 
 \newcommand{\stoe}{S$^2$E\xspace}
 
