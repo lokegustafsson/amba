@@ -1,0 +1,16 @@
+{
+	"files": {
+		"demo2": "./demo2",
+		"input.txt": {
+			"seed": "a",
+			"symbolic": [
+				[
+					0,
+					null
+				]
+			]
+		}
+	},
+	"executable_path": "./demo2",
+	"stdin_path": "/tmp/input.txt"
+}

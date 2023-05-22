@@ -1,4 +1,4 @@
-.PHONY: build test upload upload-amba upload-s2e get-libamba-symbols
+.PHONY: build test upload upload-amba upload-s2e get-libamba-symbols demo1 demo2
 
 build:
 	nix build -L
@@ -65,3 +65,11 @@ hello:
 
 compile_flags.txt:
 	make -C crates/AmbaPlugin ../../compile_flags.txt
+
+demo1:
+	nix-shell -p musl --run "make -C demos demo1"
+	nix run . -- run demos/demo1.recipe.json
+
+demo2:
+	nix-shell -p musl --run "make -C demos demo2"
+	nix run . -- run demos/demo2.recipe.json
