@@ -1,25 +1,7 @@
-This thesis project introduces AMBA, an interactive tool for
-visualising the execution of a binary program and identifying
-potential memory-related security vulnerabilities by combining the
-benefits of automatic computing power and human intuition. AMBA
-combines symbolic execution and fuzzing to present the user with
-graphs depicting execution paths in the program. These paths can be
-explored interactively to identify potential vulnerabilities related
-to memory usage. AMBA is better than similar existing tools in that it
-visualises analysis in realtime, enables the user to prioritise states
-and handles self-modifying code. AMBA could in the future be extended
-with state-merging to enable analysis of larger programs with many
-possible paths, as well as monitoring of system calls executed by the
-binary and adding output of meaningful information resulting from the
-symbolic fuzzing. AMBA is evaluated through a theoretical comparison
-with existing tools with the conclusion that AMBA provides a useful
-basis for binary analysis and has potential to become increasingly
-beneficial if the suggested future work is implemented. Due to its
-implementation as a plugin to the symbolic execution engine \stoe{}, AMBA
-is readily available to developers and security researchers for
-investigating the behaviour of machine code.
+This thesis introduces AMBA, an interactive system for visualizing the symbolic execution of binaries in combination with fuzz testing.
+The visulaization shows in realtime the different execution paths for binaries, while enabling the user to interactively prioritize the different execution paths for analysis based om human intuiton.
 
-% something about demos?
+AMBA is evaluated in a theoretical comparison with existing tools, with the conclusion that AMBA has the potetial to become useful if the suggested future work is implemented.
+The suggested future work is to extend AMBA with state merging for enabling analysis of larger programs; monitoring of system calls called from the binary; and outputing additional meaningful information from the symbolic fuzzing.
 
-Keywords: symbolic execution, binary analysis, \stoe{},
-fuzzing, vulnerability detection, memory-related vulnerabilities.
+Keywords: symbolic execution, binary analysis, \stoe{}, fuzzing.
