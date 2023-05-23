@@ -9,6 +9,7 @@ check:
 
 group_64_project_report.pdf: \
   amba/main.tex \
+  amba/varfor_s2e.tex \
   begreppslista.tex \
   cover.tex \
   abstract.tex \
