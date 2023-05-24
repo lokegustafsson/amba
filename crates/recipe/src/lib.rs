@@ -11,9 +11,9 @@ pub struct Recipe {
 	pub stdin_path: String,
 	pub arg0: Option<String>,
 	#[serde(default)]
-	arguments: Vec<ArgumentSource>,
+	pub arguments: Vec<ArgumentSource>,
 	#[serde(default)]
-	environment: Environment,
+	pub environment: Environment,
 }
 
 impl Recipe {
@@ -39,8 +39,8 @@ impl Recipe {
 				ArgumentSource::Symbolic { symbolic, .. } => SymbolicRange::normalize(symbolic),
 			}
 		}
-		for env in &mut ret.environment.add {
-			match env {
+		for env_value in &mut ret.environment.add.values_mut() {
+			match env_value {
 				EnvVarSource::Concrete(_) => {}
 				EnvVarSource::Symbolic { symbolic, .. } => SymbolicRange::normalize(symbolic),
 			}
@@ -83,7 +83,7 @@ pub enum FileSource {
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
-enum ArgumentSource {
+pub enum ArgumentSource {
 	Concrete(String),
 	/// Symbolic arguments are fixed-length, containing bytes 1-255
 	Symbolic {
@@ -94,12 +94,12 @@ enum ArgumentSource {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Environment {
-	inherit: bool,
+pub struct Environment {
+	pub inherit: bool,
 	#[serde(default)]
-	remove: Vec<String>,
+	pub remove: Vec<String>,
 	#[serde(default)]
-	add: Vec<EnvVarSource>,
+	pub add: BTreeMap<String, EnvVarSource>,
 }
 
 impl Default for Environment {
@@ -107,18 +107,17 @@ impl Default for Environment {
 		Self {
 			inherit: true,
 			remove: Vec::new(),
-			add: Vec::new(),
+			add: BTreeMap::new(),
 		}
 	}
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
-enum EnvVarSource {
+pub enum EnvVarSource {
 	Concrete(String),
 	/// Symbolic env vars are fixed-length, containing bytes 1-255
 	Symbolic {
-		key: String,
 		value: String,
 		symbolic: Vec<SymbolicRange>,
 	},

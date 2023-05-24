@@ -23,7 +23,7 @@ use std::{
 	time::Duration,
 };
 
-use recipe::{FileSource, Recipe, SymbolicRange};
+use recipe::{ArgumentSource, EnvVarSource, FileSource, Recipe, SymbolicRange};
 use tracing_subscriber::{filter::targets::Targets, layer::Layer};
 
 const RECIPE_PATH: &str = "recipe.json";
@@ -104,13 +104,39 @@ fn main() {
 	// performance.
 	thread::sleep(Duration::from_millis(50));
 
-	let mut child = Command::new(&recipe.executable_path)
-		.arg0(recipe.arg0.unwrap_or(recipe.executable_path))
-		.stdin(Stdio::piped())
-		.stdout(Stdio::null())
-		.stderr(Stdio::null())
-		.spawn()
-		.unwrap();
+	let mut child = {
+		let mut cmd = Command::new(&recipe.executable_path);
+		cmd.arg0(recipe.arg0.unwrap_or(recipe.executable_path))
+			.stdin(Stdio::piped())
+			.stdout(Stdio::null())
+			.stderr(Stdio::null());
+		for arg in recipe.arguments {
+			match arg {
+				ArgumentSource::Concrete(value) => {
+					cmd.arg(value);
+				}
+				ArgumentSource::Symbolic { seed, .. } => todo!("symbolic argv (arg = `{seed:?}`)"),
+			}
+		}
+		for env_key_to_remove in &recipe.environment.remove {
+			cmd.env_remove(env_key_to_remove);
+		}
+		if !recipe.environment.inherit {
+			cmd.env_clear();
+		}
+		for (env_key, env_value) in &recipe.environment.add {
+			match env_value {
+				EnvVarSource::Concrete(value) => {
+					cmd.env(env_key, value);
+				}
+				EnvVarSource::Symbolic { value, .. } => {
+					todo!("symbolic envp ({env_key:?}={value:?})");
+				}
+			}
+		}
+
+		cmd.spawn().unwrap()
+	};
 
 	io::copy(
 		&mut File::open(recipe.stdin_path).unwrap(),
