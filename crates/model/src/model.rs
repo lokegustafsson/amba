@@ -370,7 +370,7 @@ fn new_lod_text_impl(
 			let (source, disasm) = block_source_and_disasm(
 				*basic_block_vaddr,
 				*basic_block_elf_vaddr,
-				&*basic_block_content,
+				basic_block_content,
 			);
 			ret.coarser(format!(
 				"State: {state}{marker}\nWithin function: {name}\n{disasm}"
