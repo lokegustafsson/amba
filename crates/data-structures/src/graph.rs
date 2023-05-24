@@ -1,7 +1,7 @@
 use std::{
 	collections::{BTreeSet, HashMap},
 	default::Default,
-	mem,
+	iter, mem,
 };
 
 use crate::small_set::SmallU64Set;
@@ -439,7 +439,8 @@ impl Graph {
 	pub fn inverse_tarjan(&self) -> Map<usize, usize> {
 		self.tarjan()
 			.into_values()
-			.flat_map(|Node { id, of, .. }| of.into_iter().map(move |o| (o as usize, id as usize)))
+			.flat_map(|Node { id, of, .. }| iter::repeat(id as usize).take(of.len()))
+			.enumerate()
 			.collect()
 	}
 
