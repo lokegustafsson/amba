@@ -174,9 +174,7 @@ impl App for Gui {
 					egui::ScrollArea::vertical()
 						.auto_shrink([false, true])
 						.show(ui, |ui| {
-							let description_guard =
-								self.model.gui_get_node_description(self.view, active);
-							let mut description: &str = &*description_guard;
+							let mut description: &str = graph.get_node_text(active);
 							ui.heading("Selected node");
 							ui.add(
 								egui::TextEdit::multiline(&mut description)
