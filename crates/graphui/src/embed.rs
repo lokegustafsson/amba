@@ -28,9 +28,9 @@ impl Default for EmbeddingParameters {
 	fn default() -> Self {
 		Self {
 			noise: 0.0,
-			attraction: 0.1,
-			repulsion: 1.0,
-			gravity: 0.5,
+			attraction: 0.02,
+			repulsion: 2.0,
+			gravity: 1.6,
 			statistic_updates_per_second: 1.0,
 		}
 	}
