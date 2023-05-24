@@ -3,7 +3,6 @@ use std::{
 	fmt::{self, Debug},
 	mem,
 	num::NonZeroU64,
-	ops::Deref,
 	sync::{
 		atomic::{AtomicU8, Ordering as MemoryOrdering},
 		Mutex, MutexGuard, RwLock, RwLockReadGuard,
@@ -206,22 +205,6 @@ impl Model {
 		self.embedding_parameters.lock().unwrap()
 	}
 
-	pub fn gui_get_node_description(
-		&self,
-		graph: GraphToView,
-		node_index: usize,
-	) -> DescriptionReadGuard<'_> {
-		DescriptionReadGuard {
-			guard: match graph {
-				GraphToView::RawBlock => self.raw_block_graph.read(),
-				GraphToView::CompressedBlock => self.compressed_block_graph.read(),
-				GraphToView::State => self.raw_state_graph.read(),
-			}
-			.unwrap(),
-			node_index,
-		}
-	}
-
 	pub fn get_neighbour_states(&self, prio: usize) -> Vec<i32> {
 		fn get_neighbours_inner(idx: u64, state_cfg: &ControlFlowGraph, out: &mut BTreeSet<i32>) {
 			let NodeMetadata::State { s2e_state_id , .. } = state_cfg.metadata[idx as usize] else {panic!()};
@@ -266,18 +249,6 @@ impl GraphToView {
 			2 => Self::State,
 			d => panic!("invalid discriminant {d}"),
 		}
-	}
-}
-
-pub struct DescriptionReadGuard<'a> {
-	guard: RwLockReadGuard<'a, Graph2D>,
-	node_index: usize,
-}
-impl<'a> Deref for DescriptionReadGuard<'a> {
-	type Target = str;
-
-	fn deref(&self) -> &Self::Target {
-		self.guard.get_node_text(self.node_index)
 	}
 }
 
@@ -370,7 +341,7 @@ fn new_lod_text_impl(
 			let (source, disasm) = block_source_and_disasm(
 				*basic_block_vaddr,
 				*basic_block_elf_vaddr,
-				&*basic_block_content,
+				basic_block_content,
 			);
 			ret.coarser(format!(
 				"State: {state}{marker}\nWithin function: {name}\n{disasm}"

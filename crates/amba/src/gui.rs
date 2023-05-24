@@ -174,9 +174,7 @@ impl App for Gui {
 					egui::ScrollArea::vertical()
 						.auto_shrink([false, true])
 						.show(ui, |ui| {
-							let description_guard =
-								self.model.gui_get_node_description(self.view, active);
-							let mut description: &str = &*description_guard;
+							let mut description: &str = graph.get_node_text(active);
 							ui.heading("Selected node");
 							ui.add(
 								egui::TextEdit::multiline(&mut description)
@@ -193,9 +191,11 @@ impl App for Gui {
 		});
 
 		if let Some(new_priority) = mem::take(&mut self.graph_widget.new_priority_node) {
-			self.controller_tx
-				.send(ControllerMsg::NewPriority(new_priority))
-				.unwrap();
+			if self.view == GraphToView::State {
+				self.controller_tx
+					.send(ControllerMsg::NewPriority(new_priority))
+					.unwrap();
+			}
 		}
 	}
 
