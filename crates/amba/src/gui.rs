@@ -168,10 +168,34 @@ impl App for Gui {
 										ColouringMode::ByState,
 										"By state",
 									);
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::StronglyConnectedComponents,
+										"Strongly Connected Components",
+									);
 								})
 						});
 					}
-					GraphToView::State | GraphToView::CompressedMergedBlock => {
+					GraphToView::CompressedMergedBlock => {
+						// Required due to both dropdowns having the same label
+						ui.push_id(ui.id(), |ui| {
+							egui::ComboBox::from_label("")
+								.selected_text(format!("{}", self.colouring_mode))
+								.show_ui(ui, |ui| {
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::AllGrey,
+										"All grey",
+									);
+									ui.selectable_value(
+										&mut self.colouring_mode,
+										ColouringMode::StronglyConnectedComponents,
+										"Strongly Connected Components",
+									);
+								})
+						});
+					}
+					GraphToView::State => {
 						self.colouring_mode = ColouringMode::AllGrey;
 					}
 				}
