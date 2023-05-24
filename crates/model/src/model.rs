@@ -19,10 +19,13 @@ use crate::control_flow::ControlFlowGraph;
 /// An `Arc<Model>` is shared between the AMBA gui and embedder threads.
 pub struct Model {
 	block_control_flow: RwLock<ControlFlowGraph>,
+	merged_control_flow: RwLock<ControlFlowGraph>,
 	state_control_flow: RwLock<ControlFlowGraph>,
 	raw_state_graph: RwLock<Graph2D>,
 	raw_block_graph: RwLock<Graph2D>,
 	compressed_block_graph: RwLock<Graph2D>,
+	merged_block_graph: RwLock<Graph2D>,
+	merged_compressed_block_graph: RwLock<Graph2D>,
 	embedding_parameters: Mutex<EmbeddingParameters>,
 	graph_to_view: AtomicU8,
 	/// Model supports mixed read/write, but only by a single writer.
@@ -34,10 +37,13 @@ impl Model {
 	pub fn new() -> Self {
 		Self {
 			block_control_flow: RwLock::new(ControlFlowGraph::new()),
+			merged_control_flow: RwLock::new(ControlFlowGraph::new()),
 			state_control_flow: RwLock::new(ControlFlowGraph::new()),
 			raw_state_graph: RwLock::new(Graph2D::empty()),
 			raw_block_graph: RwLock::new(Graph2D::empty()),
 			compressed_block_graph: RwLock::new(Graph2D::empty()),
+			merged_block_graph: RwLock::new(Graph2D::empty()),
+			merged_compressed_block_graph: RwLock::new(Graph2D::empty()),
 			embedding_parameters: Mutex::new(EmbeddingParameters::default()),
 			graph_to_view: AtomicU8::new(GraphToView::RawBlock as u8),
 			modelwide_single_writer_lock: Mutex::new(()),
@@ -54,8 +60,12 @@ impl Model {
 
 		{
 			let mut block_control_flow = self.block_control_flow.write().unwrap();
-			for (from, to) in block_edges.into_iter() {
-				block_control_flow.update(from, to);
+			let mut merged_control_flow = self.merged_control_flow.write().unwrap();
+			for (mut from, mut to) in block_edges.into_iter() {
+				block_control_flow.update(from.clone(), to.clone());
+				from.reset_state();
+				to.reset_state();
+				merged_control_flow.update(from, to);
 			}
 
 			let (raw_nodes, raw_edges) = {
@@ -92,6 +102,40 @@ impl Model {
 				.unwrap()
 				.seeded_replace_self_with(raw_nodes, raw_edges);
 
+			let (merged_nodes, merged_edges) = {
+				let (nodes, self_edge, edges) =
+					merged_control_flow.get_raw_metadata_and_selfedge_and_sequential_edges();
+				let scc_groups = merged_control_flow.graph.inverse_tarjan();
+				(
+					nodes
+						.into_iter()
+						.zip(self_edge)
+						.enumerate()
+						.map(|(idx, (metadata, has_self_edge))| {
+							let NodeMetadata::BasicBlock {
+								symbolic_state_id,
+								..
+							} = metadata else {panic!()};
+							NodeDrawingData {
+								state: symbolic_state_id as _,
+								scc_group: scc_groups[&idx],
+								function: 0,
+								lod_text: new_lod_text_impl(
+									&metadata,
+									has_self_edge,
+									disasm_context,
+								),
+							}
+						})
+						.collect(),
+					edges,
+				)
+			};
+			self.merged_block_graph
+				.write()
+				.unwrap()
+				.seeded_replace_self_with(merged_nodes, merged_edges);
+
 			let (compressed_nodes, compressed_edges) = {
 				let (nodes, self_edge, edges) =
 					block_control_flow.get_compressed_metadata_and_selfedge_and_sequential_edges();
@@ -122,6 +166,37 @@ impl Model {
 				.write()
 				.unwrap()
 				.seeded_replace_self_with(compressed_nodes, compressed_edges);
+
+			let (merged_compressed_nodes, merged_compressed_edges) = {
+				let (nodes, self_edge, edges) =
+					merged_control_flow.get_compressed_metadata_and_selfedge_and_sequential_edges();
+				(
+					nodes
+						.into_iter()
+						.zip(self_edge)
+						.map(|(metadata, has_self_edge)| {
+							let NodeMetadata::CompressedBasicBlock(ref block) = metadata else {panic!()};
+							let state =
+								block.symbolic_state_ids.first().copied().unwrap_or(0) as usize;
+							NodeDrawingData {
+								state,
+								scc_group: 0,
+								function: 0,
+								lod_text: new_lod_text_impl(
+									&metadata,
+									has_self_edge,
+									disasm_context,
+								),
+							}
+						})
+						.collect(),
+					edges,
+				)
+			};
+			self.merged_compressed_block_graph
+				.write()
+				.unwrap()
+				.seeded_replace_self_with(merged_compressed_nodes, merged_compressed_edges);
 		}
 
 		{
@@ -168,6 +243,8 @@ impl Model {
 				GraphToView::RawBlock => &self.raw_block_graph,
 				GraphToView::CompressedBlock => &self.compressed_block_graph,
 				GraphToView::State => &self.raw_state_graph,
+				GraphToView::MergedBlock => &self.merged_block_graph,
+				GraphToView::CompressedMergedBlock => &self.merged_compressed_block_graph,
 			};
 			let mut working_copy: Graph2D = graph.read().unwrap().clone();
 			working_copy.set_params(params);
@@ -198,6 +275,10 @@ impl Model {
 			GraphToView::RawBlock => self.raw_block_graph.read().unwrap(),
 			GraphToView::CompressedBlock => self.compressed_block_graph.read().unwrap(),
 			GraphToView::State => self.raw_state_graph.read().unwrap(),
+			GraphToView::MergedBlock => self.merged_block_graph.read().unwrap(),
+			GraphToView::CompressedMergedBlock => {
+				self.merged_compressed_block_graph.read().unwrap()
+			}
 		}
 	}
 
@@ -228,6 +309,8 @@ pub enum GraphToView {
 	RawBlock = 0,
 	CompressedBlock = 1,
 	State = 2,
+	MergedBlock = 3,
+	CompressedMergedBlock = 4,
 }
 
 impl fmt::Display for GraphToView {
@@ -236,6 +319,8 @@ impl fmt::Display for GraphToView {
 			GraphToView::RawBlock => "Raw Basic Block Graph",
 			GraphToView::CompressedBlock => "Compressed Block Graph",
 			GraphToView::State => "State Graph",
+			GraphToView::MergedBlock => "Merged Basic Block Graph",
+			GraphToView::CompressedMergedBlock => "Compressed Merged Basic Block Graph",
 		};
 		f.write_str(s)
 	}
@@ -247,6 +332,8 @@ impl GraphToView {
 			0 => Self::RawBlock,
 			1 => Self::CompressedBlock,
 			2 => Self::State,
+			3 => Self::MergedBlock,
+			4 => Self::CompressedMergedBlock,
 			d => panic!("invalid discriminant {d}"),
 		}
 	}

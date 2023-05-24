@@ -94,8 +94,20 @@ impl App for Gui {
 						);
 						let third =
 							ui.selectable_value(&mut self.view, GraphToView::State, "State Graph");
+						let fourth = ui.selectable_value(
+							&mut self.view,
+							GraphToView::MergedBlock,
+							"Merged Block Graph",
+						);
+						let fifth = ui.selectable_value(
+							&mut self.view,
+							GraphToView::CompressedMergedBlock,
+							"Compressed Merged Block Graph",
+						);
 
-						first.clicked() || second.clicked() || third.clicked()
+						first.clicked()
+							|| second.clicked() || third.clicked()
+							|| fourth.clicked() || fifth.clicked()
 					})
 					.inner
 					.unwrap_or(false);
@@ -111,7 +123,7 @@ impl App for Gui {
 						.unwrap();
 				}
 				match self.view {
-					GraphToView::RawBlock => {
+					GraphToView::RawBlock | GraphToView::MergedBlock => {
 						// Required due to both dropdowns having the same label
 						ui.push_id(ui.id(), |ui| {
 							egui::ComboBox::from_label("")
@@ -159,7 +171,7 @@ impl App for Gui {
 								})
 						});
 					}
-					GraphToView::State => {
+					GraphToView::State | GraphToView::CompressedMergedBlock => {
 						self.colouring_mode = ColouringMode::AllGrey;
 					}
 				}
