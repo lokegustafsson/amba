@@ -139,17 +139,19 @@ impl Model {
 			let (compressed_nodes, compressed_edges) = {
 				let (nodes, self_edge, edges) =
 					block_control_flow.get_compressed_metadata_and_selfedge_and_sequential_edges();
+				let scc_groups = block_control_flow.compressed_graph.inverse_tarjan();
 				(
 					nodes
 						.into_iter()
 						.zip(self_edge)
-						.map(|(metadata, has_self_edge)| {
+						.enumerate()
+						.map(|(idx, (metadata, has_self_edge))| {
 							let NodeMetadata::CompressedBasicBlock(ref block) = metadata else {panic!()};
 							let state =
 								block.symbolic_state_ids.first().copied().unwrap_or(0) as usize;
 							NodeDrawingData {
 								state,
-								scc_group: 0,
+								scc_group: scc_groups[&idx],
 								function: 0,
 								lod_text: new_lod_text_impl(
 									&metadata,
@@ -174,13 +176,15 @@ impl Model {
 					nodes
 						.into_iter()
 						.zip(self_edge)
-						.map(|(metadata, has_self_edge)| {
+						.enumerate()
+						.map(|(idx, (metadata, has_self_edge))| {
 							let NodeMetadata::CompressedBasicBlock(ref block) = metadata else {panic!()};
 							let state =
 								block.symbolic_state_ids.first().copied().unwrap_or(0) as usize;
+							let scc_groups = merged_control_flow.compressed_graph.inverse_tarjan();
 							NodeDrawingData {
 								state,
-								scc_group: 0,
+								scc_group: scc_groups[&idx],
 								function: 0,
 								lod_text: new_lod_text_impl(
 									&metadata,
