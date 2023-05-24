@@ -94,8 +94,20 @@ impl App for Gui {
 						);
 						let third =
 							ui.selectable_value(&mut self.view, GraphToView::State, "State Graph");
+						let fourth = ui.selectable_value(
+							&mut self.view,
+							GraphToView::MergedBlock,
+							"Merged Block Graph",
+						);
+						let fifth = ui.selectable_value(
+							&mut self.view,
+							GraphToView::CompressedMergedBlock,
+							"Compressed Merged Block Graph",
+						);
 
-						first.clicked() || second.clicked() || third.clicked()
+						first.clicked()
+							|| second.clicked() || third.clicked()
+							|| fourth.clicked() || fifth.clicked()
 					})
 					.inner
 					.unwrap_or(false);
