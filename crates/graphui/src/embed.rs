@@ -198,6 +198,14 @@ impl Graph2D {
 		if self.node_positions.is_empty() {
 			return EmbedderHasConverged::Yes;
 		}
+		let node_degree = {
+			let mut node_degree = vec![0usize; self.node_positions.len()];
+			for &(a, b) in &self.edges {
+				node_degree[a] += 1;
+				node_degree[b] += 1;
+			}
+			node_degree
+		};
 		let mut node_velocity = vec![DVec2::ZERO; self.node_positions.len()];
 		let mut node_accel = vec![DVec2::ZERO; self.node_positions.len()];
 		let mut tree_buffer =
@@ -215,13 +223,14 @@ impl Graph2D {
 				const EDGE_ATTRACT_EXPONENT: f64 = 0.2;
 				let delta = self.node_positions[b] - self.node_positions[a];
 				let scale = delta.length().powf(EDGE_ATTRACT_EXPONENT);
+				let strength =
+					self.params.attraction / usize::max(node_degree[a], node_degree[b]) as f64;
 				// `F = k D^{1.2}`
-				let push = self.params.attraction * delta * scale;
+				let push = strength * delta * scale;
 				node_accel[a] += push;
 				node_accel[b] -= push;
 				// `E = k D^{2.2} / 2.2
-				potential_energy +=
-					self.params.attraction * delta.length_squared() * scale / (2.0 + scale);
+				potential_energy += strength * delta.length_squared() * scale / (2.0 + scale);
 			}
 			// Nodes repell with `F \propto D^-2`
 			if self.repulsion_approximation > Self::BARNES_HUT_CUTOFF {
