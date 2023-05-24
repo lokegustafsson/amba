@@ -6,3 +6,5 @@ hello
 hello.S
 state-splitter
 state-splitter.S
+self-modifying
+self-modifying.S

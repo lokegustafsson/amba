@@ -419,7 +419,7 @@ fn new_lod_text_impl(
 		NodeMetadata::BasicBlock {
 			symbolic_state_id: state,
 			basic_block_vaddr,
-			basic_block_generation: _,
+			basic_block_generation,
 			basic_block_elf_vaddr,
 			basic_block_content,
 			..
@@ -430,11 +430,15 @@ fn new_lod_text_impl(
 				*basic_block_elf_vaddr,
 				basic_block_content,
 			);
+			let gen = match basic_block_generation {
+				Some(x) => format!("(Generation: {x})"),
+				None => String::new(),
+			};
 			ret.coarser(format!(
-				"State: {state}{marker}\nWithin function: {name}\n{disasm}"
+				"State: {state}{marker}\nWithin function: {name} {gen}\n{disasm}"
 			));
 			ret.coarser(format!(
-				"State: {state}{marker}\nWithin function: {name}\n{source}"
+				"State: {state}{marker}\nWithin function: {name} {gen}\n{source}"
 			));
 			ret.coarser(format!("{state}{marker}\n{name}"));
 			ret.coarser(format!("{state}{marker}"));
