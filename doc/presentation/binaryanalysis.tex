@@ -1,78 +1,34 @@
-
 \begin{frame}
-	% Some examples of binary analysis methods are: 
-	% binary debugging, which might be a little too manual in many cases;
-
-	% Studying disassembly or decompiling using heuristics and meta data to
-	% generate a higher level pseudocode;
-
-	% fuzzing, generating different inputs and studying the outcome of the
-	% program, like a crash;
-
-	% Symbolic fuzzing, which we will get to.
-
-	% All methods have their pros and cons and are applicable in different situations.
-	% Binary debugging and studying disassembly or decompilation could be very
-	% manual and burdenful for the analyst, but it could also give a very good
-	% abstract understanding of the program.
-
-	% Fuzzing is an automatic method and requires no interaction, but it doesn't
-	% give any abstract understanding of the program. Only determining some
-	% inputs satisfying user defined objectives. Like determining crashes,
-	% detecting memory leaks and so on.
-
-	% Another problem with fuzzing is the testcase generation. It is not trivial
-	% how to generate test cases which effectively covers a large set of
-	% execution paths so that no same paths are unneccessarily tested multiple
-	% times, or reachable paths that were not explored.
-
-	% The specific problem of test case generation is solved by symbolic fuzzing
-	% which relies on symbolic execution.
-
-	\begin{columns}[t]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item Binary debugging
-				\item Disassembly
-				\item Decompilation
-				\item Fuzzing
-				\item Symbolic fuzzing
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\includegraphics[width=0.3\textwidth]{assets/GDB_Archer_Fish_by_Andreas_Arnez.svg.png}
-			\footnote{\tiny by Andreas Arnez, \href{https://creativecommons.org/licenses/by-sa/3.0/us/deed.en}{CC BY-SA 3.0 us}}
-
-			\includegraphics[width=\textwidth]{assets/disassembly.png}
-
-			\includegraphics[width=\textwidth]{assets/decompil.png}
-
+	\vspace{3.0mm}
+    \textbf{Fuzzing}
+    \begin{center}
 			\tiny{
-				\begin{tikzpicture}
+                \begin{tikzpicture}[
+                    roundnode/.style={circle, minimum size=7mm},
+                    question/.style={diamond, draw, fill=lightgray!80},
+                    squarednode/.style={draw, fill=lightgray!80, minimum height=0.3cm},
+                    arrow/.style={draw, -latex'}
+                    ]
 
-					\node [draw, fill=lightgray!80, minimum height=0.3cm]
-					(first) {fuzz data generation};
+					\node [squarednode] (A)                       {inp $\leftarrow$ input()};
+                    \node (X) [right=0.2cm of A] {$\leftarrow$ 0, 1, 3343, 34893834, ..., 93784739, ...};
 
-					\node [draw, fill=lightgray!80, minimum height=0.3cm, right=0.2cm of first]
-					(second) {execution};
 
-					\node [draw, fill=lightgray!80, minimum height=0.3cm, below=0.2cm of second]
-					(third) {analysis};
+					\node [question] (B)       [below=of A]  {inp = 93784739};
+                    \node [squarednode] (C)     [right =of B] {...};
+                    \node [squarednode] (E)     [below=of C] {x $\leftarrow$ 1 / (inp-93784739)};
+                    \node [roundnode, draw=red!60, fill=red!5] (F)     [below=of E] {exitcode 1};
+                    \node [squarednode]    (D)    [below=of B]  {...};
+                    \node [roundnode, draw=green!60, fill=green!5]    (G)    [below=of D]  {exitcode 0};
 
-					\node [diamond, draw, fill=lightgray!80, minimum height=0.1cm, below=0.3cm of third]
-					(fourth) {finished?};
-
-					\node [draw, fill=lightgray!80, minimum height=0.3cm, right=0.2cm of fourth]
-					(fifth) {report};
-
-					\path [draw, -latex'] (first) to (second);
-					\path [draw, -latex'] (second) to (third);
-					\path [draw, -latex'] (third) to (fourth);
-					\path [draw, -latex'] (fourth) to (fifth);
-					\path [draw, -latex'] (fourth) -| (first);
+					\draw [arrow] (A) -- (B);
+                    \draw [arrow] (B.east) -- (C) node [midway, above] (yesCond) {yes};
+					\draw [arrow] (B.south) -- (D) node [midway, left] (noCond) {no};
+					\draw [arrow] (C) -- (E);
+					\draw [arrow] (D) -- (G);
+					\draw [arrow] (E) -- (F);
 
 				\end{tikzpicture}
 			}
-		\end{column}
-	\end{columns}
+    \end{center}
 \end{frame}
