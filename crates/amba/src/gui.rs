@@ -193,9 +193,11 @@ impl App for Gui {
 		});
 
 		if let Some(new_priority) = mem::take(&mut self.graph_widget.new_priority_node) {
-			self.controller_tx
-				.send(ControllerMsg::NewPriority(new_priority))
-				.unwrap();
+			if self.view == GraphToView::State {
+				self.controller_tx
+					.send(ControllerMsg::NewPriority(new_priority))
+					.unwrap();
+			}
 		}
 	}
 
