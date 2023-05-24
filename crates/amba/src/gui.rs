@@ -123,7 +123,7 @@ impl App for Gui {
 						.unwrap();
 				}
 				match self.view {
-					GraphToView::RawBlock => {
+					GraphToView::RawBlock | GraphToView::MergedBlock => {
 						// Required due to both dropdowns having the same label
 						ui.push_id(ui.id(), |ui| {
 							egui::ComboBox::from_label("")
@@ -171,9 +171,7 @@ impl App for Gui {
 								})
 						});
 					}
-					GraphToView::MergedBlock
-					| GraphToView::CompressedMergedBlock
-					| GraphToView::State => {
+					GraphToView::State | GraphToView::CompressedMergedBlock => {
 						self.colouring_mode = ColouringMode::AllGrey;
 					}
 				}
