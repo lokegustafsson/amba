@@ -46,6 +46,10 @@ run_control-flow: control-flow
 control-flow.S: control-flow
 	objdump -S control-flow > control-flow.S
 
+backdoor: backdoor.c
+backdoor.S: backdoor
+	objdump -S backdoor > backdoor.S
+
 clean:
 	-rm overrun
 	-rm overrun.S
