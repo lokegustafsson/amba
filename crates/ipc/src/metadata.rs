@@ -32,6 +32,22 @@ pub enum NodeMetadata {
 	CompressedBasicBlock(Box<CompressedBasicBlock>),
 }
 
+impl NodeMetadata {
+	pub fn reset_state(&mut self) {
+		match self {
+			NodeMetadata::State { .. } => {}
+			NodeMetadata::BasicBlock {
+				symbolic_state_id, ..
+			} => {
+				*symbolic_state_id = 0;
+			}
+			NodeMetadata::CompressedBasicBlock(b) => {
+				b.symbolic_state_ids = SmallVec::new();
+			}
+		}
+	}
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct CompressedBasicBlock {
 	pub symbolic_state_ids: SmallVec<[u32; SMALL_SIZE_COMPRESSED]>,

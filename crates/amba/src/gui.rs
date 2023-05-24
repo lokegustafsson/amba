@@ -159,7 +159,9 @@ impl App for Gui {
 								})
 						});
 					}
-					GraphToView::State => {
+					GraphToView::MergedBlock
+					| GraphToView::CompressedMergedBlock
+					| GraphToView::State => {
 						self.colouring_mode = ColouringMode::AllGrey;
 					}
 				}
