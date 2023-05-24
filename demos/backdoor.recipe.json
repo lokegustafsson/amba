@@ -1,0 +1,11 @@
+{
+	"files": {
+		"backdoor": "./backdoor",
+		"input.txt": {
+			"seed": "aaaa",
+			"symbolic": [[0, 4]]
+		}
+	},
+	"executable_path": "./backdoor",
+	"stdin_path": "/tmp/input.txt"
+}
