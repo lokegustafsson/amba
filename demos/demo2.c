@@ -5,8 +5,13 @@ int b() { return 2; }
 
 int main() {
 	int input = getchar();
+	int x;
+
 	if (input == 5) {
-		return a();
+		x = a();
+	} else {
+		x = b();
 	}
-	return b();
+
+	return x;
 }
