@@ -1,12 +1,38 @@
 \begin{frame}
+    \centering
+    Fuzzing gives \underline{evidence}, not \underline{proof}
+\end{frame}
+
+\begin{frame}
+	\vspace{3.0mm}
+    \textbf{Symbolic Fuzzing}
     \begin{center}
-        \textbf{f(x) = 3 $<$ x $<$ 5} \\
-	    \vspace{3.0mm}
-        f(0) = false\\
-        f(1) = false\\
-        f(2) = false\\
-        f(3) = false\\
-        f(4) = true \\
-        f(5) = false\\
+			\tiny{
+                \begin{tikzpicture}[
+                    roundnode/.style={circle, minimum size=7mm},
+                    question/.style={diamond, draw, fill=lightgray!80},
+                    squarednode/.style={draw, fill=lightgray!80, minimum height=0.3cm},
+                    arrow/.style={draw, -latex'}
+                    ]
+
+					\node [squarednode] (A)                       {inp $\leftarrow$ input()};
+
+
+					\node [question] (B)       [below=of A]  {inp = 93784739};
+                    \node [squarednode] (C)     [right =of B] {...};
+                    \node [squarednode] (E)     [below=of C] {x $\leftarrow$ 1 / (inp-93784739)};
+                    \node [roundnode, draw=red!60, fill=red!5] (F)     [below=of E] {exitcode 1};
+                    \node [squarednode]    (D)    [below=of B]  {...};
+                    \node [roundnode, draw=green!60, fill=green!5]    (G)    [below=of D]  {exitcode 0};
+
+                    \draw [arrow] (A) -- (B.north) node [midway, right=0.1cm of A, fill=green!100, draw] (cond0) {(1) $\forall$ inp};
+                    \draw [arrow] (B.east) -- (C) node [midway, above] (yesCond) {yes};
+					\draw [arrow] (B.south) -- (D) node [midway, left] (noCond) {no};
+					\draw [arrow] (C) -- (E) node [right= 0.4cm of C, fill=green!100, draw] (cond0) {(3) inp = 93784739};
+					\draw [arrow] (D) -- (G) node [midway, left=0.3cm, fill=green!100, draw] (cond0) {(2) inp $\neq$  93784739};
+					\draw [arrow] (E) -- (F);
+
+				\end{tikzpicture}
+			}
     \end{center}
 \end{frame}
