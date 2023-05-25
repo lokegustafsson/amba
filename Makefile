@@ -45,9 +45,20 @@ get-libamba-symbols:
 		| c++filt \
 		| printf "\nDynamic symbols required by libamba:\n\n$$(cat -)\n"
 
-demo-control-flow:
-	nix build '.#control-flow'
-	nix run . -- run "$$(nix path-info '.#control-flow')""/control-flow.recipe.json"
+--demo:
+	nix build '.#$(DEMO)'
+	nix run . -- run "$$(nix path-info '.#$(DEMO)')""/$(DEMO).recipe.json"
+
+demo-hello: DEMO+=hello
+demo-hello: --demo
+
+demo-control-flow: DEMO+=control-flow
+demo-control-flow: --demo
+
+demo-state-splitter: DEMO+=state-splitter
+demo-state-splitter: --demo
+
+
 
 hello:
 	nix-shell -p musl gnumake --run "make -C demos hello"
