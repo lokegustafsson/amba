@@ -1,6 +1,6 @@
 //! The worker thread for the gui
 
-use std::{sync::mpsc, thread};
+use std::{collections::VecDeque, sync::mpsc, thread};
 
 use disassembler::DisasmContext;
 use eframe::egui::Context;
@@ -26,42 +26,68 @@ pub fn run_embedder(
 		.num_threads(thread_pool_size)
 		.build()
 		.unwrap();
+	let mut unhandled_messages = VecDeque::new();
 	loop {
-		let message = if blocking {
-			// Will wait
-			rx.recv().map_err(Into::into)
-		} else {
-			// Will merely check if there are pending messages
-			rx.try_recv()
-		};
-		match message {
-			Ok(EmbedderMsg::UpdateEdges {
-				block_edges,
-				state_edges,
-			}) => {
-				model.add_new_edges(state_edges, block_edges, &mut disasm_context);
-
-				blocking = false;
-				continue;
-			}
-			Ok(EmbedderMsg::WakeUp) => {
-				blocking = false;
-				continue;
-			}
-			Ok(EmbedderMsg::QemuShutdown) => {
-				let new_thread_pool_size = thread::available_parallelism().unwrap().get();
-				if new_thread_pool_size != thread_pool_size {
-					thread_pool_size = new_thread_pool_size;
-					thread_pool = rayon::ThreadPoolBuilder::new()
-						.num_threads(thread_pool_size)
-						.build()
-						.unwrap();
+		// Poll available messages
+		loop {
+			match rx.try_recv() {
+				Ok(msg) => unhandled_messages.push_back(msg),
+				Err(mpsc::TryRecvError::Empty) => break,
+				Err(mpsc::TryRecvError::Disconnected) => {
+					tracing::info!("exiting");
+					return Ok(());
 				}
 			}
-			Err(mpsc::TryRecvError::Empty) => {}
-			Err(mpsc::TryRecvError::Disconnected) => {
-				tracing::info!("exiting");
-				return Ok(());
+		}
+		// Block awaiting message if none unhandled and `blocking = true`
+		if blocking && unhandled_messages.is_empty() {
+			match rx.recv() {
+				Ok(msg) => unhandled_messages.push_back(msg),
+				Err(mpsc::RecvError) => {
+					tracing::info!("exiting");
+					return Ok(());
+				}
+			}
+		}
+		// Handle messages
+		while let Some(message) = unhandled_messages.pop_front() {
+			match message {
+				EmbedderMsg::UpdateEdges {
+					mut block_edges,
+					mut state_edges,
+				} => {
+					let mut update_chunk_count = 1;
+					// Append additional sequential `EmbedderMsg::UpdateEdges`
+					while let Some(EmbedderMsg::UpdateEdges {
+						block_edges: block_extra,
+						state_edges: state_extra,
+					}) = unhandled_messages.front()
+					{
+						block_edges.extend_from_slice(&block_extra);
+						state_edges.extend_from_slice(&state_extra);
+						unhandled_messages.pop_front();
+						update_chunk_count += 1;
+					}
+					model.add_new_edges(state_edges, block_edges, &mut disasm_context);
+					tracing::info!("Registered edges from {update_chunk_count} IPC messages");
+
+					blocking = false;
+					continue;
+				}
+				EmbedderMsg::WakeUp => {
+					blocking = false;
+					continue;
+				}
+				EmbedderMsg::QemuShutdown => {
+					let new_thread_pool_size = thread::available_parallelism().unwrap().get();
+					if new_thread_pool_size != thread_pool_size {
+						thread_pool_size = new_thread_pool_size;
+						thread_pool = rayon::ThreadPoolBuilder::new()
+							.num_threads(thread_pool_size)
+							.build()
+							.unwrap();
+					}
+				}
 			}
 		}
 		match thread_pool.install(|| model.run_layout_iterations()) {
