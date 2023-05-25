@@ -204,7 +204,7 @@ impl SessionConfig {
 		})
 	}
 
-	pub fn executable_host_path(&self) -> PathBuf {
+	pub fn executable_host_path(&self) -> Option<PathBuf> {
 		// NOTE: `fs::canonicalize` and similar are inappropriate here since we are
 		// operating on a *guest* path.
 		fn remove_executable_dotslash(mut guest_path: &str) -> &str {
@@ -215,6 +215,11 @@ impl SessionConfig {
 			assert!(!guest_path.is_empty());
 			guest_path
 		}
+		// Absolute guest paths are interpreted as already existing within the
+		// guest and therefore having no host path to copy from.
+		if self.recipe.executable_path.starts_with("/") {
+			return None;
+		}
 		let guest_path: &str = remove_executable_dotslash(&self.recipe.executable_path);
 
 		match self.recipe.files.get(guest_path) {
@@ -222,7 +227,9 @@ impl SessionConfig {
 				"invalid recipe: guest path '{guest_path}' matches no guest file: {:?}",
 				self.recipe.files
 			),
-			Some(FileSource::Host(host_path)) => self.recipe_path.parent().unwrap().join(host_path),
+			Some(FileSource::Host(host_path)) => {
+				Some(self.recipe_path.parent().unwrap().join(host_path))
+			}
 			Some(
 				symbolic @ (FileSource::SymbolicContent { .. } | FileSource::SymbolicHost { .. }),
 			) => panic!("invalid recipe: executable file cannot be symbolic: {symbolic:?}"),

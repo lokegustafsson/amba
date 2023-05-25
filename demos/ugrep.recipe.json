@@ -1,0 +1,12 @@
+{
+	"files": {
+		"ugrep": "./ugrep",
+		"input.txt": {
+			"seed": "abcd",
+			"symbolic": [[0, null]]
+		}
+	},
+	"executable_path": "./ugrep",
+	"stdin_path": "/tmp/input.txt",
+	"arguments": ["--quiet", "pass"]
+}

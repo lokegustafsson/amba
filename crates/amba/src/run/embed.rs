@@ -17,7 +17,7 @@ pub fn run_embedder(
 ) -> Result<(), ()> {
 	let mut blocking = true;
 	let mut disasm_context = DisasmContext::new(
-		&config.executable_host_path(),
+		config.executable_host_path().as_ref().map(AsRef::as_ref),
 		config.recipe_path.parent().unwrap(),
 	)
 	.unwrap();

@@ -351,11 +351,14 @@ fn new_lod_text_impl(
 		match disasm_context.get_function_name(elf_vaddr) {
 			Ok(ret) => ret,
 			Err(err) => {
-				tracing::warn!(
-					?err,
-					elf_vaddr,
-					"debuginfo get_function_name failed"
-				);
+				match err {
+					disassembler::Error::MissingDebugData(_) => {}
+					err => tracing::warn!(
+						?err,
+						elf_vaddr,
+						"debuginfo get_function_name failed"
+					),
+				}
 				format!("{:x}", elf_vaddr)
 			}
 		}

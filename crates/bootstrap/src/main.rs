@@ -16,7 +16,10 @@ compile_error!("bootstrap supports only 'x86_64-unknown-linux-musl'",);
 use std::{
 	fs::{self, File, Permissions},
 	io,
-	os::unix::{fs::PermissionsExt, process::CommandExt},
+	os::unix::{
+		fs::{MetadataExt, PermissionsExt},
+		process::CommandExt,
+	},
 	path::Path,
 	process::{Command, Stdio},
 	thread,
@@ -88,11 +91,14 @@ fn main() {
 		};
 	}
 
-	fs::set_permissions(
-		&recipe.executable_path,
-		Permissions::from_mode(0o544),
-	)
-	.unwrap();
+	if fs::metadata(&recipe.executable_path).unwrap().uid() == nix::unistd::Uid::current().as_raw()
+	{
+		fs::set_permissions(
+			&recipe.executable_path,
+			Permissions::from_mode(0o555),
+		)
+		.unwrap();
+	}
 	tracing::info!(
 		recipe.executable_path,
 		"running executable to analyze"
