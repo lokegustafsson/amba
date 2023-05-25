@@ -58,18 +58,14 @@ demo-control-flow: --demo
 demo-state-splitter: DEMO+=state-splitter
 demo-state-splitter: --demo
 
+demo-backdoor: DEMO+=backdoor
+demo-backdoor: --demo
 
+demo1: DEMO+=demo1
+demo1: --demo
 
-hello:
-	nix-shell -p musl gnumake --run "make -C demos hello"
+demo2: DEMO+=demo2
+demo2: --demo
 
 compile_flags.txt:
 	make -C crates/AmbaPlugin ../../compile_flags.txt
-
-demo1:
-	nix-shell -p musl --run "make -C demos demo1"
-	nix run . -- run demos/demo1.recipe.json
-
-demo2:
-	nix-shell -p musl --run "make -C demos demo2"
-	nix run . -- run demos/demo2.recipe.json
