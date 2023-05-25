@@ -85,10 +85,9 @@
           inherit (libamba) libamba;
           inherit (amba) amba-deps impure-amba;
           inherit (s2e) s2e s2e-src build-guest-images guest-images-src;
-          inherit (test) control-flow hello state-splitter;
           inherit (amba) amba amba-wrapped;
           default = amba.amba-wrapped;
-        };
+        } // test;
         apps = {
           s2e-env = {
             type = "app";
@@ -124,20 +123,6 @@
                 make -C doc/plan
                 make -C doc/report
               '');
-          };
-          test-amba-hello = {
-            type = "app";
-            program = "${test.test-amba-hello}/bin/test-amba-hello";
-          };
-          test-amba-control-flow = {
-            type = "app";
-            program =
-              "${test.test-amba-control-flow}/bin/test-amba-control-flow";
-          };
-          test-amba-state-splitter = {
-            type = "app";
-            program =
-              "${test.test-amba-state-splitter}/bin/test-amba-state-splitter";
           };
         };
       });

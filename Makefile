@@ -1,4 +1,4 @@
-.PHONY: build test upload upload-amba upload-s2e get-libamba-symbols
+.PHONY: build test upload upload-amba upload-s2e get-libamba-symbols demo1 demo2
 
 build:
 	nix build -L
@@ -58,10 +58,14 @@ demo-control-flow: --demo
 demo-state-splitter: DEMO+=state-splitter
 demo-state-splitter: --demo
 
+demo-backdoor: DEMO+=backdoor
+demo-backdoor: --demo
 
+demo1: DEMO+=demo1
+demo1: --demo
 
-hello:
-	nix-shell -p musl gnumake --run "make -C demos hello"
+demo2: DEMO+=demo2
+demo2: --demo
 
 compile_flags.txt:
 	make -C crates/AmbaPlugin ../../compile_flags.txt
