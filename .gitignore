@@ -33,6 +33,9 @@
 **/*.bcf
 **/*.run.xml
 **/*.bak*
+**/*.nav
+**/*.snm
+**/*.vrb
 
 # Built PDFs
 !doc/pdf/**

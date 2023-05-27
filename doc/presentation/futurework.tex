@@ -1,0 +1,63 @@
+\begin{frame}[fragile]
+	\textbf{Possible extension: State merging}
+
+	\begin{figure}
+		\begin{tikzpicture}
+
+			\node [draw, fill=orange!80, minimum height=0.5cm]
+			(first) {In one way};
+
+			\node [draw, fill=orange!80, minimum height=0.5cm, right=0.2cm of first]
+			(second) {In another way};
+
+			\node [draw, fill=yellow!80, minimum
+				width=1cm, minimum height=0.5cm, above=0.8cm of second]  (entry) {Parse input};
+
+			\node [draw, circle, fill=black, minimum size=3pt, inner sep=0pt,
+				right=0.3cm of second] (third) {};
+			\node [draw, circle, fill=black, minimum size=3pt, inner sep=0pt,
+				right=0.3cm of third] (fourth) {};
+			\node [draw, circle, fill=black, minimum size=3pt, inner sep=0pt,
+				right=0.3cm of fourth] (fifth) {};
+
+			\node [draw, fill=orange!80, minimum height=0.5cm, right=0.3cm of fifth]
+			(final) {Final way};
+
+			\node [draw, fill=yellow!80, minimum height=0.5cm,
+				below=0.8cm of second, text width=2cm ] (exit)
+			{Merged state, union of symbolic expressions};
+
+			\draw[->, line width=.4mm] (entry) to
+			(first);
+			\draw[->, line width=.4mm] (first) to (exit);
+
+			\draw[->, line width=.4mm] (entry) to (second);
+			\draw[->, line width=.4mm] (second) to (exit);
+
+			\draw[->, line width=.4mm] (entry) to
+			node[auto,text width=5cm]{Symbolically conditional machine-code branches}
+			(final);
+			\draw[->, line width=.4mm] (final) to (exit);
+
+		\end{tikzpicture}
+		\caption{State merging, schematic example}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\textbf{Possible extension: Syscall tracing}
+
+	{\small
+		\begin{figure}
+			\begin{lstlisting}
+(many lines elided)
+..
+read(0, "a\n", 4096)                    = 2
+..
+write(1, "16\n", 3)                     = 3
++++ exited with 0 +++
+\end{lstlisting}
+			\caption{\texttt{echo 'a' | strace ./control-flow}}
+		\end{figure}
+	}
+\end{frame}

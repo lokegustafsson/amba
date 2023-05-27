@@ -6,7 +6,9 @@ name: report-ci
 on:
   push:
     paths:
+      - 'doc/plan/**'
       - 'doc/report/**'
+      - 'doc/presentation/**'
       - 'nix/**'
       - 'flake.lock'
       - 'flake.nix'

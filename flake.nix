@@ -98,13 +98,11 @@
             program = builtins.toString
               (pkgs.writeShellScript "build-documents" ''
                 export PATH=${
-                  lib.strings.makeBinPath [
-                    pkgs.gnumake
-                    pkgs.stable.tectonic
-                  ]
+                  lib.strings.makeBinPath [ pkgs.gnumake pkgs.stable.tectonic ]
                 }
                 make -C doc/plan
                 make -C doc/report group_64_project_report.pdf
+                make -C doc/presentation group_64_project_presentation.pdf
               '');
           };
           check-documents = {
@@ -122,6 +120,7 @@
                 }
                 make -C doc/plan
                 make -C doc/report
+                make -C doc/presentation
               '');
           };
         };

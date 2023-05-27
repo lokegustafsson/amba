@@ -1,0 +1,39 @@
+\begin{frame}
+    \centering
+    AMBA: Interactive visualisation of symbolic \underline{fuzzing}
+\end{frame}
+
+\begin{frame}
+	\vspace{3.0mm}
+    \textbf{Fuzzing}
+    \begin{center}
+			\tiny{
+                \begin{tikzpicture}[
+                    roundnode/.style={circle, minimum size=7mm},
+                    question/.style={diamond, draw, fill=lightgray!80},
+                    squarednode/.style={draw, fill=lightgray!80, minimum height=0.3cm},
+                    arrow/.style={draw, -latex'}
+                    ]
+
+					\node [squarednode] (A)                       {inp $\leftarrow$ input()};
+                    \node (X) [right=0.2cm of A] {$\leftarrow$ 0, 1, 3343, 34893834, ..., 93784739, ...};
+
+
+					\node [question] (B)       [below=of A]  {inp = 93784739};
+                    \node [squarednode] (C)     [right =of B] {...};
+                    \node [squarednode] (E)     [below=of C] {x $\leftarrow$ 1 / (inp-93784739)};
+                    \node [roundnode, draw=red!60, fill=red!5] (F)     [below=of E] {exitcode 1};
+                    \node [squarednode]    (D)    [below=of B]  {...};
+                    \node [roundnode, draw=green!60, fill=green!5]    (G)    [below=of D]  {exitcode 0};
+
+					\draw [arrow] (A) -- (B);
+                    \draw [arrow] (B.east) -- (C) node [midway, above] (yesCond) {yes};
+					\draw [arrow] (B.south) -- (D) node [midway, left] (noCond) {no};
+					\draw [arrow] (C) -- (E);
+					\draw [arrow] (D) -- (G);
+					\draw [arrow] (E) -- (F);
+
+				\end{tikzpicture}
+			}
+    \end{center}
+\end{frame}

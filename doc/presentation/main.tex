@@ -1,0 +1,69 @@
+% Create a beamer file with cool style.
+
+\documentclass[tikz]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\usefonttheme{serif}
+\useinnertheme{rectangles}
+\useoutertheme{infolines}
+
+% We present in english
+%\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{
+	listings,
+    graphicx,
+    hyperref,
+    pgfgantt,
+    xspace,
+}
+
+\newcommand{\stoe}{S$^2$E\xspace}
+
+\begin{document}
+\year=2023
+\month=5
+\day=26
+
+\title{AMBA}
+\subtitle{Interactive visualisation of symbolic fuzzing}
+\author[Bachelor's project 64]{
+	\mbox{Loke Gustafsson} \and
+	\mbox{Samuel Kyletoft} \and
+	\mbox{Enayatullah Norozi} \and
+	\mbox{Albin Otterhäll} \and
+	\mbox{Clara Salberg} \and
+	\mbox{Linus Wallman}
+}
+% \date{\today}
+\titlegraphic{\vspace{8cm}}
+
+\begin{frame}
+    \tikz [remember picture,overlay]
+        \node at
+        ([yshift=3.2cm]current page.south) 
+        %or: (current page.center)
+        {\includegraphics[height=0.6\textheight]{assets/state-splitter-faded.png}};
+    \titlepage
+\end{frame}
+
+
+\input{motivation.tex}
+
+\input{binaryanalysis.tex}
+
+\input{demonstative_example.tex}
+
+\input{symbex.tex}
+
+\input{amba.tex}
+
+\input{demo.tex}
+
+\input{potential.tex}
+
+\input{futurework.tex}
+
+\input{conclusion.tex}
+
+\end{document}
