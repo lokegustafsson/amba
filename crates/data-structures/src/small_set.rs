@@ -3,7 +3,7 @@ use std::{collections::BTreeSet, iter};
 use arrayvec::ArrayVec;
 use serde::{Deserialize, Serialize};
 
-const SMALL_SIZE: usize = 6;
+pub(crate) const SMALL_SIZE: usize = 6;
 
 /// A small size optimised u64 set
 #[derive(Serialize, Deserialize, Debug, Clone)]

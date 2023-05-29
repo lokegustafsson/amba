@@ -5,6 +5,8 @@ use std::{
 };
 
 use crate::small_set::SmallU64Set;
+use smallvec::smallvec;
+type SmallVec<T> = smallvec::SmallVec<[T; crate::small_set::SMALL_SIZE]>;
 
 // Aliased so we can swap them to BTree versions easily.
 pub(crate) type Set<T> = std::collections::BTreeSet<T>;
@@ -15,7 +17,7 @@ pub struct Node {
 	pub id: u64,
 	pub from: SmallU64Set,
 	pub to: SmallU64Set,
-	pub of: SmallU64Set,
+	pub of: SmallVec<u64>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -83,7 +85,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let to = [to].into_iter().collect::<SmallU64Set>();
-				let of = [from].into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<u64> = smallvec![from]; //.into_iter().collect::<SmallU64Set>();
 				Node {
 					id: from,
 					to,
@@ -99,7 +101,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let from = [from].into_iter().collect::<SmallU64Set>();
-				let of = [to].into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<u64> = smallvec![to];//.into_iter().collect::<SmallU64Set>();
 				Node {
 					id: to,
 					to: Default::default(),
@@ -111,6 +113,225 @@ impl Graph {
 		modified
 	}
 
+	pub fn revert_and_update(&mut self, from: u64, to: u64) {
+		let mut from_node = from;
+        let mut to_node = to;
+		let mut rest = from;
+
+
+		// Self loop
+		if from == to {
+			if let Some(node) = self.nodes.get(&from){
+				// node already exists
+				if node.of.iter().len() == 1 {
+					// no need to split any compressed nodes
+					self.update(from, from);
+					return ();
+				}else {
+					// self loop in a compressed node, split around it
+					(from_node, _) = self.split_after(from, from);
+					(_, to_node) = self.split_before(to, from_node);
+					self.update(to_node, to_node);
+				}
+
+			}// node doesn't exist or is part of other 
+			for Node { id, of, .. } in self.nodes.values() {
+				if of.iter().any(|&x| x == from) {
+					// found in compressed node, split around it
+					(from_node, _) = self.split_after(from, *id);
+					(_, to_node) = self.split_before(to, from_node);
+					self.update(to_node, to_node);
+					return ();
+				}
+			}
+		}
+
+		let nodes = self.nodes.clone();        
+        if let Some(node) = nodes.get(&from) {
+			// from node exists
+			let of_copy = node.of.clone();
+            (from_node, rest) = self.split_after(from, from);
+			if of_copy.iter().any(|&x| x == to) {
+				// to node is in same compressed node
+				if self.nodes.get(&from_node).unwrap().of.iter().any(|&x| x == to){
+					// to node in same partition after previous split
+					(_, to_node) = self.split_before(to, from_node);
+					self.update(to_node, to_node);
+					return ();
+
+				} else {
+					// to node ended up in the other partition after previous split
+					(_, to_node) = self.split_before(to, rest);
+					self.update(from_node, to_node);
+					return ();
+				}
+			}
+        }else { // from node doesn't exist
+            for Node { id, of, .. } in nodes.values() {
+                if of.iter().any(|&x| x == from) {
+					// from node part of compressed node
+					let of_copy = of.clone();
+					(from_node, rest) = self.split_after(from, *id);
+					if of_copy.iter().any(|&x| x == to) {
+						// to node exists in same compressed node
+						if self.nodes.get(&from_node).unwrap().of.iter().any(|&x| x == to){
+							// to node in same partition after previous split
+							(_, to_node) = self.split_before(to, from_node);
+							self.update(to_node, to_node);
+							return ();
+		
+						} else {
+							// to node ended up in the other partition after previous split
+							(_, to_node) = self.split_before(to, rest);
+							self.update(from_node, to_node);
+							return ();
+						}
+					}
+					break;
+                }
+            }
+        }
+
+		// to node wasn't found in same as from node
+        if let Some(_node) = self.nodes.get(&to) {
+			// to node exists
+            (_, to_node) = self.split_before(to, to);
+        }else { 
+            for Node { id, of, .. } in self.nodes.values() {
+				// to node found in compressed node
+                if *id == to || of.iter().any(|&x| x == to) {
+                    (_ ,to_node) = self.split_before(to, *id);
+                    break;
+                }
+            }
+        }
+        self.update(from_node, to_node);
+    }
+
+    /// split a merged node after occurence of "after" node
+    /// returns the node id's of new nodes after split
+    pub fn split_after(&mut self, after: u64, merged_in: u64) -> (u64, u64) {
+        let node = self.get(merged_in).unwrap().clone();
+        let of = node.of.clone();
+
+        for(i,&subnode) in of.iter().enumerate() {
+            if subnode == after {
+                if i < of.len()-1 {
+
+                    let part1_of = of.get(..i+1).unwrap();
+                    let part2_of = of.get(i+1..).unwrap();
+
+                    let part1 = part1_of.iter().min().unwrap();
+                    let part2 = part2_of.iter().min().unwrap();
+
+                    let partition_1 = Node {
+                        id: *part1,
+                        from: node.from.clone(),
+                        to: [*part2].into_iter().collect::<SmallU64Set>(),
+                        of:  part1_of.into(),
+
+                    };
+                    let partition_2  = Node {
+                        id: *part2,
+                        from: [*part1].into_iter().collect::<SmallU64Set>(),
+                        to: node.to.clone(),
+                        of: part2_of.into(),
+
+                    };
+                    self.merges.remove(part2);
+                    self.merges.remove(part1);
+
+                    self.nodes.remove(&merged_in);
+                    self.nodes.insert(*part1, partition_1);
+                    self.nodes.insert(*part2, partition_2);
+
+					self.update_from_after_split(merged_in, *part2, node.to);
+                    self.update_to_after_split(merged_in, *part1, node.from);
+					
+                    return (*part1, *part2);
+
+                } else {
+                    return (node.id, node.id);
+
+                }
+            }
+        }
+        (after, after)
+    }
+
+    /// split merged node before occurrence of new "to" connection
+    /// returns the node id's of new nodes after split
+    pub fn split_before(&mut self, before: u64, merged_in: u64) -> (u64, u64) {
+        let node = self.get(merged_in).unwrap().clone();
+        let of = node.of.clone();
+        for(i,&subnode) in of.iter().enumerate() {
+            if subnode == before {
+                if i > 0 {
+
+                    let part1_of = of.get(..i).unwrap();
+                    let part2_of = of.get(i..).unwrap();
+
+                    let part1 = part1_of.iter().min().unwrap();
+                    let part2 = part2_of.iter().min().unwrap();
+
+
+                    let partition_1 = Node {
+                        id: *part1,
+                        from: node.from.clone(),
+                        to: [*part2].into_iter().collect::<SmallU64Set>(),
+                        of:  part1_of.into(),
+
+                    };
+                    let partition_2  = Node {
+                        id: *part2,
+                        from: [*part1].into_iter().collect::<SmallU64Set>(),
+                        to: node.to.clone(),
+                        of: part2_of.into(),
+
+                    };
+                    self.merges.remove(part2);
+                    self.merges.remove(part1);
+
+                    self.nodes.remove(&merged_in);
+                    self.nodes.insert(*part1, partition_1);
+                    self.nodes.insert(*part2, partition_2);
+
+					self.update_from_after_split(merged_in, *part2, node.to);
+                    self.update_to_after_split(merged_in, *part1, node.from);
+
+                    return (*part1, *part2);
+                }
+                else {
+                    return (node.id, node.id);
+                }
+            }
+        } (before, before) 
+    }
+    
+    
+    /// after a split, update other nodes "from" values to new node id
+    fn update_from_after_split(&mut self, old: u64, new: u64, nodes: SmallU64Set){
+        for node in nodes {
+            if let Some(to_update) = self.nodes.get_mut(&node){
+                if to_update.from.remove(&old){
+                    to_update.from.insert(new);
+                }
+            }
+        }
+    }
+
+    /// after a split, update other nodes "to" value to new node id
+    fn update_to_after_split(&mut self, old: u64, new: u64, nodes: SmallU64Set){
+        for node in nodes {
+            if let Some(to_update) = self.nodes.get_mut(&node){
+                if to_update.to.remove(&old) {
+                    to_update.to.insert(new);
+                }
+            }
+        }
+    }
+
+	/*
 	/// Revert compression of nodes and then update their connections.
 	/// Returns the reverted nodes
 	pub fn revert_and_update(&mut self, source: &Graph, from: u64, to: u64) -> SmallU64Set {
@@ -146,6 +367,7 @@ impl Graph {
 		nodes.insert(to);
 		nodes
 	}
+	*/
 
 	/// Compresses graph by merging every node pair that always go
 	/// from one to the other
@@ -159,17 +381,16 @@ impl Graph {
 		//  a visited collection for no benefit.
 		// We have to traverse the graph twice anyway because
 		//  of the borrow checker.
-		// The first value is always the smallest and the
-		//  merged node will take the id of the smallest of
+		// Tthe merged node will take the id of the smallest of
 		//  the parents.
 		let to_merge = m
 			.values()
-			.filter(|l| l.from.len() == 1)
+			.filter(|l| l.to.len() == 1)
 			.map(|l| {
-				let key = translate(l.from.get_any(), &mut self.merges);
+				let key = translate(l.to.get_any(), &mut self.merges);
 				(l, &m[&key])
 			})
-			.filter(|(_, r)| r.to.len() == 1)
+			.filter(|(_, r)| r.from.len() == 1)
 			.map(|(l, r)| (l.id, r.id))
 			.collect::<Set<_>>();
 
@@ -177,12 +398,13 @@ impl Graph {
 			l = translate(l, &mut self.merges);
 			r = translate(r, &mut self.merges);
 
-			let x = l.min(r);
-			let y = l.max(r);
-			self.merge_nodes(x, y);
+			//let x = l.min(r);
+			//let y = l.max(r);
+			self.merge_nodes(l, r);
 		}
 	}
 
+	/*
 	/// Compress around given candidates. If a candidate gets
 	/// compressed its neighbours will be checked too, growing out
 	/// from there.
@@ -220,7 +442,62 @@ impl Graph {
 			.collect();
 
 		inner(self, queued);
-	}
+	}*/
+
+	/// Compress around given candidates. If a candidate gets
+	/// compressed its neighbours will be checked too, growing out
+	/// from there.
+	//pub fn compress_with_hint(&mut self, nodes: SmallU64Set) {
+		pub fn compress_with_hint(&mut self, mut from: u64, mut to: u64) {
+			from = translate(from, &mut self.merges);
+			to = translate(to, &mut self.merges);
+			// The queue is a set so we can guarantee that there are no
+			// duplicates in the queue and HashSet doesn't have a pop
+			// function.
+			let mut candidates = [(from, to)].into_iter().collect::<BTreeSet<_>>();
+			for pair in self.get(from).unwrap().from.iter().map(|&f| (f, from)) {
+				candidates.insert(pair);
+			}
+			for pair in self.get(from).unwrap().to.iter().map(|&t| (from, t)) {
+				candidates.insert(pair);
+			}
+			for pair in self.get(to).unwrap().to.iter().map(|&t| (to, t)) {
+				candidates.insert(pair);
+			}
+			for pair in self.get(to).unwrap().from.iter().map(|&f| (f, to)) {
+				candidates.insert(pair);
+			}
+			self.compress_with_hint_2(candidates);
+		}
+	
+		fn compress_with_hint_2(&mut self, mut queued: BTreeSet<(u64, u64)>) {
+			while let Some((mut from, mut to)) = queued.pop_first() {
+				from = translate(from, &mut self.merges);
+				to = translate(to, &mut self.merges);
+	
+				if !self.are_mergable_link(from, to) {
+					continue;
+				}
+				let this = self.merge_nodes(from, to);
+				let node = &self.nodes[&this];
+	
+				let tos = node
+					.to
+					.iter()
+					.filter(|&&n| n != this)
+					.copied()
+					.map(move |t| (this, t));
+				let froms = node
+					.from
+					.iter()
+					.filter(|&&n| n != this)
+					.copied()
+					.map(move |f| (f, this));
+				for connection in tos.chain(froms) {
+					queued.insert(connection);
+				}
+			}
+		}
 
 	fn are_mergable_link(&mut self, mut l: u64, mut r: u64) -> bool {
 		l = translate(l, &mut self.merges);
@@ -237,7 +514,7 @@ impl Graph {
 			translate(to_link, &mut self.merges) == y && translate(from_link, &mut self.merges) == x
 		};
 
-		f(l, r) || f(r, l)
+		f(l, r) //|| f(r, l)
 	}
 
 	fn are_loop(&mut self, l: u64, r: u64) -> bool {
@@ -262,9 +539,9 @@ impl Graph {
 
 	/// Returns the id of the merged node
 	pub fn merge_nodes(&mut self, l: u64, r: u64) -> u64 {
-		if l > r {
+		/*if l > r {
 			return self.merge_nodes(r, l);
-		}
+		}*/
 		if l == r {
 			return l;
 		}
@@ -276,8 +553,8 @@ impl Graph {
 		let map = &mut self.nodes;
 
 		// Must be after are_loop
-		self.merges.insert(r, l);
-		self.merges.remove(&l);
+		self.merges.insert(r.max(l), r.min(l));
+		self.merges.remove(&r.min(l));
 
 		let combine_sets = |mut left_set: SmallU64Set, mut right_set: SmallU64Set| -> SmallU64Set {
 			if left_set.len() < right_set.len() {
@@ -292,19 +569,28 @@ impl Graph {
 
 		// Take the union of both nodes' input and then remove
 		// the nodes themselves
-		let r_ = map.get_mut(&r).unwrap();
+		let r_ = map.get_mut(&r.max(l)).unwrap();
 		let to_r = mem::take(&mut r_.to);
 		let from_r = mem::take(&mut r_.from);
-		let of_r = mem::take(&mut r_.of);
+		let mut of_r = mem::take(&mut r_.of);
 
-		let l_ = map.get_mut(&l).unwrap();
+		let l_ = map.get_mut(&r.min(l)).unwrap();
 		let to_l = mem::take(&mut l_.to);
 		let from_l = mem::take(&mut l_.from);
-		let of_l = mem::take(&mut l_.of);
+		let mut of_l = mem::take(&mut l_.of);
 
 		l_.to = combine_sets(to_l, to_r);
 		l_.from = combine_sets(from_l, from_r);
-		l_.of = combine_sets(of_l, of_r);
+
+		if l > r {
+			l_.of.append(&mut of_r);
+			l_.of.append(&mut of_l);
+
+		}else{
+			l_.of.append(&mut of_l); 
+			l_.of.append(&mut of_r);
+		}
+		//l_.of = combine_sets(of_l, of_r);
 
 		for parent in l_.of.iter() {
 			l_.to.remove(parent);
@@ -313,16 +599,28 @@ impl Graph {
 
 		// Restore loop if they were a loop beforehand
 		if are_loop {
-			l_.from.insert(l);
-			l_.to.insert(l);
+			l_.from.insert(r.min(l));
+			l_.to.insert(r.min(l));
 		}
-		l_.of.insert(l);
-		l_.of.insert(r);
 
-		// Remove the right node from the graph
-		map.remove(&r);
+		// Remove the node with higher id from the graph
 
-		l
+		let old = r.max(l);
+		let new = r.min(l);
+		let tos = (l_.to).clone();
+		let froms = (l_.from).clone();
+
+		map.remove(&r.max(l));
+
+
+		self.update_from_after_split(old, new, tos);
+		self.update_to_after_split(old, new, froms);
+		//l_.of.insert(l);
+		//l_.of.insert(r);
+
+
+
+		r.min(l)
 	}
 
 	pub fn edges(&self) -> impl '_ + Iterator<Item = (u64, u64)> {
@@ -414,7 +712,7 @@ impl Graph {
 					state.search_metadata.get_mut(&w).unwrap().on_stack = false;
 
 					let old_node = &graph.nodes[&w];
-					new_node.of.insert(w);
+					new_node.of.push(w);
 					new_node.from.union(&old_node.from);
 					new_node.to.union(&old_node.to);
 					new_node.id = new_node.id.min(old_node.id);
@@ -502,10 +800,11 @@ impl Graph {
 				return;
 			}
 			let u_ref = graph.nodes.get(&u).unwrap();
+			let mut ofcopy = u_ref.of.clone();
 			let node = acc
 				.entry(root)
 				.and_modify(|Node { to, from, of, id }| {
-					of.union(&u_ref.of);
+					of.append(&mut ofcopy);
 					to.union(&u_ref.to);
 					from.union(&u_ref.from);
 					*id = (*id).min(u);
@@ -675,8 +974,8 @@ mod test {
 		let mut slow = Graph::new();
 		for (from, to) in instructions.into_iter() {
 			slow.update(from, to);
-			let reverted = fast.revert_and_update(&slow, from, to);
-			fast.compress_with_hint(reverted);
+			fast.revert_and_update(from, to);
+			fast.compress_with_hint(from, to);
 
 			let mut fast_ = fast.clone();
 			fast_.apply_merges();
@@ -739,7 +1038,7 @@ mod test {
 			.collect(),
 		);
 		let expected =
-			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+			Graph::with_nodes([(0, (0, [], [], [2, 1, 0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -777,7 +1076,7 @@ mod test {
 				.into_iter()
 				.collect(),
 		);
-		let expected = Graph::with_nodes([(0, (0, [], [], [0, 1]).into())].into_iter().collect());
+		let expected = Graph::with_nodes([(0, (0, [], [], [1, 0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
 		graph.compress();
@@ -860,7 +1159,7 @@ mod test {
 		);
 		let expected = Graph::with_nodes(
 			[
-				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
+				(0, (0, [], [1, 2], [6, 5, 4, 0]).into()),
 				(1, (1, [0], [3], [1]).into()),
 				(2, (2, [0], [3], [2]).into()),
 				(3, (3, [1, 2], [], [3]).into()),
@@ -901,7 +1200,7 @@ mod test {
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
 				(2, (2, [3], [0], [2]).into()),
-				(3, (3, [], [1, 2], [3, 4, 5, 6]).into()),
+				(3, (3, [], [1, 2], [4, 5, 6, 3]).into()),
 			]
 			.into_iter()
 			.collect(),
@@ -979,7 +1278,7 @@ mod test {
 			[
 				(0, (0, [2], [], [0]).into()),
 				(1, (1, [2], [], [1]).into()),
-				(2, (2, [4, 5], [0, 1], [2, 3]).into()),
+				(2, (2, [4, 5], [0, 1], [3, 2]).into()),
 				(4, (4, [], [2], [4]).into()),
 				(5, (5, [], [2], [5]).into()),
 			]
@@ -1042,7 +1341,7 @@ mod test {
 			.collect(),
 		);
 		let expected = Graph::with_nodes(
-			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+			[(0, (0, [0], [0], [2, 1, 0, 3]).into())]
 				.into_iter()
 				.collect(),
 		);
@@ -1105,7 +1404,7 @@ mod test {
 			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([0, 1].into_iter().collect());
+		graph.compress_with_hint(0, 1);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1124,10 +1423,10 @@ mod test {
 			.collect(),
 		);
 		let expected =
-			Graph::with_nodes([(0, (0, [], [], [0, 1, 2]).into())].into_iter().collect());
+			Graph::with_nodes([(0, (0, [], [], [2, 1, 0]).into())].into_iter().collect());
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([0, 1].into_iter().collect());
+		graph.compress_with_hint(0, 1);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1153,7 +1452,7 @@ mod test {
 		let expected = graph.clone();
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([0, 1].into_iter().collect());
+		graph.compress_with_hint(0, 1);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1179,7 +1478,7 @@ mod test {
 		let expected = graph.clone();
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([3, 1].into_iter().collect());
+		graph.compress_with_hint(3, 1);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1207,7 +1506,7 @@ mod test {
 		);
 		let expected = Graph::with_nodes(
 			[
-				(0, (0, [], [1, 2], [0, 4, 5, 6]).into()),
+				(0, (0, [], [1, 2], [6, 5, 4, 0]).into()),
 				(1, (1, [0], [3], [1]).into()),
 				(2, (2, [0], [3], [2]).into()),
 				(3, (3, [1, 2], [], [3]).into()),
@@ -1217,7 +1516,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([5, 4].into_iter().collect());
+		graph.compress_with_hint(5, 4);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1248,14 +1547,14 @@ mod test {
 				(0, (0, [1, 2], [], [0]).into()),
 				(1, (1, [3], [0], [1]).into()),
 				(2, (2, [3], [0], [2]).into()),
-				(3, (3, [], [1, 2], [3, 4, 5, 6]).into()),
+				(3, (3, [], [1, 2], [4, 5, 6, 3]).into()),
 			]
 			.into_iter()
 			.collect(),
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([5, 6].into_iter().collect());
+		graph.compress_with_hint(5, 6);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1295,7 +1594,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([2, 3].into_iter().collect());
+		graph.compress_with_hint(2, 3);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1326,7 +1625,7 @@ mod test {
 			[
 				(0, (0, [2], [], [0]).into()),
 				(1, (1, [2], [], [1]).into()),
-				(2, (2, [4, 5], [0, 1], [2, 3]).into()),
+				(2, (2, [4, 5], [0, 1], [3, 2]).into()),
 				(4, (4, [], [2], [4]).into()),
 				(5, (5, [], [2], [5]).into()),
 			]
@@ -1335,7 +1634,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([3, 2].into_iter().collect());
+		graph.compress_with_hint(3, 2);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1365,7 +1664,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([0].into_iter().collect());
+		graph.compress_with_hint(0, 1);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1389,13 +1688,13 @@ mod test {
 			.collect(),
 		);
 		let expected = Graph::with_nodes(
-			[(0, (0, [0], [0], [0, 1, 2, 3]).into())]
+			[(0, (0, [0], [0], [1, 0, 3, 2]).into())]
 				.into_iter()
 				.collect(),
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([2, 1].into_iter().collect());
+		graph.compress_with_hint(2, 1);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1431,7 +1730,7 @@ mod test {
 		);
 		graph.verify();
 		expected.verify();
-		graph.compress_with_hint([2, 4].into_iter().collect());
+		graph.compress_with_hint(2, 4);
 		graph.apply_merges();
 		graph.verify();
 		assert_eq!(graph.nodes, expected.nodes);
@@ -1470,8 +1769,8 @@ mod test {
 		graph.compress();
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_1.nodes);
-		let revert = graph.revert_and_update(&raw, 0, 3);
-		graph.compress_with_hint(revert);
+		graph.revert_and_update(0, 3);
+		graph.compress_with_hint(0, 3);
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_2.nodes);
 	}
@@ -1483,8 +1782,8 @@ mod test {
 
 		let mut cycle = |from, to| {
 			slow.update(from, to);
-			let reverted = fast.revert_and_update(&slow, from, to);
-			fast.compress_with_hint(reverted);
+			fast.revert_and_update(from, to);
+			fast.compress_with_hint(from, to);
 
 			let mut fast_ = fast.clone();
 			fast_.apply_merges();
@@ -1500,6 +1799,265 @@ mod test {
 		cycle(0, 9);
 		cycle(1, 8);
 	}
+
+	#[test]
+    fn incremental_generated_2() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+            let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 0);
+        cycle(2, 0);
+        cycle(2, 4);
+        cycle(1, 3);
+        cycle(3, 0);
+        cycle(2, 3);
+    }
+
+    #[test]
+    fn incremental_generated_2_rev() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+            let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 0);
+        cycle(2, 0);
+        cycle(2, 4);
+        cycle(3, 0);
+        cycle(1, 3);
+        cycle(2, 3);
+    }
+
+    #[test]
+    fn incremental_generated_3() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+            let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 0);
+        cycle(0, 4);
+        cycle(0, 2);
+        cycle(8, 1);
+        cycle(8, 0);
+    }
+
+
+        #[test]
+    fn incremental_generated_4() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+        let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 0);
+        cycle(0, 2);
+        cycle(5, 1);
+        cycle(1, 2);
+        cycle(5, 2);
+    }
+
+
+
+    #[test]
+    fn incremental_generated_5() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+        let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+
+        cycle(0, 2);
+        cycle(0, 0);
+        cycle(0, 5);
+        cycle(2, 1);
+        cycle(3, 2);
+        cycle(3, 1);
+    }
+
+    #[test]
+    fn incremental_generated_6() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+        let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 0);
+        cycle(2, 3);
+        cycle(3, 0);
+        cycle(0, 4);
+        cycle(1, 2);
+        cycle(2, 0);
+    }
+
+    #[test]
+    fn incremental_generated_7() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+        let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 8);
+        cycle(8, 8);
+        cycle(0, 0);
+    
+    }
+
+    #[test]
+    fn incremental_generated_8() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+        let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 0);
+        cycle(0, 7);
+        cycle(5, 0);
+        cycle(0, 0);
+        cycle(8, 3);
+        cycle(0, 0);
+        cycle(4, 0);
+        cycle(3, 7);
+        cycle(0, 2);
+        cycle(7, 1);
+        cycle(0, 3);
+        cycle(0, 0);
+
+    }
+
+    #[test]
+    fn incremental_generated_9() {
+        let mut slow = Graph::new();
+        let mut fast = Graph::new();
+
+        let mut cycle = |from, to| {
+            slow.update(from, to);
+            fast.revert_and_update(from, to);
+            fast.compress_with_hint(from, to);
+
+            let mut fast_ = fast.clone();
+            fast_.apply_merges();
+
+            let mut clone = slow.clone();
+            clone.compress();
+            clone.apply_merges();
+
+            assert_eq!(fast_.nodes, clone.nodes);
+        };
+
+        cycle(0, 0);
+        cycle(8, 2);
+        cycle(2, 4);
+        cycle(4, 2);
+        cycle(0, 4);
+
+    }
 
 	/// [Image](https://upload.wikimedia.org/wikipedia/commons/e/e1/Scc-1.svg)
 	#[test]
