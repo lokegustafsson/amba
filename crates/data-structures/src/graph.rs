@@ -117,7 +117,7 @@ impl Graph {
 	pub fn revert_and_update(&mut self, from: u64, to: u64) {
 		let mut from_node = from;
 		let mut to_node = to;
-		let mut rest = from;
+		let rest;
 
 		// Self loop
 		if from == to {
@@ -210,7 +210,7 @@ impl Graph {
 			(_, to_node) = self.split_before(to, to);
 		} else {
 			for Node { id, of, .. } in self.nodes.values() {
-				// to node found in compressed node
+				// to node is part of compressed node
 				if *id == to || of.iter().any(|&x| x == to) {
 					(_, to_node) = self.split_before(to, *id);
 					break;
@@ -1763,7 +1763,6 @@ mod test {
 		expected_1.verify();
 		expected_2.verify();
 
-		let raw = graph.clone();
 		graph.compress();
 		graph.apply_merges();
 		assert_eq!(&graph.nodes, &expected_1.nodes);
