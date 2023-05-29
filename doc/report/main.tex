@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,twoside,openright]{report}
+\documentclass[12pt,a4paper]{report}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[swedish]{babel}
@@ -23,6 +23,7 @@
   xspace,
   xstring,
   subcaption,
+  geometry,
 }
 \usepackage[
 % disable % Comment out to disable all macros defined for this package (so you don't have to manually remove all todos from the entire report)
@@ -209,8 +210,16 @@
 \pagenumbering{gobble} % turn off page numbers
 
 \input{cover_svenska.tex}
-\cleardoublepage
+
+% align next page on odd page as this is the second page and would fall on even
+% page, DON'T REMOVE, \cleardoublepage doesn't put on new odd page unless
+% `twoside` option is set. `twoside` option is set after this to avoid
+% different margins in cover pages.
+\newpage{\null{}}\newpage{}
+
 \input{titlepage_svenska.tex}
+
+\newgeometry{twoside}
 
 \cleardoublepage
 \pagenumbering{roman} % turn on roman page numbers
@@ -241,17 +250,15 @@
 
 \pagenumbering{arabic} % turn on arabic page numbers
 
+\cleardoublepage
 \chapter{Inledning}\label{chap:inledning}
 \input{inledning/main.tex}
-% \section{Tidigare arbete}
-% \input{inledning/tidigarearbete.tex}
-% \section{Avgränsningar}
-% \input{inledning/avgransningar.tex}
 \section{Syfte}\label{sec:syfte}
 \input{inledning/syfte.tex}
 \section{Rapportstruktur}
 \input{inledning/rapportstruktur.tex}
 
+\cleardoublepage
 \chapter{Teori}\label{chap:teori}
 \input{teori/main.tex}
 \section{Symbolisk exekvering}\label{sec:symbolic_execution}
@@ -260,7 +267,8 @@
 \input{teori/fuzzing.tex}
 \section{Exekveringsmotor}
 \input{teori/arkitektur_for_binaranalysverktyg.tex}
-``
+
+\cleardoublepage
 \chapter{Existerande verktyg}\label{chap:existerande_verktyg}
 \input{existerande_verktyg/main.tex}
 \section{Statisk disassemblering}\label{sec:existerande-disasm}
@@ -272,14 +280,17 @@
 \section{Visualiserad symbolisk fuzzing}\label{sec:existerande-visualiserad}
 \input{existerande_verktyg/visualiserad.tex}
 
+\cleardoublepage
 \chapter{AMBA}\label{chap:amba}
 \input{amba/main.tex}
 \section{Varför \stoe{}}
 \input{amba/varfor_s2e.tex}
 
+\cleardoublepage
 \chapter{Implementation}\label{chap:implementation}
 \input{implementation/main.tex}
 
+\cleardoublepage
 \chapter{Evaluering}\label{chap:evaluering}
 \input{evaluering/main.tex}
 \section{Jämförelse mellan AMBA och Ghidra}\label{sec:amba-vs-ghidra}
@@ -293,9 +304,11 @@
 \section{Vidareutveckling}\label{sec:vidareutveckling}
 \input{evaluering/vidareutveckling.tex}
 
+\cleardoublepage
 \chapter{Slutsats}\label{chap:slutsats}
 \input{slutsats/main.tex}
 
+\cleardoublepage
 \printbibliography[title=Referenser]
 
 \end{document}

@@ -36,6 +36,7 @@
 **/*.nav
 **/*.snm
 **/*.vrb
+**/*.lof
 
 # Built PDFs
 !doc/pdf/**
