@@ -924,6 +924,7 @@ dependencies = [
  "itertools 0.10.5",
  "proptest",
  "serde",
+ "smallvec",
 ]
 
 [[package]]
