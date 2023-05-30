@@ -1,18 +1,18 @@
-Utpressningsprogram fördubblades mellan 2021 och 2022 och 73 procent av organisationer har varit utsatta för dem minst en gång inom 24 månader~\cite{cyberreason2021h cyberreason2022}.
+Antalet cyberattacker med utpressningsprogram fördubblades mellan 2021 och 2022 och 73 procent av organisationer har varit utsatta för dem minst en gång inom 24 månader~\cite{cyberreason2021, cyberreason2022}.
 Till exempel påverkades Irlands offentliga sjukhussystem kraftigt när utpressningsprogram tog över en stor del av deras digitala infrastruktur~\cite{hse_report, gallagher2023}.
 Några av de direkta påföljderna av en lyckad attack är: höga kostnader för organisationen; stoppad produktion; juridiska konsekvenser; och skadat anseende~\cite{cyberreason2021, cyberreason2022}.
 Dessutom leder de höga kostnaderna till bland annat uppsägningar av anställda för att kompensera~\cite{cyberreason2021, cyberreason2022}.
-I många fall är människan den svaga länken i cyberattacker, men cyberattacker kräver även skadlig programvara som utnyttjar en eller flera sårbarheter i datorsystemen som attackeras.
-Till exempel uttnyttjade utpressningsprogrammet WannaCry en sårbarhet i ett populärt fildelningssystem som möjliggjorde för WannaCry att genom en RCE attack mot Windowsdatorer automatiskt sprida WannaCry mellan Windowsdatorer~\cite{alraddadicomprehensive}.
+Utpressningsprogram är program som hindrar legitima användare att komma åt datorsystem genom att låsa dem~\cite{accessscience_computer_virus}.
+Cyberattackerarna kräver sedan en lösensumma för att låsa upp systemen.
+I många fall är människan den svaga länken i cyberattacker med utpressningsprogram.
+Ibland krävs det ingen mänsklig interaktion för att utpressningsprogram ska sprida sig inom och mellan datorsystem.
+Till exempel uttnyttjade utpressningsprogrammet WannaCry en sårbarhet i ett populärt fildelningssystem på Windowsdatorer~\cite{alraddadicomprehensive}.
+Sårbarhenten möjliggjorde för WannaCry att genom en fjärrkodsexekveringsattack sprida sig automatiskt mellan datorsystem.
+Fjärrkodsexekvering är en klass av cyberattacker där attackerare kan exekvera sin egna kod på måldatorn utan någon mänsklig intaraktion~\cite{baker2022}.
 
-Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka och åtgärda sårbarheter innan de hinner utnyttjas av en angripare.
 Programanalys går ut på att analysera egenskaperna hos ett program för att kunna kontrollera programets korrekthet och hitta möjliga sårbarheter och kan utföras olika på nivåer: på källkoden eller på maskinkoden.
+Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka och åtgärda sårbarheter innan de hinner utnyttjas av en angripare.
 Inom skadeprogramsanalys (jfr eng. \emph{malware analysis}) och \emph{reverse engeneering} är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast tillgänglig som maskinkod~\cite{andriesse2018}.
-
-% Programanalys innebär att man analyserar ett program för att säkerställa att
-% vissa egenskaper uppfylls. Analysen kan göras på olika nivåer (källkoden eller
-% maskinkoden (jfr eng. \emph{binary})) och har flera kategorier: statisk eller
-% dynamisk och manuell eller automatisk.
 
 Binäranalys av skadliga programvaror är ofta ofta komplicerat och tidskrävande då utvecklarna av skadlig programvara ofta ofta använder olika obfuskeringsmetoder för att försvåra analyseringen av den skadliga programvaran.
 Därför krävs en utforskande metod för att analysera och förstå ett skadeprogram och testa ett antal metoder för att förstå och känneteckna sårbarheter som skadeprogrammet utnyttjar.
@@ -27,33 +27,6 @@ Det är en metod som oftast leder till en långsam exekvering och begränsas äv
 Det finns ett antal metoder för att kringgå stigexplosionsproblemet men lägger stor börda på analytikern som ofta har ett väldigt begränsad vy in i vad som händer under exekveringen, oftast genom en textuell gränssnitt.
 Dessa problem kan utnyttjas av skadeprogram för att vilseleda binäranalysmetoder som förlitar sig på symbolisk exekvering.
 
-I den här rapporten föreslår vi AMBA för att, genom bättre kommunikation till
-användaren, skapa möjligheter för användaren att känneteckna stigexplosion och
-tillåta styrning bort från dessa stigar som orsakar problem. AMBA kommer även
-att undersöka alla stigar i programflödet vilket är känd som symbolisk fuzzing.
+I den här rapporten föreslår vi AMBA för att, genom bättre kommunikation till användaren, skapa möjligheter för användaren att känneteckna stigexplosion och tillåta styrning bort från dessa stigar som orsakar problem. AMBA kommer även att undersöka alla stigar i programflödet vilket är känd som symbolisk fuzzing.
 
-SymNav~\cite{symnav}, som beskrvis i mer detalj i
-avsnitt~\ref{sec:existerande-visualiserad}, har tidigare undersökt samma problem och
-föreslagit liknande lösningar men har begräsningar i form av prestanda.
-
-% En metod för binäranalys är \emph{fuzzing} som går ut på att mata olika indata
-% till ett program och betrakta fel som uppstår. Målet med \emph{fuzzing} är att
-% uppnå en hög täckning (jfr eng. \emph{coverage}) av programmet som beror
-% på indatan. Alltså att ta alla möjliga vägar i programflödet som är möjliga att
-% nå genom att variera indatan. Däremot är det ett svårt problem att generera
-% indata som uppnår en hög täckning som även är effektivast, speciellt när
-% indatan kan ha ett högt antal olika värden.
-
-% * Svaga argument för någon som vet binäranalys: ransomware ofta
-% människoproblem. Kommer inte till kärnan tills mycket senare.
-% * Give example where ransomware uses såbarheter
-% * legacy code main reason, not used to rust for example, too small memory to
-% run high level programs?
-
-% * Use this form in the introduction: Situation - Problem - Solution -
-% Evaluation
-% * use case: governments need to evaluate safety of products custom made for
-% them
-%
-% * evaluation: result and process discussion - limitation - future work
-% * conclution: results and contribution discussion. conclude results discuss why good for the society.
+SymNav~\cite{symnav}, som beskrvis i mer detalj i avsnitt~\ref{sec:existerande-visualiserad}, har tidigare undersökt samma problem och föreslagit liknande lösningar men har begräsningar i form av prestanda.
