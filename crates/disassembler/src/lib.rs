@@ -41,16 +41,18 @@ pub struct DisasmContext {
 impl DisasmContext {
 	/// `filepath` is the path to the binary.
 	pub fn new(filepath: Option<&Path>, recipe_dir: &Path) -> Result<Self, Error> {
+		let addr2line_context = if let Some(filepath) = filepath {
+			let contents = fs::read(filepath)?;
+			let parsed = ObjectFile::parse(&*contents)?;
+			Some(addr2line::Context::new(&parsed)?)
+		} else {
+			None
+		};
+
 		Ok(Self {
 			recipe_dir: recipe_dir.to_owned(),
 			file_line_cache: FileLineCache::default(),
-			addr2line_context: if let Some(filepath) = filepath {
-				let contents = fs::read(filepath)?;
-				let parsed = ObjectFile::parse(&*contents)?;
-				Some(addr2line::Context::new(&parsed)?)
-			} else {
-				None
-			},
+			addr2line_context,
 			capstone: Capstone::new()
 				.x86()
 				.mode(arch::x86::ArchMode::Mode64)
