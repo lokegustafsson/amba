@@ -1,22 +1,39 @@
+Programförståelse (jfr. en. \emph{program comprehension}) är en process där någon aktivt undersöker ett mjukvarusystems komponenter och därigenom får kunskap om hur mjukvarusystemet fungerar~\cite{xia2017}.
+Exempel på komponenter i ett mjukvarusystem är källkod; systemdokumentation; och binärfiler som genereras av kompilatorer.
+Binärfiler är de filer som laddas till minne av datorns processor för att sedan exekveras~\cite{andriesse2018}.
+I flera situationer vill man få programförståelse genom att fokusera sin analys av ett mjunvarusystem på binärfilerna.
+Kompilatorer kan till exempel lägga in oönskade beteenden i program när källkoden kompileras till binärfiler.
+När man analyserar ett programs binärer kallas det binäranalys (jfr. en. \emph{binary analysis}).
+Det finns även situationer då man inte har tillgång till en programvaras källkod, som till exempel när man vill förhindra spridningen av utpressningsprogram.
+
+\section{Utpressningsprogram}
+
 Antalet cyberattacker med utpressningsprogram (jfr. en. \emph{ransomware}) fördubblades mellan 2021 och 2022 och 73 procent av organisationer har varit utsatta för dem minst en gång inom 24 månader~\cite{cyberreason2021, cyberreason2022}.
 Till exempel påverkades Irlands offentliga sjukhussystem kraftigt när utpressningsprogram tog över en stor del av deras digitala infrastruktur~\cite{hse_report, gallagher2023}.
 Några av de direkta påföljderna av en lyckad attack är: höga kostnader för organisationen; stoppad produktion; juridiska konsekvenser; och skadat anseende~\cite{cyberreason2021, cyberreason2022}.
 Dessutom leder de höga kostnaderna till bland annat uppsägningar av anställda för att kompensera~\cite{cyberreason2021, cyberreason2022}.
 Utpressningsprogram är program som hindrar legitima användare att komma åt datorsystem genom att låsa dem~\cite{accessscience_computer_virus}.
 Cyberattackerarna kräver sedan en lösensumma för att låsa upp systemen.
+
 I många fall är människan den svaga länken i cyberattacker med utpressningsprogram.
 Ibland krävs det ingen mänsklig interaktion för att utpressningsprogram ska sprida sig inom och mellan datorsystem.
 Till exempel uttnyttjade utpressningsprogrammet WannaCry en sårbarhet i ett populärt fildelningssystem på Windowsdatorer~\cite{alraddadicomprehensive}.
-Sårbarhenten möjliggjorde för WannaCry att genom en fjärrkodsexekveringsattack sprida sig automatiskt mellan datorsystem.
+Sårbarhenten möjliggjorde för WannaCry att genom en fjärrkodsexekveringsattack (jfr. en. \emph{remote code execution}) sprida sig automatiskt mellan datorsystem.
 Fjärrkodsexekvering är en klass av cyberattacker där attackerare kan exekvera sin egna kod på måldatorn utan någon mänsklig intaraktion~\cite{baker2022}.
 
-Programanalys går ut på att analysera egenskaperna hos ett program för att kunna kontrollera programets korrekthet och hitta möjliga sårbarheter och kan utföras olika på nivåer: på källkoden eller på maskinkoden.
-Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka och åtgärda sårbarheter innan de hinner utnyttjas av en angripare.
-Inom skadeprogramsanalys (jfr eng. \emph{malware analysis}) och \emph{reverse engeneering} är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast tillgänglig som maskinkod~\cite{andriesse2018}.
+För att kunna hitta eventuella sårbarheter i mjukvaruprogram behöver man undersöka progammet.
+Till exempel kan man med analysmetoder upptäcka om ett program implementerar ett nätverksprotokoll på ett sätt som gör det sårbart för attacker.
+Undersökningar av program är intressanta ur både försvararens och attackerarens perpektiv.
+Försvararen vill undersöka programmet om programmet har något beteende som kan utnyttjas av attackerare i en cyberattack.
+Attackerare vill hitta sårbarheter i program som används av attackerarens offer som kan uttnyttjas vid en cyberattack.
 
-Binäranalys av skadliga programvaror är ofta komplicerat och tidskrävande då utvecklarna av skadlig programvara ofta ofta använder olika obfuskeringsmetoder för att försvåra analyseringen av den skadliga programvaran.
-Därför krävs en utforskande metod för att analysera och förstå ett skadeprogram och testa ett antal metoder för att förstå och känneteckna sårbarheter som skadeprogrammet utnyttjar.
-Detta kräver ett interaktivt och utforskande analysverktyg som tillåter användaren att känneteckna problematik i en analys och styra analysen åt ett håll som medför resultat.
+En binäranalys av ett skadliga program är ofta komplicerat och tidskrävande då utvecklarna av skadlig programvara ofta använder olika obfuskeringsmetoder av maskinkoden.
+Anledningen är för att försvåra för säkerhetsforskare att analysera den skadliga programvaran.
+Om säkerhetsforkare får en programförstålese för den skadliga programvarans beteende kan säkerhetsforskarna utveckla metoder för att motverka den skadliga programvaran.
+
+För att möjliggöra för utveckare och säkerhetsforskare att genomföra undersökningar av programvaror där man inte har tillgång till källkoden, eller att man önskar analysera artefakten som laddas in i minnet och exekveras av CPU:n,
+
+\section{Symbolisk exekvering}
 
 Symbolisk exekvering är en teknik som har möjliggjort stora mängder binäranalysmetoder\cite{survey_symb_exc, symnav}.
 Inom skadeprogramsanalys tillåter det att ``upptäcka sårbarheter, kringgå autentisering eller skyddssystem, eller förstå deras inre delar''~\cite{symnav}.
