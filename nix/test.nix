@@ -1,15 +1,17 @@
 { lib, pkgs, amba }:
 let
-  mkDemo = name:
+  mkDemo = { name, makeWithMusl ? true
+    , filesToCopy ? [ "${name}.c" "${name}" "${name}.recipe.json" ] }:
     let
       thePackage = pkgs.stdenv.mkDerivation {
         inherit name;
         src = ../demos;
-        nativeBuildInputs = [ pkgs.musl ];
+        nativeBuildInputs = if makeWithMusl then [ pkgs.musl ] else [ ];
         buildPhase = "make ${name}";
+        dontBuild = !makeWithMusl;
         installPhase = ''
           mkdir -p $out/
-          cp ${name}.c ${name} ${name}.recipe.json $out/
+          cp ${lib.strings.escapeShellArgs filesToCopy} $out/
         '';
       };
     in [
@@ -32,10 +34,20 @@ let
       }
     ];
 in builtins.listToAttrs (builtins.concatMap mkDemo [
-  "hello"
-  "control-flow"
-  "state-splitter"
-  "backdoor"
-  "demo1"
-  "demo2"
+  { name = "hello"; }
+  { name = "control-flow"; }
+  { name = "state-splitter"; }
+  { name = "backdoor"; }
+  { name = "demo1"; }
+  { name = "demo2"; }
+  {
+    name = "grep";
+    makeWithMusl = false;
+    filesToCopy = [ "grep.recipe.json" ];
+  }
+  {
+    name = "ugrep";
+    makeWithMusl = false;
+    filesToCopy = [ "${pkgs.pkgsStatic.ugrep}/bin/ugrep" "ugrep.recipe.json" ];
+  }
 ])

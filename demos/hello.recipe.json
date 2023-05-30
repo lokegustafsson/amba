@@ -18,17 +18,9 @@
 	"environment": {
 		"inherit": true,
 		"remove": [],
-		"add": [
-			"A=B",
-			{
-				"key": "FOO",
-				"value": "VALUE",
-				"symbolic": [
-					0,
-					1,
-					2
-				]
-			}
-		]
+		"add": {
+			"A": "B",
+			"FOO": "VALUE"
+		}
 	}
 }

@@ -34,21 +34,25 @@ pub enum Error {
 pub struct DisasmContext {
 	recipe_dir: PathBuf,
 	file_line_cache: FileLineCache,
-	addr2line_context: addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>,
+	addr2line_context: Option<addr2line::Context<EndianReader<RunTimeEndian, Rc<[u8]>>>>,
 	capstone: Capstone,
 }
 
 impl DisasmContext {
 	/// `filepath` is the path to the binary.
-	pub fn new(filepath: &Path, recipe_dir: &Path) -> Result<Self, Error> {
+	pub fn new(filepath: Option<&Path>, recipe_dir: &Path) -> Result<Self, Error> {
+		let addr2line_context = if let Some(filepath) = filepath {
+			let contents = fs::read(filepath)?;
+			let parsed = ObjectFile::parse(&*contents)?;
+			Some(addr2line::Context::new(&parsed)?)
+		} else {
+			None
+		};
+
 		Ok(Self {
 			recipe_dir: recipe_dir.to_owned(),
 			file_line_cache: FileLineCache::default(),
-			addr2line_context: {
-				let contents = fs::read(filepath)?;
-				let parsed = ObjectFile::parse(&*contents)?;
-				addr2line::Context::new(&parsed)?
-			},
+			addr2line_context,
 			capstone: Capstone::new()
 				.x86()
 				.mode(arch::x86::ArchMode::Mode64)
@@ -71,7 +75,13 @@ impl DisasmContext {
 	}
 
 	pub fn get_function_name(&self, addr: u64) -> Result<String, Error> {
-		let mut frames = self.addr2line_context.find_frames(addr)?;
+		let mut frames = self
+			.addr2line_context
+			.as_ref()
+			.ok_or(Error::MissingDebugData(
+				"No host binary available",
+			))?
+			.find_frames(addr)?;
 		let mut ret = String::new();
 		while let Some(frame) = frames.next()? {
 			if !ret.is_empty() {
@@ -113,6 +123,10 @@ impl DisasmContext {
 	) -> Result<Vec<(u64, u64, addr2line::Location<'_>, &str)>, Error> {
 		let mut loc_range_iter = self
 			.addr2line_context
+			.as_ref()
+			.ok_or(Error::MissingDebugData(
+				"No host binary available",
+			))?
 			.find_location_range(probe_low, probe_high)?
 			.peekable();
 
@@ -148,7 +162,13 @@ impl DisasmContext {
 	/// information for the `addr` is found, `Ok(None)` is returned. Other errors from addr2line is
 	/// otherwise propagated and wrapped in our `Error`.
 	fn addr2loc(&self, probe: u64) -> Result<Option<(String, u32, u32)>, Error> {
-		let mut locs = self.addr2line_context.find_frames(probe)?;
+		let mut locs = self
+			.addr2line_context
+			.as_ref()
+			.ok_or(Error::MissingDebugData(
+				"No host binary available",
+			))?
+			.find_frames(probe)?;
 		let frame = locs.next()?.and_then(|frame| {
 			let location = frame.location?;
 			Some((
@@ -218,7 +238,7 @@ mod test {
 		const ADDR: u64 = 0x401134;
 
 		let context = DisasmContext::new(
-			&binary_filepath,
+			Some(&binary_filepath),
 			source_filepath.parent().unwrap(),
 		)
 		.unwrap();
@@ -233,7 +253,7 @@ mod test {
 		let low = 0x401126;
 		let high = 0x40113F;
 		let context = DisasmContext::new(
-			&binary_filepath,
+			Some(&binary_filepath),
 			source_filepath.parent().unwrap(),
 		)
 		.unwrap();

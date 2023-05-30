@@ -67,5 +67,11 @@ demo1: --demo
 demo2: DEMO+=demo2
 demo2: --demo
 
+demo-grep: DEMO+=grep
+demo-grep: --demo
+
+demo-ugrep: DEMO+=ugrep
+demo-ugrep: --demo
+
 compile_flags.txt:
 	make -C crates/AmbaPlugin ../../compile_flags.txt

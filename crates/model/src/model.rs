@@ -354,6 +354,7 @@ fn new_lod_text_impl(
 		let elf_vaddr = elf_vaddr.map_or(0, NonZeroU64::get);
 		match disasm_context.get_function_name(elf_vaddr) {
 			Ok(ret) => ret,
+			Err(disassembler::Error::MissingDebugData(_)) => format!("{:x}", elf_vaddr),
 			Err(err) => {
 				tracing::warn!(
 					?err,

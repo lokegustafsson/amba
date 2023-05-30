@@ -1,0 +1,11 @@
+{
+	"files": {
+		"input.txt": {
+			"seed": "a",
+			"symbolic": [[0, null]]
+		}
+	},
+	"executable_path": "/usr/bin/grep",
+	"stdin_path": "/tmp/input.txt",
+	"arguments": ["x"]
+}
