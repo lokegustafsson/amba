@@ -3,8 +3,10 @@ Exempel på komponenter i ett mjukvarusystem är källkod; systemdokumentation; 
 Binärfiler är de filer som laddas till minne av datorns processor för att sedan exekveras~\cite{andriesse2018}.
 I flera situationer vill man få programförståelse genom att fokusera sin analys av ett mjunvarusystem på binärfilerna.
 Kompilatorer kan till exempel lägga in oönskade beteenden i program när källkoden kompileras till binärfiler.
-När man analyserar ett programs binärer kallas det binäranalys (jfr. en. \emph{binary analysis}).
+När man analyserar binärfiler kallas det binäranalys (jfr. en. \emph{binary analysis}).
 Det finns även situationer då man inte har tillgång till en programvaras källkod, som till exempel när man vill förhindra spridningen av utpressningsprogram.
+Utpressningsprogram är program som hindrar legitima användare att komma åt datorsystem genom att låsa dem~\cite{accessscience_computer_virus}.
+Cyberattackerarna kräver sedan en lösensumma för att låsa upp systemen.
 
 \section{Utpressningsprogram}
 
@@ -12,8 +14,6 @@ Antalet cyberattacker med utpressningsprogram (jfr. en. \emph{ransomware}) förd
 Till exempel påverkades Irlands offentliga sjukhussystem kraftigt när utpressningsprogram tog över en stor del av deras digitala infrastruktur~\cite{hse_report, gallagher2023}.
 Några av de direkta påföljderna av en lyckad attack är: höga kostnader för organisationen; stoppad produktion; juridiska konsekvenser; och skadat anseende~\cite{cyberreason2021, cyberreason2022}.
 Dessutom leder de höga kostnaderna till bland annat uppsägningar av anställda för att kompensera~\cite{cyberreason2021, cyberreason2022}.
-Utpressningsprogram är program som hindrar legitima användare att komma åt datorsystem genom att låsa dem~\cite{accessscience_computer_virus}.
-Cyberattackerarna kräver sedan en lösensumma för att låsa upp systemen.
 
 I många fall är människan den svaga länken i cyberattacker med utpressningsprogram.
 Ibland krävs det ingen mänsklig interaktion för att utpressningsprogram ska sprida sig inom och mellan datorsystem.
@@ -23,11 +23,12 @@ Fjärrkodsexekvering är en klass av cyberattacker där attackerare kan exekvera
 
 För att kunna hitta eventuella sårbarheter i mjukvaruprogram behöver man undersöka progammet.
 Till exempel kan man med analysmetoder upptäcka om ett program implementerar ett nätverksprotokoll på ett sätt som gör det sårbart för attacker.
-Undersökningar av program är intressanta ur både försvararens och attackerarens perpektiv.
-Försvararen vill undersöka programmet om programmet har något beteende som kan utnyttjas av attackerare i en cyberattack.
+Undersökningar av program är intressanta ur både försvararens och attackerarens perspektiv.
+Försvararen vill undersöka binären om programmet har något beteende som kan utnyttjas av attackerare i en cyberattack.
 Attackerare vill hitta sårbarheter i program som används av attackerarens offer som kan uttnyttjas vid en cyberattack.
 
 En binäranalys av ett skadliga program är ofta komplicerat och tidskrävande då utvecklarna av skadlig programvara ofta använder olika obfuskeringsmetoder av maskinkoden.
+Obfuskering är när utvecklaren av ett program använder verktyg eller medvetet skriver källkod som gör en binärsfil maskinkod svåranalyserad.
 Anledningen är för att försvåra för säkerhetsforskare att analysera den skadliga programvaran.
 Om säkerhetsforkare får en programförstålese för den skadliga programvarans beteende kan säkerhetsforskarna utveckla metoder för att motverka den skadliga programvaran.
 
