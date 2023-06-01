@@ -67,7 +67,12 @@ def foo(x):
     \label{fig:symb_exc_ex_inl}
 \end{figure}
 
-TODO förklara vägexplosionsproblemet.
+För program med tillräckligt mycket indata sker en så kallad kombinatorisk
+explosion där en fullständig sökning av möjlig indata ej kan genomföras då
+antalet fall växer exponentiellt med storleken på indatan. Ett motsvarande
+problem, \textit{vägexplosionsproblemet}, uppstår i symbolisk fuzzing eftersom
+antalet möjliga vägar genom programmet kan växa exponentiellt med längden på den
+längsta vägen.
 
 \section{Metoder för människan}
 
