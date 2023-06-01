@@ -1,32 +1,154 @@
-Antalet cyberattacker med utpressningsprogram (jfr. en. \emph{ransomware}) fördubblades mellan 2021 och 2022 och 73 procent av organisationer har varit utsatta för dem minst en gång inom 24 månader~\cite{cyberreason2021, cyberreason2022}.
-Till exempel påverkades Irlands offentliga sjukhussystem kraftigt när utpressningsprogram tog över en stor del av deras digitala infrastruktur~\cite{hse_report, gallagher2023}.
-Några av de direkta påföljderna av en lyckad attack är: höga kostnader för organisationen; stoppad produktion; juridiska konsekvenser; och skadat anseende~\cite{cyberreason2021, cyberreason2022}.
-Dessutom leder de höga kostnaderna till bland annat uppsägningar av anställda för att kompensera~\cite{cyberreason2021, cyberreason2022}.
-Utpressningsprogram är program som hindrar legitima användare att komma åt datorsystem genom att låsa dem~\cite{accessscience_computer_virus}.
-Cyberattackerarna kräver sedan en lösensumma för att låsa upp systemen.
-I många fall är människan den svaga länken i cyberattacker med utpressningsprogram.
-Ibland krävs det ingen mänsklig interaktion för att utpressningsprogram ska sprida sig inom och mellan datorsystem.
-Till exempel uttnyttjade utpressningsprogrammet WannaCry en sårbarhet i ett populärt fildelningssystem på Windowsdatorer~\cite{alraddadicomprehensive}.
-Sårbarhenten möjliggjorde för WannaCry att genom en fjärrkodsexekveringsattack sprida sig automatiskt mellan datorsystem.
-Fjärrkodsexekvering är en klass av cyberattacker där attackerare kan exekvera sin egna kod på måldatorn utan någon mänsklig intaraktion~\cite{baker2022}.
+Programförståelse är processen där människan får kunskap om hur ett datorprogram
+eller mjukvarusystem fungerar~\cite{xia2018}. Programförståelse är ofta, helt
+eller delvis, en informell process. Programförståelse används till exempel när
+nyanställda läser dokumentation för att förstå hur ett mjukvarusystem är
+uppbyggt. Ett annat exempel är när säkerhetsforskare undersöker skadlig
+programvara (jfr.\ eng. \emph{malware}) för att kunna utveckla motmedel. I
+fortsättningen använder vi ordet förståelse som en förkortning av
+programförståelse.
 
-Programanalys går ut på att analysera egenskaperna hos ett program för att kunna kontrollera programets korrekthet och hitta möjliga sårbarheter och kan utföras olika på nivåer: på källkoden eller på maskinkoden.
-Genom att analysera program kan säkerhetsforskare och utvecklare upptäcka och åtgärda sårbarheter innan de hinner utnyttjas av en angripare.
-Inom skadeprogramsanalys (jfr eng. \emph{malware analysis}) och \emph{reverse engeneering} är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast tillgänglig som maskinkod~\cite{andriesse2018}.
+För att bilda sig en förståelse av ett program formulerar man ofta hypoteser om
+programmet, för att sedan testa om hypotesen stämmer. Dessa hypoteser kan vara
+övergripande, som till exempel om programmet kan utgöra ett säkerhetshot.
+Hypoteserna kan även vara specifika och fokuserade på detaljer, som till exempel
+om en specifik formell specifikation är implementerad på ett korrekt sätt eller
+vilka filsystemkataloger programmet använder sig av.
 
-Binäranalys av skadliga programvaror är ofta komplicerat och tidskrävande då utvecklarna av skadlig programvara ofta ofta använder olika obfuskeringsmetoder för att försvåra analyseringen av den skadliga programvaran.
-Därför krävs en utforskande metod för att analysera och förstå ett skadeprogram och testa ett antal metoder för att förstå och känneteckna sårbarheter som skadeprogrammet utnyttjar.
-Detta kräver ett interaktivt och utforskande analysverktyg som tillåter användaren att känneteckna problematik i en analys och styra analysen åt ett håll som medför resultat.
+\section{Metoder för datorn}
 
-Symbolisk exekvering är en teknik som har möjliggjort stora mängder binäranalysmetoder\cite{survey_symb_exc, symnav}.
-Inom skadeprogramsanalys tillåter det att ``upptäcka sårbarheter, kringgå autentisering eller skyddssystem, eller förstå deras inre delar''~\cite{symnav}.
-Det är en ett sätt att exekvera ett program abstrakt där en exekvering betraktar alla möjliga indata som delar en viss exekveringsstig (jfr eng. \emph{execution path}) genom programflödet.
-Detta möjliggörs genom att betrakta indatan som symbolisk där en viss stig ackumulerar stigvillkor (jfr eng. \emph{path conditions}) på symbolen vars lösning/lösningar beskriver alla värden på symbolen som leder till att programmet följer motsvarande stig i programflödet.
-Trots kraftfullheten i symbolisk exekvering, finns det ett antal problem med tekniken.
-Det är en metod som oftast leder till en långsam exekvering och begränsas även av stigexplosionsproblemet (jfr eng. \emph{path explosion}), som orsakas av ett stort antal villkorstest på symbolisk data, i bl.a.\ loopar, rekursion och undantag (jfr eng. \emph{exceptions}).
-Det finns ett antal metoder för att kringgå stigexplosionsproblemet men lägger stor börda på analytikern som ofta har ett väldigt begränsad vy in i vad som händer under exekveringen, oftast genom en textuell gränssnitt.
-Dessa problem kan utnyttjas av skadeprogram för att vilseleda binäranalysmetoder som förlitar sig på symbolisk exekvering.
+Vissa hypoteser lämpar sig för att undersökas av en dator som effektivt kan
+utföra automatiserade och tester. Till exempel kan man ha implementerat en
+sorteringsalgoritm som ska sortera olika värden i en specifik ordning. En
+hypotes är då att implementationen av algoritmen är korrekt. Hypotesen kan då
+testas genom att skapa ett antal testfall som kontrollerar att utdatan blir
+korrekt. Däremot kan testning i det generella fallet aldrig verifiera att ett
+program är helt korrekt.
 
-I den här rapporten föreslår vi AMBA för att, genom bättre kommunikation till användaren, skapa möjligheter för användaren att känneteckna stigexplosion och tillåta styrning bort från dessa stigar som orsakar problem. AMBA kommer även att undersöka alla stigar i programflödet vilket är känd som symbolisk fuzzing.
+En testmetod som automatiskt kan generera testfall och potentiellt hitta buggar
+är fuzzing. Fuzzing går ut på att generera indata för att sedan undersöka om
+indatan kan orsaka icke önskvärt beteende eller krascher hos
+programmet~\cite{9166552}. Ett sätt att generera indata inom fuzzing är att
+betrakta typen på indatan och försöka testa olika kategorier som kan orsaka
+felaktiga beteenden. Om indatan exempelvis är en numerisk typ kan man generera
+ett litet värde, ett stort värde och ett negativt värde för att testa.
 
-SymNav~\cite{symnav}, som beskrvis i mer detalj i avsnitt~\ref{sec:existerande-visualiserad}, har tidigare undersökt samma problem och föreslagit liknande lösningar men har begräsningar i form av prestanda.
+Symbolisk fuzzing är en variation på fuzzing som utforskar flera möjliga vägar
+genom ett program utan att köra det med alla konkreta värden som indata.
+Istället för att använda konkreta värden används variabler för att symbolisera
+indata och programtillstånd. Genom att spåra villkor för dessa variabler kan
+man generera testfall som täcker olika vägar genom programmet. Målet är att
+undersöka så många vägar som möjligt för att utforska programmets olika möjliga
+tillstånd som kan nås med olika indata.
+
+För att demonstrera detta kan vi betrakta funktionen i figur
+\ref{fig:symb_exc_ex_inl}. I funktionen kan det uppkomma en krasch om indatan
+$x$ har värdet 2 eftersom nämnaren i returuttrycket $\frac{1}{2 - x}$ blir 0 och
+således leder till en division med 0. Med symbolisk fuzzing representeras $x$
+som en symbol istället för ett konkret värde. Därefter exekveras funktionen rad
+för rad. Vid villkoret $2 \le x < 10$ övervägs båda möjligheter: när villkoret
+är sant och när det är falskt. Symboliskt sett betyder det att vi har två
+exekveringsvägar: vägen där villkoret är sant, där $2 \le x<10$, samt vägen där
+villkoret är falskt, där $x < 2$ eller $x \ge 10$. Den andra vägen avslutas när
+funktionen returnerar $x$. Men den första vägen delas ytterligare när
+divisionen ger ett division-med-noll-undantag för $x=2$ och returnerar den
+beräknade kvoten för övriga $x$.
+
+\begin{figure}[h!]
+    \centering
+    \begin{lstlisting}[language=Python]
+def foo(x):
+    if  2 <= x < 10:
+        return 1 / (2 - x)
+    return x
+	\end{lstlisting}
+    \caption{
+        Exempelfunktion som beräknar $\frac{1}{2 - x}$ om $2 \le x < 10$, annars returnerar $x$.
+        Ett division-med-noll-undantag uppstår om $x = 2$}
+    \label{fig:symb_exc_ex_inl}
+\end{figure}
+
+TODO förklara vägexplosionsproblemet.
+
+\section{Metoder för människan}
+
+Andra typer av hypoteser kan vara lämpliga att undersökas av en människa, då en
+människa kan använda sina erfarenheter och kunskaper för att se mönster, dra
+slutsatser samt bilda sig en övergripande förståelse av ett program. Till
+exempel kan en människa dra slutsatser från testresultat från manuella eller
+automatiska tester. Om en bugg hittas vid testning kan en människa med
+kunskaper inom IT-säkerhet utvärdera hur säkerhetskritisk buggen är. Ett annat
+exempel på när det är lämpligt att en människa undersöker en frågeställning är
+när metoden eller processen som används är svår att automatisera. En process
+som är svår att automatisera är \emph{reverse engineering} som handlar om att
+rekonstruera en modell av programmets arkitektur genom deduktiva resonemang för
+att kunna exempelvis återskapa källkoden för ett program från
+binärkoden~\cite{on_rev_eng}. \emph{Reverse engineering} används exempelvis
+inom skadeprogramanalys då man ofta inte har tillgång till skadeprogrammets
+källkod.
+
+\section{Problem och motivation}
+
+I de flesta existerande verktyg för att analysera program är det antingen
+människan eller datorn som testar hypoteser. Existerande verktyg där
+framförallt människan testar hypoteser präglas av mycket manuellt arbete. Detta
+innefattar verktyg från dekompilatorer där människan läser pseudokod konstruerad
+utifrån maskinkoden till debuggers där människan kör programmet steg för steg.
+Existerande verktyg där framförallt datorn testar hypoteser präglas av att
+övergripande insikter missas, av kombinatoriska explosioner såsom
+vägexplosionsproblemet samt att potentiell programförståelse går förlorad i
+klumpig kommunikation med användaren. Detta innefattar bland annat de fuzzers
+som endast ger användaren indata som orsakar vissa specifika beteenden.
+
+Människan och datorn har olika styrkor när det kommer till att undersöka de
+hypoteser man tagit fram för att öka förståelsen. I sammanhang där det är
+kritiskt att bilda en djup förståelse är det därför intressant att ge människan
+möjlighet att samarbeta med datorn för att kunna utnyttja bådas fördelar.
+Samarbete mellan människan och datorn kan leda till en mer komplett förståelse
+som i sin tur kan leda till åtgärdade säkerhetshål och buggar.
+
+För att till en människa effektivt förmedla den data som en dator genererar i
+sin analys behövs ett verktyg som översätter kopiösa mängder data till ett
+mänskligt överskådligt format. Genom att visualisera denna data kan datorn
+utöver att kommunicera detaljer även bidra till en mer generell
+programförståelse på högre abstraktionsnivå. Om verktyget dessutom är
+interaktivt kan människan med sin generella programförståelse styra datorns
+analys på ett sätt som undviker fallgropar och ytterligare gynnar den abstrakta
+förståelsen.
+
+Vi tror att interaktiv visualiserad symbolisk fuzzing, genom att utnyttja både
+datorn och människans styrkor, kan komplettera existerande verktyg.
+
+\section{Mål}\label{sec:mal}
+
+Projektet ämnar utveckla Amba (\emph{Automatisk och Manuell BinärAnalys}), ett
+binäranalysverktyg som använder symbolisk fuzzing för att analysera ett program.
+Den information Amba utvinner ska presenteras visuellt för användaren i ett
+grafiskt gränssnitt. Genom det grafiska gränssnittet ska användaren kunna
+påverka de beslut Amba tar i sin vägutforskning.
+
+Målet med Amba är att genom interaktiv visualisering låta användaren att
+övervaka symbolisk fuzzing.
+
+\section{Avgränsningar}
+
+Amba kommer att fokusera på binäranalys och inte analys av program på
+källkodsnivå.
+
+Amba ska demonstrera potentialen i interaktiv visualiserad symbolisk fuzzing,
+men behöver inte nödvändigtvis uppnå denna potential genom att vara ett
+praktiskt verktyg.
+
+Amba har inte det primära syftet att angripa vägexplosionsproblemet utan
+fokuserar på användbar visualisering.
+
+\section{Rapportstruktur}
+
+Avsnitt~\ref{chap:teori} beskriver bakgrund och förklarar teori i mer detalj.
+Efterföljande avsnitt (avsnitt~\ref{chap:existerande_verktyg}) beskriver
+tidigare arbete och kategorisering av olika existerande binäranalysverktyg. I
+avsnitt~\ref{chap:amba} beskrivs binäranalysverktyget AMBA och dess
+funktionalitet och efterföljs med resultat och implementationsbeskrivning i
+avsnitt~\ref{chap:implementation}. Avsnitt~\ref{chap:evaluering} tar upp och
+evaluerar projektets resultat, process, begräsningar och framtida arbete och
+förbättringar som kan göras. Slutligen sammanfattas och diskuteras projektets
+bidrag i avsnitt~\ref{chap:slutsats}.
