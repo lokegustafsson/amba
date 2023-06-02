@@ -1,20 +1,22 @@
 \stoe{} är ett väldigt kraftfullt verktyg som är skalbart till att användas på
-storskaliga program som Google Chrome. \stoe{} är ensamt om att tillhandahålla
+storskaliga program som Google Chrome. \stoe{} tillhandahåller
 kombinationen av en virtualiserad miljö — en miljö där ett program körs på en
 virtuell maskin, symbolisk exekvering och dynamisk binäröversättning vilket gör
-det lämpligt att användas på storskaliga program som Google Chrome [källa s2e].
+det lämpligt att användas på storskaliga program som Google Chrome ~\cite{s2e}.
 
 Det finns konkurrenskraftiga alternativ till \stoe{}, till exempel SymQEMU men
-detta bibliotek avfärdades på grund av bristfällig publik dokumentation, i
-kontrast till \stoe{} som har tillfredsställande dokumentation samt utvecklas
-aktivt. 
+avfärdades på grund av bristfällig publik dokumentation, i kontrast till \stoe{}
+som har tillfredsställande dokumentation samt utvecklas aktivt. Personerna bakom
+SymQEMU hävdar att deras verktyg är snabbare än \stoe{}
+~\cite{symqemu}, trots detta valdes \stoe{}
+framförallt på grund av skillnaden i dokumentationen.
 
 Ett annat alternativ var angr men även detta avfärdades i fördel för \stoe{}
-eftersom miljön ansågs komplex – det var enkelt att konfigurera och börja
+eftersom utvecklingsmiljön ansågs komplex – det var enkelt att konfigurera och börja
 använda angr men till nackdel för produktiviteten. Det krävs djup förståelse av
 hur angr och dess API fungerar för att kunna vara produktiv, i kontrast till
 \stoe{} där användningen mellan bibliotek och applikation sker genom ett plugin.
 Genom detta plugin är det enkelt att lägga till ytterligare funktionalitet i sin
-applikation genom att använda funktionalitet från existerande plugin. 
-
+applikation genom att använda funktionalitet från existerande plugin, se
+avsnitt~\ref{sec:s2e} för mer om existerande plugin. 
 
