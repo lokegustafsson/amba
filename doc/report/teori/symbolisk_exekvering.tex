@@ -37,7 +37,7 @@ för path constraints (jfr. sv.\ vägvillkor) och uttrycker de begränsningar so
 programmets data --- vilka egenskaper datan måste uppfylla för att just denna väg
 ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan
 evalueras eftersom de egenskaper som måste uppfyllas för att följa vägen dit dokumenteras
-under den symboliska körningen, och resulterar i fullständiga symboliska uttryck som en 
+under den symboliska körningen, och resulterar i fullständiga symboliska uttryck som en
 SMT-lösare kan appliceras på för att finna kokreta lösningar.
 %som .
 
@@ -114,7 +114,7 @@ program som på grund av vägexplosionsproblemet inte hittar alla möjliga väga
 Variablerna \emph{x} och \emph{y} sätts till symboliska värden som sedan används
 för att beräkna vägvillkoret och de symboliska uttryck som variablerna utvecklas
 till för en vald gren. Därefter används dessa uttryck och path constraints
-tillsammans för att bilda en ekvation som sedan kan lösas med hjälp av en SMT-lösare. 
+tillsammans för att bilda en ekvation som sedan kan lösas med hjälp av en SMT-lösare.
 Figur~\ref{fig:symbex_example_graph} visar
 hur det symboliska tillståndet förändras för alla möjliga grenar i programmet.
 
