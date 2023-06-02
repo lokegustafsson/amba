@@ -1,5 +1,5 @@
-Ghidra är ett avancerat verktyg som gör statisk analys bortom syftet med AMBA,
-men AMBA har ett par likheter. Ghidra kan representera en kontrollflödesgraf
+Ghidra är ett avancerat verktyg som gör statisk analys bortom syftet med Amba,
+men Amba har ett par likheter. Ghidra kan representera en kontrollflödesgraf
 för en given binär på två olika sätt: \textit{Flow Graph} och \textit{Code Flow
     Graph}~\cite{ghidra_website}.
 
@@ -28,11 +28,11 @@ Ghidra kompletterar dessa vyer med en \textit{code listing}, en primär
 vy där binärens disassemblerade kod listas. Användaren kan fritt välja
 att bilda en graf från ett markerat \textit{code block}, vilket är
 Ghidras utökade specifikation på ett basic block, från Ghidras code
-listing~\cite{ghidra_website}. AMBA har liknande funktionalitet, se
+listing~\cite{ghidra_website}. Amba har liknande funktionalitet, se
 figur~\ref{fig:graf-basic}, och kan visualisera binärens fullständiga
 disassemblerade kod för en given nod, om debugdata finns tillgänglig, men saknar
 större kontext likt Ghidras code listing. En fördel mot Ghidras representation
-är AMBAs tre olika sätt att representera en binärs kontrollflöde på: \textit{Raw
+är Ambas tre olika sätt att representera en binärs kontrollflöde på: \textit{Raw
     Basic Block Graph}, \textit{Compressed Block Graph}, och \textit{State Graph}.
 Genom att använda dessa tre olika vyer kan en användare bilda en större
 förståelse om en given binär, dels genom att exempelvis visualisera alla
@@ -49,10 +49,10 @@ kopplade komponenter är icke-nestlade loopar.
 
 TODO Screenshot för node coloring som tas upp nedan TODO
 
-En användare skulle exempelvis kunna använda AMBAs node colouring för att bilda
+En användare skulle exempelvis kunna använda Ambas node colouring för att bilda
 en större uppfattning om en viss del i binären och sedan komplettera med
 nodernas minnesaddresser för att visualisera samma sektion i ett mer avancerat
 verktyg som Ghidra. Ett typiskt användningsfall skulle kunna vara att i Ghidra
-söka efter strängar som ger mer information i den givna kodsektionen från AMBA
+söka efter strängar som ger mer information i den givna kodsektionen från Amba
 eller använda Ghidras analysmetoder för att dekompilera binärens instruktioner
 till ett mer läsbart format i form av pseudokod.
