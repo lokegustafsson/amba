@@ -14,12 +14,13 @@ emuleras. Användarutrymmet innefattar alla program som inte körs av
 operativsystemets kärna, och genom emulering nås högre prestanda i kontrast med
 emulering av hela system~\cite{symqemu}.
 
-\stoe{} är ett modulärt bibliotek som ger virtuella maskiner symbolisk exekvering. \stoe{} erbjuder
-redskap för att fokusera utforskningen på delkomponenter av systemet och gör det även
-möjligt för användare att sätta in kod i målsystemet vid specifika punkter under
-exekvering. Det gör att användare kan anpassa analysprocessen efter sina behov~\cite{s2e}.
-\stoe{} kan analysera kod för de flesta processorarkitekturer men betalar för det med ökad
-komplexitet och prestanda~\cite{symqemu}. 
+\stoe{} är byggt ovanpå QEMU och utökar virtuella maskiner med stöd för
+symbolisk exekvering. \stoe{} erbjuder redskap för att fokusera utforskningen på
+delkomponenter av systemet och gör det även möjligt för användare att sätta in
+kod i målsystemet vid specifika punkter under exekvering. Det gör att användare
+kan anpassa analysprocessen efter sina behov~\cite{s2e}. \stoe{} kan analysera
+kod för de flesta processorarkitekturer men betalar för det med ökad komplexitet
+och prestanda~\cite{symqemu}. 
 
 I kontrast till SymQEMUs Linux user-mode emulering, emulerar \stoe{} hela
 målsystemet, vilket innebär att \stoe{} kan göra analys på ett större antal
