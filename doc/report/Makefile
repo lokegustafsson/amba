@@ -28,6 +28,7 @@ group_64_project_report.pdf: \
   inledning/main.tex \
   main.tex \
   slutsats/main.tex \
+  tack.tex \
   teori/arkitektur_for_binaranalysverktyg.tex \
   teori/main.tex \
   teori/symbolisk_exekvering.tex \
