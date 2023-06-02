@@ -86,7 +86,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let to = [to].into_iter().collect::<SmallU64Set>();
-				let of: SmallVec<u64> = smallvec![from]; //.into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<u64> = smallvec![from];
 				Node {
 					id: from,
 					to,
@@ -102,7 +102,7 @@ impl Graph {
 			.or_insert_with(|| {
 				modified = true;
 				let from = [from].into_iter().collect::<SmallU64Set>();
-				let of: SmallVec<u64> = smallvec![to]; //.into_iter().collect::<SmallU64Set>();
+				let of: SmallVec<u64> = smallvec![to];
 				Node {
 					id: to,
 					to: Default::default(),
@@ -121,144 +121,129 @@ impl Graph {
 		modified
 	}
 
+	// Returns true if the given node has an edge to itself
 	pub fn is_loop(&mut self, node: u64) -> bool {
-		if let Some(node_) = self.get(node) {
-			return node_.to.contains(&node)
-				&& node_.from.contains(&node)
-				&& node_.to.len() == 1
-				&& node_.from.len() == 1;
+		if let Some(node) = self.get(node) {
+			return node.to.contains(&node)
+				&& node.from.contains(&node)
+				&& node.to.len() == 1
+				&& node.from.len() == 1;
+		} else {
+			return false;
 		}
-		false
 	}
 
+	// Rotates of until least id is first
+	// for given node
 	pub fn rotate_of(&mut self, node: u64) {
-		if let Some(node_) = self.nodes.get_mut(&node) {
-			if node_.of.iter().len() > 1 {
-				let min_index = node_
+		if let Some(node) = self.nodes.get_mut(&node) {
+			if node.of.iter().len() > 1 {
+				let min_index = node
 					.of
 					.iter()
-					.position(|&x| x == *node_.of.iter().min().unwrap())
+					.position(|&x| x == *node.of.iter().min().unwrap())
 					.unwrap();
-				node_.of.rotate_left(min_index);
+				node.of.rotate_left(min_index);
 			}
 		}
 	}
 
+	// Updates compressed graph with new connection
+	// Splits compressed nodes if the connection:
+	// 1. Adds incoming edge to a non-first node
+	// 2. Adds outgoing edge to a non-last node
 	pub fn revert_and_update(&mut self, from: u64, to: u64) {
 		let mut from_node = from;
 		let mut to_node = to;
 		let rest;
 
+		// Finds the from node in the graph, returns none if not yet added
+		fn find_from(graph: &Graph, from_node: u64) -> Option<&Node> {
+			if let Some(node) = graph.nodes.get(&from_node) {
+				return Some(node);
+			} else {
+				for node in graph.nodes.values() {
+					if node.of.iter().any(|&x| x == from_node) {
+						return Some(node);
+					}
+				}
+				return None;
+			}
+		}
+
+		// Finds the to node in the graph, returns none if not yet added
+		fn find_to(graph: &Graph, to_node: u64) -> Option<&Node> {
+			if let Some(node) = graph.nodes.get(&to_node) {
+				return Some(node);
+			} else {
+				for node in graph.nodes.values() {
+					if node.of.iter().any(|&x| x == to_node) {
+						return Some(node);
+					}
+				}
+				return None;
+			}
+		}
+
+		// Returns true if given node and to are in the same compressed node
+		fn in_same(node: &Node, to: u64) -> bool {
+			return node.of.iter().any(|&x| x == to);
+		}
+
 		// Self loop
 		if from == to {
-			if let Some(node) = self.nodes.get(&from) {
-				// node already exists
-				if node.of.iter().len() == 1 {
+			if let Some(node) = find_from(self, from) {
+				if node.id == from && node.of.iter().len() == 1 {
 					// no need to split any compressed nodes
 					self.update(from, from);
 					return;
 				} else {
 					// self loop in a compressed node, split around it
-					(from_node, _) = self.split_after(from, from);
+					(from_node, _) = self.split_after(from, node.id);
 					(_, to_node) = self.split_before(to, from_node);
 					self.update(to_node, to_node);
-					return ();
-				}
-			} // node doesn't exist or is part of other
-			for Node { id, of, .. } in self.nodes.values() {
-				if of.iter().any(|&x| x == from) {
-					// found in compressed node, split around it
-					(from_node, _) = self.split_after(from, *id);
-					(_, to_node) = self.split_before(to, from_node);
-					self.update(to_node, to_node);
-					return ();
+					return;
 				}
 			}
 		}
 
-		let nodes = self.nodes.clone();
-		if let Some(node) = nodes.get(&from) {
+		// find from node
+		if let Some(node) = find_from(self, from) {
 			// from node exists
 			let of = node.of.clone();
-			if of.iter().any(|&x| x == to)
+
+			// is to node in same node?
+			let same = in_same(node, to);
+
+			// to-node is directly after from-node, nothing to do
+			if same
 				&& (of.iter().position(|&x| x == to).unwrap()
 					== of.iter().position(|&x| x == from).unwrap() + 1)
 			{
-				return ();
+				return;
 			}
-			(from_node, rest) = self.split_after(from, from);
-			if of.iter().any(|&x| x == to) {
-				// to node is in same compressed node
-				if self
-					.nodes
-					.get(&from_node)
-					.unwrap()
-					.of
-					.iter()
-					.any(|&x| x == to)
-				{
-					// to node in same partition after previous split
+
+			(from_node, rest) = self.split_after(from, node.id);
+
+			// to was somewhere else in same
+			if same {
+				if in_same(self.nodes.get(&from_node).unwrap(), to) {
+					// to node still in same after first split
 					(_, to_node) = self.split_before(to, from_node);
 					self.update(to_node, to_node);
-					return ();
+					return;
 				} else {
-					// to node ended up in the other partition after previous split
+					// to node ended up in the other partition after first split
 					(_, to_node) = self.split_before(to, rest);
 					self.update(from_node, to_node);
-					return ();
-				}
-			}
-		} else {
-			// from node doesn't exist
-			for Node { id, of, .. } in nodes.values() {
-				if of.iter().any(|&x| x == from) {
-					// from node part of compressed node
-					let of_copy = of.clone();
-					if of_copy.iter().any(|&x| x == to)
-						&& (of_copy.iter().position(|&x| x == to).unwrap()
-							== of_copy.iter().position(|&x| x == from).unwrap() + 1)
-					{
-						return ();
-					}
-					(from_node, rest) = self.split_after(from, *id);
-					if of_copy.iter().any(|&x| x == to) {
-						// to node exists in same compressed node
-						if self
-							.nodes
-							.get(&from_node)
-							.unwrap()
-							.of
-							.iter()
-							.any(|&x| x == to)
-						{
-							// to node in same partition after previous split
-							(_, to_node) = self.split_before(to, from_node);
-							self.update(to_node, to_node);
-							return ();
-						} else {
-							// to node ended up in the other partition after previous split
-							(_, to_node) = self.split_before(to, rest);
-							self.update(from_node, to_node);
-							return ();
-						}
-					}
-					break;
+					return;
 				}
 			}
 		}
 
 		// to node wasn't found in same as from node
-		if let Some(_node) = self.nodes.get(&to) {
-			// to node exists
-			(_, to_node) = self.split_before(to, to);
-		} else {
-			for Node { id, of, .. } in self.nodes.values() {
-				// to node is part of compressed node
-				if *id == to || of.iter().any(|&x| x == to) {
-					(_, to_node) = self.split_before(to, *id);
-					break;
-				}
-			}
+		if let Some(node) = find_to(self, to) {
+			(_, to_node) = self.split_before(to, node.id);
 		}
 		self.update(from_node, to_node);
 	}
@@ -323,13 +308,6 @@ impl Graph {
 		let node = self.get(merged_in).unwrap().clone();
 		let of = node.of.clone();
 
-		// if self.is_loop(merged_in){
-		// 	if let Some(index) = of.iter().position(|&x| x == before) {
-		// 		self.get_mut(merged_in).unwrap().of.rotate_left(index);
-		// 		of = self.get(merged_in).unwrap().of.clone();
-		// 	}
-		// }
-
 		for (i, &subnode) in of.iter().enumerate() {
 			if subnode == before {
 				if i > 0 {
@@ -392,44 +370,6 @@ impl Graph {
 		}
 	}
 
-	/*
-	/// Revert compression of nodes and then update their connections.
-	/// Returns the reverted nodes
-	pub fn revert_and_update(&mut self, source: &Graph, from: u64, to: u64) -> SmallU64Set {
-		let mut nodes = SmallU64Set::new();
-
-		// `self` and `source` *should* contain all the same
-		// keys except in the case where this is the operation
-		// where we're adding the keys to `self`
-		if source.nodes.contains_key(&from) {
-			if let Some(super_node) = self.get(from) {
-				for node in super_node.of.iter().copied() {
-					nodes.insert(node);
-				}
-			}
-		}
-		if source.nodes.contains_key(&to) {
-			if let Some(super_node) = self.get(to) {
-				for node in super_node.of.iter().copied() {
-					nodes.insert(node);
-				}
-			}
-		}
-
-		for node in nodes.iter() {
-			self.merges.remove(node);
-			let value = source.nodes.get(node).unwrap().clone();
-			self.nodes.insert(*node, value);
-		}
-
-		self.update(from, to);
-
-		nodes.insert(from);
-		nodes.insert(to);
-		nodes
-	}
-	*/
-
 	/// Compresses graph by merging every node pair that always go
 	/// from one to the other
 	pub fn compress(&mut self) {
@@ -444,28 +384,6 @@ impl Graph {
 		//  of the borrow checker.
 		// The merged node will take the id of the smallest of
 		//  the parents.
-
-		/*
-		let mut to_merge = m
-			.iter() // Use iter() instead of values() to iterate over key-value pairs
-			.filter(|(_, l)| l.to.len() == 1)
-			.map(|(key, l)| {
-				let translated_key = translate(l.to.get_any(), &mut self.merges);
-				(key, l, &m[&translated_key])
-			})
-			.filter(|(_, l, r)| r.from.len() == 1)
-			.map(|(key, l, r)| (*key, l.id, r.id)) // Include the key in the map
-			.collect::<Vec<_>>();
-
-		// Sort the to_merge vector by the keys in ascending order
-		to_merge.sort_by_key(|(key, _, _)| *key);
-
-		for (_, l, r) in to_merge.into_iter() {
-			let l = translate(l, &mut self.merges);
-			let r = translate(r, &mut self.merges);
-			self.merge_nodes(l, r);
-		}
-		*/
 
 		let to_merge = m
 			.values()
@@ -487,46 +405,6 @@ impl Graph {
 			self.merge_nodes(l, r);
 		}
 	}
-
-	/*
-	/// Compress around given candidates. If a candidate gets
-	/// compressed its neighbours will be checked too, growing out
-	/// from there.
-	pub fn compress_with_hint(&mut self, nodes: SmallU64Set) {
-		fn inner(graph: &mut Graph, mut queued: BTreeSet<(u64, u64)>) {
-			while let Some((mut from, mut to)) = queued.pop_first() {
-				from = translate(from, &mut graph.merges);
-				to = translate(to, &mut graph.merges);
-				(from, to) = (from.min(to), from.max(to));
-
-				if !graph.are_mergable_link(from, to) {
-					continue;
-				}
-				let this = graph.merge_nodes(from, to);
-				let node = &graph.nodes[&this];
-
-				let tos = node.to.iter().filter(|&&n| n != this);
-				let froms = node.from.iter().filter(|&&n| n != this);
-
-				for &connection in tos.chain(froms) {
-					queued.insert((connection, this));
-				}
-			}
-		}
-
-		let queued = nodes
-			.into_iter()
-			.flat_map(|n| {
-				let node = self.nodes.get(&n).unwrap();
-				let tos = node.to.iter().copied().map(move |t| (n, t));
-				let froms = node.from.iter().copied().map(move |f| (f, n));
-
-				tos.chain(froms)
-			})
-			.collect();
-
-		inner(self, queued);
-	}*/
 
 	/// Compress around given candidates. If a candidate gets
 	/// compressed its neighbours will be checked too, growing out
@@ -598,7 +476,7 @@ impl Graph {
 			translate(to_link, &mut self.merges) == y && translate(from_link, &mut self.merges) == x
 		};
 
-		f(l, r) //|| f(r, l)
+		f(l, r)
 	}
 
 	fn are_loop(&mut self, l: u64, r: u64) -> bool {
@@ -623,9 +501,6 @@ impl Graph {
 
 	/// Returns the id of the merged node
 	pub fn merge_nodes(&mut self, l: u64, r: u64) -> u64 {
-		/*if l > r {
-			return self.merge_nodes(r, l);
-		}*/
 		if l == r {
 			return l;
 		}
@@ -2226,18 +2101,6 @@ mod test {
 		cycle(0, 5);
 		cycle(1, 0);
 		cycle(5, 1);
-		// slow.update(5, 5);
-		// fast.revert_and_update(5, 5);
-		// fast.compress_with_hint(5, 1);
-
-		// let mut fast_ = fast.clone();
-		// fast_.apply_merges();
-
-		// let mut clone = slow.clone();
-		// clone.compress();
-		// clone.apply_merges();
-
-		// assert_eq!(fast_.nodes, clone.nodes);
 		cycle(5, 5);
 		cycle(0, 0);
 	}
