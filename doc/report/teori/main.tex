@@ -10,19 +10,19 @@ står inför och några möjliga lösningar till dessa problem.
 
 \section{Binäranalys}
 \label{sec:binar_analys}
-Inom skadeprogramsanalys (jfr eng. malware analysis) och reverse engeneering
+Inom skadeprogramsanalys (jfr. eng. malware analysis) och reverse engineering 
 är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast
-tillgänglig som maskinkod~/cite{andriesse2018}.
+tillgänglig som maskinkod~\cite{andriesse2018}.
 
-Förutom då endast maskinkoden är tillgänglig så är binäranalys också användbart för att
-upptäcka och undersöka minnessårbarheter. Det beror på det semantiska gapet mellan ett
-högnivå programspråk och maskinkod. Det är inte trivialt att argumentera för programmets
-beteende innan och efter kompilering
-till maskinkod och hur väl dessa mostsvarar varandra. Genom att betrakta
-maskinkoden kan man ``undersöka vad programmet faktiskt gör istället för vad
-man tror att det gör''~\cite{andriesse2018}. Avslutningsvis, kan sårbarheter
-introduceras i kompileringssteget på grund av fel i kompilatorer som oftast är
-sällsynta men inte obefintliga~\cite{silentbugsmatter}.
+Förutom när endast maskinkoden är tillgänglig är binäranalys också användbart
+för att upptäcka och undersöka minnessårbarheter. Det beror på det semantiska
+gapet mellan ett högnivå programspråk och maskinkod. Det är inte trivialt att
+argumentera för programmets beteende innan och efter kompilering till maskinkod
+och hur väl dessa motsvarar varandra. Genom att betrakta maskinkoden kan man
+``undersöka vad programmet faktiskt gör istället för vad man tror att det
+gör''~\cite{andriesse2018}. Sammanfattningsvis kan sårbarheter introduceras i
+kompileringssteget på grund av fel i kompilatorer som är sällsynta men
+inte obefintliga~\cite{silentbugsmatter}.
 
 Ett flertal metoder används för att analysera maskinkod:
 \begin{enumerate}
@@ -90,7 +90,7 @@ utelämna detta fullständigt vilket är vad avsaknaden av testfall visar sig so
 För att klargöra distinktionen mellan manuella och automatiska metoder för
 binäranalys kan vi betrakta följande exempel:
 
-\begin{figure}
+\begin{figure}[H]
     \begin{lstlisting}[
     label={list:first},
     language=Python,
@@ -166,7 +166,7 @@ programmets exekvering~\cite{dynamic_bin_analysis}.
 
 \subsection{Minnessårbarheter}
 I praktiken uppgör minnessäkerhetsbrister ungefär 70 procent av alla
-sårbarheter~\cite{miller19}. Minnessårbarheter kan påverka programflödet (jfr
+sårbarheter~\cite{miller19}. Minnessårbarheter kan påverka programflödet (jfr.
 eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
 vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
 läsbara men det mest allvarliga är skrivaccess utanför minnesgränser. En
@@ -177,9 +177,9 @@ datorn som kör programmet~\cite{computer_security_cs161}, alltså \emph{remote
 I en perfekt värld hade det varit fördelaktigt att undvika alla sårbarheter men
 det är inte möjligt på grund av mänskliga fel och konsekvenser av de verktyg vi
 använder. För att undvika, exempelvis, 100\% av minnessårbarheter krävs
-användning av minnessäkra programspråk (jfr eng. \emph{memory-safe language}).
-Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
-\emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile
+användning av minnessäkra programspråk (jfr. eng. \emph{memory-safe language}).
+Minnessäkra programspråk tilltar en kombination av körtids- (jfr. eng.
+\emph{runtime}) och kompileringstidskontroller (jfr. eng. \emph{compile
     time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
 många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
 prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är mödosam att
@@ -187,10 +187,10 @@ skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
 exempelvis Rust eller Swift, som kan konkurrera med C relativt nya och det
 krävs tid för övergången mellan språken.
 
-Två exempel på minnessårbarheter är buffertöverflöden (jfr eng. \emph{buffer
-    overflow}) och formatsträngsbuggar (jfr eng. \emph{format string bug}). Den
+Två exempel på minnessårbarheter är buffertöverflöden (jfr. eng. \emph{buffer
+    overflow}) och formatsträngsbuggar (jfr. eng. \emph{format string bug}). Den
 vanligaste av de två är buffertöverflöden vilka uppstår av otillräckliga
-gränskontroller (jfr eng. \emph{bounds checks}), och utlöser möjlighet till åtkomst bortom
+gränskontroller (jfr. eng. \emph{bounds checks}), och utlöser möjlighet till åtkomst bortom
 gränserna för den minnesregion som avsetts. Angripare kan utnyttja detta för att korrumpera programmets
 normala beteende genom att skriva bortom gränserna. Formatsträngsbuggar uppstår
 när någon typ av indata tolkas och används som input till vanliga

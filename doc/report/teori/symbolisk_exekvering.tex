@@ -33,7 +33,7 @@ används representerar grupper av konkreta värden vilka har gemensamt hur de
 påverkar programmets flöde~\cite{klee}.
 
 Vägar i programmets kontrollflöde utforskas med symboliska uttryck som kallas
-för path constraints (jfr. sv.\ vägvillkor) och uttrycker de begränsningar som finns på
+för vägvillkor (jfr. eng.\ path constraint) och uttrycker de begränsningar som finns på
 programmets data --- vilka egenskaper datan måste uppfylla för att just denna väg
 ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan
 evalueras eftersom de egenskaper som måste uppfyllas för att följa vägen dit dokumenteras
@@ -113,7 +113,7 @@ möjligt i detta program men inte i alla. Ett motexempel är komplexa
 program som på grund av vägexplosionsproblemet inte hittar alla möjliga vägar.
 Variablerna \emph{x} och \emph{y} sätts till symboliska värden som sedan används
 för att beräkna vägvillkoret och de symboliska uttryck som variablerna utvecklas
-till för en vald gren. Därefter används dessa uttryck och path constraints
+till för en vald gren. Därefter används dessa uttryck och vägvillkor 
 tillsammans för att bilda en ekvation som sedan kan lösas med hjälp av en SMT-lösare.
 Figur~\ref{fig:symbex_example_graph} visar
 hur det symboliska tillståndet förändras för alla möjliga grenar i programmet.
@@ -127,7 +127,7 @@ vägvillkoret. I andra noden sett uppifrån finns det två skillnader i jämför
 med den första noden: \emph{x} tilldelas $\phi_1$ som är en symbolisk mappning
 till $\alpha_1$. Efter den fjärde noden sett uppifrån görs ett val och
 vägvillkoret förändras beroende på vilken väg som tas -- vägvillkoret uppdateras
-till $\phi_1 > 100000$ om $x < z$ och annars uppdateras det till $\phi_1 <=
+till $\phi_1 > 100000$ om $x < z$ och annars uppdateras det till $\phi_1 \leq 
     100000$. På samma sätt uppdateras $\pi$ och $\phi$ längs andra exekveringsvägar
 och vilket till slut leder till ett komplett programflödesdiagram som beror på
 \emph{x, y, z}. I varje nod kan ett konkret värde som uppfyller vägvillkoren evalueras.
