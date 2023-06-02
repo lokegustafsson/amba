@@ -317,7 +317,7 @@ impl Graph {
 		(after, after)
 	}
 
-	/// split merged node before occurrence of new "to" connection
+	/// Split merged node before occurrence of new "to" connection
 	/// returns the node id's of new nodes after split
 	pub fn split_before(&mut self, before: u64, merged_in: u64) -> (u64, u64) {
 		let node = self.get(merged_in).unwrap().clone();
