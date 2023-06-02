@@ -20,7 +20,7 @@ exekvering.
 Metoder baserade på symbolisk exekvering har används för att upptäcka både
 buffertöverflöden~\cite{bofaeg} och formatsträngsbuggar~\cite{vakkaupad15}.
 Metoderna har olika begränsningar, såsom prestandabegränsningar och andra
-begränsnigar som symbolisk exekvering innehar, men dessa sårbarheter är också
+begränsningar som symbolisk exekvering innehar, men dessa sårbarheter är också
 allmänt svåra att upptäcka automatiskt.
 
 Att exekvera ett program symboliskt innebär att representera värden utefter
@@ -119,12 +119,12 @@ hur det symboliska tillståndet förändras för alla möjliga grenar i programm
 
 I~\ref{fig:symbex_example_graph} används $\pi$ för att ange vägvillkoret vilket
 är initialt satt till $\top$ eftersom villkoret är sant från början och $\sigma$
-används för att visa mappningen för symboliska värden. $\pi$ och $\sigma$ % något man kan använda ist för mappning kanske
-populeras längs med exekveringen, och \emph{x} och \emph{y} mappas till
+används för att visa avbildningen för symboliska värden. $\pi$ och $\sigma$ % något man kan använda ist för mappning kanske
+populeras längs med exekveringen, och \emph{x} och \emph{y} representeras med 
 symboliska värden. Beroende på vilken väg som väljs i exekveringen, uppdateras
 vägvillkoret. I andra noden sett uppifrån finns det två skillnader i jämförelse
-med den första noden: \emph{x} tilldelas $\phi_1$ som är en symbolisk mappning
-till $\alpha_1$. Efter den fjärde noden sett uppifrån görs ett val och
+med den första noden: \emph{x} tilldelas $\phi_1$ som är en symbolisk representation av
+$\alpha_1$. Efter den fjärde noden sett uppifrån görs ett val och
 vägvillkoret förändras beroende på vilken väg som tas -- vägvillkoret uppdateras
 till $\phi_1 > 100000$ om $x < z$ och annars uppdateras det till $\phi_1 \leq
     100000$. På samma sätt uppdateras $\pi$ och $\phi$ längs andra exekveringsvägar
