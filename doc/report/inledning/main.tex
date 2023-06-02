@@ -3,16 +3,16 @@ eller mjukvarusystem fungerar~\cite{xia2018}. Programförståelse är ofta, helt
 eller delvis, en informell process. Programförståelse används till exempel när
 nyanställda läser dokumentation för att förstå hur ett mjukvarusystem är
 uppbyggt. Ett annat exempel är när säkerhetsforskare undersöker skadlig
-programvara (jfr.\ eng. \emph{malware}) för att kunna utveckla motmedel. I
-fortsättningen använder vi ordet förståelse som en förkortning av
-programförståelse.
+programvara (jfr.\ eng. \emph{malware}) för att kunna utveckla
+motmedel~\cite{andriesse2018}. I fortsättningen använder vi ordet förståelse som
+en förkortning av programförståelse.
 
 För att bilda sig en förståelse av ett program formulerar man ofta hypoteser om
-programmet, för att sedan testa om hypotesen stämmer. Dessa hypoteser kan vara
-övergripande, som till exempel om programmet kan utgöra ett säkerhetshot.
-Hypoteserna kan även vara specifika och fokuserade på detaljer, som till exempel
-om en specifik formell specifikation är implementerad på ett korrekt sätt eller
-vilka filsystemkataloger programmet använder sig av.
+programmet, för att sedan testa om hypotesen stämmer~\cite{hermans2021}. Dessa
+hypoteser kan vara övergripande, som till exempel om programmet kan utgöra ett
+säkerhetshot.  Hypoteserna kan även vara specifika och fokuserade på detaljer,
+som till exempel om en specifik formell specifikation är implementerad på ett
+korrekt sätt eller vilka filsystemkataloger programmet använder sig av.
 
 \section{Metoder för datorn}
 
@@ -25,8 +25,8 @@ korrekt. Däremot kan testning i det generella fallet aldrig verifiera att ett
 program är helt korrekt.
 
 En testmetod som automatiskt kan generera testfall och potentiellt hitta buggar
-är fuzzing. Fuzzing går ut på att generera indata för att sedan undersöka om
-indatan kan orsaka icke önskvärt beteende eller krascher hos
+är fuzzing~\cite{macel2021}. Fuzzing går ut på att generera indata för att sedan
+undersöka om indatan kan orsaka icke önskvärt beteende eller krascher hos
 programmet~\cite{macel2021}. Ett sätt att generera indata inom fuzzing är att
 betrakta typen på indatan och försöka testa olika kategorier som kan orsaka
 felaktiga beteenden. Om indatan exempelvis är en numerisk typ kan man generera
@@ -35,12 +35,12 @@ endast ett specifikt värde leder till ett visst beteende är det sannolikt att
 detta värde aldrig gissas och därmed inte inträffar.
 
 Symbolisk fuzzing är en variation på fuzzing som utforskar flera möjliga vägar
-genom ett program utan att köra det med alla konkreta värden som indata.
-Istället för att använda konkreta värden används variabler för att symbolisera
-indata och programtillstånd. Genom att spåra villkor för dessa variabler kan
-man generera testfall som täcker olika vägar genom programmet. Målet är att
-undersöka så många vägar som möjligt för att utforska programmets olika möjliga
-tillstånd som kan nås med olika indata.
+genom ett program utan att köra det med alla konkreta värden som
+indata~\cite{fuzzingbook2023:SymbolicFuzzer}.  Istället för att använda konkreta
+värden används variabler för att symbolisera indata och programtillstånd. Genom
+att spåra villkor för dessa variabler kan man generera testfall som täcker olika
+vägar genom programmet. Målet är att undersöka så många vägar som möjligt för
+att utforska programmets olika möjliga tillstånd som kan nås med olika indata.
 
 För att demonstrera detta kan vi betrakta funktionen i figur
 \ref{fig:symb_exc_ex_inl}. I funktionen kan det uppkomma en krasch om indatan
