@@ -3,9 +3,36 @@ binäranalysverktyg för att visualisera och styra symbolisk fuzzing interaktivt
 I detta avsnitt kommer vi att beskriva funktionalitet i AMBA, AMBAs
 begräsningar samt hur man kan köra och använda AMBA.
 
+\begin{figure}[H]
+    \begin{lstlisting}[
+    language=c,
+    frame=single
+    ]
+pub enum NodeMetadata {
+	State {
+		amba_state_id: u32,
+		s2e_state_id: i32,
+		concrete_inputs: Vec<(String, Vec<u8>)>,
+	},
+	BasicBlock {
+		symbolic_state_id: u32,
+		basic_block_vaddr: Option<NonZeroU64>,
+		basic_block_generation: Option<NonZeroU64>,
+		basic_block_elf_vaddr: Option<NonZeroU64>,
+		basic_block_content: SmallVec<[u8; SMALL_SIZE_U8]>,
+	},
+	CompressedBasicBlock(Box<CompressedBasicBlock>),
+}
+\end{lstlisting}
+    \caption{Metadata för en nod bestående av symboliskt tillstånd och
+    tillhörande virtuell adress.}\label{fig:nodemetadata}
+\end{figure}
+
+
 AMBA exekverar program med symbolisk indata och visar ett antal grafer
 över exekveringen. Dessa grafer uppdateras kontinuerligt under programmets
-exekvering. Graferna består av ett antal noder med metadata sammankopplade
+exekvering. Graferna består av ett antal noder med metadata, se
+fig~\ref{fig:nodemetadata} sammankopplade
 med riktade kanter. När en användare klickar på en nod visas den nodens metadata
 i en separat panel. Metadatan visas även om man zoomar in på en nod.
 
