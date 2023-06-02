@@ -123,14 +123,11 @@ impl Graph {
 
 	// Returns true if the given node has an edge to itself
 	pub fn is_loop(&mut self, node: u64) -> bool {
-		if let Some(node) = self.get(node) {
-			return node.to.contains(&node.id)
-				&& node.from.contains(&node.id)
-				&& node.to.len() == 1
-				&& node.from.len() == 1;
-		} else {
-			return false;
-		}
+		let Some(node) = self.get(node) else { return false; };
+		node.to.contains(&node.id)
+			&& node.from.contains(&node.id)
+			&& node.to.len() == 1
+			&& node.from.len() == 1
 	}
 
 	// Rotates of until least id is first
@@ -157,18 +154,15 @@ impl Graph {
 		let mut to_node = to;
 		let rest;
 
-
 		// Finds the to node in the graph, returns none if not yet added
 		fn find_node(graph: &Graph, id: u64) -> Option<&Node> {
 			if let Some(node) = graph.nodes.get(&id) {
-				return Some(node);
+				Some(node)
 			} else {
-				for node in graph.nodes.values() {
-					if node.of.iter().any(|&x| x == id) {
-						return Some(node);
-					}
-				}
-				return None;
+				graph
+					.nodes
+					.values()
+					.find(|node| node.of.iter().any(|&x| x == id))
 			}
 		}
 
@@ -204,8 +198,8 @@ impl Graph {
 
 			// to-node is directly after from-node, nothing to do
 			if same
-				&& (of.iter().position(|&x| x == to).unwrap()
-					== of.iter().position(|&x| x == from).unwrap() + 1)
+				&& of.iter().position(|&x| x == to).unwrap()
+					== of.iter().position(|&x| x == from).unwrap() + 1
 			{
 				return;
 			}
@@ -218,13 +212,12 @@ impl Graph {
 					// to node still in same after first split
 					(_, to_node) = self.split_before(to, from_node);
 					self.update(to_node, to_node);
-					return;
 				} else {
 					// to node ended up in the other partition after first split
 					(_, to_node) = self.split_before(to, rest);
 					self.update(from_node, to_node);
-					return;
 				}
+				return;
 			}
 		}
 
@@ -386,9 +379,6 @@ impl Graph {
 		for (mut l, mut r) in to_merge.into_iter() {
 			l = translate(l, &mut self.merges);
 			r = translate(r, &mut self.merges);
-
-			//let x = l.min(r);
-			//let y = l.max(r);
 			self.merge_nodes(l, r);
 		}
 	}
@@ -565,8 +555,6 @@ impl Graph {
 
 		self.update_from_after_split(old, new, tos);
 		self.update_to_after_split(old, new, froms);
-		//l_.of.insert(l);
-		//l_.of.insert(r);
 
 		new
 	}
