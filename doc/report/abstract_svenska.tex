@@ -1,7 +1,6 @@
-Det här kandidatarbetet introducerar AMBA, ett interaktivt verktyg för visualisering av exekvering av binärprogram och identifiering av potentiella minnesrelaterade säkerhetsbrister genom att kombinera fördelarna av automatisk datorberäkning och männsklig intuition.
-AMBA kombinerar symbolisk exekvering och fuzzing för att presentera grafer av exekveringsvägar i programmet för användaren.
-Dessa vägar kan utforskas interaktivt för att identifiera potentiella säkerhetsbrister relaterade till minnesanvändning.
-AMBA är bättre än liknande existerande verktyg i och med att analysen visualiseras i realtid, vilket öppnar upp möjligheter för användaren att prioritera tillstånd och hantera självmodifierande kod.
-AMBA kan i framtiden utvecklas med tillståndssammanslagning för att möjliggöra analys av större program med många möjliga vägar, och att övervaka systemanrop exekverade av programmet och även lägga till utmatning av betydelseful information som kommer från den symboliska fuzzingen.
-AMBA evalueras genom en teoretisk jämförelse med existerande verktyg med slutsatsen att AMBA ger en användbar grund för binäranalys och har potentialen att bli mer användbar om de föreslagna vidareutvecklingarna implementeras.
-Tack vare implemenationens som ett plugin till den symboliska exekveringsmotorn \stoe{} är AMBA lättillgängligt till utvecklare och säkerhetsforskare som granskar beteendet av maskinkod.
+Det här kandidatarbetet introducerar AMBA, ett interaktivt system för att visualisera symbolisk exekvering av binärfiler i kombination med symbolisk fuzzing.
+Visualiseringen visar de olika exekveringsvägarna för binärfiler i realtid.
+Användaren har möjlighet att interaktivt prioritera olika exekveringsvägarna för analys.
+Den symboliska fuzzingen möjliggörs av \stoe{}-motorn.
+\stoe{} stöder emulering av ett helt system, vilket gör att AMBA skiljer sig från befintliga verktyg.
+AMBA utvärderas genom jämförelse med ett urval befintliga verktyg för analys av program på maskinnivå.
