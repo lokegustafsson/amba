@@ -33,7 +33,7 @@ används representerar grupper av konkreta värden vilka har gemensamt hur de
 påverkar programmets flöde~\cite{klee}.
 
 Vägar i programmets kontrollflöde utforskas med symboliska uttryck som kallas
-för path constraints (jfr. sv.\ vägvillkor) och uttrycker de begränsningar som finns på
+för vägvillkor (jfr. eng.\ path constraint) och uttrycker de begränsningar som finns på
 programmets data --- vilka egenskaper datan måste uppfylla för att just denna väg
 ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan
 evalueras eftersom de egenskaper som måste uppfyllas för att följa vägen dit dokumenteras
@@ -113,7 +113,7 @@ möjligt i detta program men inte i alla. Ett motexempel är komplexa
 program som på grund av vägexplosionsproblemet inte hittar alla möjliga vägar.
 Variablerna \emph{x} och \emph{y} sätts till symboliska värden som sedan används
 för att beräkna vägvillkoret och de symboliska uttryck som variablerna utvecklas
-till för en vald gren. Därefter används dessa uttryck och path constraints
+till för en vald gren. Därefter används dessa uttryck och vägvillkor 
 tillsammans för att bilda en ekvation som sedan kan lösas med hjälp av en SMT-lösare.
 Figur~\ref{fig:symbex_example_graph} visar
 hur det symboliska tillståndet förändras för alla möjliga grenar i programmet.
