@@ -1,11 +1,28 @@
 Eftersom \stoe{} är ett komplext system med många komplicerade
-biblioteksberoenden ansågs det tidigt i arbetsprocessen att göra AMBA mer
+biblioteksberoenden beslutades det tidigt i arbetsprocessen att göra AMBA mer
 tillgängligt till slutanvändaren genom att paketera alla bibliotek som krävs för
 att köra \stoe{}. Detta var en komplicerad och tidskrävande uppgift eftersom
 mycket av \stoe{}s byggsystem var tvunget att återimplementeras eller kringgås
-när tvetydiga och icke-triviala problem uppstod. Ett sådant problem var
-nedladdningen och byggningen av guest images som \stoe{} lagrades på Google
-Drive där lösningen var att istället ladda ner färdiga guest images.
+när tvetydiga och icke-triviala problem uppstod.
 
-Denna del av arbetet ledde till att mycket av planeringen blev förskjutet och
-således fanns det mindre tid till att utveckla all funktionalitet som var tänkt.
+Ett sådant problem var byggningen av diskavbilder till de virtuella maskiner som
+\stoe{} kör inuti QEMU. Detta problem löstes aldrig fullständigt utan fick
+arbetas runt genom att ladda ned färdiga diskavbilder byggda och uppladdade av
+\stoe{}-projektet i Google Drive.
+
+Ett annat problem, detta orsakat av utdaterade bygginstruktioner i \stoe{}, var
+att QEMU-projektets repon pekades på genom utdaterade, nu trasiga länkar under
+\texttt{git.qemu-project.org} istället för uppdaterade fungerande länkar under
+\\\texttt{gitlab.com/qemu-project}.
+
+Ett tredje problem var att biblioteket \texttt{libs2e} byggdes med ett implicit
+beroende på biblioteket \texttt{libgomp} som distribueras tillsammans med
+kompilatorn \texttt{gcc}. Specifikt hade komponenten \texttt{libs2e}-komponenten
+KLEE ett beroende på vissa symboler i statisk länkning som inte var tillgängliga
+från \texttt{libgomp} från Nix-paketerade \texttt{gcc}. Detta problem fick
+arbetas runt genom att dynamiskt länka en Ubuntu-byggd \texttt{libgomp} till
+\texttt{libs2e}.
+
+Dessa problem, tillsammans med väldigt många fler av liknande natur, ledde till
+mycket arbete som försköt planeringen. Således fanns det mindre tid till att
+utveckla all funktionalitet som var tänkt i AMBA.
