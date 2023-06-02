@@ -1,6 +1,6 @@
 En metod för dynamisk binäranalys är symbolisk exekvering. Eftersom exekveringen är symbolisk är
 det möjligt att utforska alla möjliga exekveringsvägar i programmet, även de som inte är möjliga
-med konkreta inputs. Både \stoe{} och SymQEMU är kraftfulla verktyg för att analysera binära program
+med konkreta indata. Både \stoe{} och SymQEMU är kraftfulla verktyg för att analysera binära program
 med symbolisk exekvering.
 
 SymQEMU är byggt som en förlängning av QEMU, och använder en kombination av
@@ -51,11 +51,11 @@ För att accelerera den symboliska exekveringen kan angr användas i kombination
 med Unicorn CPU-emulatorn, ett lättviktigt ramverk för emulering som stödjer
 många arkitekturer och baseras på QEMU~\cite{UnicornEngine}. Detta är möjligt
 med hjälp av komponenten \emph{angr.engines.unicorn}. Genom att använda
-komponenten kan man exekvera med konkreta input när det är möjligt och
+komponenten kan man exekvera med konkreta indata när det är möjligt och
 fördelaktigt men understött av symbolisk exekvering då flera exekveringsvägar
 behöver utforskas eller då programmets beteende inte är
 deterministiskt~\cite{angrUnicornEngine}. Angr låter det emulerade programmet
 manipulera filer och nätverksströmmar genom att representera dem som
 Python-objekt. Dessa objekt läses från och skrivs till när det emulerade
-programmet utför systemanrop.
+programmet utför systemanrop (jfr.\ eng.\ \emph{syscalls}).
 

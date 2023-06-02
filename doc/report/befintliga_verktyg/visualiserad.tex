@@ -5,20 +5,20 @@ tillhör kallar vi ''visualiserad symbolisk fuzzing'' och detta avsnitt
 diskuterar det fåtal befintliga verktyg som vi anser faller inom kategorin.
 
 Verktyget Symbolic Execution Debugger
-(\textsc{SED})~\cite{symbolic_execution_debugger} är en debugger för Java 1.4
+(SED)~\cite{symbolic_execution_debugger} är en debugger för Java 1.4
 utan multitrådning, reflektion och flyttalsaritmetik. Användaren använder
-\textsc{SED} som ett Eclipse-plugin, i vilket valfri metod kan väljas och
+SED som ett Eclipse-plugin, i vilket valfri metod kan väljas och
 analyseras med symbolisk exekvering. Exekveringsträdet visas för användaren
 tillsammans med källkodsrader och de vägvillkor som tar exekveringen dit.
 
-Att \textsc{SED} är utformat som en debugger som kan starta exekveringen vid
+Att SED är utformat som en debugger som kan starta exekveringen vid
 valfri Javametod gör verktyget väl utformat till formell verifiering. Verktyget
 förlitar sig på tillgång till källkod och att användaren vet vilken indata som
 anses giltig för metoden. Begränsningen till enskilda metoder gör samtidigt den
 symboliska exekveringen mer överblicklig för användaren, då användaren i mindre
 grad själv behöver exkludera det som analysen inte bör lägga fokus på.
 
-Att \textsc{SED} inriktar sig på en delmängd av Java innebär att det är mindre
+Att SED inriktar sig på en delmängd av Java innebär att det är mindre
 applicerbart för datasäkerhet och binäranalys då dessa sammanhang ofta kräver
 analys av exekverbara binärer, ofta utan tillgång till källkod. Eftersom Java är
 ett språk på högre nivå än maskinkod innebär samtidigt en inriktning mot Java
@@ -71,7 +71,7 @@ SymNav ger användaren kraftfulla verktyg att filtrera ut intressanta tillstånd
 efter metriker såsom kodtäckningsgrad och minnesallokeringsmönster. Samtidigt
 ärver SymNav flera nackdelar från angr, såsom suboptimal prestanda
 \cite{systematic_comparison_symbex} och begränsad miljömodellering då
-analysgränsen går vid processen med emulerade syscalls snarare än vid en
+analysgränsen går vid processen med emulerade systemanrop snarare än vid en
 virtuell maskin. SymNav är skrivet för att kunna anpassas till andra
 exekveringsmotorer än angr, men detta är inte implementerat i dess nuvarande
 form.

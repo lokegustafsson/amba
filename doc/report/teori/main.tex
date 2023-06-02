@@ -10,7 +10,7 @@ står inför och några möjliga lösningar till dessa problem.
 
 \section{Binäranalys}
 \label{sec:binar_analys}
-Inom skadeprogramsanalys (jfr. eng. malware analysis) och reverse engineering
+Inom skadeprogramsanalys (jfr eng. \emph{malware analysis}) och \emph{reverse engeneering}
 är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast
 tillgänglig som maskinkod~\cite{andriesse2018}.
 
@@ -193,7 +193,7 @@ vanligaste av de två är buffertöverflöden vilka uppstår av otillräckliga
 gränskontroller (jfr. eng. \emph{bounds checks}), och utlöser möjlighet till åtkomst bortom
 gränserna för den minnesregion som avsetts. Angripare kan utnyttja detta för att korrumpera programmets
 normala beteende genom att skriva bortom gränserna. Formatsträngsbuggar uppstår
-när någon typ av indata tolkas och används som input till vanliga
+när någon typ av indata tolkas och används som indata till vanliga
 textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
 konvertingsfunktioner för konvertering av olika data till text. Om inte en
 noggrann och tillräcklig utvärdering av indatan görs innan den används i en
