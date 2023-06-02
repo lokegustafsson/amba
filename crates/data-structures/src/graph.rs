@@ -156,7 +156,7 @@ impl Graph {
 				if node.of.iter().len() == 1 {
 					// no need to split any compressed nodes
 					self.update(from, from);
-					return ();
+					return;
 				} else {
 					// self loop in a compressed node, split around it
 					(from_node, _) = self.split_after(from, from);
