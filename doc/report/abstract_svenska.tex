@@ -1,21 +1,6 @@
-Det här kandidatarbetet introducerar AMBA, ett interaktivt verktyg för
-visualisering av exekvering av binärprogram och identifiering av
-potentiella minnesrelaterade säkerhetsbrister genom att kombinera
-fördelarna av automatisk datorberäkning och männsklig intuition.  AMBA
-kombinerar symbolisk exekvering och fuzzing för att presentera grafer
-av exekveringsvägar i programmet för användaren. Dessa vägar kan
-utforskas interaktivt för att identifiera potentiella säkerhetsbrister
-relaterade till minnesanvändning. AMBA är bättre än liknande
-existerande verktyg i och med att analysen visualiseras i realtid,
-vilket öppnar upp möjligheter för användaren att prioritera tillstånd
-och hantera självmodifierande kod. AMBA kan i framtiden utvecklas med
-tillståndssammanslagning för att möjliggöra analys av större program
-med många möjliga vägar, och att övervaka systemanrop exekverade av
-programmet och även lägga till utmatning av betydelseful information
-som kommer från den symboliska fuzzingen. AMBA evalueras genom en
-teoretisk jämförelse med existerande verktyg med slutsatsen att AMBA
-ger en användbar grund för binäranalys och har potentialen att bli mer
-användbar om de föreslagna vidareutvecklingarna implementeras.  Tack
-vare implemenationens som ett plugin till den symboliska
-exekveringsmotorn \stoe{} är AMBA lättillgängligt till utvecklare och
-säkerhetsforskare som granskar beteendet av maskinkod.
+Det här kandidatarbetet introducerar AMBA, ett interaktivt system för att visualisera symbolisk exekvering av exekverbara binärfiler i kombination med symbolisk fuzzing.
+AMBAs grafiska användargränssnitt visar de olika exekveringsvägarna för exekverbara binärfiler i realtid.
+Användaren kan sedan baserat på visualiseringarna interaktivt prioritera olika exekveringsvägar för analys.
+Information om de olika exekveringsvägarna genereras med hjälp av symbolisk fuzzing, vilket möjliggörs av \stoe{}-motorn.
+\stoe{} stödjer fullsystemsemulering, vilket gör att AMBA skiljer sig från befintliga verktyg.
+AMBA utvärderas genom jämförelse med ett urval befintliga verktyg för att analysera program på maskinkodsnivå.
