@@ -1,14 +1,14 @@
-Fuzzing är ett användbart automatiskt verktyg för att testa program i syfte att finna
-svårupptäckta problem såsom minnesbuggar, krascher, etc.\ tack vare dess enkelhet i
-att konfigurera verktyget mot godtyckliga program.
+Fuzzing är en användbar automatiskt metod för att testa program i syfte att finna
+svårupptäckta problem såsom minnesbuggar, krascher, etc.\ eftersom det kräver lite
+manuellt arbete.
 
 Grundprincipen i fuzzing är att undersöka programmets beteende på mer varierad
 indata genom att generera oväntad, godtycklig eller felaktig data. Denna typ av
 genererad indata resulterar ofta i syntaktiskt eller semantiskt felaktig indata
-som inte kan hanteras av målprogrammet. Således finns det anledning för
-utvecklingspotential, något som lett till bland annat mutationsbaserad fuzzing
-(jfr.\ eng.\ mutation-based fuzzing) och genereringsbaserad fuzzing (jfr.\ eng.
-generation-based fuzzing). Mutationsbaserad fuzzing muterar känd giltig indata,
+som inte kan hanteras av målprogrammet. Det är däremot inte trivialt att generera
+indata som täcker ett programs möjliga beteenden vilket har lett till bland annat
+mutationsbaserad fuzzing (jfr.\ eng.\ mutation-based fuzzing) och genereringsbaserad
+fuzzing (jfr.\ eng. generation-based fuzzing). Mutationsbaserad fuzzing muterar känd giltig indata,
 t.ex.\ om strängen `fuzz' är giltig indata kan detta muteras till `fuzzZZZZZ'. Om
 en användare exempelvis vill utföra fuzzing på bildhanteringsbiblioteket libjpeg skulle
 detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
@@ -23,11 +23,10 @@ som nyttjar symbolisk exekvering för att maximera code coverage --- det vill s�
 förmåga att traversera över samtliga kanter och noder i programmets kontrollflödesgraf.
 Skiljt från grey-box-fuzzers som AFL, möjliggör symbolisk exekvering att fuzzern alltid
 väljer en branch som inte tidigare tagits och således ökar code coverage~\cite{challenges_fuzzing}.
-Som beskrivet i avsnittet \nameref{sec:symbolic_execution} sker detta genom att
-emulera programmet med hjälp av en virtuell maskin och ersätta indata med symboliska representationer,
-som enklast beskrivs med en liknelse till matematiska formler i form av algebraiska uttryck.
-Dessa uttryck bildar sedan tillsammans ett path constraint som kan skickas till en SMT-lösare för
-att evaluera konkreta input som leder till en given gren.
+Som beskrivet i avsnittet \nameref{sec:symbolic_execution} sker detta genom att emulera programmet
+och ersätta indata med symboliska representationer, som enklast beskrivs med en liknelse till
+matematiska formler i form av algebraiska uttryck. Dessa uttryck bildar sedan tillsammans ett vägvillkor
+som kan skickas till en SMT-lösare för att evaluera konkreta input som leder till en given gren.
 
 \subsection{Problem med fuzzing} Ett problem är insikt om den underliggande
 kodstrukturen. En viktig egenskap som fuzzing har och som används för att beskriva dess
