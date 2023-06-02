@@ -3,17 +3,28 @@ det möjligt att utforska alla möjliga exekveringsvägar i programmet, även de
 med konkreta inputs. Både \stoe{} och SymQEMU är kraftfulla verktyg för att analysera binära program
 med symbolisk exekvering.
 
-SymQEMU är byggt som en förlängning av QEMU, och använder en kombination av dynamisk binär
-översättning och symbolisk exekvering för att analysera binära program som körs inuti emulatorn.
-SymQEMU utför kompileringsbaserad symbolisk exekvering, där den mellanliggande representationen först blir modifierad
-innan den översätts till värdarkitekturen, och är därför arkitekturoberoende utan att påverka prestandan~\cite{symqemu}.
+SymQEMU är byggt som en förlängning av QEMU, och använder en kombination av
+dynamisk binäröversättning och symbolisk exekvering för att analysera binära
+program som körs inuti emulatorn. SymQEMU utför kompileringsbaserad symbolisk
+exekvering, där den mellanliggande representationen först blir modifierad innan
+den översätts till värdarkitekturen, och är därför arkitekturoberoende utan att
+påverka prestandan~\cite{symqemu}. Dessutom använder SymQEMU Linux user-mode
+emulering, vilket innebär att endast användarutrymmet (jfr. eng. user space)
+emuleras. Användarutrymmet innefattar alla program som inte körs av
+operativsystemets kärna, och genom emulering nås högre prestanda i kontrast med
+emulering av hela system~\cite{symqemu}.
 
 \stoe{} är ett modulärt bibliotek som ger virtuella maskiner symbolisk exekvering. \stoe{} erbjuder
 redskap för att fokusera utforskningen på delkomponenter av systemet och gör det även
 möjligt för användare att sätta in kod i målsystemet vid specifika punkter under
 exekvering. Det gör att användare kan anpassa analysprocessen efter sina behov~\cite{s2e}.
 \stoe{} kan analysera kod för de flesta processorarkitekturer men betalar för det med ökad
-komplexitet och prestanda~\cite{symqemu}.
+komplexitet och prestanda~\cite{symqemu}. 
+
+I kontrast till SymQEMUs Linux user-mode emulering, emulerar \stoe{} hela
+målsystemet, vilket innebär att \stoe{} kan göra analys på ett större antal
+system. Inbyggda system är ett typexempel där det krävs helsystemsemulering då
+inbyggda system bladn annat ofta har modifierade operativsystem.
 
 Ett annat verktyg för att identifiera buggar och sårbarheter med hjälp av dynamisk symbolisk
 exekvering är SAGE (Scalable Automated Guided Execution).
@@ -42,5 +53,8 @@ med hjälp av komponenten \emph{angr.engines.unicorn}. Genom att använda
 komponenten kan man exekvera med konkreta input när det är möjligt och
 fördelaktigt men understött av symbolisk exekvering då flera exekveringsvägar
 behöver utforskas eller då programmets beteende inte är
-deterministiskt~\cite{angrUnicornEngine}.
+deterministiskt~\cite{angrUnicornEngine}. Angr låter det emulerade programmet
+manipulera filer och nätverksströmmar genom att representera dem som
+Python-objekt. Dessa objekt läses från och skrivs till när det emulerade
+programmet utför systemanrop.
 
