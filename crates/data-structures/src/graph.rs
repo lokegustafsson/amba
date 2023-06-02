@@ -124,8 +124,8 @@ impl Graph {
 	// Returns true if the given node has an edge to itself
 	pub fn is_loop(&mut self, node: u64) -> bool {
 		if let Some(node) = self.get(node) {
-			return node.to.contains(&node)
-				&& node.from.contains(&node)
+			return node.to.contains(&node.id)
+				&& node.from.contains(&node.id)
 				&& node.to.len() == 1
 				&& node.from.len() == 1;
 		} else {
