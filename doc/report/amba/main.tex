@@ -86,7 +86,7 @@ skadlig kod i dess nuvarande skick.
 Alla program kan inte hanteras av AMBA.\@ Programmen som AMBA kör måste vara
 byggda för Linux x86-64 och kunna köras på Ubuntu-22.04-x86\_64. Detta kan göras
 genom att bygga direkt för Ubuntu eller med full statisk länkning mot t.ex.\
-libc-implementationen musl.
+libc-implementationen musl istället för dynamisk länkning mot glibc.
 
 Den symboliska indatan är också begränsad till att komma ifrån stdin samt filer
 på disk. Symbolisk input till AMBA i dess nuvarande kan inte skickas som
