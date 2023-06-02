@@ -8,8 +8,8 @@ dynamisk binäröversättning och symbolisk exekvering för att analysera binär
 program som körs inuti emulatorn. SymQEMU utför kompileringsbaserad symbolisk
 exekvering, där den mellanliggande representationen först blir modifierad innan
 den översätts till värdarkitekturen, och är därför arkitekturoberoende utan att
-påverka prestandan~\cite{symqemu}. Dessutom använder SymQEMU Linux user-mode
-emulering, vilket innebär att endast användarutrymmet (jfr. eng. user space)
+påverka prestandan~\cite{symqemu}. Dessutom använder SymQEMU Linux \emph{user-mode}
+emulering, vilket innebär att endast användarutrymmet (jfr.\ eng.\ \emph{user space})
 emuleras. Användarutrymmet innefattar alla program som inte körs av
 operativsystemets kärna, och genom emulering nås högre prestanda i kontrast med
 emulering av hela system~\cite{symqemu}.
@@ -28,9 +28,9 @@ system. Inbyggda system är ett typexempel där det krävs helsystemsemulering d
 bland annat inbyggda system ofta har modifierade operativsystem.
 
 Ett annat verktyg för att identifiera buggar och sårbarheter med hjälp av dynamisk symbolisk
-exekvering är SAGE (Scalable Automated Guided Execution).
+exekvering är SAGE (\emph{Scalable Automated Guided Execution}).
 SAGE var det första verktyget som utförde dynamisk symbolisk exekvering på x86-binärnivå och använder flera
-avgörande optimeringar för att hantera stora exekveringsspår (jfr.\ eng. execution traces).
+avgörande optimeringar för att hantera stora exekveringsspår (jfr.\ eng.\ \emph{execution traces}).
 För att skala upp till stora exekveringsspår använder SAGE flera tekniker för att förbättra hastigheten och
 minnesanvändningen för villkorsgenerering, exempelvis så kartläggs ekvivalenta symboliska uttryck till samma
 objekt och villkor som redan är tillagda hoppas över~\cite{sage}.
