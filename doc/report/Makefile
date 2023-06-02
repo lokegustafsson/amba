@@ -10,6 +10,11 @@ check:
 group_64_project_report.pdf: \
   amba/main.tex \
   amba/varfor_s2e.tex \
+  befintliga_verktyg/dynamiska_binaranalysramverk.tex \
+  befintliga_verktyg/main.tex \
+  befintliga_verktyg/statisk_disassemblering.tex \
+  befintliga_verktyg/automatiska_fuzzers.tex \
+  befintliga_verktyg/visualiserad.tex \
   begreppslista.tex \
   cover.tex \
   abstract.tex \
@@ -19,11 +24,6 @@ group_64_project_report.pdf: \
   evaluering/amba-vs-symnav.tex \
   evaluering/arbetsprocess.tex \
   evaluering/vidareutveckling.tex \
-  existerande_verktyg/dynamiska_binaranalysramverk.tex \
-  existerande_verktyg/main.tex \
-  existerande_verktyg/statisk_disassemblering.tex \
-  existerande_verktyg/automatiska_fuzzers.tex \
-  existerande_verktyg/visualiserad.tex \
   implementation/main.tex \
   inledning/main.tex \
   main.tex \
