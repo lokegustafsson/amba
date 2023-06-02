@@ -225,27 +225,25 @@
 \pagenumbering{roman} % turn on roman page numbers
 \setcounter{page}{3}
 
-\phantomsection
-\addcontentsline{toc}{chapter}{Abstract}
 \chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
 \input{abstract.tex}
 
-\phantomsection
-\addcontentsline{toc}{chapter}{Sammandrag}
 \chapter*{Sammandrag}
+\addcontentsline{toc}{chapter}{Sammandrag}
 \input{abstract_svenska.tex}
-\cleardoublepage
-
-\phantomsection
-\addcontentsline{toc}{chapter}{Figurer}
-\listoffigures
 \cleardoublepage
 
 \tableofcontents
 
+\renewcommand{\listfigurename}{Figurförteckning}
 \phantomsection
-\addcontentsline{toc}{chapter}{Begreppslista}
+\listoffigures
+\addcontentsline{toc}{chapter}{Figurförteckning}
+\cleardoublepage
+
 \chapter*{Begreppslista}
+\addcontentsline{toc}{chapter}{Begreppslista}
 \input{begreppslista.tex}
 
 \pagenumbering{arabic} % turn on arabic page numbers
@@ -309,6 +307,9 @@
 \input{slutsats/main.tex}
 
 \cleardoublepage
+\renewcommand*{\bibfont}{\footnotesize}
+\phantomsection
 \printbibliography[title=Referenser]
+\addcontentsline{toc}{chapter}{Referenser}
 
 \end{document}

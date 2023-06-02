@@ -1,10 +1,13 @@
-Detta arbete presenterar AMBA, ett verktyg för att visualisera och styra
-symbolisk exekvering som är byggt ovanpå \stoe{}. AMBA kör program med symbolisk
-indata och visar ett antal grafer över exekveringen. Dessa grafer visar inte
-hela programmet från början, utan uppdateras kontinuerligt under programmets
-exekvering. Graferna är består av ett antal noder med metadata sammankopplade
-med riktade kanter utan metadata. Nodernas metadata visas vid inzoomning samt i
-en separat panel för noden som användaren senast klickade på.
+Detta arbete presenterar AMBA (\emph{Automatic manual binary analysis}), ett
+binäranalysverktyg för att visualisera och styra symbolisk fuzzing interaktivt.
+I detta avsnitt kommer vi att beskriva funktionalitet i AMBA, AMBAs
+begräsningar samt hur man kan köra och använda AMBA.
+
+AMBA exekverar program med symbolisk indata och visar ett antal grafer
+över exekveringen. Dessa grafer uppdateras kontinuerligt under programmets
+exekvering. Graferna består av ett antal noder med metadata sammankopplade
+med riktade kanter. När en användare klickar på en nod visas den nodens metadata
+i en separat panel. Metadatan visas även om man zoomar in på en nod.
 
 \begin{figure}
     \centering
@@ -59,8 +62,10 @@ använder \stoe{} grennummer för att hänvisa till nu körande tillstånd.
 Utöver att visa dessa grafer går det också att välja noder i den symboliska
 tillståndsgrafen för att prioritera deras fortsatta evaulering. Detta gör det
 möjligt att undersöka intressanta subträd i grafer som är större än vad AMBA
-realistiskt sett kan besöka och visa. Enorma grafer kan till exempel skapas av
-program som inte terminerar eller vid stigexplosion.
+realistiskt sett kan besöka och visa. Detta kan användas för att undvika enorma
+grafer som kan exempelvis skapas av program som inte terminerar eller vid
+vägexplosionsproblemet. En nod i tillståndsgrafen kan prioriteras genom dubbelklick på
+motsvarande nod.
 
 Grafnodernas placering i 2D hittas genom iterativ lösning för lägst energi i ett
 system av attraktion, repulsion och externa krafter. Utplaceringsalgoritmens
@@ -95,9 +100,8 @@ allmänhet är hanterandet av program med väldigt många symboliska tillstånd.
 Detta problem kallas stigexplosionsproblemet och beskrivs i inledningen,
 Sektion~\ref{chap:inledning}. AMBAs enda funktionalitet för att hantera detta är
 prioritering av exekveringstillstånd, vilket är ett trubbigt verktyg. Detta är
-till stor del en fundamental begränsning i symbolisk fuzzing i helhet men kan
-delvis angripas genom \textit{state merging}, se diskussion om
-utvecklingsmöjligheter i avsnittet \nameref{sec:futurework}.
+till stor del en fundamental begränsning i symbolisk fuzzing och
+kräver andra metoder för att angripa problemet på ett bättre sätt.
 
 \section{Hur du kör AMBA}\label{sec:run-amba}
 
