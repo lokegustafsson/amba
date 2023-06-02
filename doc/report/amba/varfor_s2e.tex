@@ -1,11 +1,23 @@
-Motivera varför vi valde S2E utifrån problemen listade i 2.5.
+AMBA använder och är byggt ovanpå exekveringsmotorn \stoe{}. Två andra
+exekveringsmotorer som skulle kunna ha används i detta arbete är SymQEMU och
+angr. Alla dessa verktyg har beskrivits översiktligt i
+avsnitt~\ref{sec:existerande-ramverk}.
 
-Minne:
+AMBA bygger inte på SymQEMU av tre anledningar. För det första har \stoe{} mer
+publikt tillgänglig dokumentation än SymQEMU, vilket bedömdes underlätta
+utvecklingsarbetet. För det andra genomför \stoe{}s utvecklare ett mer aktivt
+underhållsarbete jämfört med SymQEMU, vilket bedömdes underlätta byggprocessen
+och minska sannolikheten att stöta på problemen i den första delen av projektet.
+Slutligen kan SymQEMU endast emulera enskilda program och genomför alltså inte
+fullsystemsemulation. Trots att AMBA endast analyserar enskilda program ansågs
+denna begränsning gynna \stoe{} genom att möjliggöra vidareutveckling till mer
+generell analys. SymQEMUs stora fördel relativt \stoe{} är dess bättre
+prestanda~\cite{systematic_comparison_symbex}.  Detta bedömdes inte väga upp för
+dess nackdelar relativt \stoe{}.
 
-Miljö: S2E > angr
-
-Stigexplosion:
-
-Vilkorslösning: equiv m.
-
-Vi valde inte SymQEMU p.g.a. dålig publik dokumentation.
+AMBA bygger inte på angr av tre anledningar. För det första har \stoe{} bättre
+prestanda än angr~\cite{systematic_comparison_symbex}. För det andra stödjer
+inte heller angr fullsystemsemulation. För det tredje finns redan interaktiv
+visualiserad symbolisk fuzzing byggd ovanpå angr i form av SymNav, vilket
+innebär att AMBA genom att bygga på \stoe{} kan särskilja sig mer från
+existerande verktyg.
