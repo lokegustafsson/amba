@@ -35,17 +35,17 @@ För att skala upp till stora exekveringsspår använder SAGE flera tekniker fö
 minnesanvändningen för constraint generering, exempelvis så kartläggs ekvivalenta symboliska uttryck till samma
 objekt och constraints som redan är tillagda hoppas över~\cite{sage}.
 
-Binäranalysverktyget angr stödjer både statiska och dynamiska analyser med hjälp
-av symbolisk exekvering. angr är ett ramverk för binäranalys och har stöd för
-disassemblering till pseudo-C-kod och implementerar många analyser användaren
-kan utföra. angr bygger på en symbolisk emulator skriven i Python och analyser
-utförs genom Python-skript som interagerar med angrs API.\@ angr har använts för
-att framställa skript som kan utföra \emph{reverse engineering},
-sårbarhetssökning och fungera som exploateringsverktyg~\cite{angr_docs}.
-Tävlingen Cyber Grand Challenge organiserades 2016 av DARPA. I tävlingen skulle
-lag skriva helautomatiska system som hittar, korrigerar och angriper sårbarheter
-i CTF-liknande uppgifter. Det vinnande systemet, Mayhem, använde angr som
-symbolisk exekveringsmotor.
+Binäranalysverktyget angr (alltid skrivet med små bokstäver) stödjer både
+statiska och dynamiska analyser med hjälp av symbolisk exekvering.\@ angr är ett
+ramverk för binäranalys och har stöd för disassemblering till pseudo-C-kod och
+implementerar många analyser användaren kan utföra. angr bygger på en symbolisk
+emulator skriven i Python och analyser utförs genom Python-skript som
+interagerar med angrs API.\@ angr har använts för att framställa skript som kan
+utföra \emph{reverse engineering}, sårbarhetssökning och fungera som
+exploateringsverktyg~\cite{angr_docs}.  Tävlingen Cyber Grand Challenge
+organiserades 2016 av DARPA.\@ I tävlingen skulle lag skriva helautomatiska system
+som hittar, korrigerar och angriper sårbarheter i CTF-liknande uppgifter. Det
+vinnande systemet, Mayhem, använde angr som symbolisk exekveringsmotor.
 
 För att accelerera den symboliska exekveringen kan angr användas i kombination
 med Unicorn CPU-emulatorn, ett lättviktigt ramverk för emulering som stödjer
@@ -58,4 +58,3 @@ deterministiskt~\cite{angrUnicornEngine}. Angr låter det emulerade programmet
 manipulera filer och nätverksströmmar genom att representera dem som
 Python-objekt. Dessa objekt läses från och skrivs till när det emulerade
 programmet utför systemanrop (jfr.\ eng.\ \emph{syscalls}).
-
