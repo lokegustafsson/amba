@@ -62,10 +62,10 @@ använder \stoe{} grennummer för att hänvisa till nu körande tillstånd.
 Utöver att visa dessa grafer går det också att välja noder i den symboliska
 tillståndsgrafen för att prioritera deras fortsatta evaulering. Detta gör det
 möjligt att undersöka intressanta subträd i grafer som är större än vad AMBA
-realistiskt sett kan besöka och visa. Detta kan användas för att undvika enorma
-grafer som kan exempelvis skapas av program som inte terminerar eller vid
-vägexplosionsproblemet. En nod i tillståndsgrafen kan prioriteras genom dubbelklick på
-motsvarande nod.
+realistiskt sett kan besöka och visa. Detta kan användas för att kringgå
+vägexplosionsproblemet och undvika att enorma grafer skapas av program som inte
+terminerar. Genom att dubbelklicka på en nod i tillståndsgrafen kommer
+exekveringen fortsätta från motsvarande tillstånd.
 
 Grafnodernas placering i 2D hittas genom iterativ lösning för lägst energi i ett
 system av attraktion, repulsion och externa krafter. Utplaceringsalgoritmens
@@ -93,15 +93,15 @@ på disk. Symbolisk input till AMBA i dess nuvarande kan inte skickas som
 programargument (\verb|argc|, \verb|argv|), miljövariabler (\verb|envp|) eller i
 form av symbolisk hårdvara (t.ex.\ registret TSC/Time Stamp Counter). Detta är
 inte en fundamental begränsning utan endast oimplementerad funktionalitet som
-lämnas som utvecklingsmöjlighet, se avsnittet \nameref{sec:vidareutveckling}.
+lämnas som utvecklingsmöjlighet.
 
 En stor begränsning vid användandet av AMBA och mycket symbolisk fuzzing i
 allmänhet är hanterandet av program med väldigt många symboliska tillstånd.
 Detta problem kallas stigexplosionsproblemet och beskrivs i inledningen,
 Sektion~\ref{chap:inledning}. AMBAs enda funktionalitet för att hantera detta är
 prioritering av exekveringstillstånd, vilket är ett trubbigt verktyg. Detta är
-till stor del en fundamental begränsning i symbolisk fuzzing och
-kräver andra metoder för att angripa problemet på ett bättre sätt.
+till stor del en fundamental begränsning i symbolisk fuzzing och kräver
+yttligare metoder för att försöka angripa problemet.
 
 \section{Hur du kör AMBA}\label{sec:run-amba}
 
