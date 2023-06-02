@@ -442,7 +442,7 @@ impl Graph {
 		//  a visited collection for no benefit.
 		// We have to traverse the graph twice anyway because
 		//  of the borrow checker.
-		// Tthe merged node will take the id of the smallest of
+		// The merged node will take the id of the smallest of
 		//  the parents.
 
 		/*
