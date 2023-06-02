@@ -101,8 +101,8 @@ Den här panelen låter även användaren välja vilken graf de vill visa.
 
 Genom \stoe{} kör AMBA det analyserade programmet virtualiserat med KVM i
 QEMU.\@ Detta innebär att den analyserade binärens beteende i hög grad inte
-påverkas av miljön på datorn som kör AMBA, vilket gör analysern mer
-reproducibel. Det innebär också att skadlig kod borde kunna analyseras dynamisk
+påverkas av miljön på datorn som kör AMBA, vilket gör analysen mer
+reproducibel. Det innebär också att skadlig kod borde kunna analyseras dynamiskt
 i AMBA med låg risk för skadlig påverkan på användarens dator. Dock är AMBA
 omogen programvara som ej granskats för felkonfiguration eller liknande kopplat
 till QEMU eller \stoe{}, så vi rekommenderar inte att använda AMBA för analys av
@@ -116,15 +116,15 @@ genom att bygga direkt för Ubuntu eller med full statisk länkning mot t.ex.\
 libc-implementationen musl istället för dynamisk länkning mot glibc.
 
 Den symboliska indatan är också begränsad till att komma ifrån stdin samt filer
-på disk. Symbolisk input till AMBA i dess nuvarande kan inte skickas som
+på disk. Symbolisk input till AMBA i dess nuvarande skick kan inte skickas som
 programargument (\verb|argc|, \verb|argv|), miljövariabler (\verb|envp|) eller i
 form av symbolisk hårdvara (t.ex.\ registret TSC/Time Stamp Counter). Detta är
 inte en fundamental begränsning utan endast oimplementerad funktionalitet som
 lämnas som utvecklingsmöjlighet.
 
-En stor begränsning vid användandet av AMBA och mycket symbolisk fuzzing i
+En stor begränsning vid användandet av AMBA och symbolisk fuzzing i
 allmänhet är hanterandet av program med väldigt många symboliska tillstånd.
-Detta problem kallas stigexplosionsproblemet och beskrivs i inledningen,
+Detta problem kallas vägexplosionsproblemet och beskrivs i inledningen,
 Sektion~\ref{chap:inledning}. AMBAs enda funktionalitet för att hantera detta är
 prioritering av exekveringstillstånd, vilket är ett trubbigt verktyg. Detta är
 till stor del en fundamental begränsning i symbolisk fuzzing och kräver
@@ -140,11 +140,11 @@ AMBA kan köras i alla Linux-x86-64-miljöer med stöd för KVM med tillräcklig
 mycket diskutrymme (ca $\SI{20}{\giga\byte}$) och RAM-minne
 ($\SI{16}{\giga\byte}$ för att bygga AMBA, ej nödvändigt vid nedladdning av
 cachad binär). De tre installationsstegen består av att först installera
-pakethanteraren Nix, följt utav av köra kommandot \lstinline{nix build}.  När
+pakethanteraren Nix, följt utav av att köra kommandot \lstinline{nix build}.  När
 detta kommandot körs byggs alla programvarukomponenter från LLVM och Linux till
 \stoe{} och AMBA självt. Detta bygget är deterministiskt reproducibelt från
 källkod och Nix möjliggör även korrekt cachelagring och servering över nätverk
-vilket vi använd för att minimiera ombyggnation under AMBAs utvecklingsprocess.
+vilket vi använt för att minimiera ombyggnation under AMBAs utvecklingsprocess.
 Det sista installationssteget är att köra kommandot
 \lstinline{nix run . -- init --download}
 som laddar ned en Ubuntu-22.04-x86\_64-diskavbild byggd av \stoe{}-projektet
@@ -197,7 +197,7 @@ Filerna specifieras med deras relativa sökväg i gästen, med konkreta filer
 angivna relativt \verb|~/| och symboliska filer angivna relativt \verb|/tmp/|.
 Filers innehåll kan specifieras som en sökväg relativt mappen receptfilen ligger
 i, vilket kopierar in en konkret fil. Filers innehåll kan också specifieras som
-symboliskt genom att ange en lista av byteadresser (t.ex.\ \verb|0|) samt
+symboliska genom att ange en lista av byteadresser (t.ex.\ \verb|0|) samt
 byteadressintervall (t.ex.\ \verb|[42, 57]|) mellan vilka filen ska innehålla
 symboliska bytes. Symboliska filer behöver också konkreta värden som får förtur
 i tillståndsutforskningen. Dessa kan anges med antingen
