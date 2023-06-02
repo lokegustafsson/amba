@@ -1,9 +1,9 @@
-Detta arbete presenterar AMBA (\emph{Automatic manual binary analysis}), ett
+Detta arbete presenterar Amba (\emph{Automatic manual binary analysis}), ett
 binäranalysverktyg för att visualisera och styra symbolisk fuzzing interaktivt.
-I detta avsnitt kommer vi att beskriva funktionalitet i AMBA, AMBAs
-begräsningar samt hur man kan köra och använda AMBA.
+I detta avsnitt kommer vi att beskriva funktionalitet i Amba, Ambas
+begräsningar samt hur man kan köra och använda Amba.
 
-AMBA exekverar program med symbolisk indata och visar ett antal grafer
+Amba exekverar program med symbolisk indata och visar ett antal grafer
 över exekveringen. Dessa grafer uppdateras kontinuerligt under programmets
 exekvering. Graferna består av ett antal noder med metadata sammankopplade
 med riktade kanter. När en användare klickar på en nod visas den nodens metadata
@@ -13,7 +13,7 @@ i en separat panel. Metadatan visas även om man zoomar in på en nod.
     \centering
     \includegraphics[width=0.7\textwidth]{figures/graph_basic_block.png}
     \caption{
-        AMBAs basic-block-graf för testprogrammet control-flow
+        Ambas basic-block-graf för testprogrammet control-flow
     }\label{fig:graf-basic}
 \end{figure}
 
@@ -32,7 +32,7 @@ implementera den TODO
     \centering
     \includegraphics[width=0.7\textwidth]{figures/graph_block_compressed.png}
     \caption{
-        AMBAs komprimerade basic-block-graf för testprogrammet control-flow
+        Ambas komprimerade basic-block-graf för testprogrammet control-flow
     }\label{fig:graf-compressed}
 \end{figure}
 
@@ -48,7 +48,7 @@ sammanslagna noder.
     \centering
     \includegraphics[width=0.7\textwidth]{figures/graph_symbolic.png}
     \caption{
-        AMBAs graf över symboliska tillstånd för testprogrammet control-flow
+        Ambas graf över symboliska tillstånd för testprogrammet control-flow
     }\label{fig:graf-symbolic}
 \end{figure}
 
@@ -61,7 +61,7 @@ använder \stoe{} grennummer för att hänvisa till nu körande tillstånd.
 
 Utöver att visa dessa grafer går det också att välja noder i den symboliska
 tillståndsgrafen för att prioritera deras fortsatta evaulering. Detta gör det
-möjligt att undersöka intressanta subträd i grafer som är större än vad AMBA
+möjligt att undersöka intressanta subträd i grafer som är större än vad Amba
 realistiskt sett kan besöka och visa. Detta kan användas för att kringgå
 vägexplosionsproblemet och undvika att enorma grafer skapas av program som inte
 terminerar. Genom att dubbelklicka på en nod i tillståndsgrafen kommer
@@ -72,59 +72,59 @@ system av attraktion, repulsion och externa krafter. Utplaceringsalgoritmens
 parametrar kan konfigureras i realtid vid körning av användaren i toppanelen.
 Den här panelen låter även användaren välja vilken graf de vill visa.
 
-Genom \stoe{} kör AMBA det analyserade programmet virtualiserat med KVM i
+Genom \stoe{} kör Amba det analyserade programmet virtualiserat med KVM i
 QEMU.\@ Detta innebär att den analyserade binärens beteende i hög grad inte
-påverkas av miljön på datorn som kör AMBA, vilket gör analysern mer
+påverkas av miljön på datorn som kör Amba, vilket gör analysern mer
 reproducibel. Det innebär också att skadlig kod borde kunna analyseras dynamisk
-i AMBA med låg risk för skadlig påverkan på användarens dator. Dock är AMBA
+i Amba med låg risk för skadlig påverkan på användarens dator. Dock är Amba
 omogen programvara som ej granskats för felkonfiguration eller liknande kopplat
-till QEMU eller \stoe{}, så vi rekommenderar inte att använda AMBA för analys av
+till QEMU eller \stoe{}, så vi rekommenderar inte att använda Amba för analys av
 skadlig kod i dess nuvarande skick.
 
 \section{Begränsningar}
 
-Alla program kan inte hanteras av AMBA.\@ Programmen som AMBA kör måste vara
+Alla program kan inte hanteras av Amba.\@ Programmen som Amba kör måste vara
 byggda för Linux x86-64 och kunna köras på Ubuntu-22.04-x86\_64. Detta kan göras
 genom att bygga direkt för Ubuntu eller med full statisk länkning mot t.ex.\
 musl.
 
 Den symboliska indatan är också begränsad till att komma ifrån stdin samt filer
-på disk. Symbolisk input till AMBA i dess nuvarande kan inte skickas som
+på disk. Symbolisk input till Amba i dess nuvarande kan inte skickas som
 programargument (\verb|argc|, \verb|argv|), miljövariabler (\verb|envp|) eller i
 form av symbolisk hårdvara (t.ex.\ registret TSC/Time Stamp Counter). Detta är
 inte en fundamental begränsning utan endast oimplementerad funktionalitet som
 lämnas som utvecklingsmöjlighet.
 
-En stor begränsning vid användandet av AMBA och mycket symbolisk fuzzing i
+En stor begränsning vid användandet av Amba och mycket symbolisk fuzzing i
 allmänhet är hanterandet av program med väldigt många symboliska tillstånd.
 Detta problem kallas stigexplosionsproblemet och beskrivs i inledningen,
-Sektion~\ref{chap:inledning}. AMBAs enda funktionalitet för att hantera detta är
+Sektion~\ref{chap:inledning}. Ambas enda funktionalitet för att hantera detta är
 prioritering av exekveringstillstånd, vilket är ett trubbigt verktyg. Detta är
 till stor del en fundamental begränsning i symbolisk fuzzing och kräver
 yttligare metoder för att försöka angripa problemet.
 
-\section{Hur du kör AMBA}\label{sec:run-amba}
+\section{Hur du kör Amba}\label{sec:run-amba}
 
-AMBA utvecklades i GitHub-repot
+Amba utvecklades i GitHub-repot
 \url{https://github.com/lokegustafsson/amba-bsc-thesis}. Dokumentationen i repot
 innehåller mer detaljerade installationsinstruktioner och allmän dokumentation.
 
-AMBA kan köras i alla Linux-x86-64-miljöer med stöd för KVM med tillräckligt
+Amba kan köras i alla Linux-x86-64-miljöer med stöd för KVM med tillräckligt
 mycket diskutrymme (ca $\SI{20}{\giga\byte}$) och RAM-minne
-($\SI{16}{\giga\byte}$ för att bygga AMBA, ej nödvändigt vid nedladdning av
+($\SI{16}{\giga\byte}$ för att bygga Amba, ej nödvändigt vid nedladdning av
 cachad binär). De tre installationsstegen består av att först installera
 pakethanteraren Nix, följt utav av köra kommandot \lstinline{nix build}.  När
 detta kommandot körs byggs alla programvarukomponenter från LLVM och Linux till
-\stoe{} och AMBA självt. Detta bygget är deterministiskt reproducibelt från
+\stoe{} och Amba självt. Detta bygget är deterministiskt reproducibelt från
 källkod och Nix möjliggör även korrekt cachelagring och servering över nätverk
-vilket vi använd för att minimiera ombyggnation under AMBAs utvecklingsprocess.
+vilket vi använd för att minimiera ombyggnation under Ambas utvecklingsprocess.
 Det sista installationssteget är att köra kommandot
 \lstinline{nix run . -- init --download}
 som laddar ned en Ubuntu-22.04-x86\_64-diskavbild byggd av \stoe{}-projektet
 . Bygget av diskavbilder för \stoe{} är inte bit-för-bit reproducibelt
 och därför är detta bygget inte packeterat i Nix.
 
-AMBA körs med kommandot
+Amba körs med kommandot
 \begin{verbatim}
 ./result/bin/amba-wrapped run path/to/a/recipe.json"
 \end{verbatim}
@@ -132,7 +132,7 @@ efter \lstinline{nix build} eller ekvivalent
 \begin{verbatim}
 nix run . -- run path/to/a/recipe.json"
 \end{verbatim}
-alltså genom att peka AMBA på en receptfil. En giltig receptfil följer ett
+alltså genom att peka Amba på en receptfil. En giltig receptfil följer ett
 schema varav en delmängd av fälten har implementerad funktionalitet.
 Figur~\ref{fig:recipe} visar en receptfil för vilken alla fält är
 implementerade.
@@ -177,7 +177,7 @@ i tillståndsutforskningen. Dessa kan anges med antingen
 \verb|"seed": "<förtursvärden>"| eller
 \verb|"host_path": "<värddatorsökväg till förtursvärden>"|.
 
-När AMBA körs med \lstinline{nix run . -- run path/to/a/recipe.json} öppnas det
+När Amba körs med \lstinline{nix run . -- run path/to/a/recipe.json} öppnas det
 grafiska gränssnittet samtidigt som QEMU/\stoe{} startas i bakgrunden.
 Grafuppdateringar skickas regelbundet tillbaka tills alla tillstånd utforskats
 eller programmet stänger ned. Både före och efter alla tillstånd utforskats kan
