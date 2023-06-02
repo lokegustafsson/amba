@@ -1,14 +1,13 @@
-Eftersom AMBA använder \stoe{} som symbolisk exekveringsmotor har AMBA
-således en teoretisk fördel i prestanda, något som kan avläsas från figurerna
-i~\cite[Figur~1-5]{systematic_comparison_symbex}. Detta innebär att AMBA inte
-nödvändigtvis i nuläget har bättre prestanda mot applikationer utvecklade
-med Angr som \emph{backend}. Dock betyder det att AMBA har en teoretisk
-konkurrenskraftig prestanda.
+\stoe{} har bättre prestanda än angr, vilket kan avläsas från figurerna
+i~\cite[Figur~1-5]{systematic_comparison_symbex}. Eftersom AMBA använder \stoe{}
+som symbolisk exekveringsmotor har AMBA därmed en teoretisk fördel i prestanda
+gentemot motsvarande mjukvara byggd ovanpå angr. AMBA har i nuläget inte
+nödvändigtvis uppnåt denna bättre prestanda, men exekveringsmotorns
+prestandafördel innebär att AMBA teoretiskt borde kunna uppnå en högre prestanda
+efter medveten optimering.
 
-Angr är dock ett mer flexibelt verktyg som har den funktionalitet som \stoe{}
-tillhandahåller, och är dessutom i allmänhet enklare att påbörja utveckling med
-och onekligen eklare att bygga. Dessutom är Angr i synnerhet ett eftertraktat
-verktyg att använda som symbolisk exekveringsmotor eftersom det bland annat
-tillhandahåller funktionalitet såsom \emph{Control-Flow Graph Recovery} och
-disassemblering som möjliggör mycket av funktionalitet som annars behövs
-implementeras i AMBA.
+angr är mer väldokumenterat och populärt än \stoe{}. Dessutom är angr redan
+paketerad i Nix och hade varit enklare att påbörja utveckling ovanpå. Om AMBA
+byggdes ovanpå angr hade möjligvis mer funktionalitet kunnat implementeras under
+projektets gång, men då hade samtidigt inte fördelarna med \stoe{} kunnat
+utnyttjas.

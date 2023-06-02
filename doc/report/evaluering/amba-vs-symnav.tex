@@ -1,17 +1,17 @@
-SymNav tillhandahåller samma funktionalitet som AMBA gör bortsett från en
-detalj: användare kan genom SymNav ta bort tillstånd som inte är intressanta medan
-i AMBA kan användare prioritera tillstånd som ska analyseras. Dessutom presenteras
-funktionaliteten i SymNav på ett mer användarvänligt sätt: vyn splittar upp
-respektive funktionalitet i applikationen och presenterar detta i stil med
-designmönstret \emph{Grid of equals}.
+SymNav är ett mer moget verktyg än AMBA.\@ Den största skillnaden mellan verktygen
+är att SymNav presenterar informationen från den symboliska fuzzingen på ett mer
+användarvänligt vis och att SymNav låter användaren filtrera bort de
+exekveringsvägar användaren inte vill fokusera på.
 
-Utöver detta är den stora skillnaden vilken symbolisk exekveringsmotor som
-används. SymNav använder Angr, och AMBA använder, som tidigare nämnt, \stoe{}
-vilket innebär att SymNav får en enklare kodbas eftersom mycket av koden som
-interagerar med Angr är pythonskript likt API-anrop vilket kräver mindre total
-kod för att uppnå samma sak som med \stoe{} men är istället begränsad i
-skalbarhet. \stoe{} har inbyggda plugins som tillhandahåller mycket
-funktionalitet, till exempel \emph{ExecutionTracer} som övervakar och
-registrerar information längs med exekveringen för en given branch vilket
-tillåter en att undersöka vad som orsakar path explosion eller vilken branch som
-gör flest förgreningar.
+En stor skillnad mellan AMBA och SymNav är att medan AMBA uppdaterar det
+grafiska gränssnittet i realtid, eller mer precist en gång per sekund, fungerar
+SymNav så att användaren startar körningar som varar så länge som specifierat av
+användaren. I ett typiskt arbetsflöde i SymNav undersöker användaren programmet
+genom det grafiska gränssnittet, startar en körning på en minut och väntar tills
+den är klar och återgår först därefter till att undersöka programmet genom det
+nu uppdaterade grafiska gränssnittet.
+
+En annan stor skillnad är vilken symbolisk exekveringsmotor som används. SymNav
+använder angr och AMBA använder \stoe{}. Den största konsekvensen av denna
+skillnad är att AMBA har potentiellt bättre prestanda i den symboliska
+exekveringen, vilket diskuterades i det förra avsnittet.
