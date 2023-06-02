@@ -1,20 +1,23 @@
 I detta avsnitt förklaras bakgrund och problembeskrivning till projektet. Innan
 problemen kan beskrivas måste vi förstå några centrala idéer och teorier inom
-domänen. Först och främst beskrivs olika metoder inom binäranalys och bakgrund
-till symbolisk exekvering och vilka problem tekniken löser. Detta följs upp med
-en mer detaljerad beskrivning av symbolisk exekvering och fuzzing.
-Avslutningsvis, beskrivs problem som en symbolisk exekveringsmotor står inför
-och några möjliga lösningar till dessa problem.
+domänen. Först och främst beskrivs olika metoder inom binäranalys, sedan ges en bakgrund
+till symbolisk exekvering, den underliggande tekniken inom symbolisk fuzzing, och vilka
+problem tekniken löser. Detta följs upp med en mer detaljerad beskrivning av symbolisk
+exekvering och fuzzing. Avslutningsvis, beskrivs problem som en symbolisk exekveringsmotor
+står inför och några möjliga lösningar till dessa problem.
 % , samt motiveringar till detta
 % projekt.
 
 \section{Binäranalys}
 \label{sec:binar_analys}
-Som tidigare nämnt, är det ofta endast maskinkoden som är tillgänglig inom domänen
-för skadeprogramsanalys och \emph{reverse engeneering}. Binäranalys är dessutom
-viktigt för att upptäcka och undersöka minnessårbarheter. Det beror på det
-semantiska gapet mellan ett högnivå programspråk och maskinkod. Det är inte
-trivialt att argumentera för programmets beteende innan och efter kompilering
+Inom skadeprogramsanalys (jfr eng. malware analysis) och reverse engeneering
+är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast
+tillgänglig som maskinkod~/cite{andriesse2018}.
+
+Förutom då endast maskinkoden är tillgänglig så är binäranalys också användbart för att
+upptäcka och undersöka minnessårbarheter. Det beror på det semantiska gapet mellan ett
+högnivå programspråk och maskinkod. Det är inte trivialt att argumentera för programmets
+beteende innan och efter kompilering
 till maskinkod och hur väl dessa mostsvarar varandra. Genom att betrakta
 maskinkoden kan man ``undersöka vad programmet faktiskt gör istället för vad
 man tror att det gör''~\cite{andriesse2018}. Avslutningsvis, kan sårbarheter
@@ -162,20 +165,6 @@ avsnitt~\ref{sec:binar_analys}. I alla fall krävs någon typ av injektion av ko
 eller data i programmet i syfte att kunna extrahera viktig information under
 programmets exekvering~\cite{dynamic_bin_analysis}.
 
-\section{Motivering till symbolisk exekvering}
-Symbolisk exekvering motiverades av behovet för automatiska kontroller av olika
-programegenskaper. ``Aspekter av intresse kan vara så att ingen division med
-noll någonsin utförs, att ingen NULL-pekare någonsin avrefereras (jfr eng.
-\emph{dereferenced}), att det inte finns någon bakdörr som kan kringgå
-autentisering och så vidare''~\cite{survey_symb_exc}. För att kontrollera dessa
-egenskaper krävs kontroll av flertal olika exekveringsvägar vilket är svårt med
-vanlig exekvering (konkret exekvering) men enkelt genom symbolisk exekvering.
-Symbolisk exekvering tillåter dynamisk binäranalys och både manuella och
-automatiska sådana. Som tidigare nämnts, är metoder baserade på symbolisk
-exekvering även kända som konkolisk testning och symbolisk fuzzing.
-
-Låt oss betrakta några vanliga sårbarheter som har upptäckts med metoder
-baserade på symbolisk exekvering.
 
 \subsection{Minnessårbarheter}
 I praktiken uppgör minnessäkerhetsbrister ungefär 70 procent av alla
@@ -208,15 +197,13 @@ minnesregion. Angripare kan utnyttja detta för att korrumpera programmets
 normala beteende genom att skriva bortom gränserna. Formatsträngsbugg uppstår
 när någon typ av indata tolkas och används som input till vanliga
 textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
-konvertingsfunktioner för kovertering av olika data till text. Om inte en
+konvertingsfunktioner för konvertering av olika data till text. Om inte en
 noggrann och tillräcklig utvärdering av indatan görs innan den används i en
 funktion som kan tolka formatsträng, kan funktionen använda stacken och den
 data som råkar ligga där som argument för konverteringsfunktioner. Med noggrann
 utformning av indata kan en angripare utnyttja formatsträngsbugg för att
 exekvera godtyckliga kommandon~\cite{computer_security_cs161}.
 
-Metoder baserade på symbolisk exekvering har används för att upptäcka både
-buffertöverflöden~\cite{bofaeg} och formatsträngsbuggar~\cite{vakkaupad15}.
-Metoderna har olika begränsningar, såsom prestandabegränsningar och andra
-begränsnigar som symbolisk exekvering innehar, men dessa sårbarheter är också
-allmänt svåra att upptäcka automatiskt.
+
+
+

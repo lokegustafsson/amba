@@ -1,3 +1,29 @@
+%\section{Motivering till symbolisk exekvering}
+
+
+
+Symbolisk exekvering motiverades av behovet för automatiska kontroller av olika
+programegenskaper. ``Aspekter av intresse kan vara så att ingen division med
+noll någonsin utförs, att ingen NULL-pekare någonsin avrefereras (jfr eng.
+\emph{dereferenced}), att det inte finns någon bakdörr som kan kringgå
+autentisering och så vidare''~\cite{survey_symb_exc}. För att kontrollera dessa
+egenskaper krävs kontroll av flertal olika exekveringsvägar vilket är svårt med
+vanlig exekvering (konkret exekvering) men enkelt genom symbolisk exekvering.
+Symbolisk exekvering tillåter dynamisk binäranalys och både manuella och
+automatiska sådana. Som tidigare nämnts, är metoder baserade på symbolisk
+exekvering även kända som konkolisk testning och symbolisk fuzzing.
+
+Låt oss betrakta några vanliga sårbarheter som har upptäckts med metoder
+baserade på symbolisk exekvering.
+
+%tidigare under minnessårbarheter, men flyttat hit för att symbolisk exekvering inte beskrivs innan?
+Metoder baserade på symbolisk exekvering har används för att upptäcka både
+buffertöverflöden~\cite{bofaeg} och formatsträngsbuggar~\cite{vakkaupad15}.
+Metoderna har olika begränsningar, såsom prestandabegränsningar och andra
+begränsnigar som symbolisk exekvering innehar, men dessa sårbarheter är också
+allmänt svåra att upptäcka automatiskt.
+
+
 Att exekvera ett program symboliskt innebär att representera värden utefter
 programflödet som symboliska restriktioner (jfr eng. \emph{constraints}), vilka kan
 lösas av automatiserade teoremlösare (\emph{SMT solver}). En symbolisk körning
