@@ -1309,6 +1309,7 @@ in
       ipc = rustPackages."unknown".ipc."0.1.0" { inherit profileName; };
       itertools = rustPackages."registry+https://github.com/rust-lang/crates.io-index".itertools."0.10.5" { inherit profileName; };
       serde = rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.152" { inherit profileName; };
+      smallvec = rustPackages."registry+https://github.com/rust-lang/crates.io-index".smallvec."1.10.0" { inherit profileName; };
     };
     devDependencies = {
       proptest = rustPackages."registry+https://github.com/rust-lang/crates.io-index".proptest."1.1.0" { inherit profileName; };
