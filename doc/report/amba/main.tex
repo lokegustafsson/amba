@@ -35,9 +35,8 @@ källkodsrader som gett upphov till maskinkoden.
 
 Den andra grafen är en komprimerad basic-block-graf.
 Figur~\ref{fig:graf-compressed} visar ett exempel. Den visar samma graf som den
-första, men med linjesubgrafer sammanslagna till samma nod. Precist uttryckt har
-alla kanter anslutna till noder med ingrad och utgrad exakt ett
-kantkomprimerats. Sidopanelen visar samma information som för
+första, men med linjesubgrafer sammanslagna till samma nod. Precist uttryckt så kantkomprimeras
+alla kanter till noder som har ingrad och utgrad exakt ett. Sidopanelen visar samma information som för
 basic-block-grafen, alltså assemblerkod och debugdata, men för hela spannet av
 sammanslagna noder.
 
@@ -51,7 +50,7 @@ sammanslagna noder.
 
 Den tredje grafen visar symboliska tillstånd. Figur~\ref{fig:graf-symbolic}
 visar ett exempel. Ett tillstånd utgörs av exekveringsspannet uppdelat vid varje
-branch som görs baserat på ett symboliskt uttryck. Sidopanelen visar
+gren som görs baserat på ett symboliskt uttryck. Sidopanelen visar
 tillståndets namn samt det grennummer som identiferar det föränderliga
 tillståndet i \stoe{}. Då föräldrar inte kan samexistera i tid med sina barn
 använder \stoe{} grennummer för att hänvisa till nu körande tillstånd.
@@ -67,7 +66,7 @@ använder \stoe{} grennummer för att hänvisa till nu körande tillstånd.
 Den fjärde grafen är en sammanslagen basic-block-graf, som visar basic-block
 utan att delas vid tillståndsdelning. Precist uttryckt är det grafen som bildas
 från den första grafen, efter att varje par av noder vars metadata endast
-skiljer i det symboliska tillståndet ersatts med en nod kopplad till unionen av
+skiljer sig i det symboliska tillståndet har ersatts med en nod kopplad till unionen av
 de ursprungliga nodernas kanter. Figur~\ref{fig:graf-merged} visar ett exempel.
 
 \begin{figure}
@@ -80,7 +79,7 @@ de ursprungliga nodernas kanter. Figur~\ref{fig:graf-merged} visar ett exempel.
 
 Den femte och sista grafen är en komprimerad sammanslagen basic-block-graf,
 vilken konstrueras från den sammanslagna basic-block-grafen genom samma
-kompression som i komprimerade block-block-grafen.
+kompression som i den komprimerade block-block-grafen.
 Figur~\ref{fig:graf-merged-compressed} visar ett exempel.
 
 De två första graferna, alltså de komprimerade och okomprimerade
