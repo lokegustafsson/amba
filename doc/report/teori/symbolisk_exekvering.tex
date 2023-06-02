@@ -24,7 +24,7 @@ begränsnigar som symbolisk exekvering innehar, men dessa sårbarheter är ocks�
 allmänt svåra att upptäcka automatiskt.
 
 Att exekvera ett program symboliskt innebär att representera värden utefter
-programflödet som symboliska restriktioner (jfr eng. \emph{constraints}), vilka sedan
+programflödet som symboliska villkor (jfr eng. \emph{constraints}), vilka sedan
 lösas av en SMT-lösare (jfr.\ eng.\ \emph{Satisfiability Modulo Theories solver}). SMT-lösare är programvara för att
 lösa problem som rör satisfierbarheten hos formler, och använder matematiska teorier så
 som modulär aritmetik, talteori, m.fl~\cite{symqemu}. %En SMT-lösare kan användas för att hitta värden som uppfyller givna begränsningar.
@@ -33,7 +33,7 @@ används representerar grupper av konkreta värden vilka har gemensamt hur de
 påverkar programmets flöde~\cite{klee}.
 
 Vägar i programmets kontrollflöde utforskas med symboliska uttryck som kallas
-för vägvillkor (jfr. eng.\ path constraint) och uttrycker de begränsningar som finns på
+för vägvillkor (jfr. eng.\ \emph{path constraint}) och uttrycker de begränsningar som finns på
 programmets data --- vilka egenskaper datan måste uppfylla för att just denna väg
 ska kunna följas~\cite{klee}. Huruvida villkorsblock av program är nårbara kan
 evalueras eftersom de egenskaper som måste uppfyllas för att följa vägen dit dokumenteras
@@ -98,8 +98,7 @@ else:
         \label{fig:symbex_example_graph}
     \end{subfigure}
 
-    \caption{Exempel för att visa symbolisk exekvering: pseudokod (a) och path
-        constraint och symboliskt tillstånd för alla vägar i pseudokoden angett
+    \caption{Exempel för att visa symbolisk exekvering: pseudokod (a) och vägvillkor och symboliskt tillstånd för alla vägar i pseudokoden angett
         i (b). $  \mathcal{S} = \{\sigma := \{\phi_1 = \alpha_1, \phi_2 = \alpha_2, \phi_3 =
             2\phi_2\}, x \rightarrow \phi_1, y \rightarrow \phi_2, z \rightarrow
             \phi_3\}$}
