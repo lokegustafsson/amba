@@ -1,5 +1,5 @@
 
-Kärnan i ett korrekt dynamisk binäranalysverktyg är en \emph{exekveringsmotor},
+Kärnan i ett korrekt dynamisk binäranalysverktyg är en exekveringsmotor,
 en komponent som på ett korrekt vis kan exekvera programmet.
 Figur~\ref{schematic} visar förhållandet mellan användaren, analysverktyget och
 dess exekveringsmotor. Att köra ett program innebär att ladda binären och dess
@@ -50,7 +50,7 @@ exekvering~\cite{survey_symb_exc}.
 \paragraph{Miljö} Program i verkligheten kommunicerar på många sätt med sin
 omgivning. För program är detta en virtuell miljö bestående av filer,
 biblioteksanrop och IPC (\emph{inter process communication}). För att en
-\textit{exekveringsmotor} ska vara så brett tillämpbar som möjligt behöver den
+exekveringsmotor ska vara så brett tillämpbar som möjligt behöver den
 också stödja flera sorters omgivningskommunikation och representera omgivningen
 på ett så komplett sätt som möjligt~\cite{survey_symb_exc}.
 
@@ -58,7 +58,7 @@ på ett så komplett sätt som möjligt~\cite{survey_symb_exc}.
 undantag och kombinationer av dessa som kan orsaka ett exponentiellt ökande
 antal exekveringsvägar i programflödet. Det är alltså osannolikt att en motor
 kan uttömmande utforska alla möjliga exekveringsvägar inom rimlig tid.
-\emph{Tillståndssammanslagning} kan appliceras i vissa fall för att reducera antalet
+Tillståndssammanslagning kan appliceras i vissa fall för att reducera antalet
 exekveringsvägar.
 
 \paragraph{Villkorslösning} SMT-lösare kan skala till komplexa kombinationer av

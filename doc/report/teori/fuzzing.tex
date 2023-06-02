@@ -1,6 +1,5 @@
 Fuzzing är en användbar automatiskt metod för att testa program i syfte att finna
-svårupptäckta problem såsom minnesbuggar, krascher, etc.\ eftersom det kräver lite
-manuellt arbete.
+svårupptäckta problem såsom buggar och krascher.
 %Tydliggör varför det är enkelt: För att man ofta bara kan peka en fuzzer mot ett program och sedan låta det köra automatiskt. Man behöver inte göra särskilt mycket manuellt arbete anpassat till just den binären
 
 Grundprincipen i fuzzing är att undersöka programmets beteende på mer varierad
@@ -8,8 +7,8 @@ indata genom att generera oväntad, godtycklig eller felaktig data. Denna typ av
 genererad indata resulterar ofta i syntaktiskt eller semantiskt felaktig indata
 som inte kan hanteras av målprogrammet. Det är däremot inte trivialt att generera
 indata som täcker ett programs möjliga beteenden vilket har lett till bland annat
-mutationsbaserad fuzzing (jfr.\ eng.\ mutation-based fuzzing) och genereringsbaserad
-fuzzing (jfr.\ eng. generation-based fuzzing). Mutationsbaserad fuzzing muterar känd giltig indata,
+mutationsbaserad fuzzing (jfr.\ eng.\ \emph{mutation-based fuzzing}) och genereringsbaserad
+fuzzing (jfr.\ eng.\ \emph{generation-based fuzzing}). Mutationsbaserad fuzzing muterar känd giltig indata,
 t.ex.\ om strängen `fuzz' är giltig indata kan detta muteras till `fuzzZZZZZ'. Om
 en användare exempelvis vill utföra fuzzing på bildhanteringsbiblioteket libjpeg skulle
 detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
@@ -20,24 +19,24 @@ en fördel i jämförelse med mutationsbaserad fuzzing som kräver känd kvalita
 indata~\cite{fuzzing}.
 
 \subsection{Symbolisk fuzzing} Symbolisk fuzzing är en white-box fuzzingmetod
-som nyttjar symbolisk exekvering för att maximera code coverage, det vill säga fuzzerns
+som nyttjar symbolisk exekvering för att maximera kodtäckning (jfr.\ eng.\ \emph{code coverage}), det vill säga fuzzerns
 förmåga att traversera över samtliga kanter och noder i programmets kontrollflödesgraf.
 I motsats till grey-box-fuzzing så möjliggör symbolisk exekvering att en gren som inte tidigare tagits alltid väljs
-och ökar således code coverage~\cite{challenges_fuzzing}. Som beskrivet i avsnittet \nameref{sec:symbolic_execution}
+och ökar således kodtäckning~\cite{challenges_fuzzing}. Som beskrivet i avsnittet \nameref{sec:symbolic_execution}
 sker detta genom att emulera programmet och ersätta indata med symboliska representationer, vilka enklast liknas med
 matematiska formler i form av algebraiska uttryck. Dessa uttryck byggs tillsammans med vägvillkor
 och kan skickas till en SMT-lösare för att evalueras till konkreta värden.
 
 \subsection{Problem med fuzzing} Ett problem är insikt om den underliggande
 kodstrukturen. En viktig egenskap som fuzzing har och som används för att beskriva dess
-effektivitet är code coverage. Black-box-fuzzing är exempel på en typ av fuzzing som
+effektivitet är kodtäckning. Black-box-fuzzing är exempel på en typ av fuzzing som
 saknar vetskap om den underliggande kodstrukturen och endast genererar
 slumpmässig indata, något som leder till ytlig testning av målprogrammet. I
-kontrast till black-box-fuzzing finns det grey-box fuzzing, exempelvis
+kontrast till black-box fuzzing finns det grey-box fuzzing, exempelvis
 AFL~\cite{aflplusplus} som tillämpar binärinstrumentering, en
 teknik för att observera eller manipulera en binär genom att modifiera källkoden
-i binären. Genom binärinstrumentering kan information om code coverage
-för en viss indata utvinnas för att sedan försöka maximera code coverage med ny indata
+i binären. Genom binärinstrumentering kan information om kodtäckning 
+för en viss indata utvinnas för att sedan försöka maximera kodtäckning med ny indata
 och därmed öka testytan.~\cite{challenges_fuzzing}.
 % underliggande basic block som delger övergången till nästa basic block. Ett basic block är en sekvens instruktioner
 % utan hopp eller förgreningar, utöver de som tar sig till och från blocket. Information om
@@ -48,17 +47,17 @@ och därmed öka testytan.~\cite{challenges_fuzzing}.
 
 Fuzzing kräver ofta protokoll- eller domänkännedom för att kunna generera
 indata. Detta är svårare med komplexa kodbaser eller bibliotek som saknar
-trivial eller uppenbar indata vilket därmed leder till lägre code coverage.
+trivial eller uppenbar indata vilket därmed leder till lägre kodtäckning.
 
 White-box fuzzing är inte en allmän lösning till problemen med fuzzing, utan
 har också problem relaterade till prestanda, vägexplosion, och falskt positiva
-resultat. Det finns en stark korrelation mellan code coverage och bug
+resultat. Det finns en stark korrelation mellan kodtäckning och bug
 coverage~\cite{directed_greybox_fuzzing} men eftersom white-box fuzzing är ett
 prestandakrävande verktyg kan detta leda till falskt positiva resultat eftersom den
 symboliska exekveringen även guidar fuzzingen längs med grenar som
 inte nödvändigtvis leder till buggar, eller är praktiskt omöjliga.
-Trots den starka korrelationen mellan code coverage och bug coverage, kan buggar inte uteslutas vid
-testning baserat på hög code coverage.
+Trots den starka korrelationen mellan kodtäckning och buggtäckning, kan buggar inte uteslutas vid
+testning baserat på hög kodtäckning.
 
 
 %Det har visat sig att enbart 3\% av Mozilla Firefox källkod innehåller sårbarheter~\cite{fault_prediction_vuln_pred}, och därför är det oproduktivt att blint använda code coverage som metod för att finna dessa.

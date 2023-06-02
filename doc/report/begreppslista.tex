@@ -3,37 +3,37 @@
     \item [\textbf{Assembler}] Assembler (jfr.\ eng.\ \emph{assembly}) är ett
     lågnivåspråk som direkt kan översättas till maskinkod.
 
-    \item[\textbf{Basic block}] Basic block (jfr.\ sv.\ \emph{grundblock}) är en
+    \item[\textbf{Basic block}] \emph{Basic block} (jfr.\ sv.\ grundblock) är en
     sekvens av instruktioner som saknar hopp eller branches bortsett från
     början och slutet av blocket. Är oftast expanderade till att bli så långa
     som möjligt
 
     \item [\textbf{Black-box analys}] Black-box analys (jfr.\ sv.\
-    \emph{svartlådeanalys}) är en analys av ett objekt som endast betraktar dess
+    svartlådeanalys) är en analys av ett objekt som endast betraktar dess
     yttre utseende och beteende, till skillnad från white-box-analys som även
     betraktar vad som händer inuti.
 
     \item [\textbf{Binär}] En binär (jfr.\ eng.\ \emph{binary}) är en fil som
     innehåller ett programs maskinkod och data.
 
-    \item [\textbf{Callback functions}] Callback functions (jfr.\ sv.\
-    återanropsfunktion) är funktioner som läggs i en hook (jfr.\ sv.\ krok) för
+    \item [\textbf{Callback functions}] \emph{Callback functions} (jfr.\ sv.\
+    återanropsfunktion) är funktioner som läggs i en \emph{hook} (jfr.\ sv.\ krok) för
     att exekveras vid ett visst tillstånd.
 
     % \item [\textbf{CFG}] (\emph{Control Flow Graph},
     %       jfr.\ sv.\ kontrollflödesgraf)
 
     \item [\textbf{Konkolisk testning}] Konkolisk testning (jfr.\ eng.\ \emph{Concolic
-        Testing}) är en sorts fuzztesting där indata genereras genom att med en SMT-
+        Testing}) är en sorts fuzztestning där indata genereras genom att med en SMT-
     lösare lösa ekvationerna som beskriver en körning som ursprungligen följer
     körningen för en seed-indata, men vid ett angivet hopp avviker. Detta är en
     effektiv metod för att konstruera indata som tar speciella svårtagna hopp.
 
-    \item [\textbf{CTF}] CTF (\emph{Capture the Flag}, jfr.\ sv.\ \emph{fånga
-        flaggan}) är i datorsäkerhetssammanhang är en utmaning eller övning i att
+    \item [\textbf{CTF}] CTF (\emph{Capture the Flag}, jfr.\ sv.\ fånga
+        flaggan) är i datorsäkerhetssammanhang är en utmaning eller övning i att
     hitta gömda ''flaggor'' i program med avsiktliga säkerhetshål.
 
-    \item [\textbf{DWARF}] DWARF (jfr.\ sv.\ \emph{DVÄRG}) är metainformation i
+    \item [\textbf{DWARF}] DWARF är metainformation i
     ELF-filer som kopplar maskinkod till källkod. Används vid instrumentering av
     ELF-filer.
 
@@ -42,7 +42,7 @@
     kontrollerad miljö för att i detalj registrera vad binären gör.
 
     \item [\textbf{ELF}] ELF (\emph{Executable and Linkable Format}, jfr.\ sv.\
-    \emph{exekverbart och länkbart format}). Filformatet för exekverbara filer
+    exekverbart och länkbart format). Filformatet för exekverbara filer
     på Linux och liknande system. Innehåller maskinkod och länkar till andra
     ELF-filer.
 
@@ -54,15 +54,15 @@
     är att slumpmässigt generera indata till ett system i ett försök att hitta
     buggar eller genom frånvaron av dåligt beteende betryggas i systemets
     kvalité. Vissa fuzztestmotorer genererar ny indata med genetiska algoritmer
-    och vissa använder white-box binärinstrumentation för att evaluera indata.
+    och vissa använder \emph{white-box} binärinstrumentation för att evaluera indata.
 
-    \item [\textbf{Grey-box analysis}] Grey-box analysis (jfr.\ sv.\
-    \emph{grålådeanalys}) är en teknik som kombinerar black-box och white-
-    box för att bilda en bredare analys. Ett användingsområde kan vara där
+    \item [\textbf{Grey-box analysis}] \emph{Grey-box analysis} (jfr.\ sv.\
+    \emph{grålådeanalys}) är en teknik som kombinerar \emph{black-box} och \emph{white-
+    box} för att bilda en bredare analys. Ett användingsområde kan vara där
     dokumentationen är begränsad om ett programs interna struktur.
 
-    \item [\textbf{Grid of equals}] Grid of Equals (jfr.\ sv.\ \emph{nät av
-        jämlikar}) är ett designmönster inom interaktionsdesign för utveckling av
+\item [\textbf{Grid of equals}] \emph{Grid of Equals} (jfr.\ sv.\ nät av
+        jämlikar) är ett designmönster inom interaktionsdesign för utveckling av
     grafiska gränssnitt där innehållet organiseras i geometriska former, ofta
     rektanglar som innehåller bild eller text och som placeras i lika avstånd
     till varandra och alla andra element.
@@ -73,9 +73,10 @@
     trådar.
 
     \item [\textbf{Heuristik}] Heuristik är en praktisk metod för att lösa
-    problem baserat på tidigare erfarenhet.
+    problem baserat på tidigare erfarenhet. En metod som är inte är fullständig
+    utan baserad på tumregel.
 
-    \item [\textbf{Hook}] Hook (jfr.\ sv.\ \emph{krok}) är en lista på callback
+    \item [\textbf{Hook}] \emph{Hook} (jfr.\ sv.\ krok) är en lista på callback
     funktioner som ska köras vid ett specifikt tillstånd.
 
     \item [\textbf{Instrumentering}] Instrumentering (jfr.\ eng.\
@@ -83,7 +84,7 @@
     att hitta buggar och hitta kontrollflöden.
 
     \item [\textbf{IPC}] IPC (\emph{Inter-process communication}, jfr.\ sv.\
-    \emph{interprocesskommunikation}) är ett samlingsbegrepp på olika tekniker
+    interprocesskommunikation) är ett samlingsbegrepp på olika tekniker
     för att trådar i olika processer att kommunicera med varandra.
 
     \item [\textbf{KLEE}] KLEE är den symboliska exekveringsmotorn som används
@@ -106,13 +107,13 @@
 
     \item [\textbf{Process}] En process är en
     operativsystemabstraktion som speciellt innehåller en memory
-    map(jfr.\ sv.\ \emph{minneskarta}) tillsammans med ett antal trådar och
+    map(jfr.\ sv.\ minneskarta) tillsammans med ett antal trådar och
     andra operativsystemsresurser såsom fildeskriptorer (jfr.\
     eng.\ \emph{File descriptor}).
 
-    \item [\textbf{QEMU}] QEMU (\emph{Quick Emulator}, jfr.\ sv.\ \emph{snabb
-        emulator}) är ett välunderhållet öppen källkods emulatorramverk
-    med stöd för många plattformar och som stöder både user-space
+    \item [\textbf{QEMU}] QEMU (\emph{Quick Emulator}, jfr.\ sv.\ snabb
+        emulator) är ett välunderhållet öppen källkods emulatorramverk
+    med stöd för många plattformar och som stöder både \emph{user-space}
     emulering av en process samt emulering av ett helt system.
 
     \item [\textbf{Utpressningsprogram}] Utpressningsprogram (jfr.\ eng.\
@@ -121,20 +122,20 @@
     en nyckel.
 
     \item [\textbf{RCE}] RCE (\emph{Remote code execution}, jfr.\ sv.
-    \ \emph{fjärrkodsexekvering}) är en sårbarhet som tillåter körning av
+    \ fjärrkodsexekvering) är en sårbarhet som tillåter körning av
     godtyckliga kommandon eller kod på en måldator.
 
-    \item [\textbf{Reverse Engineering}] Reverse engineering (jfr.\ sv.\ \emph{demontering eller
-        backlängeskonstruktion}) är en process där man från en
+    \item [\textbf{Reverse Engineering}] \emph{Reverse engineering} (jfr.\ sv.\
+    demontering eller backlängeskonstruktion) är en process där man från en
     befintlig artefakt försöker återskapa källkodsinstruktionerna
     skrivna av de ursprungliga utvecklarna av artefakten.
 
-    \item [\textbf{Runtime}] Runtime (jfr.\ sv.\ \emph{körtid}) är tidsspannet
+    \item [\textbf{Runtime}] \emph{Runtime} (jfr.\ sv.\ körtid) är tidsspannet
     från det att ett program börjar exekveras, tills dess att programmet har
     slutat att exekveras.
 
     \item [\textbf{\stoe}] \stoe (\emph{The Selective Symbolic Execution
-        Platform}, jfr.\ sv.\ \emph{Den selektiva exekveringsplattformen}) är
+        Platform}, jfr.\ sv.\ Den selektiva exekveringsplattformen) är
     en platform som tillhandahåller symbolisk exekvering inuti den virtuella
     maskinen QEMU.\@
 
@@ -146,7 +147,7 @@
     exekvering.
 
     \item [\textbf{Stack}] Område i minnet som reserveras för varje
-    enskild tråd.  På stacken förvaras värden där man redan vid
+    enskild tråd. På stacken förvaras värden där man redan vid
     kompilering känner till värdets minnesstorlek.
 
     \item [\textbf{Starkt anslutna komponenter}] Starkt anslutna komponenter
@@ -181,8 +182,8 @@
     \item [\textbf{Tråd}] Thread (jfr.\ eng.\ \emph{thread}) är en av flera
     parallella instruktionssekvenser inom en process.
 
-    \item [\textbf{White-box analysis}] White-box analysis (jfr.\ sv.
-    \ \emph{vitlådsanalys}) är en analysmetod som behandlar en applikations
+    \item [\textbf{White-box analysis}] \emph{White-box analysis} (jfr.\ sv.
+    \ vitlådsanalys) är en analysmetod som behandlar en applikations
     interna struktur i kontrast till black-box analys som enbart betraktar
     funktionaliteten.
 

@@ -63,11 +63,11 @@ Symbolisk exekvering kan leda till vägexplosionsproblemet, vilket
 uppstår i program vars förgreningar växer exponentiellt och resulterar i att en
 symbolisk exekvering aldrig terminerar~\cite{path_explo}. Därför är det inte effektivt
 att alltid undersöka alla grenar i ett program. Exempel på metoder för att
-undvika vägexplosionsproblemet är \emph{Tillståndssammanslagning} (jfr. eng. state merging) och heuristik.
-\emph{Tillståndssammanslagning} går ut på att slå samman ett antal
+undvika vägexplosionsproblemet är tillståndssammanslagning (jfr. eng. \emph{state merging}) och heuristik.
+Tillståndssammanslagning går ut på att slå samman ett antal
 exekveringsvägar genom att upptäcka exekveringsvägar som liknar varandra och
 slå samman dessa genom att kombinera deras villkor. Det krävs heuristik för att
-upptäcka fall där \emph{tillståndssammanslagning} är applicerbart~\cite{survey_symb_exc}.
+upptäcka fall där tillståndssammanslagning är applicerbart~\cite{survey_symb_exc}.
 För att illustrera symbolisk exekvering används följande pseudokod:
 
 \begin{figure}[H]

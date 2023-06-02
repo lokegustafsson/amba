@@ -1,4 +1,4 @@
-Detta arbete presenterar AMBA (\emph{Automatic manual binary analysis}), ett
+Detta arbete presenterar AMBA, ett
 binäranalysverktyg för att visualisera och styra symbolisk fuzzing interaktivt.
 I detta avsnitt kommer vi att beskriva funktionalitet i AMBA, AMBAs
 begräsningar samt hur man kan köra och använda AMBA.
@@ -116,7 +116,7 @@ genom att bygga direkt för Ubuntu eller med full statisk länkning mot t.ex.\
 libc-implementationen musl istället för dynamisk länkning mot glibc.
 
 Den symboliska indatan är också begränsad till att komma ifrån stdin samt filer
-på disk. Symbolisk input till AMBA i dess nuvarande skick kan inte skickas som
+på disk. Symbolisk indata till AMBA i dess nuvarande skick kan inte skickas som
 programargument (\verb|argc|, \verb|argv|), miljövariabler (\verb|envp|) eller i
 form av symbolisk hårdvara (t.ex.\ registret TSC/Time Stamp Counter). Detta är
 inte en fundamental begränsning utan endast oimplementerad funktionalitet som
