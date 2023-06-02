@@ -157,27 +157,14 @@ impl Graph {
 		let mut to_node = to;
 		let rest;
 
-		// Finds the from node in the graph, returns none if not yet added
-		fn find_from(graph: &Graph, from_node: u64) -> Option<&Node> {
-			if let Some(node) = graph.nodes.get(&from_node) {
-				return Some(node);
-			} else {
-				for node in graph.nodes.values() {
-					if node.of.iter().any(|&x| x == from_node) {
-						return Some(node);
-					}
-				}
-				return None;
-			}
-		}
 
 		// Finds the to node in the graph, returns none if not yet added
-		fn find_to(graph: &Graph, to_node: u64) -> Option<&Node> {
-			if let Some(node) = graph.nodes.get(&to_node) {
+		fn find_node(graph: &Graph, id: u64) -> Option<&Node> {
+			if let Some(node) = graph.nodes.get(&id) {
 				return Some(node);
 			} else {
 				for node in graph.nodes.values() {
-					if node.of.iter().any(|&x| x == to_node) {
+					if node.of.iter().any(|&x| x == id) {
 						return Some(node);
 					}
 				}
@@ -192,7 +179,7 @@ impl Graph {
 
 		// Self loop
 		if from == to {
-			if let Some(node) = find_from(self, from) {
+			if let Some(node) = find_node(self, from) {
 				if node.id == from && node.of.iter().len() == 1 {
 					// no need to split any compressed nodes
 					self.update(from, from);
@@ -208,7 +195,7 @@ impl Graph {
 		}
 
 		// find from node
-		if let Some(node) = find_from(self, from) {
+		if let Some(node) = find_node(self, from) {
 			// from node exists
 			let of = node.of.clone();
 
@@ -242,7 +229,7 @@ impl Graph {
 		}
 
 		// to node wasn't found in same as from node
-		if let Some(node) = find_to(self, to) {
+		if let Some(node) = find_node(self, to) {
 			(_, to_node) = self.split_before(to, node.id);
 		}
 		self.update(from_node, to_node);
