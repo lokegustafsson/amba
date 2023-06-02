@@ -17,7 +17,7 @@ vilka filsystemkataloger programmet använder sig av.
 \section{Metoder för datorn}
 
 Vissa hypoteser lämpar sig för att undersökas av en dator som effektivt kan
-utföra automatiserade och tester. Till exempel kan man ha implementerat en
+utföra automatiserade tester. Till exempel kan man ha implementerat en
 sorteringsalgoritm som ska sortera olika värden i en specifik ordning. En
 hypotes är då att implementationen av algoritmen är korrekt. Hypotesen kan då
 testas genom att skapa ett antal testfall som kontrollerar att utdatan blir
@@ -30,7 +30,9 @@ indatan kan orsaka icke önskvärt beteende eller krascher hos
 programmet~\cite{macel2021}. Ett sätt att generera indata inom fuzzing är att
 betrakta typen på indatan och försöka testa olika kategorier som kan orsaka
 felaktiga beteenden. Om indatan exempelvis är en numerisk typ kan man generera
-ett litet värde, ett stort värde och ett negativt värde för att testa.
+ett litet värde, ett stort värde och ett negativt värde för att testa. Men om
+endast ett specifikt värde leder till ett visst beteende är det sannolikt att
+detta värde aldrig gissas och därmed inte inträffar.
 
 Symbolisk fuzzing är en variation på fuzzing som utforskar flera möjliga vägar
 genom ett program utan att köra det med alla konkreta värden som indata.
@@ -126,13 +128,13 @@ datorn och människans styrkor, kan komplettera existerande verktyg.
 \section{Mål}\label{sec:mal}
 
 Projektet ämnar utveckla Amba (\emph{Automatisk och Manuell BinärAnalys}), ett
-binäranalysverktyg som använder symbolisk fuzzing för att analysera ett program.
-Den information Amba utvinner ska presenteras visuellt för användaren i ett
-grafiskt gränssnitt. Genom det grafiska gränssnittet ska användaren kunna
-påverka de beslut Amba tar i sin vägutforskning.
+verktyg som använder symbolisk fuzzing för att analysera ett program på
+maskinkodsnivå. Den information Amba utvinner ska presenteras visuellt för
+användaren i ett grafiskt gränssnitt. Genom det grafiska gränssnittet ska
+användaren kunna påverka de beslut Amba tar i sin vägutforskning.
 
-Målet med Amba är att genom interaktiv visualisering låta användaren att
-övervaka symbolisk fuzzing.
+Målet med Amba är att genom interaktiv visualisering låta användaren övervaka
+symbolisk fuzzing.
 
 \section{Avgränsningar}
 
@@ -151,9 +153,10 @@ fokuserar på användbar visualisering.
 Avsnitt~\ref{chap:teori} beskriver bakgrund och förklarar teori i mer detalj.
 Efterföljande avsnitt (avsnitt~\ref{chap:existerande_verktyg}) beskriver
 tidigare arbete och kategorisering av olika existerande binäranalysverktyg. I
-avsnitt~\ref{chap:amba} beskrivs binäranalysverktyget AMBA och dess
+avsnitt~\ref{chap:amba} beskrivs binäranalysverktyget Amba och dess
 funktionalitet och efterföljs med resultat och implementationsbeskrivning i
 avsnitt~\ref{chap:implementation}. Avsnitt~\ref{chap:evaluering} tar upp och
 evaluerar projektets resultat, process, begräsningar och framtida arbete och
-förbättringar som kan göras. Slutligen sammanfattas och diskuteras projektets
-bidrag i avsnitt~\ref{chap:slutsats}.
+förbättringar som kan göras. Evalueringen sker i form av en kvalitativ
+jämförelse av funktionalitet i Amba och existerande verktyg. Slutligen
+sammanfattas och diskuteras projektets bidrag i avsnitt~\ref{chap:slutsats}.
