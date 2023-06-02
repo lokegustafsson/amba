@@ -263,7 +263,7 @@ impl Graph {
 		self.update(from_node, to_node);
 	}
 
-	/// split a merged node after occurence of "after" node
+	/// Split a merged node after occurence of "after" node
 	/// returns the node id's of new nodes after split
 	pub fn split_after(&mut self, after: u64, merged_in: u64) -> (u64, u64) {
 		let node = self.get(merged_in).unwrap().clone();
