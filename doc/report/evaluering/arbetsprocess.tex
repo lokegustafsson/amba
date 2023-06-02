@@ -6,7 +6,7 @@ mycket av \stoe{}s byggsystem var tvunget att återimplementeras eller kringgås
 när tvetydiga och icke-triviala problem uppstod.
 
 Ett sådant problem var byggningen av diskavbilder till de virtuella maskiner som
-\stoe{} kör inuti QEMU. Detta problem löstes aldrig fullständigt utan fick
+\stoe{} körs inuti QEMU.\@ Detta problem löstes aldrig fullständigt utan fick
 arbetas runt genom att ladda ned färdiga diskavbilder byggda och uppladdade av
 \stoe{}-projektet i Google Drive.
 
@@ -17,11 +17,10 @@ att QEMU-projektets repon pekades på genom utdaterade, nu trasiga länkar under
 
 Ett tredje problem var att biblioteket \texttt{libs2e} byggdes med ett implicit
 beroende på biblioteket \texttt{libgomp} som distribueras tillsammans med
-kompilatorn \texttt{gcc}. Specifikt hade komponenten \texttt{libs2e}-komponenten
-KLEE ett beroende på vissa symboler i statisk länkning som inte var tillgängliga
-från \texttt{libgomp} från Nix-paketerade \texttt{gcc}. Detta problem fick
-arbetas runt genom att dynamiskt länka en Ubuntu-byggd \texttt{libgomp} till
-\texttt{libs2e}.
+kompilatorn \texttt{gcc}. Specifikt hade \texttt{libs2e}-komponenten KLEE ett
+beroende på vissa symboler i statisk länkning som inte var tillgängliga från
+\texttt{libgomp} från Nix-paketerade \texttt{gcc}. Detta problem arbetades runt
+genom att dynamiskt länka en Ubuntu-byggd \texttt{libgomp} till \texttt{libs2e}.
 
 Vi försökte även minimera mängden \smallcaps{C++}-kod som behövde skrivas genom
 att använda Autocxx för att generera kopplingar mellan \smallcaps{C++} och Rust.

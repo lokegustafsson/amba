@@ -36,16 +36,15 @@ minnesanvändningen för constraint generering, exempelvis så kartläggs ekviva
 objekt och constraints som redan är tillagda hoppas över~\cite{sage}.
 
 Binäranalysverktyget angr (alltid skrivet med små bokstäver) stödjer både
-statiska och dynamiska analyser med hjälp av symbolisk exekvering.\@ angr är ett
-ramverk för binäranalys och har stöd för disassemblering till pseudo-C-kod och
-implementerar många analyser användaren kan utföra. angr bygger på en symbolisk
-emulator skriven i Python och analyser utförs genom Python-skript som
-interagerar med angrs API.\@ angr har använts för att framställa skript som kan
-utföra \emph{reverse engineering}, sårbarhetssökning och fungera som
-exploateringsverktyg~\cite{angr_docs}.  Tävlingen Cyber Grand Challenge
-organiserades 2016 av DARPA.\@ I tävlingen skulle lag skriva helautomatiska system
-som hittar, korrigerar och angriper sårbarheter i CTF-liknande uppgifter. Det
-vinnande systemet, Mayhem, använde angr som symbolisk exekveringsmotor.
+statiska analyser såsom dekompilering till pseudo-C-kod och dynamiska analyser
+med hjälp av symbolisk exekvering. Användarens analyser utförs genom
+Python-skript som interagerar med angrs API för att kontrollera en symbolisk
+emulator skriven i Python för angr. Skript som använder angr kan användas för
+\emph{reverse engineering}, sårbarhetssökning och kan även vara del av
+exploateringsverktyg~\cite{angr_docs}. Tävlingen Cyber Grand Challenge
+organiserades 2016 av DARPA.\@ I tävlingen skulle lag skriva helautomatiska
+system som hittar, korrigerar och angriper sårbarheter i CTF-liknande uppgifter.
+Det vinnande systemet, Mayhem, använde angr som symbolisk exekveringsmotor.
 
 För att accelerera den symboliska exekveringen kan angr användas i kombination
 med Unicorn CPU-emulatorn, ett lättviktigt ramverk för emulering som stödjer
@@ -54,7 +53,7 @@ med hjälp av komponenten \emph{angr.engines.unicorn}. Genom att använda
 komponenten kan man exekvera med konkreta indata när det är möjligt och
 fördelaktigt men understött av symbolisk exekvering då flera exekveringsvägar
 behöver utforskas eller då programmets beteende inte är
-deterministiskt~\cite{angrUnicornEngine}.\@ angr låter det emulerade programmet
-manipulera filer och nätverksströmmar genom att representera dem som
-Python-objekt. Dessa objekt läses från och skrivs till när det emulerade
-programmet utför systemanrop (jfr.\ eng.\ \emph{syscalls}).
+deterministiskt~\cite{angrUnicornEngine}. I angr kan det emulerade programmet
+manipulera filer och nätverksströmmar som representeras som Python-objekt. Dessa
+objekt läses från och skrivs till när det emulerade programmet utför
+systemanrop.
