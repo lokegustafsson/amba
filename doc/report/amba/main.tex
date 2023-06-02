@@ -201,8 +201,8 @@ symboliskt genom att ange en lista av byteadresser (t.ex.\ \verb|0|) samt
 byteadressintervall (t.ex.\ \verb|[42, 57]|) mellan vilka filen ska innehålla
 symboliska bytes. Symboliska filer behöver också konkreta värden som får förtur
 i tillståndsutforskningen. Dessa kan anges med antingen
-\verb|"seed": "<förtursvärden>"| eller
-\verb|"host_path": "<värddatorsökväg till förtursvärden>"|.
+\lstinline[language=json]{"seed": "<förtursvärden>"} eller
+\lstinline[language=json]{"host_path": "<värddatorsökväg till förtursvärden>"}.
 
 När AMBA körs med \lstinline{nix run . -- run path/to/a/recipe.json} öppnas det
 grafiska gränssnittet samtidigt som QEMU/\stoe{} startas i bakgrunden.
