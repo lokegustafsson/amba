@@ -5,18 +5,18 @@ svårupptäckta problem såsom buggar och krascher.
 Grundprincipen i fuzzing är att undersöka programmets beteende på mer varierad
 indata genom att generera oväntad, godtycklig eller felaktig data. Denna typ av
 genererad indata resulterar ofta i syntaktiskt eller semantiskt felaktig indata
-som inte kan hanteras av målprogrammet. Det är däremot inte trivialt att generera
-indata som täcker ett programs möjliga beteenden vilket har lett till bland annat
-mutationsbaserad fuzzing (jfr.\ eng.\ \emph{mutation-based fuzzing}) och genereringsbaserad
-fuzzing (jfr.\ eng.\ \emph{generation-based fuzzing}). Mutationsbaserad fuzzing muterar känd giltig indata,
-till exempel\ om strängen `fuzz' är giltig indata kan detta muteras till `fuzzZZZZZ'. Om
-en användare exempelvis vill utföra fuzzing på bildhanteringsbiblioteket libjpeg skulle
+som inte kan hanteras av målprogrammet. Det är däremot inte trivialt att
+generera indata som täcker ett programs möjliga beteenden vilket har lett till
+bland annat mutationsbaserad fuzzing (jfr.\ eng.\ \emph{mutation-based fuzzing})
+och genereringsbaserad fuzzing (jfr.\ eng.\ \emph{generation-based fuzzing}).
+Mutationsbaserad fuzzing muterar känd giltig indata, till exempel\ om strängen
+`fuzz' är giltig indata kan detta muteras till `fuzzZZZZZ'. Om en användare
+exempelvis vill utföra fuzzing på bildhanterings-biblioteket libjpeg skulle
 detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
-seeds, värden som används i pseudoslumptalsgeneratorer för att generera
-pseudoslumptal, och sedan modifiera dessa. Detta skiljer sig från
-genereringsbaserad fuzzing som genererar indata givet en modell för domänen ---
-en fördel i jämförelse med mutationsbaserad fuzzing som kräver känd kvalitativ
-indata~\cite{fuzzing}.
+seeds. Seeds i detta sammanhanget innebär de initiala värdena som sedan
+modifieras. Detta skiljer sig från genereringsbaserad fuzzing som genererar
+indata givet en modell för domänen --- en fördel i jämförelse med
+mutationsbaserad fuzzing som kräver känd kvalitativ indata~\cite{fuzzing}.
 
 \subsection{Symbolisk fuzzing} Symbolisk fuzzing är en white-box fuzzingmetod
 som nyttjar symbolisk exekvering för att maximera kodtäckning (jfr.\ eng.\ \emph{code coverage}), det vill säga fuzzerns
