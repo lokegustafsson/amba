@@ -1,20 +1,23 @@
 I detta avsnitt förklaras bakgrund och problembeskrivning till projektet. Innan
 problemen kan beskrivas måste vi förstå några centrala idéer och teorier inom
-domänen. Först och främst beskrivs olika metoder inom binäranalys och bakgrund
-till symbolisk exekvering och vilka problem tekniken löser. Detta följs upp med
-en mer detaljerad beskrivning av symbolisk exekvering och fuzzing.
-Avslutningsvis, beskrivs problem som en symbolisk exekveringsmotor står inför
-och några möjliga lösningar till dessa problem.
+domänen. Först beskrivs olika metoder inom binäranalys, sedan ges en bakgrund
+till symbolisk exekvering, den underliggande tekniken inom symbolisk fuzzing, och vilka
+problem tekniken löser. Detta följs upp med en mer detaljerad beskrivning av symbolisk
+exekvering och fuzzing. Avslutningsvis, beskrivs problem som en symbolisk exekveringsmotor
+står inför och några möjliga lösningar till dessa problem.
 % , samt motiveringar till detta
 % projekt.
 
 \section{Binäranalys}
 \label{sec:binar_analys}
-Som tidigare nämnt, är det ofta endast maskinkoden som är tillgänglig inom domänen
-för skadeprogramsanalys och \emph{reverse engeneering}. Binäranalys är dessutom
-viktigt för att upptäcka och undersöka minnessårbarheter. Det beror på det
-semantiska gapet mellan ett högnivå programspråk och maskinkod. Det är inte
-trivialt att argumentera för programmets beteende innan och efter kompilering
+Inom skadeprogramsanalys (jfr eng. malware analysis) och reverse engeneering
+är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast
+tillgänglig som maskinkod~/cite{andriesse2018}.
+
+Förutom då endast maskinkoden är tillgänglig så är binäranalys också användbart för att
+upptäcka och undersöka minnessårbarheter. Det beror på det semantiska gapet mellan ett
+högnivå programspråk och maskinkod. Det är inte trivialt att argumentera för programmets
+beteende innan och efter kompilering
 till maskinkod och hur väl dessa mostsvarar varandra. Genom att betrakta
 maskinkoden kan man ``undersöka vad programmet faktiskt gör istället för vad
 man tror att det gör''~\cite{andriesse2018}. Avslutningsvis, kan sårbarheter
@@ -24,12 +27,10 @@ sällsynta men inte obefintliga~\cite{silentbugsmatter}.
 Ett flertal metoder används för att analysera maskinkod:
 \begin{enumerate}
     \item disassemblera binären och läsa dess funktioner för att förstå vad de gör~\cite{ghidra_website}.
-    \item dekompilera maskinkoden med ett verktyg som ger pseudokod, och sedan läsa denna mer
-          läsbara koden~\cite{ghidra_website}.
-    \item fuzztesta programmet, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
+    \item dekompilera maskinkoden med ett verktyg som ger pseudokod, och sedan manuellt undersöka denna mer läsbara koden~\cite{ghidra_website}.
+    \item använda fuzzing på programmet, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
           annat oönskat beteende~\cite{8371326}.
-    \item använda konkolisk testning där en SMT solver genererar nya testfall genom att
-          lösa för testfall som orsakar annorlunda programhopp~\cite{sage}.
+    \item använda symbolisk fuzzing på programmet, där nya testfall genereras med hjälp av tidigare för att effektivt täcka fler vägar.~\cite{sage}.
 \end{enumerate}
 
 % Problematisk minneshantering har potential att påverka ett programs korrekthet och
@@ -52,31 +53,31 @@ Ett flertal metoder används för att analysera maskinkod:
 % att analysera fel som uppstår, för att förbättra delkomponenter eller för att diagnostisera
 % en produkt.
 
-De olika metoderna har sina för- och nackdelar och är olika effektiva. Dessutom
-är de applicerbara i olika situationer. För att bilda en allmän förståelse om
-ett program krävs både korrekt och abstrakt förståelse. I
-detta avseende syftar korrekt på avsaknaden av felaktiga slutsatser
+%De olika metoderna har sina för- och nackdelar och är olika effektiva. Dessutom
+%är de applicerbara i olika situationer. /detta skrev Joachim varmluft om...
+
+För att bilda förståelse för ett program krävs att insikter är både korrekta % “För att bilda en allmän … “ förenkla/förtydliga mvh Joachim
+och abstrakta. I detta avseende syftar korrekt på avsaknaden av felaktiga slutsatser
 och abstrakt på möjligheten att resonera om programmet generellt i
 motsats till att resonera om en specifik konkret indata i taget.
 
 Metod 1-2, att läsa kod, kan ge en abstrakt förståelse av vad
-programmet gör, men för att verifiera att huruvida resonemanget är korrekt krävs
+programmet gör, men för att verifiera huruvida resonemanget är korrekt krävs
 hypotestestning vilket kräver att programmet körs. Således går det inte att
-bilda en korrekt förståelse genom att enbart läsa kod.
+skaffa sig en korrekt förståelse genom att enbart läsa kod.
 
 Metod 3-4, att köra programmet på testfall, ger framförallt en
 black-box-förståelse av programmet. Tillgången till binären och
 exekveringsmiljön används endast som ett verktyg för att generera nya testfall.
-Fuzzing och konkolisk testning kan köras helautomatiskt och är korrekta.
-Men ofta är en tillräckligt täckande sökning av indatarummet omöjlig, och då kan
+Fuzzing och symbolisk fuzzing kan köras helautomatiskt och är korrekta.
+Vid fuzzing är en täckande sökning av indatarummet oftast omöjlig, och då kan
 den automatiska analysen ha missat ett kvalitativt annorlunda beteende. Dessutom
 ger en omfattande uppsättning indata-utdata-par inte användaren samma
 information som källkoden ger. Därmed är helautomatiska analysmetoder inte
-abstrakta. Notera att det inte nödvändigtvis tyder på en brist i den
-automatiska analysen att ett kvalitativt annorlunda beteende missas, för det
-gömda beteendet skulle kunna vara en konsekvens av komplicerad kod, som till
-exempel ett hoppvilkor beroende på en kryptografisk hash av indatan. Men en
-analysmetod borde kunna peka ut var dess förståelse tar slut, snarare än att
+abstrakta. Det kan finnas gömda beteenden som är omöjliga att hitta med en automatisk
+analys, som till exempel ett hoppvilkor som beror på en kryptografisk hash av indatan.
+Detta är en fundamental begränsning som inte kan lösas med bättre verktyg.
+En analysmetod borde kunna peka ut var dess förståelse tar slut, snarare än att
 utelämna detta fullständigt vilket är vad avsaknaden av testfall visar sig som.
 
 % En helautomatisk \textit{korrekt} metod kan ge en \textit{abstrakt} förståelse
@@ -108,14 +109,14 @@ else:
 
 I fall där det existerar kända konstanter, något som är typiskt i fall som
 involverar kryptografi i olika utsträckning, är det rimligt att tillämpa
-manuella metoder för att bilda förståelse om programmet. Genom att inspektera
+manuella metoder för att bilda förståelse för programmet. Genom att inspektera
 maskinkoden för program motsvarande figur~\ref{fig:manual_method_example} kan
-det enkelt hittas en konstant associerad till sha256-algoritmen for att beräkna
-hash funktionen och därmed bilda förståelse om programmet. I detta fall är det
+det enkelt hittas en konstant relaterad till sha256-algoritmen for att beräkna
+hash funktionen och därmed bilda förståelse för programmet. I detta fall är det
 dessutom orimligt att tillämpa automatiska metoder eftersom dessa, såsom
 konkolisk testning, genererar alltför stora symboliska representationer och hade
 i det ovan exemplet krävt att det går att hitta inversen till en given
-sha256-hash vilket idag är omöjligt och leder därmed till att alla stigar i
+sha256-hash vilket idag är omöjligt och leder därmed till att alla vägar i
 programflödet inte undersöks.
 
 \begin{figure}
@@ -135,15 +136,15 @@ else:
     \label{fig:automatic_method_example}
 \end{figure}
 
-Ett motsatt fall är exemplet i figur~\ref{fig:automatic_method_example} och
-lämpas väl att undersökas med automatiska metoder eftersom det är tidskrävande
+Ett motsatt fall är exemplet i figur~\ref{fig:automatic_method_example} som passar
+att undersökas med automatiska metoder eftersom det är tidskrävande
 att manuellt välja slumpvalda värden på \texttt{s} för att hitta den korrekta
-stigen. Istället lämpar konkolisk testning sig väl i detta fallet. Eftersom
-konkolisk testning väljer olika konkreta värden samtidigt som den tillämpar
-symbolisk exekvering med symboliska värden som följer den givna stigen, t.ex.\
-om \lstinline{s == "annat"} vilket motsvarar att programmet väljer else-stigen
-\lstinline{deny_access()}. Detta upprepas med nya exekveringsstigar och till slut
-hittas den indata som ger \lstinline{allow_access()}-stigen.
+vägen. Istället lämpar symbolisk fuzzing sig väl i detta fallet. Eftersom
+symbolisk fuzzing väljer olika konkreta värden samtidigt som den tillämpar
+symbolisk exekvering med symboliska värden som följer den givna vägen, t.ex.\
+om \lstinline{s == "annat"} vilket motsvarar att programmet väljer else-vägen
+\lstinline{deny_access()}. Detta upprepas med nya exekveringsvägar och till slut
+hittar den indata som ger \lstinline{allow_access()}-vägen.
 
 
 \subsection{Statisk och dynamisk binäranalys}
@@ -162,27 +163,13 @@ avsnitt~\ref{sec:binar_analys}. I alla fall krävs någon typ av injektion av ko
 eller data i programmet i syfte att kunna extrahera viktig information under
 programmets exekvering~\cite{dynamic_bin_analysis}.
 
-\section{Motivering till symbolisk exekvering}
-Symbolisk exekvering motiverades av behovet för automatiska kontroller av olika
-programegenskaper. ``Aspekter av intresse kan vara så att ingen division med
-noll någonsin utförs, att ingen NULL-pekare någonsin avrefereras (jfr eng.
-\emph{dereferenced}), att det inte finns någon bakdörr som kan kringgå
-autentisering och så vidare''~\cite{survey_symb_exc}. För att kontrollera dessa
-egenskaper krävs kontroll av flertal olika exekveringsvägar vilket är svårt med
-vanlig exekvering (konkret exekvering) men enkelt genom symbolisk exekvering.
-Symbolisk exekvering tillåter dynamisk binäranalys och både manuella och
-automatiska sådana. Som tidigare nämnts, är metoder baserade på symbolisk
-exekvering även kända som konkolisk testning och symbolisk fuzzing.
-
-Låt oss betrakta några vanliga sårbarheter som har upptäckts med metoder
-baserade på symbolisk exekvering.
 
 \subsection{Minnessårbarheter}
 I praktiken uppgör minnessäkerhetsbrister ungefär 70 procent av alla
 sårbarheter~\cite{miller19}. Minnessårbarheter kan påverka programflödet (jfr
 eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
 vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
-läsbart men det mest allvarliga är skrivaccess utanför minnesgränser. En
+läsbara men det mest allvarliga är skrivaccess utanför minnesgränser. En
 angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
 datorn som kör programmet~\cite{computer_security_cs161}, alltså \emph{remote
     code execution}.
@@ -195,28 +182,26 @@ Minnessäkra programspråk tilltar en kombination av körtids- (jfr eng.
 \emph{runtime}) och kompileringstidskontroller (jfr eng. \emph{compile
     time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
 många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
-prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är svåra att
+prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är mödosam att
 skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
 exempelvis Rust eller Swift, som kan konkurrera med C relativt nya och det
 krävs tid för övergången mellan språken.
 
 Två exempel på minnessårbarheter är buffertöverflöden (jfr eng. \emph{buffer
-    overflow}) och formatsträngsbugg (jfr eng. \emph{format string bug}). Den
-vanligaste av de är buffertöverflöde vilket uppstår av otillräckliga
-gränskontroller (jfr eng. \emph{bounds checks}), vilket utlöser en åtkomst bortom gränserna för viss
-minnesregion. Angripare kan utnyttja detta för att korrumpera programmets
-normala beteende genom att skriva bortom gränserna. Formatsträngsbugg uppstår
+    overflow}) och formatsträngsbuggar (jfr eng. \emph{format string bug}). Den
+vanligaste av de två är buffertöverflöden vilka uppstår av otillräckliga
+gränskontroller (jfr eng. \emph{bounds checks}), och utlöser möjlighet till åtkomst bortom 
+gränserna för den minnesregion som avsetts. Angripare kan utnyttja detta för att korrumpera programmets
+normala beteende genom att skriva bortom gränserna. Formatsträngsbuggar uppstår
 när någon typ av indata tolkas och används som input till vanliga
 textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
-konvertingsfunktioner för kovertering av olika data till text. Om inte en
+konvertingsfunktioner för konvertering av olika data till text. Om inte en
 noggrann och tillräcklig utvärdering av indatan görs innan den används i en
-funktion som kan tolka formatsträng, kan funktionen använda stacken och den
-data som råkar ligga där som argument för konverteringsfunktioner. Med noggrann
-utformning av indata kan en angripare utnyttja formatsträngsbugg för att
+funktion som kan tolka formatsträngar, kan funktionen använda stacken och den
+data som råkar ligga där som argument till konverteringsfunktioner. Med noggrann
+utformning av indata kan en angripare utnyttja formatsträngsbuggar för att
 exekvera godtyckliga kommandon~\cite{computer_security_cs161}.
 
-Metoder baserade på symbolisk exekvering har används för att upptäcka både
-buffertöverflöden~\cite{bofaeg} och formatsträngsbuggar~\cite{vakkaupad15}.
-Metoderna har olika begränsningar, såsom prestandabegränsningar och andra
-begränsnigar som symbolisk exekvering innehar, men dessa sårbarheter är också
-allmänt svåra att upptäcka automatiskt.
+
+
+

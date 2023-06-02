@@ -54,15 +54,12 @@ biblioteksanrop och IPC (\emph{inter process communication}). För att en
 också stödja flera sorters omgivningskommunikation och representera omgivningen
 på ett så komplett sätt som möjligt~\cite{survey_symb_exc}.
 
-\paragraph{Stigexplotion} Verkliga program innehåller loopar, rekursion,
+\paragraph{Vägexplosion} Verkliga program innehåller loopar, rekursion,
 undantag och kombinationer av dessa som kan orsaka ett exponentiellt ökande
 antal exekveringsvägar i programflödet. Det är alltså osannolikt att en motor
 kan uttömmande utforska alla möjliga exekveringsvägar inom rimlig tid.
-\emph{State-merging} kan appliceras i vissa fall för att begränsa antal
-exekveringsvägar. \emph{State-merging} går ut på att slå samman ett antal
-exekveringsvägar genom att upptäcka exekveringsvägar som liknar varandra och
-slå samman dessa genom att kombinera dess villkor. Det krävs heuristik för att
-upptäcka fall där \emph{state-merging} är applicerbart~\cite{survey_symb_exc}.
+\emph{Tillståndssammanslagning} kan appliceras i vissa fall för att reducera antalet
+exekveringsvägar.
 
 \paragraph{Villkorslösning} SMT-lösare kan skala till komplexa kombinationer av
 villkor över hundratals variabler. Däremot kan icke-linjär aritmetik utgöra ett
