@@ -1,25 +1,25 @@
-Avsnitt~\ref{sec:run-amba} beskriver hur Amba installeras och körs. Detta
-avsnitt diskuterar utvalda delar av Ambas implementationsdetaljer.
+Avsnitt~\ref{sec:run-amba} beskriver hur AMBA installeras och körs. Detta
+avsnitt diskuterar utvalda delar av AMBAs implementationsdetaljer.
 
-Amba ska betraktas som ett system bestående av en huvudprocess och en
+AMBA ska betraktas som ett system bestående av en huvudprocess och en
 bakgrundsprocess. Huvudprocessen är ett grafiskt Rust-program bestående av flera
 beständiga trådar som kommunicerar med varandra genom delat minne och
 meddelanden. Bakgrundsprocessen är en \stoe{}-instans startad av huvudprocessen
 med \stoe{}-pluginet AmbaPlugin som möjliggör kommunikation mellan
 huvudprocessen och \stoe{} självt. IPC mellan huvudprocessen och
 bakgrundsprocessen sker över två Unix-socketar. Figur~\ref{fig:arkitektur} visar
-en översikt av Ambas arkitektur.
+en översikt av AMBAs arkitektur.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/arch-process-threads.png}
-    \caption{Amba: skapande av processer och trådar}\label{fig:arkitektur}
+    \caption{AMBA: skapande av processer och trådar}\label{fig:arkitektur}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/arch-communication.png}
-    \caption{Amba: kommunikation mellan processer och trådar}\label{fig:arkitektur-kommunikation}
+    \caption{AMBA: kommunikation mellan processer och trådar}\label{fig:arkitektur-kommunikation}
 \end{figure}
 
 
@@ -35,7 +35,7 @@ denna till minne tillgängligt från GUI-tråden.
 IPC-tråden, som tar emot meddelanden över IPC från AmbaPlugin.
 QMP-tråden, som tar emot och skickar meddelanden till QEMU.\@ QMP står för QEMU
 Machine Protocol och möjliggör programmatisk kontroll av QEMU-instansen direkt.
-QMP-tråden har en väldigt begränsad funktion och är inte nödvändig för Ambas
+QMP-tråden har en väldigt begränsad funktion och är inte nödvändig för AMBAs
 nuvarande funktionalitet.
 QEMU-tråden, som startar QEMU/\stoe{}-instansen och inväntar dess avslutande.
 Detta inväntande är bland annat nödvändigt för att hantera en krasch i \stoe{}
@@ -43,7 +43,7 @@ eller AmbaPlugin på ett bra sätt.
 
 \subsection{Uppstart}
 
-Som beskrivet i avsnitt~\ref{sec:run-amba} startas Amba av användaren med en
+Som beskrivet i avsnitt~\ref{sec:run-amba} startas AMBA av användaren med en
 angiven receptfil. Huvudprocessen tolkar receptfilen och genererar den
 konfiguration som \stoe{} behöver för att köra den analyserade binären så som
 receptfilen specifierat. Huvudprocessen startar alla beständiga trådar och
@@ -62,7 +62,7 @@ kontinuerligt utplaceras.
 Huvudprocessen använder immediate-mode-gui-biblioteket egui~\cite{egui} för att
 rita sitt gränssnitt. Detta innebär att hela fönstret ritas om varje bildruta,
 mer likt typisk spelgrafik än klassiska grafiska gränssnitt. egui är enkelt att
-utveckla för vilket var kritiskt för att utveckla prototypen Amba under detta
+utveckla för vilket var kritiskt för att utveckla prototypen AMBA under detta
 kandidatarbete. Grafvykomponenten är byggd från grundläggande egui-komponenter
 vilket gjorde bibliotekets utvecklarergonomi viktig.
 
@@ -70,7 +70,7 @@ vilket gjorde bibliotekets utvecklarergonomi viktig.
 
 Den symboliska exekveringsmotorn \stoe{} beskrivs mer översiktligt i
 avsnitt~\ref{sec:existerande-ramverk}. Detta avsnitt diskuterar dess användning
-i Amba och den funktionalitet som är relevant för detta.\@
+i AMBA och den funktionalitet som är relevant för detta.\@
 
 \stoe{} tillhandahåller en hel virtuell maskin med stöd för symbolisk exekvering
 genom att bygga ovanpå på QEMU.\@ \stoe{} är ett dynamisk bibliotek som
@@ -97,7 +97,7 @@ kärn-plugin eller andra plugin. Dessa callbacks anropas under exekvering när
 motsvarande villkor för en hook uppfylls.
 
 AmbaPlugin är ett S2E plugin som har utvecklats för att samla information under
-exekvering av en binär ämnat för att visualisera exekveringen i Amba.\@
+exekvering av en binär ämnat för att visualisera exekveringen i AMBA.\@
 AmbaPlugin kan även bestämma ett subträd av tillstånd vars exekvering ska
 prioriteras före andra.
 
@@ -125,7 +125,7 @@ bygget med dess alla beroende komponenter. För att förbättra bygget, uppnå
 bättre reproducerbarhet samt bättre samspel med en grafisk applikation paketeras
 \stoe{} i Nix.
 
-Nix-paketet \stoe{} har framställts för utveckling av Amba och är inte lämplig
+Nix-paketet \stoe{} har framställts för utveckling av AMBA och är inte lämplig
 för upstreaming till \stoe{} i nuvarande form men detta kan vara möjligt efter
 utökningar och modifieringar.
 
@@ -145,7 +145,7 @@ representeras som registerstora tal.
 
 \subsection{Linjegrafskompression}
 
-Amba presenterar både en komprimerad och en okomprimerad graf för användaren.
+AMBA presenterar både en komprimerad och en okomprimerad graf för användaren.
 Grafen komprimeras genom kantkontraktion av alla kanter anslutna till en nod av
 ingrad exakt ett och utgrad exakt ett. Detta är ekvivalent med att se alla par
 av grundblock som alltid förekommer efter varandra som ett enda grundblock.
@@ -168,7 +168,7 @@ om att en fullt linjär algoritm existerar.
 
 \subsection{Starkt anslutna komponenter}
 
-Amba kan färglägga noder i de komprimerade och ickekomprimerade
+AMBA kan färglägga noder i de komprimerade och ickekomprimerade
 kontrollflödesgraferna efter deras så kallade starkt anslutna komponent (jrf.\
 eng.\ strongly connected component). En riktad grafs starkt anslutna komponenter
 är ekvivalensklasserna under relationen att ett par av noder är både nedströms
@@ -176,8 +176,8 @@ och uppströms ifrån varandra. Den starkt anslutna komponenten som en nod $V$
 tillhör är alltså mängden av de noder som både kan nå $V$ och som kan nås av
 $V$.
 
-Amba bryter ned grafer i deras starkt anslutna komponenter med Tarjans
-algoritm~\cite{tarjan}. Tarjans algoritm bygger på en rekursiv DFS, och Amba
+AMBA bryter ned grafer i deras starkt anslutna komponenter med Tarjans
+algoritm~\cite{tarjan}. Tarjans algoritm bygger på en rekursiv DFS, och AMBA
 hanterar dess linjära stackdjup genom att köra algoritmen på en tråd med en
 tillräckligt stor stack.
 
@@ -200,10 +200,10 @@ vertikalt under. Därmed går exekvering framförallt uppifrån ned.
 Den beräkningstunga delen av nodutplaceringen är beräkningen av
 repulsionskraften. Naiv summation mellan varje par av noder tar $O(n^2)$ tid per
 tidssteg eller $O(n^3)$ tid totalt under antagande att konvergens nås efter
-linjärt många steg. Därför implementerar Amba även Barnes-Hut
+linjärt många steg. Därför implementerar AMBA även Barnes-Hut
 kraftberäkningsalgoritm på ett R-träd. Ett R-träd är ett balanserat binärt träd
 av punktmängder där varje lövnod är en enskild punkt och varje grennod lagrar
-begränsningslådan för punkterna den innehåller. Amba bygger trädet genom att
+begränsningslådan för punkterna den innehåller. AMBA bygger trädet genom att
 rekursivt hugga den axel som är geometriskt längst och använder en parameter för
 att bestämma vid kvot mellan lådstorlek och kraftavstånd där lådan anses
 tillräckligt liten för att dess noder kan approximeras ligga i lådans
