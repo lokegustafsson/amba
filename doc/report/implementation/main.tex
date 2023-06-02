@@ -62,7 +62,7 @@ kontinuerligt utplaceras.
 Huvudprocessen använder immediate-mode-gui-biblioteket egui~\cite{egui} för att
 rita sitt gränssnitt. Detta innebär att hela fönstret ritas om varje bildruta,
 mer likt typisk spelgrafik än klassiska grafiska gränssnitt. egui är enkelt att
-utveckla vilket var kritiskt för att utveckla prototypen AMBA under detta
+utveckla för vilket var kritiskt för att utveckla prototypen AMBA under detta
 kandidatarbete. Grafvykomponenten är byggd från grundläggande egui-komponenter
 vilket gjorde bibliotekets utvecklarergonomi viktig.
 
@@ -123,7 +123,7 @@ felaktiga git-remote-url:er för QEMU-projektet), flera andra småsaker hindrade
 byggande och utöver allt detta rekommenderades en Docker-miljö för att hantera
 bygget med dess alla beroende komponenter. För att förbättra bygget, uppnå
 bättre reproducerbarhet samt bättre samspel med en grafisk applikation paketeras
-\stoe{} i pakethanteraren Nix.
+\stoe{} i Nix.
 
 Nix-paketet \stoe{} har framställts för utveckling av AMBA och är inte lämpligt
 för upstreaming till \stoe{} i nuvarande form men detta kan vara möjligt efter
