@@ -25,10 +25,7 @@ group_64_project_report.pdf: \
   existerande_verktyg/automatiska_fuzzers.tex \
   existerande_verktyg/visualiserad.tex \
   implementation/main.tex \
-  inledning/avgransningar.tex \
   inledning/main.tex \
-  inledning/syfte.tex \
-  inledning/tidigarearbete.tex \
   main.tex \
   slutsats/main.tex \
   teori/arkitektur_for_binaranalysverktyg.tex \
