@@ -23,6 +23,15 @@ från \texttt{libgomp} från Nix-paketerade \texttt{gcc}. Detta problem fick
 arbetas runt genom att dynamiskt länka en Ubuntu-byggd \texttt{libgomp} till
 \texttt{libs2e}.
 
+Vi försökte även minimera mängden \smallcaps{C++}-kod som behövde skrivas genom
+att använda Autocxx för att generera kopplingar mellan \smallcaps{C++} och Rust.
+Tanken var att vi med hjälp av Autocxx endast skulle behöva ett fåtal rader
+\smallcaps{C++} och att merparten av källkoden skulle kunna skrivas i Rust.
+Tyvärr stötte vi på en bug i Autocxx där den genererade syntaktiskt inkorrekt
+kod. Detta, i kombination med att Autocxx saknade viktiga funktioner, ledde oss
+till att efter några veckor överge tanken att generera kopplingar och istället
+skriva och underhålla även \smallcaps{C++}-kod.
+
 Dessa problem, tillsammans med väldigt många fler av liknande natur, ledde till
 mycket arbete som försköt planeringen. Således fanns det mindre tid till att
-utveckla all funktionalitet som var tänkt i AMBA.
+utveckla all funktionalitet som var tänkt i AMBA.\@
