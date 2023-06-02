@@ -24,21 +24,21 @@ för en given binär på två olika sätt: \textit{Flow Graph} och \textit{Code 
         kontrollflödesgraf.} \label{fig:ghidra_figures}
 \end{figure}
 
-Ghidra kompletterar dessa vyer med en \textit{code listing}, en primär
-vy där binärens disassemblerade kod listas. Användaren kan fritt välja
-att bilda en graf från ett markerat \textit{code block}, vilket är
-Ghidras utökade specifikation på ett basic block, från Ghidras code
+Ghidra kompletterar dessa vyer med en \textit{code listing}, en primär vy där
+binärens disassemblerade kod listas. Användaren kan fritt välja att bilda en
+graf från ett markerat \textit{code block}, vilket är Ghidras utökade
+specifikation på ett basic block, från Ghidras code
 listing~\cite{ghidra_website}. AMBA har liknande funktionalitet, se
 figur~\ref{fig:graf-basic}, och kan visualisera binärens fullständiga
 disassemblerade kod för en given nod, om debugdata finns tillgänglig, men saknar
 större kontext likt Ghidras code listing. En fördel mot Ghidras representation
-är AMBAs tre olika sätt att representera en binärs kontrollflöde på: \textit{Raw
-    Basic Block Graph}, \textit{Compressed Block Graph}, och \textit{State Graph}.
-Genom att använda dessa tre olika vyer kan en användare bilda en större
-förståelse om en given binär, dels genom att exempelvis visualisera alla
-symboliska tillstånd som \stoe{} skapar i kombination med färgade noder som
-indikerar på starkt kopplade komponenter (jfr. eng. \emph{strongly connected
-    components}).
+är AMBAs fem olika sätt att representera en binärs kontrollflöde på: \textit{Raw
+    Basic Block Graph}, \textit{Compressed Block Graph}, \textit{State Graph},
+\textit{Merged Block Graph} och \textit{Compressed Merged Block Graph}.  Genom
+att använda dessa fem olika vyer kan en användare bilda en större förståelse om
+en given binär, dels genom att exempelvis visualisera alla symboliska tillstånd
+som \stoe{} skapar i kombination med färgade noder som indikerar på starkt
+kopplade komponenter (jfr.\ eng. \emph{strongly connected components}).
 
 Kännedom om starkt kopplade komponenter i en kontrollflödesgraf är i synnerhet
 intressant vid analys av binärer utan källkod, eftersom dessa delgrafer speglar
@@ -47,9 +47,16 @@ troligtvis har större relevans än en sektion som saknar eller har betydligt
 färre starkt kopplade komponenter. Ett typiskt mönster man kan se med starkt
 kopplade komponenter är icke-nestlade loopar.
 
-TODO Screenshot för node coloring som tas upp nedan TODO
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/graph_scc.png}
+    \caption{
+        En del av AMBAs komprimerade basic-block-graf, färglagd efter starkt
+        anslutna komponenter för testprogrammet control-flow
+    }\label{fig:graf-scc}
+\end{figure}
 
-En användare skulle exempelvis kunna använda AMBAs node colouring för att bilda
+En användare skulle exempelvis kunna använda AMBAs nodfärgläggning för att bilda
 en större uppfattning om en viss del i binären och sedan komplettera med
 nodernas minnesaddresser för att visualisera samma sektion i ett mer avancerat
 verktyg som Ghidra. Ett typiskt användningsfall skulle kunna vara att i Ghidra

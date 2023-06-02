@@ -25,9 +25,6 @@ i och den disassemblerade maskinkoden. Om binären innehåller debugdata visas
 även funktionsnamn och om både debugdata och källkoden är tillgänglig visas de
 källkodsrader som gett upphov till maskinkoden.
 
-TODO skriv om den oimplementerade grafhomomorfism-glöm-state-grafen om vi hinner
-implementera den TODO
-
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/graph_block_compressed.png}
@@ -58,6 +55,37 @@ branch som görs baserat på ett symboliskt uttryck. Sidopanelen visar
 tillståndets namn samt det grennummer som identiferar det föränderliga
 tillståndet i \stoe{}. Då föräldrar inte kan samexistera i tid med sina barn
 använder \stoe{} grennummer för att hänvisa till nu körande tillstånd.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/graph_merged.png}
+    \caption{
+        AMBAs sammanslagna basic-block-graf för testprogrammet control-flow
+    }\label{fig:graf-merged}
+\end{figure}
+
+Den fjärde grafen är en sammanslagen basic-block-graf, som visar basic-block
+utan att delas vid tillståndsdelning. Precist uttryckt är det grafen som bildas
+från den första grafen, efter att varje par av noder vars metadata endast
+skiljer i det symboliska tillståndet ersatts med en nod kopplad till unionen av
+de ursprungliga nodernas kanter. Figur~\ref{fig:graf-merged} visar ett exempel.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/graph_merged_compressed.png}
+    \caption{
+        AMBAs komprimerade sammanslagna basic-block-graf för testprogrammet control-flow
+    }\label{fig:graf-merged-compressed}
+\end{figure}
+
+Den femte och sista grafen är en komprimerad sammanslagen basic-block-graf,
+vilken konstrueras från den sammanslagna basic-block-grafen genom samma
+kompression som i komprimerade block-block-grafen.
+Figur~\ref{fig:graf-merged-compressed} visar ett exempel.
+
+De två första graferna, alltså de komprimerade och okomprimerade
+basic-block-graferna, kan färgläggas utifrån symboliska tillstånd och starkt
+anslutna komponenter.
 
 Utöver att visa dessa grafer går det också att välja noder i den symboliska
 tillståndsgrafen för att prioritera deras fortsatta evaulering. Detta gör det
