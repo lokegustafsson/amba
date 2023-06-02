@@ -5,12 +5,10 @@ till symbolisk exekvering, den underliggande tekniken inom symbolisk fuzzing, oc
 problem tekniken löser. Detta följs upp med en mer detaljerad beskrivning av symbolisk
 exekvering och fuzzing. Avslutningsvis, beskrivs problem som en symbolisk exekveringsmotor
 står inför och några möjliga lösningar till dessa problem.
-% , samt motiveringar till detta
-% projekt.
 
 \section{Binäranalys}
 \label{sec:binar_analys}
-Inom skadeprogramsanalys (jfr eng. \emph{malware analysis}) och \emph{reverse engeneering}
+Inom skadeprogramanalys (jfr eng. \emph{malware analysis}) och \emph{reverse engeneering}
 är binäranalys nödvändig eftersom programmet som ska analyseras oftast endast
 tillgänglig som maskinkod~\cite{andriesse2018}.
 
@@ -26,9 +24,9 @@ inte obefintliga~\cite{silentbugsmatter}.
 
 Ett flertal metoder används för att analysera maskinkod:
 \begin{enumerate}
-    \item disassemblera binären och läsa dess funktioner för att förstå vad de gör~\cite{ghidra_website}.
+    \item disassemblera exekverbar binär och läsa dess funktioner för att förstå vad de gör~\cite{ghidra_website}.
     \item dekompilera maskinkoden med ett verktyg som ger pseudokod, och sedan manuellt undersöka denna mer läsbara koden~\cite{ghidra_website}.
-    \item använda fuzzing på programmet, det vill säga automatiskt generera testfall tills ett orsakar en crash eller
+    \item använda fuzzing på programmet, det vill säga automatiskt generera testfall tills ett orsakar en krasch eller
           annat oönskat beteende~\cite{8371326}.
     \item använda symbolisk fuzzing på programmet, där nya testfall genereras med hjälp av tidigare för att effektivt täcka fler vägar.~\cite{sage}.
 \end{enumerate}
@@ -67,7 +65,7 @@ hypotestestning vilket kräver att programmet körs. Således går det inte att
 skaffa sig en korrekt förståelse genom att enbart läsa kod.
 
 Metod 3-4, att köra programmet på testfall, ger framförallt en
-black-box-förståelse av programmet. Tillgången till binären och
+black-box-förståelse av programmet. Tillgången till exekverbar binär och
 exekveringsmiljön används endast som ett verktyg för att generera nya testfall.
 Fuzzing och symbolisk fuzzing kan köras helautomatiskt och är korrekta.
 Vid fuzzing är en täckande sökning av indatarummet oftast omöjlig, och då kan
@@ -141,7 +139,7 @@ att undersökas med automatiska metoder eftersom det är tidskrävande
 att manuellt välja slumpvalda värden på \texttt{s} för att hitta den korrekta
 vägen. Istället lämpar symbolisk fuzzing sig väl i detta fallet. Eftersom
 symbolisk fuzzing väljer olika konkreta värden samtidigt som den tillämpar
-symbolisk exekvering med symboliska värden som följer den givna vägen, t.ex.\
+symbolisk exekvering med symboliska värden som följer den givna vägen, till exempel\
 om \lstinline{s == "annat"} vilket motsvarar att programmet väljer else-vägen
 \lstinline{deny_access()}. Detta upprepas med nya exekveringsvägar och till slut
 hittar den indata som ger \lstinline{allow_access()}-vägen.
@@ -154,7 +152,7 @@ analys~\cite{dynamic_bin_analysis}.
 
 Statisk analys syftar på analys som går att göra utan att exekvera programmet
 som analyseras. Exempel på statisk binäranalys är metod 1--2 beskrivet tidigare
-i avsnitt~\ref{sec:binar_analys}, alltså att disassembla binären och/eller
+i avsnitt~\ref{sec:binar_analys}, alltså att disassemblera binären och/eller
 visualisera kod~\cite{dynamic_bin_analysis}.
 
 Dynamisk analys går ut på att analysera ett program under
@@ -168,9 +166,9 @@ programmets exekvering~\cite{dynamic_bin_analysis}.
 I praktiken uppgör minnessäkerhetsbrister ungefär 70 procent av alla
 sårbarheter~\cite{miller19}. Minnessårbarheter kan påverka programflödet (jfr.
 eng. \emph{control flow}) i ett program och alltså dess beteende. Det kan
-vara alvarligt om en angripare kan läsa delar av minnet som inte ska vara
+vara allvarligt om en angripare kan läsa delar av minnet som inte ska vara
 läsbara men det mest allvarliga är skrivaccess utanför minnesgränser. En
-angripare kan använda det för att t.ex. exekvera godtyckliga kommandon på
+angripare kan använda det för att till exempel exekvera godtyckliga kommandon på
 datorn som kör programmet~\cite{computer_security_cs161}, alltså \emph{remote
     code execution}.
 
@@ -182,7 +180,7 @@ Minnessäkra programspråk tilltar en kombination av körtids- (jfr. eng.
 \emph{runtime}) och kompileringstidskontroller (jfr. eng. \emph{compile
     time checks}) för att undvika minnessårbarheter. Däremot finns det än idag
 många skäl för att fortsätta använda minnesosäkra programspråk som C, såsom
-prestandaskäl, hårdvarubegränsingar, men främst äldre kod som är mödosam att
+prestandaskäl, hårdvaubegränsningar, men främst äldre kod som är mödosam att
 skriva om~\cite{computer_security_cs161}. Dessutom är de nyare programspråken,
 exempelvis Rust eller Swift, som kan konkurrera med C relativt nya och det
 krävs tid för övergången mellan språken.
@@ -195,7 +193,7 @@ gränserna för den minnesregion som avsetts. Angripare kan utnyttja detta för 
 normala beteende genom att skriva bortom gränserna. Formatsträngsbuggar uppstår
 när någon typ av indata tolkas och används som indata till vanliga
 textkonverteringsfunktioner som \texttt{printf}, som i sin tur använder
-konvertingsfunktioner för konvertering av olika data till text. Om inte en
+konverteringsfunktioner för konvertering av olika data till text. Om inte en
 noggrann och tillräcklig utvärdering av indatan görs innan den används i en
 funktion som kan tolka formatsträngar, kan funktionen använda stacken och den
 data som råkar ligga där som argument till konverteringsfunktioner. Med noggrann
