@@ -125,14 +125,14 @@ bygget med dess alla beroende komponenter. För att förbättra bygget, uppnå
 bättre reproducerbarhet samt bättre samspel med en grafisk applikation paketeras
 \stoe{} i pakethanteraren Nix.
 
-Nix-paketet \stoe{} har framställts för utveckling av AMBA och är inte lämplig
+Nix-paketet \stoe{} har framställts för utveckling av AMBA och är inte lämpligt
 för upstreaming till \stoe{} i nuvarande form men detta kan vara möjligt efter
 utökningar och modifieringar.
 
 \section{Grafbehandling}
 
 Huvudprocessen tar emot en ström av kanter representerade som ordnade par av
-nodmetadata, där en mottagandet av en kant innebär att den kanten precis
+nodmetadata, där mottagandet av en kant innebär att den kanten precis
 bevandrats. Olika symboliska tillstånd har olika noder, vilket innebär att denna
 kantströmmen innehåller all information som huvudprocessen behöver.
 
@@ -140,7 +140,7 @@ Nya noder placeras i en hashtabell och får ett sekventiellt allokerat id. Detta
 id används sedan för att identifiera noden i olika representationer av grafen.
 Grafen representeras med en grannlista för linjegrafskompression och nedbrytning
 i starkt ansluta komponenter och med en kantlista för nodutplacering genom
-kraftsimulation, och i båda dessa sammanhang är det praktiskt att noder
+kraftsimulation. I båda dessa sammanhang är det praktiskt att noder
 representeras som registerstora tal.
 
 \subsection{Linjegrafskompression}
@@ -148,8 +148,8 @@ representeras som registerstora tal.
 AMBA presenterar både en komprimerad och en okomprimerad graf för användaren.
 Grafen komprimeras genom kantkontraktion av alla kanter anslutna till en nod av
 ingrad exakt ett och utgrad exakt ett. Detta är ekvivalent med att se alla par
-av grundblock som alltid förekommer efter varandra som ett enda grundblock.
-Detta ger komprimerade grundblock som kan spänna flera funktioner och dynamiskt
+av basic blocks som alltid förekommer efter varandra som ett enda basic block.
+Detta ger komprimerade basic blocks som kan spänna flera funktioner och dynamiskt
 länkade bibliotek.
 
 Grafkompressionen sker online, alltså genom en datastruktur som samtidigt
