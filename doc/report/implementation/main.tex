@@ -52,7 +52,7 @@ maskin anpassad till \stoe{}, och en process kallad bootstrap körs som
 förbereder den virtuella maskinen inför den symboliska exekveringen. Denna
 förberedelse innebär till exempel att \verb|/tmp/| som innehåller de symboliska
 filerna placeras i ett RAM-uppbackat tmpfs och att de symboliska filerna görs
-symboliska. Binären som ska analyseras skickas in i QEMU, startas och hooks till
+symboliska. Binären som ska analyseras skickas in i QEMU, startas och \emph{hooks} till
 AmbaPlugin börjar sampla data som ska skickas till huvudprocessen. Datan skickas
 till huvudprocessen som börjar visa grafen när den byggs och samtidigt
 kontinuerligt utplaceras.
@@ -82,7 +82,7 @@ konkret indata motsvarande olika symboliska lövtillstånd. Men \stoe{} är
 komplext, har mycket som kan konfigureras och dess fulla kraft är tillgänglig
 endast för \stoe{}-plugin~\cite{Chipounov12}.
 
-Plugin har möjlighet att följa \stoe{}:s exekvering genom callbackfunktioner och
+Plugin har möjlighet att följa \stoe{}:s exekvering genom återanropsfunktioner och
 undersöka egenskaper för att spåra och forma analyser. Plugin kan även påverka
 den symboliska exekveringen, till exempel genom att i realtid ange vilka
 tillstånd som ska exekveras och vilka som ska pausas.
@@ -92,9 +92,9 @@ Tillståndet ärvs från ett kärn-plugin som innehåller information om bl.a.\
 programtillstånd, symbolisk exekveringstillstånd och information om andra
 plugin. Tillståndet kan utökas för att samla information, kontrollera egenskaper
 och utföra binäranalys. Initieringsfunktionen består av tillståndsinitiering och
-registrering av callbacks till olika hooks som tillgängligörs av antingen S2E:s
-kärn-plugin eller andra plugin. Dessa callbacks anropas under exekvering när
-motsvarande villkor för en hook uppfylls.
+registrering av återanropsfunktioner till olika \emph{hooks} som tillgängligörs av antingen S2E:s
+kärn-plugin eller andra plugin. Dessa återanropsfunktioner anropas under exekvering när
+motsvarande villkor för en \emph{hook} uppfylls.
 
 AmbaPlugin är ett S2E plugin som har utvecklats för att samla information under
 exekvering av en binär ämnat för att visualisera exekveringen i AMBA.\@
@@ -103,9 +103,9 @@ prioriteras före andra.
 
 \subsection{AmbaPlugin}
 
-AmbaPlugin registrerar callbacks för ett antal hooks, inklusive bland annat
+AmbaPlugin registrerar återanropsfunktioner för ett antal \emph{hooks}, inklusive bland annat
 \texttt{onStateFork}, \texttt{onTranslateBlockComplete} och
-\texttt{onBlockStart}. När dessa hooks anropas samlas information om S2E:s
+\texttt{onBlockStart}. När dessa \emph{hooks} anropas samlas information om S2E:s
 tillståndsid, generation för ett block i fallet av självmodifierande kod,
 virtuell adress, maskinkod etc.
 
