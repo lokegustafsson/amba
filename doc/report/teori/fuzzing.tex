@@ -9,7 +9,7 @@ som inte kan hanteras av målprogrammet. Det är däremot inte trivialt att gene
 indata som täcker ett programs möjliga beteenden vilket har lett till bland annat
 mutationsbaserad fuzzing (jfr.\ eng.\ \emph{mutation-based fuzzing}) och genereringsbaserad
 fuzzing (jfr.\ eng.\ \emph{generation-based fuzzing}). Mutationsbaserad fuzzing muterar känd giltig indata,
-t.ex.\ om strängen `fuzz' är giltig indata kan detta muteras till `fuzzZZZZZ'. Om
+till exempel\ om strängen `fuzz' är giltig indata kan detta muteras till `fuzzZZZZZ'. Om
 en användare exempelvis vill utföra fuzzing på bildhanteringsbiblioteket libjpeg skulle
 detta innebära att skicka giltiga jpeg-bilder till fuzzern för att användas som
 seeds, värden som används i pseudoslumptalsgeneratorer för att generera
@@ -51,8 +51,8 @@ trivial eller uppenbar indata vilket därmed leder till lägre kodtäckning.
 
 White-box fuzzing är inte en allmän lösning till problemen med fuzzing, utan
 har också problem relaterade till prestanda, vägexplosion, och falskt positiva
-resultat. Det finns en stark korrelation mellan kodtäckning och bug
-coverage~\cite{directed_greybox_fuzzing} men eftersom white-box fuzzing är ett
+resultat. Det finns en stark korrelation mellan kodtäckning och bugg
+täckning~\cite{directed_greybox_fuzzing} men eftersom white-box fuzzing är ett
 prestandakrävande verktyg kan detta leda till falskt positiva resultat eftersom den
 symboliska exekveringen även guidar fuzzingen längs med grenar som
 inte nödvändigtvis leder till buggar, eller är praktiskt omöjliga.
