@@ -3,15 +3,25 @@ SymNav är ett mer moget verktyg än AMBA.\@ Den största skillnaden mellan verk
 användarvänligt vis och att SymNav låter användaren filtrera bort de
 exekveringsvägar användaren inte vill fokusera på.
 
+Att AMBA saknar tillståndsfiltrering gör verktyget opraktiskt för icke-triviala
+program, då visualiseringen blir överväldigande för användaren och AMBAs
+tillståndsfiltrering otymplig. AMBA kan därför inte konkurrera med SymNav i
+praktisk användbarhet, utan endast i det akademiska intresset i dess
+särskiljande funktionalitet samt potentiellt i den vidareutveckling som
+möjliggörs av AMBAs arktitektur.
+
 En stor skillnad mellan AMBA och SymNav är att medan AMBA uppdaterar det
 grafiska gränssnittet i realtid, eller mer precist en gång per sekund, fungerar
 SymNav så att användaren startar körningar som varar så länge som specifierat av
 användaren. I ett typiskt arbetsflöde i SymNav undersöker användaren programmet
 genom det grafiska gränssnittet, startar en körning på en minut och väntar tills
 den är klar och återgår först därefter till att undersöka programmet genom det
-nu uppdaterade grafiska gränssnittet.
+nu uppdaterade grafiska gränssnittet. En realtidsarkitektur möjliggör mer
+interaktivitet i hur användaren påverkar den symboliska fuzzingen.
 
 En annan stor skillnad är vilken symbolisk exekveringsmotor som används. SymNav
 använder angr och AMBA använder \stoe{}. Den största konsekvensen av denna
 skillnad är att AMBA har potentiellt bättre prestanda i den symboliska
-exekveringen, vilket diskuterades i det förra avsnittet.
+exekveringen, vilket diskuterades i det förra avsnittet. Denna fördel kan, om
+AMBA utökas med tillståndsfiltrering, vara en faktor som gör AMBA mer passande
+än SymNav i något sökningstungt användsområde.
