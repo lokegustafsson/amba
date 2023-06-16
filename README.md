@@ -2,7 +2,7 @@
 
 Short for Automatic and Manual methods for Binary Analysis, this is a continuation of a bachelor
 thesis project. The thesis included producing the following video introducing symbolic execution and
-demoing an earlier version of AMBA.
+demoing an earlier version of AMBA:
 
 [<img src="https://img.youtube.com/vi/VE_4biDqmhQ/maxresdefault.jpg" width=50%>](https://youtu.be/VE_4biDqmhQ)
 
