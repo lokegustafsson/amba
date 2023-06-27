@@ -18,54 +18,54 @@ on:
 jobs:
   build-s2e:
     name: Build S2E
-    runs-on: [self-hosted, nixos, X64]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix build s2e
         run: |
           nix build -L --accept-flake-config .#s2e
 
   build-amba-lib:
     name: Build LIBAMBA
-    runs-on: [self-hosted, nixos, X64]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix build libamba
         run: |
           nix build -L --accept-flake-config .#libamba
 
   build-amba:
     name: Build AMBA
-    runs-on: [self-hosted, nixos, X64]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix build amba
         run: |
           nix build -L --accept-flake-config .#amba
 
   build-devshell:
     name: Build AMBA devshell
-    runs-on: [self-hosted, nixos, X64]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix build devshell
         run: |
           nix build -L --accept-flake-config .#devShells.x86_64-linux.default
 
   test-amba-run-hello:
     name: Run AMBA on musl-hello-world
-    runs-on: [self-hosted, nixos, X64, impure-persistent-amba-data-dir, performant]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix run test-amba-hello
         run: |
           nix run -L --accept-flake-config .#test-amba-hello
 
   test-amba-run-control-flow:
     name: Run AMBA on musl-control-flow
-    runs-on: [self-hosted, nixos, X64, impure-persistent-amba-data-dir, performant]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix run test-amba-control-flow
         run: |
           nix run -L --accept-flake-config .#test-amba-control-flow

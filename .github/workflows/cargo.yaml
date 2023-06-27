@@ -18,18 +18,18 @@ on:
 jobs:
   cargo-fmt:
     name: Run cargo fmt
-    runs-on: [self-hosted, nixos, X64]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: cargo fmt
         run: |
           nix develop -L --accept-flake-config --command cargo fmt --check
 
   cargo-test:
     name: Run cargo tests
-    runs-on: [self-hosted, nixos, X64, performant]
     steps:
       - uses: actions/checkout@v3
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: cargo test
         run: |
           PACKAGES=$(ls crates | grep -P -v '^(bootstrap|AmbaPlugin|s2e-rs)$' | sed -e 's/^/-p /')
